@@ -93,7 +93,7 @@
    (list 't_forest_l        "forest"        pclass-forest    s_forest            dns 0 nil)
    (list 't_forest_b        "forest"        pclass-forest    s_forest            opq 0 nil)
 
-   (list 't_hills           "hills"         pclass-hills     s_hills             dns 0 nil)
+   (list 't_hills           "hills"         pclass-hills     s_hills             trn 0 nil)
    (list 't_mountains_v     "mountains"     pclass-vmountains s_mountains         trn 0 nil)
    (list 't_mountains_b     "mountains (below)"     pclass-space s_mountains         trn 0 nil)
    (list 't_mountains       "mountains"     pclass-mountains s_mountains         opq 0 nil)
@@ -183,6 +183,7 @@
    (list 't_trail_d         "trail"         pclass-grass     s_trail_d           trn 0 nil)
    (list 't_trail_e         "trail"         pclass-grass     s_trail_e           trn 0 nil)
    (list 't_trail_f         "trail"         pclass-grass     s_trail_f           trn 0 nil)
+   (list 't_trail_g         "trail"         pclass-grass     s_trail_g           trn 0 nil)
    (list 't_A               "an A"          pclass-wall      s_A                 trn 0 nil)
    (list 't_B               "a B"           pclass-wall      s_B                 trn 0 nil)
    (list 't_fake_B          "a B"           pclass-forest    s_B                 trn 0 nil)

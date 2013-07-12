@@ -322,6 +322,7 @@
 (kern-mk-sprite 's_trail_d  ss_addon 1 89 #f 0 )
 (kern-mk-sprite 's_trail_e  ss_addon 1 90 #f 0 )
 (kern-mk-sprite 's_trail_f  ss_addon 1 91 #f 0 )
+(kern-mk-sprite 's_trail_g  ss_addon 1 56 #f 0 )
 (kern-mk-sprite 's_townswoman ss_addon 2 92 #f 0)
 ;;(kern-mk-sprite 's_fat_townswoman ss_addon 2 97 #f 0)
 ;;(kern-mk-sprite 's_lady ss_addon 2 99 #f 0)

@@ -25,15 +25,15 @@
     (list  "%%"   t_bog)                ;; "bog"
     (list  ".."   t_grass)              ;; "grass"
     (list  ".!"   t_sunlit_grass)              ;; "grass"
-    (list  "t."   t_trees_v)            ;; "trees (transparent)"
-    (list  "tt"   t_trees)              ;; "trees"
+    (list  "t."   t_trees)              ;; "trees"
+    (list  "tt"   t_trees_v)            ;; "trees (transparent)
     (list  "t|"   t_trees_d)            ;; "trees denser"
 
-    (list  "||"   t_forest)             ;; "forest"
+    (list  "||"   t_forest_b)           ;; "forest (totally LOS-blocking)"
     (list  "|X"   t_forest_d)           ;; "forest (denser)"
     (list  "|t"   t_forest_l)           ;; "forest (lighter)"
     (list  "|."   t_forest_v)           ;; "forest (non-LOS-blocking)"
-    (list  "|v"   t_forest_b)           ;; "forest (totally LOS-blocking)"
+    (list  "|v"   t_forest)             ;; "forest"
 
     (list  "{{"   t_hills)              ;; "hills"
 
@@ -200,7 +200,8 @@
     (list  "/d"   t_trail_d)            ;; "trail"
     (list  "/e"   t_trail_e)            ;; "trail"
     (list  "/f"   t_trail_f)            ;; "trail"
-	
+    (list  "/g"   t_trail_g)
+
 	(list  "~~" t_shoals)     ;; shallow + land
     (list  "~1" t_shore_n)
     (list  "~2" t_shore_w)

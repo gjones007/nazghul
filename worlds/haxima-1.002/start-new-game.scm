@@ -192,7 +192,8 @@
 ;;----------------------------------------------------------------------------
 ;; Places
 ;;----------------------------------------------------------------------------
-(load "shard.scm")
+;;(load "shard.scm")
+(load "hring.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Astronomy
@@ -319,7 +320,7 @@
   )
 
 (define (simple-start kplayer)
-  (kern-obj-put-at kplayer (list p_shard 76 114)))
+  (kern-obj-put-at kplayer (list p_shard 336 390)))
   
 (define (create-char kplayer)
  (kern-obj-put-at kplayer (list p_char_setup 10 17)
@@ -331,7 +332,8 @@
 ;;----------------------------------------------------------------------------
 ;;(kern-set-start-proc start-scene)
 ;;(kern-set-start-proc simple-start)
-(kern-add-hook 'new_game_start_hook 'create-char)
+;;(kern-add-hook 'new_game_start_hook 'create-char)
+(kern-add-hook 'new_game_start_hook 'simple-start)
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))
 

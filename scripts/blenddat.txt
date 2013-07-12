@@ -20,11 +20,13 @@
 
 &deepwaterblenda ( &nc &nc &nc _3 &nc _5 &nc _7 &nc &nc _a _b _c _d _e _f )
 
-&road ( /0 /1 /2 /3 /4 /5 /6 /7 /8 /9 /a /b /c /d /e /f )
+&road ( /0 /1 /2 /3 /4 /5 /6 /7 /8 /9 /a /b /c /d /e /f /g )
+
+&roadblend ( /g /b /e /a /c /8 /d /9 /3 /7 /2 /6 /0 /4 /1 /5 )
 
 &deepwater ( __ _* _0 &deepwaterblend )
 
-&water ( &shallow &nwater &deepwater b~ )
+&water ( ~9 &shallow &nwater &deepwater b~ )
 
 &hillsblend ( &nc {1 {2 {3 {4 {5 {6 {7 {8 {9 {a {b {c {d {e {f )
 
@@ -174,9 +176,12 @@ basic ( rn ) ( &rockblend ) ( &land &wet &lava &objects &floor &void ) ( &wall &
 
 reset
 
+# roads
+basic ( /f ) ( &roadblend ) ( &road ) ( &water &lava &land &manmade &bridge rr )
+
 #randomise void
 random ( ** ) [ 0.5 ] ( ** *. )
 
-random ( || ) [ 0.6 0.8 ] ( || |t |X )
+#random ( || ) [ 0.6 ] ( || |t |X )
 
-random ( tt ) [ 0.7 ] ( tt t| )
+#random ( tt ) [ 0.7 ] ( tt t| )

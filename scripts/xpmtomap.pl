@@ -35,8 +35,8 @@ my %colourToSymbol = ();
 
 while (<FILEIN>)
 {
-	$_ =~ /(..)\s+#(......)/ or die "invalid colourmap line";
-	$colourToSymbol{$2}=$1;
+    $_ =~ /(..)\s+#(......)/ or die "invalid colourmap line";
+    $colourToSymbol{$2}=$1;
 }
 close FILEIN;
 
@@ -70,7 +70,8 @@ my %xpmToPal = ();
 for (;$colours>0;$colours--)
 {
 	$line = <FILEIN>;
-	$line =~ /"(.)\s+c\s+#(......)",/ or die "invalid colour match line: $line";
+	#$line =~ /"(.)\s+c\s+#(......)",/ or die "invalid colour match line: $line";
+        $line =~ /"(.)\s+c\s+#(......)",/ or next;
 	$xpmToPal{$1}=$colourToSymbol{$2};
 	print STDERR "$1 => $2 => '$colourToSymbol{$2}'\n";
 }
@@ -94,7 +95,8 @@ undef %colourToSymbol; #may as well free some memory (we may need it in a bit)
 #my $curline=$firstline;
 #my $prevline=$lastline;
 
-print "(list\n";
+print "(kern-mk-map 'm_hring ".$width." ".$height." pal_expanded\n";
+print "             (list\n";
 while (<FILEIN>)
 {
 	$_ =~ /"([^"]*)"(,|};)/ or die "invalid line";
@@ -111,4 +113,4 @@ while (<FILEIN>)
 		print "\"\n";
 	}
 }
-print ")\n";
+print "))\n";

@@ -241,6 +241,28 @@ sub ruleIgnoreTerrain
 	$_[0]->[4];
 }
 
+sub printArray
+{
+    my ($name, $array) = @_;
+    print(" $name=( ");
+    foreach my $elem(@$array) {
+        print($elem." ");
+    }
+    print(")");
+}
+
+sub printRule
+{
+    my ($rule) = @_;
+    print "name=".$rule->[0];
+    printArray("target", $rule->[1]);
+    printArray("output", $rule->[2]);
+    printArray("corner", $rule->[3]);
+    printArray("edge", $rule->[4]);
+    printArray("ignore", $rule->[5]);
+    print("\n");
+}
+
 sub inList
 {
 	my ($list,$char)=@_;
@@ -333,10 +355,14 @@ sub checkNeighbor
 	return undef;
 }
 
+
+my $tx=11;
+my $ty=10;
+
 sub getTally
 {
 	my ($rule,$length,$x,$y) = @_;
-	#print getCell($x,$y)." >>\n";
+        #if ($x==$tx and $y==$ty) { print STDERR getCell($x,$y)." >>\n"; }
 	if (!inList(ruleTargetTerrain($rule),getCell($x,$y)))
 	{
 		return undef;	
@@ -353,7 +379,7 @@ sub getTally
 		}
 		$tallyinc *= 2;
 	}
-	#print STDERR $tally."\n";
+        #if ($x==$tx and $y==$ty) { print STDERR $tally."\n"; }
 	return $tally
 }
 
@@ -374,6 +400,7 @@ sub baseCheck
 	my $length = 4;
 	my $tally = getTally($rule,$length,$x,$y);
 	defined ($tally) or return;
+        #if ($x==$tx and $y==$ty) { print STDERR " =>".ruleOutputTerrain($rule)->[$tally]."\n"; }
 	writeMap($x, $y, ruleOutputTerrain($rule)->[$tally]);
 }
 
@@ -401,6 +428,7 @@ sub checkCell
 {
 	my ($activeList,$ignoreList,$x,$y)=@_;
 	my $cell = getCell($x,$y);
+        #print("    ($x $y) $cell -> ");
 	if ($cell eq $nochange)
 	{
 		return undef;
@@ -427,12 +455,15 @@ sub checkCornerCell
 	my $match = 1;
 	my $cellret;
 	$cellret = checkCell($cornerList,$ignoreList,$xoff,$yoff);
+        #print("$cellret\n");
 	defined $cellret or return undef;
 	$match &= $cellret;
 	$cellret = checkCell($edgeList,$ignoreList,$xoff,$yc);
+        #print("$cellret\n");
 	defined $cellret or return undef;
 	$match &= $cellret;
 	$cellret = checkCell($edgeList,$ignoreList,$xc,$yoff);
+        #print("$cellret\n");
 	defined $cellret or return undef;
 	$match &= $cellret;
 	return $match;
@@ -448,18 +479,20 @@ sub getCornerTally
 		[8+2,-1,1],
 		[8+4,1,1]
 	];
+        my $cell = getCell($x, $y);
+	#print "$cell at ($x $y) >>\n";
 	if (!inList(ruleTargetTerrain($rule),getCell($x,$y)))
 	{
-		return undef;	
+		return undef;
 	}
+        #if ($x==9 and ($y==6 or $y==7)) {printRule($rule);}
 	my $tally=0;
-	#print getCell($x,$y)." >>\n";
 	for (my $neighbor = 0; $neighbor < 4; $neighbor++)
 	{
 		my ($tallyinc,$xoff,$yoff)=@{$cornerOffsets->[$neighbor]};
-		#print "    $tallyinc ($x $y) ($xoff $yoff) ";
+		#print "    $tallyinc ($x $y) ($xoff $yoff)\n";
 		my $cellValue = checkCornerCell($rule,$x,$y,$xoff,$yoff);
-		#print "= $cellValue \n";
+		#print "        => $cellValue \n";
 		defined ($cellValue) or return undef;
 		if ($cellValue)
 		{
@@ -607,6 +640,7 @@ sub checkRule
 {
 	my ($rule,$x,$y) =@_;
 	my $name = ruleName($rule);
+        $name == "corner" or return;
 	&{$ruleTypes{$name}}($rule,$x,$y);
 }
 
@@ -639,17 +673,18 @@ sub initOut
 
 sub printMap
 {
-	print "\t(list\n";
-	foreach my $line (@{$mapout})
-	{
-		print "\t\t\"";
+    print "(kern-mk-map 'm_test ".$width." ".$height." pal_expanded\n";
+    print "             (list\n";
+    foreach my $line (@{$mapout})
+    {
+        print "             \"";
 		foreach my $cell (@{$line})
 		{
 			print "$cell ";
 		}
 		print "\"\n";
 	}
-	print "\t)\n\n";
+	print "             ))\n\n";
 }
 
 my $nextline;

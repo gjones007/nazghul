@@ -121,9 +121,7 @@ struct scheme {
         char    gc_verbose;      /* if gc_verbose is not zero, print gc status */
         char    no_memory;       /* Whether mem. alloc. has failed */
 
-#define LINESIZE 1024
-        char    linebuff[LINESIZE];
-        char    strbuff[256];
+        char    strbuff[4096];
 
         FILE *tmpfp;
         int tok;
