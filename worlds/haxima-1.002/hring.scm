@@ -17,28 +17,28 @@
  (list
   (list p_moongate_clearing 336 389)
   (list p_test_place 337 390)
-  (list p_gregors_hut       61  67)
-  (list p_abandoned_farm    43  51)
-  (list p_trigrave          29  51)
-  (list p_enchanters_tower  29  21)
-  (list p_green_tower       80  59)
-  (list p_bole              86  40)
-  (list p_glasdrin          82  18)
-  (list p_oparine           12  78)
-  (list p_absalot           120  4)
-  (list p_engineers_hut     50   4)
-  (list p_void_temple        5  46)
-  (list p_poor_house        19  65)
-  (list p_ankh_shrine       97   4)
-  (list p_westpass          45  61)
-  (list p_eastpass          43  61)
-  (list p_ancient_derelict  43  17)
-  (list p_gate_to_absalot  120  10)
-  (list p_tower_of_absalot 120   8)
-  (list p_kun               60  38)
+  (list p_gregors_hut       338  436)
+  (list p_abandoned_farm    284  377)
+  (list p_trigrave          271  400)
+  (list p_enchanters_tower  143 239)
+  (list p_green_tower       380  398)
+  (list p_bole              404  304)
+  (list p_glasdrin          276  207)
+  (list p_oparine           240 455)
+  (list p_absalot           367 141)
+;;  (list p_engineers_hut     50   4)
+;;  (list p_void_temple        5  46)
+  (list p_poor_house        240 466)
+;;  (list p_ankh_shrine       342 112)
+;;  (list p_westpass          312 409)
+;;  (list p_eastpass          311 409)
+;;  (list p_ancient_derelict  43  17)
+  (list p_tower_of_absalot 367 145)
+  (list p_gate_to_absalot  367 147)
+  (list p_kun               128 337)
   (list p_lost_halls_entrance (loc-x lost-halls-loc) (loc-y lost-halls-loc))
-  (list p_voidgap_entrance   7  75)
-  (list p_voidgap_exit       4  77)
+;;  (list p_voidgap_entrance   7  75)
+;;  (list p_voidgap_exit       4  77)
   )
 
 
@@ -48,24 +48,24 @@
  (list
 
   ;; moongates
-  (list (kern-tag 'mg-1 (mk-moongate 'ord)) 62 50) ;; near green tower
-  (list (kern-tag 'mg-2 (mk-moongate 'ord)) 34 56) ;; near trigrave
-  (list (kern-tag 'mg-3 (mk-moongate 'ord)) 19 82) ;; near oparine
-  (list (kern-tag 'mg-8 (mk-moongate 'ord)) 21 19) ;; near enchanter's tower
-  (list (kern-tag 'mg-5 (mk-moongate 'ord)) 56 27) ;; near kurpolis
-  (list (kern-tag 'mg-6 (mk-moongate 'ord)) 90 26) ;; near lost halls & the man
-  (list (kern-tag 'mg-7 (mk-moongate 'ord)) 125 18) ;; near absalot
-  (list (kern-tag 'mg-4 (mk-moongate 'ord)) 50 7) ;; engineer's hut
+  (list (kern-tag 'mg-1 (mk-moongate 'ord)) 366 397) ;; near green tower
+  (list (kern-tag 'mg-2 (mk-moongate 'ord)) 262 363) ;; near cloviskeep
+  (list (kern-tag 'mg-3 (mk-moongate 'ord)) 223 449) ;; near oparine
+  (list (kern-tag 'mg-8 (mk-moongate 'ord)) 149 243) ;; near enchanter's tower
+  (list (kern-tag 'mg-5 (mk-moongate 'ord)) 301 182) ;; near glasdrin, tulemane
+  (list (kern-tag 'mg-6 (mk-moongate 'ord)) 46 524) ;; circe's lagoon
+  (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
+  (list (kern-tag 'mg-4 (mk-moongate 'ord)) 112 372) ;; southwest planes
 
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)
 
   ;; dungeons
-  (put (mk-dungeon 'p_kurpolis_entrance 9 10) 53 18)
-  (put (mk-dungeon 'p_mushroom_cave 7 12) 78 74)
-  (put (mk-dungeon 'p_necromancers_lair 9 9) 40 70)
-  (put (mk-dungeon 'p_smoldering_cave 9 9) 118 46)
-  (put (mk-dungeon 'p_slimy_cavern 8 30) 13 8)
+  (put (mk-dungeon 'p_kurpolis_entrance 9 10) 240 233)
+  (put (mk-dungeon 'p_mushroom_cave 7 12) 343 455)
+  (put (mk-dungeon 'p_necromancers_lair 9 9) 299 486)
+  (put (mk-dungeon 'p_smoldering_cave 9 9) 521 66)
+  (put (mk-dungeon 'p_slimy_cavern 8 30) 198 228)
   
   
 

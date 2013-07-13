@@ -1,5 +1,5 @@
-(define merciful-death-x 121)
-(define merciful-death-y 87)
+(define merciful-death-x 468)
+(define merciful-death-y 525)
 
 (define (raise-merciful-death)
   (let ((loc (mk-loc p_shard 

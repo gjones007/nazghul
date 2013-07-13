@@ -13,7 +13,7 @@
 ;; procedure invoked by a step trigger to place the bandit hideout on the world map.
 ;; Should return true iff it triggers to remove the step generator that invokes it.
 ;;----------------------------------------------------------------------------
-(define bandit-hideout-loc (list 'p_shard 72 63))
+(define bandit-hideout-loc (list 'p_shard 364 421))
 (define (mk-bandit-hideout kbeing)
   (if (eqv? kbeing 
             (kern-get-player))
@@ -31,7 +31,7 @@
 ;; Angriss's Lair. Should return true iff it triggers to remove the step
 ;; generator that invokes it.
 ;;----------------------------------------------------------------------------
-(define angriss-lair-loc (list 'p_shard 88 69))
+(define angriss-lair-loc (list 'p_shard 417 365))
 (define (mk-angriss-lair kbeing)
   (if (eqv? kbeing 
             (kern-get-player))
@@ -49,7 +49,7 @@
 ;; procedure invoked by a step trigger to place the MAN's hideout on the world map.
 ;; Should return true iff it triggers to remove the step generator that invokes it.
 ;;----------------------------------------------------------------------------
-(define the-mans-hideout-loc (list 'p_shard 92 10))
+(define the-mans-hideout-loc (list 'p_shard 273 270))
 (define (mk-mans-hideout kbeing)
   (if (eqv? kbeing 
             (kern-get-player))
@@ -67,7 +67,7 @@
 ;; procedure invoked by a step trigger to place Brundegardt on the world map.
 ;; Should return true iff it triggers to remove the step generator that invokes it.
 ;;----------------------------------------------------------------------------
-(define brundegardt-loc (list 'p_shard 76 40))
+(define brundegardt-loc (list 'p_shard 357 302))
 (define (mk-brundegardt kbeing)
   (if (eqv? kbeing 
             (kern-get-player))
@@ -107,7 +107,7 @@
   #t)
 
 ;; Locations referred to more than once
-(define lost-halls-loc (list 'p_shard 39 75))
+(define lost-halls-loc (list 'p_shard 315 494))
 
 ;; Power core for voidship
 (mk-quest-obj-type 't_power_core "ancient power core" s_power_core layer-item obj-ifc)
