@@ -106,7 +106,7 @@
                      5 2)
 
                 ;; terrain features
-                (list (mk-ladder-up 'p_shard 13 8) 8 30)
+                (list (apply mk-ladder-up slimy-cavern-loc) 8 30)
                 (list (mk-bridge 'north) 4 15)
                 (list (mk-bridge 'north) 11 19)                
 

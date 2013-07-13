@@ -61,11 +61,11 @@
   (put (mk-edge-spawn-generator) 0 0)
 
   ;; dungeons
-  (put (mk-dungeon 'p_kurpolis_entrance 9 10) 240 233)
-  (put (mk-dungeon 'p_mushroom_cave 7 12) 343 455)
-  (put (mk-dungeon 'p_necromancers_lair 9 9) 299 486)
-  (put (mk-dungeon 'p_smoldering_cave 9 9) 521 66)
-  (put (mk-dungeon 'p_slimy_cavern 8 30) 198 228)
+  (put (mk-dungeon 'p_kurpolis_entrance 9 10) (loc-x kurpolis-loc) (loc-y kurpolis-loc))
+  (put (mk-dungeon 'p_mushroom_cave 7 12) (loc-x mushroom-cave-loc) (loc-y mushroom-cave-loc))
+  (put (mk-dungeon 'p_necromancers_lair 9 9) (loc-x necromancers-lair-loc) (loc-y necromancers-lair-loc))
+  (put (mk-dungeon 'p_smoldering_cave 9 9) (loc-x smoldering-cave-loc) (loc-y smoldering-cave-loc))
+  (put (mk-dungeon 'p_slimy_cavern 8 30) (loc-x slimy-cavern-loc) (loc-y slimy-cavern-loc))
   
   
 

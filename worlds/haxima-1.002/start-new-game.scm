@@ -31,6 +31,7 @@
 (kern-load "zones.scm")
 (kern-load "runes.scm")
 (kern-load "prices.scm")
+(kern-load "locations.scm")
 (kern-load "special.scm")
 (kern-load "town-entry.scm")
 (kern-load "pseudorandom-map.scm")
@@ -74,7 +75,7 @@
 (load "green-tower.scm")
 (load "green-tower-lower.scm")
 (load "mushroom-cave.scm")
-(load "goblin-kingdoms.scm")
+(load "kurpolis.scm")
 (load "treasury.scm")
 (load "bole.scm")
 (load "glasdrin.scm")
@@ -320,7 +321,7 @@
   )
 
 (define (simple-start kplayer)
-  (kern-obj-put-at kplayer (list p_shard 336 390)))
+  (kern-obj-put-at kplayer (eval-loc slimy-cavern-loc)))
   
 (define (create-char kplayer)
  (kern-obj-put-at kplayer (list p_char_setup 10 17)

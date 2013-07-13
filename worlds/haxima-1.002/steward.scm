@@ -167,13 +167,13 @@
 (define (stew-glas knpc kpc)
   (say knpc "Glasdrin is a beacon of light in these dark times. "
        "Time and again her paladins have sacrificed for the good of "
-       "the realm, and turned back the tide of darkness. The Peninsula "
+       "the realm, and turned back the tide of darkness. The Hring "
        "owes much to this city."))
 
 (define (stew-unde knpc kpc)
   (say knpc "The Underworld is a sunless realm where monsters breed. "
-       "I am committed to purging it of these evil creatures, "
-       "for they are a menace to all."))
+       "I am committed to purging it of these evil creatures. "
+       "They are a menace to the entire Hring."))
 
 (define stew-conv
   (ifc glasdrin-conv

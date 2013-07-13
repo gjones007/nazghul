@@ -48,7 +48,7 @@
 
  (list ; objects
 
-  (put (mk-ladder-up 'p_shard 40 70) 9 9)
+  (put (apply mk-ladder-up necromancers-lair-loc) 9 9)
 
   ;; npc's
   (put (mk-necromancer) 9 9)

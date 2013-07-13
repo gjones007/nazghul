@@ -69,7 +69,7 @@
 		"rn rn rn rn rn rn r1 r1 r1 r1 r1 r1 r1 rn rn rn rn rn rn "
 		"rn rn rn rn rn rn rn rn rn rn rn rn rn rn rn rn rn rn rn "
 	)
- (put (mk-ladder-up 'p_shard 118 46) 9 9)
+ (put (apply mk-ladder-up smoldering-cave-loc) 9 9)
  (put (spawn-pt 'fire-slime) 9 1)
  (put (spawn-pt 'fire-slime) 7 3)
  (put (spawn-pt 'fire-slime) 10 4)

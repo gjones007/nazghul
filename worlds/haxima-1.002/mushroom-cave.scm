@@ -25,7 +25,7 @@
 		"rn rn r1 r1 r1 rn rn rn rn rn r1 r1 r1 rn rn rn rn rn rn "
 	)
  (put (spawn-pt 'yellow-slime) 7 7)
- (put (mk-ladder-up 'p_shard 78 74) 7 12)
+ (put (apply mk-ladder-up mushroom-cave-loc) 7 12)
  (put (kern-mk-obj t_royal_cape 1) 4 15)
  )
 

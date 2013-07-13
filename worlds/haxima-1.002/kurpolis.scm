@@ -34,7 +34,7 @@
 		"rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
 		"rn rn rn rn xx xx xx xx xx xx xx xx xx xx xx rn rn rn rn "
 	)
- (put (mk-ladder-up 'p_shard 53 18) 9 10)
+ (put (apply mk-ladder-up kurpolis-loc) 9 10)
  (put (mk-door) 2 8)
  (put (mk-door) 2 12)
  (put (mk-door) 4 15)
