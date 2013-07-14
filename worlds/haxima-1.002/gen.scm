@@ -85,7 +85,7 @@
 
 (define (gen-ambitious   gen player) (say gen "In peace there's nothing so becomes a man as modest stillness and humility." ))
 (define (gen-culture     gen player) 
-  (say gen "Though a culture their own, truly a culture they have, (unlike the trolls and headless)."
+  (say gen "Though a culture their own, truly a culture they have, (unlike the trogs and headless)."
        "The truths of culture can be seen in Shakespeare, truths which hold across the gulfs between different folk."))
 (define (gen-shakespeare gen player)
   (say gen "You know of him! Very good! Some interesting conversation at last.")

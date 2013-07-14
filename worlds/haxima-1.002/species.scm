@@ -99,7 +99,7 @@
 (mk-species 'sp_rat             "rat"             4  2 12   100   6   0   6 mmode-crawl     t_F_fangs    nil       1 s_asleep           nil     nil             )
 (mk-species 'sp_spider          "spider"         12  6 14   120   8   2  10 mmode-fastcrawl t_fangs      nil       2 s_asleep           nil     sound-walking   )
 (mk-species 'sp_statue          "statue"          1  1  1   100  99   0   1 mmode-none      nil          nil       0 nil                "16"    nil             )
-(mk-species 'sp_troll           "troll"          14  6 12   100  20   2  10 mmode-walk      t_horns      humanoid  3 s_asleep           nil     sound-walking   )
+(mk-species 'sp_trog           "trog"          14  6 12   100  20   2  10 mmode-walk      t_horns      humanoid  3 s_asleep           nil     sound-walking   )
 (mk-species 'sp_yellow_slime    "yellow slime"    4  4  4   100  12   2   6 mmode-walk      t_acid_spray nil       2 nil                nil     sound-squishing )
 (mk-species 'sp_kraken          "kraken"         30  3 20   100  30   4  19 mmode-fish      t_tentacles  nil      10 s_shoals           "1d4"   sound-splashing ) 
 (mk-species 'sp_great_kraken    "kraken"         10  5  8   100  30   0  19 mmode-fish      t_G_fangs    nil      10 s_shoals           "1d4"   sound-splashing ) 

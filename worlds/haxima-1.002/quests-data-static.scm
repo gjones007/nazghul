@@ -805,7 +805,7 @@
   (let* ((quest (quest-data-get 'questentry-puska))
 	 (quest-tbl (car (qst-payload quest)))
 	 (header (kern-ui-paginate-text 
-		  "Ilya lost her toy while hiding in the basement from trolls on her parents homestead. It's too late to save her parents, but maybe you can do something about that toy."
+		  "Ilya lost her toy while hiding in the basement from trogs on her parents homestead. It's too late to save her parents, but maybe you can do something about that toy."
 		  "")))
     (define (tbl-flag? tag)
       (not (null? (tbl-get quest-tbl tag))))
@@ -823,7 +823,7 @@
   (let* ((quest (quest-data-get 'questentry-puska))
 	 (quest-tbl (car (qst-payload quest)))
 	 (header (kern-ui-paginate-text 
-		  "Ilya lost her toy while hiding in the basement from trolls on her parents homestead. It's too late to save her parents, but maybe you can do something about that toy."
+		  "Ilya lost her toy while hiding in the basement from trogs on her parents homestead. It's too late to save her parents, but maybe you can do something about that toy."
 		  "")))
     (define (tbl-flag? tag)
       (not (null? (tbl-get quest-tbl tag))))

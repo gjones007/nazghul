@@ -59,7 +59,7 @@
 
 (define jones-catalog
   (list
-   (list t_arrow        1 "Down here you'll go through arrows like a troll goes through grog!")
+   (list t_arrow        1 "Down here you'll go through arrows like a trog goes through grog!")
    (list t_bolt         1 "You can run out of bolts in the blink of a gazer's eye!")
    (list t_oil          6 "Yes, stock up on plenty of that flaming oil. It gets worse deeper down.")
    (list t_torch        6 "You don't want to run out of torches down here!")

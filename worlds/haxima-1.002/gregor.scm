@@ -90,7 +90,7 @@
 
 (define (gregor-dead knpc kpc)
   (say knpc "Aye, it's a shame. My daughter and her husband both - "
-       "killed by trolls."))
+       "killed by trogs."))
 
 (define (gregor-charcoal knpc kpc)
   (say knpc "I take charcoal into town and sell it, "
@@ -236,7 +236,7 @@
        (method 'hill (lambda (knpc kpc) (say knpc "Trolls are always a threat in the foothills, "
                                              "but more so of late.")))
        (method 'husb (lambda (knpc kpc) (say knpc "My son-in-law was a simple farmer. "
-                                             "Why the trolls attacked I don't know. "
+                                             "Why the trogs attacked I don't know. "
                                              "Maybe they were driven out of the hills "
                                              "by something else.")))
        (method 'hut gregor-hut)

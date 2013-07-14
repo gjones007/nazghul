@@ -79,7 +79,7 @@
 
 (define (melvin-thud knpc kpc)
   (say knpc "That's no man traveling with the red lady, but I've never seen a "
-       "troll that could talk so well. I'm not sure what it is, but magic had "
+       "trog that could talk so well. I'm not sure what it is, but magic had "
        "a hand in making it."))
 
 (define (melvin-bole knpc kpc)

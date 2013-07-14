@@ -2,7 +2,7 @@
 ;; Troll Cave
 ;;
 ;; Big underground complex; created by some civilized race, now a ruin
-;; inhabited by trolls and other monsters.
+;; inhabited by trogs and other monsters.
 ;;----------------------------------------------------------------------------
 
 (kern-load "warritrix.scm")
@@ -52,7 +52,7 @@
 		(put (spawn-pt 'cave-goblin-berserker-m) 9 13)
 		(put (spawn-pt 'cave-goblin-slinger-m) 12 8)
 		(put (spawn-pt 'cave-goblin-berserker-m) 13 14)
-		(put (spawn-pt 'troll-m) 10 10)
+		(put (spawn-pt 'trog-m) 10 10)
 	 )
  
 	 (list
@@ -387,7 +387,7 @@
 	 (put (mk-bump-door 'p_lost_halls_staird 10 8) 11 19)
 		(put (spawn-pt 'cave-goblin-slinger-m) 11 8)
 		(put (spawn-pt 'cave-goblin-berserker-m) 8 12)
-		(put (spawn-pt 'troll-m) 9 10)
+		(put (spawn-pt 'trog-m) 9 10)
 		(put (spawn-pt 'gint-warrior-m) 12 9)
 
 	); objects

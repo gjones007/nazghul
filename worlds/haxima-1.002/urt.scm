@@ -1,7 +1,7 @@
 ;; ----------------------------------------------------------------------------
 ;; Urt
 ;;
-;; Urt is a troll ensnared and paralyzed in the abandoned cellar. Although
+;; Urt is a trog ensnared and paralyzed in the abandoned cellar. Although
 ;; paralyzed, he can speak.
 ;; ----------------------------------------------------------------------------
 
@@ -24,22 +24,22 @@
        (method 'food (lambda (knpc kpc) (say knpc "All eater food for other")))
        (method 'girl (lambda (knpc kpc) (say knpc "She HRENGI, UG THROGNI")))
        (method 'hills (lambda (knpc kpc) (say knpc "VLARDOGNI in hills, "
-                                              "kill trolls. Trolls leave.")))
+                                              "kill trogs. Trolls leave.")))
        (method 'hren (lambda (knpc kpc) (say knpc "Urt not know man-word")))
        (method 'man (lambda (knpc kpc) (say knpc "Urt look for man-child. " 
                                             "She yummy, tender. "
                                             "She trick Urt. "
                                             "URN SEGESTRUM, UG VIGIDUS!")))
-       (method 'sege (lambda (knpc kpc) (say knpc "'eater' in troll-word")))
+       (method 'sege (lambda (knpc kpc) (say knpc "'eater' in trog-word")))
        (method 'spiders (lambda (knpc kpc) (say knpc "Urt hate spiders")))
        (method 'stuck (lamda (knpc kpc) (say knpc "Spiders eat Urt")))
        (method 'thro (lambda (knpc kpc) (say knpc "Urt not know man-word")))
-       (method 'troll (lambda (knpc kpc) (say knpc "Trolls hungry. "
+       (method 'trog (lambda (knpc kpc) (say knpc "Trolls hungry. "
                                               "Food in hills."
                                               "Home in hills.")))
-       (method 'ug (lambda (knpc kpc) (say knpc "'will be' in troll-word")))
-       (method 'urn (lambda (knpc kpc) (say knpc "'was' in troll-word")))
-       (method 'vigi (lambda (knpc kpc) (say kpnc "'food' in troll-word")))
+       (method 'ug (lambda (knpc kpc) (say knpc "'will be' in trog-word")))
+       (method 'urn (lambda (knpc kpc) (say knpc "'was' in trog-word")))
+       (method 'vigi (lambda (knpc kpc) (say kpnc "'food' in trog-word")))
        (method 'vlar (lambda (knpc kpc) (say knpc "Urt not know man-word")))
        ))
 

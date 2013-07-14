@@ -18,7 +18,7 @@
 ;; Gob
 ;;
 ;; Ilya's quest is to find her stuffed horse, which she left behind at the
-;; homestead when she fled the trolls that killed her family. The quest flags
+;; homestead when she fled the trogs that killed her family. The quest flags
 ;; are stored in her gob.
 ;;----------------------------------------------------------------------------
 (define (ilya-mk gave-quest? finished-quest?) 
@@ -108,7 +108,7 @@
           (if (kern-conv-get-yes-no? kpc)
               (begin
                 (say knpc "Our farm was west through the pass, then north against the hills. "
-                     "Watch out for the trolls!")
+                     "Watch out for the trogs!")
 		(quest-data-assign-once 'questentry-puska)
                 (ilya-give-quest ilya))
               (begin
@@ -125,7 +125,7 @@
 ;; Ilya has an odd relationship with spiders. She'll teach the player a spell
 ;; to ward off spiders if he plays along. Spiders will dominate the woods
 ;; around the Abandoned Farm (Ilya's old home). In fact, I intend to have them
-;; locked in a battle with the trolls the first time the player enters the
+;; locked in a battle with the trogs the first time the player enters the
 ;; Abandoned Farm. I'm planning on having a "great mother" spider known around
 ;; these parts as Angril or Angriss, perhaps she was one of Ilya's pets as a
 ;; child - I'm not sure how I want to play that one out yet.
@@ -186,17 +186,17 @@
        (method 'gran (lambda (knpc kpc) (say knpc "I live with Grandpa now because Mommy and Daddy died.")))
        (method 'died (lambda (knpc kpc) (say knpc "Trolls attacked our farm! "
                                                 "Mommy hid me in the cellar, "
-                                                "and I snuck out when the trolls were sleeping. "
+                                                "and I snuck out when the trogs were sleeping. "
                                                 "But I lost my Puska...")))
        (method 'trol (lambda (knpc kpc) (say knpc "I hate them! When I grow up I want to kill them all.")))
        (method 'hate (lambda (knpc kpc) (say knpc "I will be a sorceress some day and I will kill anyone I hate! "
                                               "I won't be afraid of anything ever again!")))
        (method 'afra (lambda (knpc kpc) (say knpc "I was afraid in the cellar. "
-                                                "I heard Mommy and Daddy crying when the trolls ate them... "
+                                                "I heard Mommy and Daddy crying when the trogs ate them... "
                                                 "[sniffling] I thought they would find me and eat me too...")))
        (method 'momm (lambda (knpc kpc) (say knpc "I miss my Mommy. She taught me to make fire with my mind. "
-                                               "She burned up one of the trolls when they attacked!")))
-       (method 'dadd (lambda (knpc kpc) (say knpc "I miss daddy. He tried to fight the trolls but "
+                                               "She burned up one of the trogs when they attacked!")))
+       (method 'dadd (lambda (knpc kpc) (say knpc "I miss daddy. He tried to fight the trogs but "
                                                "he was just a farmer.")))
        (method 'pusk ilya-quest)
        (method 'home (lambda (knpc kpc) (say knpc "Our farm was north and south through the woods.")))

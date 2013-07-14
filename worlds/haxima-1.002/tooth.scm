@@ -100,10 +100,10 @@
    (list t_chain_coif_4       (* 4 100) "See that tight weave? The banded reinforcement? Turns any blade and softens the blow!")
    (list t_iron_helm_4        (* 4 150) "Very rare! Blows to the head will feel like pillows!")
 
-   (list t_armor_leather_2    (* 2 150) "Want to pilfer a Gint armory? Steal gems from trolls? You'll need something light but effective like this!")
+   (list t_armor_leather_2    (* 2 150) "Want to pilfer a Gint armory? Steal gems from trogs? You'll need something light but effective like this!")
    (list t_armor_leather_4    (* 4 150) "This once belonged to an old wrogue! He died of old age on a bed of gold coins! Now you can, too!")
    (list t_armor_chain_4      (* 4 330) "This is perfect for the scrapper who likes to be in the thick without getting slowed down!")
-   (list t_armor_plate_4      (* 4 660) "Shrug off the blows of gints and trolls in this amazing plate armour! There's nothing like it anywhere else!")
+   (list t_armor_plate_4      (* 4 660) "Shrug off the blows of gints and trogs in this amazing plate armour! There's nothing like it anywhere else!")
 
    (list t_xen_corp_scroll    (* 7 base-scroll-cost) "The assassin's favorite! Kills instantly!")
    (list t_sanct_lor_scroll   (* 7 base-scroll-cost) "The wrogue's favorite! Perfect for sneaking in and out unseen!")

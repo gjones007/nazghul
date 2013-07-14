@@ -228,7 +228,7 @@
 (define faction-cave-goblin   3)
 (define faction-accursed      4)
 (define faction-monster       5)
-(define faction-troll         6)
+(define faction-trog         6)
 (define faction-spider        7)
 (define faction-outlaw        8)
 (define faction-gint          9)
@@ -356,7 +356,7 @@
 (load "species.scm")
 (load "conv.scm") ;; basic conversation
 (load "yellow-slime.scm")
-(load "troll.scm")
+(load "trog.scm")
 (load "spider.scm")
 (load "npc-types.scm")
 (load "mimic.scm")

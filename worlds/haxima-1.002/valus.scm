@@ -61,12 +61,12 @@
 
 (define (valus-pet knpc kpc)
   (say knpc "After Absalot, she blamed me for the deaths of civilians, "
-       "and accused me of drunkenness and unnatural acts with trolls.")
-  (aside 'ch_ini "I thought the part about the trolls was true.")
+       "and accused me of drunkenness and unnatural acts with trogs.")
+  (aside 'ch_ini "I thought the part about the trogs was true.")
   )
 
 (define (valus-trol knpc kpc)
-  (say knpc "What can I say? Those trolls know how to party. [He smiles dryly]")
+  (say knpc "What can I say? Those trogs know how to party. [He smiles dryly]")
   (prompt-for-key)
   (say knpc "But seriously, she had me imprisoned for asking too many questions. "
        "The former Steward went insane under mysterious circumstances. "

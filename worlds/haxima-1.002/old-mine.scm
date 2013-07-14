@@ -25,7 +25,7 @@
 		"rn rn r1 r5 bb r3 r1 r1 r1 rn rn r1 r1 rn rn r4 .. .. r2 "
 		"rn rn rn rn r1 rn rn rn rn rn rn rn rn rn rn rn r1 r1 rn "
   )
- (put (mk-ladder-down 'p_trolls_den 3 15) 17 17)
+ (put (mk-ladder-down 'p_trogs_den 3 15) 17 17)
 
  ;; put some wandering ghasts in
  (put (guard-pt 'skeletal-warrior) 4 15)

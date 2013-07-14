@@ -116,8 +116,8 @@
 		(put (kern-mk-obj t_food 1) 22 29)
 		(put (kern-mk-obj t_food 1) 27 32)
 		
-		(put (spawn-pt 'troll-m) 6 17)
-		(put (spawn-pt 'troll-m) 11 19)
+		(put (spawn-pt 'trog-m) 6 17)
+		(put (spawn-pt 'trog-m) 11 19)
 		(put (spawn-pt 'cave-goblin-berserker-m) 29 11)
 		(put (spawn-pt 'cave-goblin-slinger-m) 32 13)
 		(put (spawn-pt 'cave-goblin-berserker-m) 32 23)
@@ -165,12 +165,12 @@
 		(put (mk-npc 'gint-warrior-m 7) 12 32)
 		(put (mk-npc 'gint-warrior-m 6) 30 27)
 		
-		;;trolls
-		(put (mk-npc 'troll-m 7) 7 19)
-		(put (mk-npc 'troll-m 6) 29 17)		
-		(put (mk-npc 'troll-m 5) 10 29)
-		(put (mk-npc 'troll-m 5) 31 21)
-		(put (mk-npc 'troll-m 4) 13 16)
+		;;trogs
+		(put (mk-npc 'trog-m 7) 7 19)
+		(put (mk-npc 'trog-m 6) 29 17)		
+		(put (mk-npc 'trog-m 5) 10 29)
+		(put (mk-npc 'trog-m 5) 31 21)
+		(put (mk-npc 'trog-m 4) 13 16)
 		
 		;;goblins
 		(put (mk-npc 'cave-goblin-berserker-m 6) 12 31)

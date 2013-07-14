@@ -227,7 +227,7 @@
 (define faction-cave-goblin   3)
 (define faction-accursed      4)
 (define faction-monster       5)
-(define faction-troll         6)
+(define faction-trog         6)
 (define faction-spider        7)
 (define faction-outlaw        8)
 (define faction-gint          9)
@@ -925,8 +925,8 @@
 (define (scene-mgr-years-pass kobj)
   (kern-log-msg "Then years...")
   (let ((kplace (loc-place (kern-obj-get-location kobj))))
-    (define (mk-troll loc)
-      (let ((kchar (mk-npc 'troll 9)))
+    (define (mk-trog loc)
+      (let ((kchar (mk-npc 'trog 9)))
         (kern-char-set-ai kchar 'wait-ai)
         (kern-obj-put-at kchar loc)
         ))
@@ -955,19 +955,19 @@
                      "fm fn fn fn fn fn fn fn fn fn fn fn fn fn fn fn fn fn fo " 
                      ))
                    0 0 19 19)
-    (mk-troll (loc-mk kplace 5 12))
-    (mk-troll (loc-mk kplace 7 12))
+    (mk-trog (loc-mk kplace 5 12))
+    (mk-trog (loc-mk kplace 7 12))
     )
   (scene-mgr-advance-state! (gob kobj))
   )
 
 (define (scene-mgr-end-years-pass kobj)
   (println "end-years-pass")
-  (let ((trolls (filter 
+  (let ((trogs (filter 
                  (lambda (kobj)
                    (not (is-player-party-member? kobj)))
                  (kern-place-get-beings (loc-place (kern-obj-get-location kobj))))))
-    (for-each kern-obj-remove trolls))
+    (for-each kern-obj-remove trogs))
   (kern-map-repaint)
   (scene-mgr-advance-state! (gob kobj))
   )
@@ -2158,7 +2158,7 @@
 	(list	-1	2	-2	2	-1	-2	0	-2	-2	-1	-2	-2	0	)	;;	cave goblin
 	(list	-1	2	-1	-1	2	-2	-1	-1	-2	-1	-2	-2	0	)	;;	accursed
 	(list	-2	2	-2	-2	-2	2	-2	0	-2	0	-2	0	0	)	;;	monsters
-	(list	-2	2	-2	0	-1	-2	2	-2	-2	-1	-2	-1	0	)	;;	hill trolls
+	(list	-2	2	-2	0	-1	-2	2	-2	-2	-1	-2	-1	0	)	;;	hill trogs
 	(list	-2	2	-2	-2	-1	0	-2	2	-2	-1	-2	0	0	)	;;	wood spiders
 	(list	0	2	-2	-2	-2	-2	-2	-2	2	-2	-2	-1	0	)	;;	outlaws
 	(list	-2	2	-2	-1	-1	0	-1	-1	-2	2	-2	-1	0	)	;;	gint

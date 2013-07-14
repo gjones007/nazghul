@@ -60,8 +60,8 @@
 		(list
 			(list 50 'cave-goblin-slinger-m)
 			(list 100 'cave-goblin-berserker-m)
-			(list 300 'troll-m)
-			(list 350 'troll-geomancer-m)
+			(list 300 'trog-m)
+			(list 350 'trog-geomancer-m)
 		)
 		(list
 			(list 100 'green-slime)
@@ -77,7 +77,7 @@
 		(list
 			(list 50 'cave-goblin-slinger-m)
 			(list 100 'cave-goblin-berserker-m)
-			(list 150 'troll-m)
+			(list 150 'trog-m)
 			(list 350 'gint-warrior-m)
 			(list 400 'gint-mage-m)
 		)
@@ -85,7 +85,7 @@
 			(list 50 'cave-goblin-slinger-m)
 			(list 100 'headless)
 			(list 150 'cave-goblin-berserker-m)
-			(list 200 'troll-m)
+			(list 200 'trog-m)
 			(list 250 'gint-warrior-m)
 			(list 350 'gazer)
 		)
@@ -134,7 +134,7 @@
 		(list 110 3 200 "1d6+4") ;goblin war
 		(list 120 7 20 "1d6+1")  ;ghost
 		(list 130 11 120 "1d6+4") ;skels
-		(list 140 4 300 "1d6+3") ;trolls
+		(list 140 4 300 "1d6+3") ;trogs
 		(list 150 6 100 "1d2")   ;zorn
 		(list 160 8 350 "1d6+3") ;gint
 		(list 170 7 22 "1d6+1")  ;ghost + d
@@ -143,7 +143,7 @@
 		(list 200 3 210 "1d6+5") ;goblin war +p
 		(list 210 7 200 "1d3")   ;demons
 		(list 220 3 250 "2d4+4") ;goblin tribe
-		(list 230 4 350 "1d6+5") ;trolls +m
+		(list 230 4 350 "1d6+5") ;trogs +m
 		(list 240 8 400 "2d4+4") ;gint + m
 		(list 250 10 300 "1d4")  ;dragon
 		(list 260 10 80 "1d6+3") ;dragon + gob	

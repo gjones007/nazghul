@@ -121,13 +121,13 @@
             (pgroup-mk 'blackguard "1d2")
             ))
 (ptype-set-vehicle-type-tag! pirate-party-l4 't_ship)
-(define troll-party-l3
-  (ptype-mk "band of trolls" s_troll faction-troll 3 5
-            (pgroup-mk 'troll "1")
+(define trog-party-l3
+  (ptype-mk "band of trogs" s_male_trog faction-trog 3 5
+            (pgroup-mk 'trog "1")
             ))
-(define troll-party-l4
-  (ptype-mk "band of trolls with goblin slaves" s_troll faction-troll 4 5
-            (pgroup-mk 'troll "1")
+(define trog-party-l4
+  (ptype-mk "band of trogs with goblin slaves" s_male_trog faction-trog 4 5
+            (pgroup-mk 'trog "1")
             (pgroup-mk 'forest-goblin-stalker "1d3-1")
             ))
 (define green-slime-party-l2
@@ -249,7 +249,7 @@
 (define gint-party-l6
   (ptype-mk "gint war party" s_gint_party faction-gint 6 3
             (pgroup-mk 'gint-warrior "1d2")
-            (pgroup-mk 'troll "1d2")
+            (pgroup-mk 'trog "1d2")
             (pgroup-mk 'cave-goblin-slinger "1d3")
             (pgroup-mk 'wolf "1d2")
             ))

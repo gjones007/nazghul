@@ -1,11 +1,11 @@
 ;;----------------------------------------------------------------------------
 ;; Cellar of Abandoned Farm
 ;;
-;; This is the root cellar where Ilya his when the trolls attacked her farm.
+;; This is the root cellar where Ilya his when the trogs attacked her farm.
 ;; She left Puska - a quest item - here in her hiding place. Initially it is
 ;; infested with spider eggs. A fair number of food items may be found here as
-;; well, and some other basic materials. A paralyzed troll and a few troll
-;; corpses should also decorate the place. The paralyzed troll might as well
+;; well, and some other basic materials. A paralyzed trog and a few trog
+;; corpses should also decorate the place. The paralyzed trog might as well
 ;; have a conversation to make things interesting.
 ;;----------------------------------------------------------------------------
 
@@ -106,8 +106,8 @@
                 (list (mk-spider-egg) 10 16)
                 (list (mk-spider-egg) 11 18)
 
-                ;; troll victims
-                (put (mk-npc 'troll 3) 11 12)
+                ;; trog victims
+                (put (mk-npc 'trog 3) 11 12)
 
                 ;; puska
                 (list (kern-mk-obj t_puska 1) 10 18)

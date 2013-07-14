@@ -54,8 +54,8 @@
    (list t_hills 
          (ttp-entry-mk 'spider-party-l3 3 30)
          (ttp-entry-mk 'spider-party-l4 4 30)
-         (ttp-entry-mk 'troll-party-l3  3 30)
-         (ttp-entry-mk 'troll-party-l4  4 30)
+         (ttp-entry-mk 'trog-party-l3  3 30)
+         (ttp-entry-mk 'trog-party-l4  4 30)
          (ttp-entry-mk 'gint-party-l4   4 20)
          (ttp-entry-mk 'gint-party-l5   5 20)
          (ttp-entry-mk 'gint-party-l6   6 20)

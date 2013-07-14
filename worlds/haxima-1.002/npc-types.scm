@@ -306,7 +306,7 @@
         (list 100 "1"     t_staff)
         (list 100 "1"     t_armor_chain)
         ))
-(define troll-equip
+(define trog-equip
   (list (list 100 "1d3" t_thrown_boulder)
         ))
 (define geomancer-equip
@@ -517,7 +517,7 @@
         (list 5   "1d2"   'nightshade)
         (list 5   "1d2"   'mandrake)
         ))
-(define troll-loot
+(define trog-loot
   (list (list 25  "1d3"   't_food)
         (list 100 "2d10"  't_gold_coins)
         ))
@@ -669,7 +669,7 @@
 (define halberdier    (mk-npct2 "halberdier"    sp_human    oc_warrior s_guard        no-traps halberdier-equip   nil 'guard-ai faction-men   nil 'drop-generic halberdier-loot))
 (define crossbowman   (mk-npct2 "crossbowman"   sp_human    oc_warrior s_xbowguard        no-traps crossbowman-equip  nil 'guard-ai faction-men   nil 'drop-generic crossbowman-loot))
 (define medik         (mk-npct2 "medik"         sp_human    oc_wizard  s_blue_wizard  no-traps medik-equip        nil 'medik-ai faction-men   nil 'drop-generic medik-loot))
-(define troll         (mk-npct2 "troll"         sp_troll    oc_warrior s_troll        no-traps troll-equip        nil 'std-ai   faction-troll nil 'drop-generic troll-loot))
+(define trog         (mk-npct2 "trog"         sp_trog    oc_warrior s_male_trog        no-traps trog-equip        nil 'std-ai   faction-trog nil 'drop-generic trog-loot))
 (define glasdrin-halberdier    (mk-npct2 "halberdier"    sp_human    oc_warrior s_guard        no-traps halberdier-equip   nil 'guard-ai faction-glasdrin   nil 'drop-generic halberdier-loot))
 (define glasdrin-crossbowman   (mk-npct2 "crossbowman"   sp_human    oc_warrior s_xbowguard        no-traps crossbowman-equip  nil 'guard-ai faction-glasdrin   nil 'drop-generic crossbowman-loot))
 
@@ -702,7 +702,7 @@
 (define gint-mage (mk-npct2 "gint mage" sp_gint oc_wizard s_gint_mage wizard-traps wizard-equip nil 'shaman-ai faction-gint nil 'drop-generic wizard-loot))
 (define gint-warrior (mk-npct2 "gint warrior" sp_gint oc_warrior s_gint basic-traps gint-warrior-equip nil 'std-ai faction-gint nil 'drop-generic gint-loot))
 (define yellow-slime (mk-npct2 "yellow slime" sp_yellow_slime nil s_yellow_slime nil nil yellow-slime-effects 'yellow-slime-ai faction-monster nil 'drop-generic yellow-slime-loot))
-(define troll-geomancer (mk-npct2 "troll geomancer" sp_troll oc_wizard s_troll_geomancer no-traps geomancer-equip nil 'geomancer-ai faction-troll nil 'drop-generic geomancer-loot))
+(define trog-geomancer (mk-npct2 "trog geomancer" sp_trog oc_wizard s_female_trog no-traps geomancer-equip nil 'geomancer-ai faction-trog nil 'drop-generic geomancer-loot))
 (define corrupt-halberdier (mk-npct2 "halberdier" sp_human oc_warrior s_guard no-traps halberdier-equip nil 'guard-ai faction-monster nil 'drop-generic halberdier-loot))
 (define corrupt-crossbowman (mk-npct2 "crossbowman" sp_human oc_warrior s_guard no-traps crossbowman-equip nil 'guard-ai faction-monster nil 'drop-generic crossbowman-loot))
 (define giant-spider (mk-npct2 "giant spider" sp_spider nil s_spider nil nil nil 'spider-ai faction-monster nil 'drop-generic spider-loot))
@@ -742,11 +742,11 @@
 
 ;; npcs with odd alignments
 (define gint-warrior-m (mk-npct2 "gint warrior" sp_gint oc_warrior s_gint basic-traps gint-warrior-equip nil 'std-ai faction-monster nil 'drop-generic gint-loot))
-(define troll-m         (mk-npct2 "troll"         sp_troll    oc_warrior s_troll        no-traps troll-equip        nil 'std-ai   faction-monster nil 'drop-generic troll-loot))
+(define trog-m         (mk-npct2 "trog"         sp_trog    oc_warrior s_male_trog        no-traps trog-equip        nil 'std-ai   faction-monster nil 'drop-generic trog-loot))
 (define cave-goblin-slinger-m   (mk-npct2 "cave goblin slinger"   sp_cave_goblin  oc_warrior s_cgob_slinger    basic-traps  slinger-equip    nil 'generic-ai faction-monster  nil 'drop-generic slinger-loot))
 (define cave-goblin-berserker-m (mk-npct2 "cave goblin berserker" sp_cave_goblin  oc_warrior s_cgob_berserk    basic-traps  berserker-equip  nil 'generic-ai faction-monster  nil 'drop-generic berserker-loot))
 (define gint-mage-m (mk-npct2 "gint mage" sp_gint oc_wizard s_gint_mage wizard-traps wizard-equip nil 'shaman-ai faction-monster nil 'drop-generic wizard-loot))
-(define troll-geomancer-m (mk-npct2 "troll geomancer" sp_troll oc_wizard s_troll_geomancer no-traps geomancer-equip nil 'std-ai faction-monster nil 'drop-generic geomancer-loot))
+(define trog-geomancer-m (mk-npct2 "trog geomancer" sp_trog oc_wizard s_female_trog no-traps geomancer-equip nil 'std-ai faction-monster nil 'drop-generic geomancer-loot))
 
 
 ;;define                        (mk-npct "                          sp_              oc_        s_                 nil          nil                    nil           'std-ai           ))
@@ -770,8 +770,8 @@
   (or (is-species? kchar sp_spider)
       (is-species? kchar sp_queen_spider)))
 
-(define (is-troll? kchar)
-  (is-species? kchar sp_troll))
+(define (is-trog? kchar)
+  (is-species? kchar sp_trog))
 
 (define (is-goblin? kchar)
   (or (is-species? kchar sp_cave_goblin)

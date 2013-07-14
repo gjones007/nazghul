@@ -101,9 +101,9 @@
      (kern-mk-char 
       'ch_thud ;;.....tag
       "Thud" ;;.......name
-      sp_troll ;;.....species
+      sp_trog ;;.....species
       oc_warrior ;;...occupation
-      s_troll ;;......sprite
+      s_male_trog ;;......sprite
       faction-men ;;..faction
       4 ;;............custom strength modifier
       0 ;;............custom intelligence modifier

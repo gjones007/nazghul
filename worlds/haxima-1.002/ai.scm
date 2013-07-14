@@ -694,7 +694,7 @@
       (eat-corpse? kchar)))
 
 ;; FIXME: need to do something here. Geomancers should be able to do things
-;; like transform terrain, convert boulders into trolls, convert rock walls
-;; into boulders, etc. (Note: the old troll AI is broken, too).
+;; like transform terrain, convert boulders into trogs, convert rock walls
+;; into boulders, etc. (Note: the old trog AI is broken, too).
 (define (geomancer-ai kchar)
   (std-ai kchar))

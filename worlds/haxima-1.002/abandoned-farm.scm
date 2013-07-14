@@ -2,18 +2,18 @@
 ;; Abandoned Farm
 ;;
 ;; The abandoned farm is a wrecked homestead. Not long ago (weeks or at most
-;; months) renegade trolls attacked, killing the husband and wife who lived
-;; here. On start-of-game the trolls are still here, but they are locked in a
+;; months) renegade trogs attacked, killing the husband and wife who lived
+;; here. On start-of-game the trogs are still here, but they are locked in a
 ;; life-and-death battle with a group of giant wood spiders.
 ;;
 ;; The farm has a cellar which contains a quest item. The farm itself should
 ;; contain the bones or corpses of the man and woman, who were eaten by the
-;; trolls. Their remains should lie near the troll's campsite. I'd like to make
+;; trogs. Their remains should lie near the trog's campsite. I'd like to make
 ;; burying their remains a quest item if I can, since the woman is Gregor's
 ;; daughter and Ilya's mother.
 ;;
 ;; One or two very frightened sheep might also remain, and quite a few have
-;; been eaten by the trolls.
+;; been eaten by the trogs.
 ;;----------------------------------------------------------------------------
 
 (kern-mk-map 
@@ -69,8 +69,8 @@
                (list
                 (put (mk-monman) 0 0)
                 (put (spawn-pt 'queen-spider) 9 23)
-                (put (spawn-pt 'troll) 19 13)
-                (put (spawn-pt 'troll) 19 14)
+                (put (spawn-pt 'trog) 19 13)
+                (put (spawn-pt 'trog) 19 14)
 		(put (kern-mk-obj t_spell_book_enchantment_curses 1) 10 12)  ;; Belonged to Ilya's mother
                 (list (mk-door-in-rock) 13 17)
                 (list (mk-door-in-rock) 7 25)

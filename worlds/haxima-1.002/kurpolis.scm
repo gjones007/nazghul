@@ -137,7 +137,7 @@
 (mk-place-music p_cave_goblin_village 'ml-dungeon-adventure)
 
 (mk-dungeon-room
- 'p_trolls_den "Troll's Den"
+ 'p_trogs_den "Troll's Den"
 	(list
 		"rn r8 r8 r8 rn rn r4 {{ {2 ,, ,, {{ r2 rn rn rn rn rn rn "
 		"r4 {{ {{ {{ ra rn r4 {{ {2 ,, {B {{ r2 rn rn rn rn rn rn "
@@ -160,9 +160,9 @@
 		"rn rn r1 r1 r1 rn rn rn rn rn rn rn rn rn rn rn rn rn rn "
 	)
  (put (mk-ladder-up 'p_old_mine 17 17) 3 15)
- (put (spawn-pt 'troll) 16 10)
- (put (spawn-pt 'troll-geomancer) 17 9)
- (put (spawn-pt 'troll) 17 11)
+ (put (spawn-pt 'trog) 16 10)
+ (put (spawn-pt 'trog-geomancer) 17 9)
+ (put (spawn-pt 'trog) 17 11)
  (put (kern-mk-obj t_food 1) 17 8)
  (put (kern-mk-obj t_beer 1) 16 8)
  (put (kern-mk-obj t_food 1) 16 12)
@@ -172,7 +172,7 @@
  (put (mk-corpse-with-loot) 14 6)
  )
 
-(mk-place-music p_trolls_den 'ml-dungeon-adventure)
+(mk-place-music p_trogs_den 'ml-dungeon-adventure)
 
 (mk-dungeon-room
  'p_shamans_grove "Shaman's Grove"
@@ -260,5 +260,5 @@
 (mk-dungeon-level 
  (list nil                 p_shamans_grove     nil                  )
  (list p_kurpolis_entrance p_goblin_crossroads p_cave_goblin_village)
- (list nil                 p_watchpoint        p_trolls_den         )
+ (list nil                 p_watchpoint        p_trogs_den         )
  )

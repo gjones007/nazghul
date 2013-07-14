@@ -65,7 +65,7 @@
   (say knpc "Glasdrin keeps this garrison here to suppress the monsters of Kurpolis. There's a second garrison deeper down."))
 
 (define (doug-mons knpc kpc)
-  (say knpc "At this level you find mostly goblins and trolls. Occasionally something worse comes up from the deeps."))
+  (say knpc "At this level you find mostly goblins and trogs. Occasionally something worse comes up from the deeps."))
 
 (define (doug-gobl knpc kpc)
   (say knpc "The cave goblins dominate this level. They are savage but ill-equipped. "
@@ -75,7 +75,7 @@
 (define (doug-trol knpc kpc)
   (say knpc "The filthy creatures have a cave beyond the goblin village. "
        "We clean them out from time to time but they just come back. "
-       "Sometimes I swear the rocks themselves must be giving birth to trolls."))
+       "Sometimes I swear the rocks themselves must be giving birth to trogs."))
 
 (define (doug-wors knpc kpc)
   (say knpc "The worst I've ever seen? The gazer. It had a clutch of slaves, some of them paladins. Men I once knew. [He shudders and turns away]")

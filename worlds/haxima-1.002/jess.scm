@@ -103,7 +103,7 @@
 
 (define (jess-wood knpc kpc)
   (say knpc "The rangers keep things pretty well in hand, but that year "
-       "the cave goblins and trolls were coming out in force."))
+       "the cave goblins and trogs were coming out in force."))
 
 ;; Townspeople...
 (define (jess-glas knpc kpc)

@@ -207,7 +207,7 @@
 (define faction-cave-goblin   3)
 (define faction-accursed      4)
 (define faction-monster       5)
-(define faction-troll         6)
+(define faction-trog         6)
 (define faction-spider        7)
 (define faction-outlaw        8)
 (define faction-gint          9)
@@ -460,7 +460,7 @@
 ; (kern-mk-sprite 's_ghost          ss_u4_shapes 4 156 #f 0 )
 ; (kern-mk-sprite 's_slime          ss_u4_shapes 4 160 #f 0 )
 ; (kern-mk-sprite 's_slime_asleep   ss_u4_shapes 1 160 #f 0 )
-; (kern-mk-sprite 's_troll          ss_u4_shapes 4 164 #f 0 )
+; (kern-mk-sprite 's_male_trog          ss_u4_shapes 4 164 #f 0 )
 ; (kern-mk-sprite 's_gremlin        ss_u4_shapes 4 168 #f 0 )
 ; (kern-mk-sprite 's_mimic          ss_u4_shapes 4 172 #f 0 )
 ; (kern-mk-sprite 's_reaper         ss_u4_shapes 4 176 #f 0 )
@@ -642,7 +642,7 @@
 
 (load "conv.scm") ;; basic conversation
 ;(load "yellow-slime.scm")
-;(load "troll.scm")
+;(load "trog.scm")
 ;(load "spider.scm")
 ;(load "npc-types.scm")
 ;(load "mimic.scm")

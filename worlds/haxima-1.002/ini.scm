@@ -88,7 +88,7 @@
    (let ((ini (kobj-gob-data knpc)))
      (if (ini-will-join? ini)
      		(begin
-     			(say knpc "Everytime we try to clear the place out, another band of gints or trolls decides to move in.")
+     			(say knpc "Everytime we try to clear the place out, another band of gints or trogs decides to move in.")
      			(say knpc (if (is-player-party-member? knpc) "We" "You") "'d best be prepared for a long, hard battle.")
      			)
      		(ini-notyet knpc kpc))))
@@ -175,7 +175,7 @@
 (define (ini-life knpc kpc)
   (say knpc "I was killed once. We were in the deeps on patrol, dead tired "
        "after fleeing a party of death knights that killed our medik, "
-       "and we camped right in the middle of a party of sleeping trolls. ")
+       "and we camped right in the middle of a party of sleeping trogs. ")
   (prompt-for-key)
   (say knpc
        "They woke up first. One minute I was fighting for my life, "

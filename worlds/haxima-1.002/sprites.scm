@@ -423,6 +423,8 @@
 (kern-mk-sprite 's_headless ss_humanoids 4 52 #f 0 )
 (kern-mk-sprite 's_demon ss_humanoids 4 56 #f 0 )
 (kern-mk-sprite 's_male_trog ss_humanoids 4 60 #f 0 )
+(kern-mk-sprite 's_female_trog ss_humanoids 4 104 #f 0 )
+(kern-mk-sprite 's_child_trog ss_humanoids 2 108 #f 0 )
 (kern-mk-sprite 's_ratling ss_humanoids 4 64 #f 0)
 (kern-mk-sprite 's_ratling_sorcerer ss_humanoids 4 68 #f 0)
 (kern-mk-sprite 's_deatharcher ss_humanoids 4 72 #f 0 )

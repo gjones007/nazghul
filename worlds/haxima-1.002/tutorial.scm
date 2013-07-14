@@ -181,7 +181,7 @@
  (list  -1  -2  -2   2  -1  -2   0  -2  -2  -1  -2  -2) ;; cave goblin
  (list  -1  -1  -1  -1   2  -2  -1  -1  -2  -1  -2  -2) ;; accursed
  (list  -2  -2  -2  -2  -2   2   0   0  -2   0  -2   0) ;; monsters
- (list  -2  -2  -2   0  -1  -1   2  -2  -2  -1  -2  -2) ;; hill trolls
+ (list  -2  -2  -2   0  -1  -1   2  -2  -2  -1  -2  -2) ;; hill trogs
  (list  -2  -2  -2  -2  -1   0  -2   2  -2  -1  -2   0) ;; wood spiders
  (list   0  -2  -2  -2  -2  -2  -2  -2   2  -2  -2  -1) ;; outlaws
  (list  -2  -2  -2  -1  -1   0  -1  -1  -2   2  -2  -1) ;; gint

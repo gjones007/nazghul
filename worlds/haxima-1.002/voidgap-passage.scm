@@ -50,7 +50,7 @@
 		(put (spawn-pt 'cave-goblin-berserker-m) 6 12)
 		(put (spawn-pt 'cave-goblin-slinger-m) 4 11)
 		(put (spawn-pt 'cave-goblin-berserker-m) 7 8)
-		(put (spawn-pt 'troll-m) 2 8)
+		(put (spawn-pt 'trog-m) 2 8)
 	 )
 
 	 (list

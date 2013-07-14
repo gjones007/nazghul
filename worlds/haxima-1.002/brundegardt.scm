@@ -39,8 +39,8 @@
  ;; objects
  (list
   (put (mk-monman) 0 0)
-  (put (spawn-pt 'troll) 12 14)
-  (put (spawn-pt 'troll) 11 15)
+  (put (spawn-pt 'trog) 12 14)
+  (put (spawn-pt 'trog) 11 15)
   (put (let ((kriddle (mk-riddle 'noor 't_doorway 18 3 1 1 #t
                                  "All who would pass must speak the password!")))
          (riddle-set-rm-on-wrong! (gob kriddle) #f)
@@ -691,10 +691,10 @@
   )
  (put (mk-ladder-down 'p_brundegardt_tower_1 10 9) 10 9)
  (put (mk-ladder-up 'p_brundegardt_tower_3 8 9) 8 9)
- (put (spawn-pt 'troll-geomancer) 3 4)
- (put (spawn-pt 'troll) 4 3)
- (put (spawn-pt 'troll) 5 4)
- (put (spawn-pt 'troll) 3 5)
+ (put (spawn-pt 'trog-geomancer) 3 4)
+ (put (spawn-pt 'trog) 4 3)
+ (put (spawn-pt 'trog) 5 4)
+ (put (spawn-pt 'trog) 3 5)
  )
 
 (mk-place-music p_brundegardt_tower_2 'ml-dungeon-adventure)
@@ -933,10 +933,10 @@
  (put (spawn-pt 'griffin) 7 8)
  (put (spawn-pt 'griffin) 9 9)
  (put (spawn-pt 'griffin) 12 6)
- (put (spawn-pt 'troll) 12 13)
- (put (spawn-pt 'troll) 13 12)
- (put (spawn-pt 'troll-geomancer) 14 13)
- (put (spawn-pt 'troll) 13 14)
+ (put (spawn-pt 'trog) 12 13)
+ (put (spawn-pt 'trog) 13 12)
+ (put (spawn-pt 'trog-geomancer) 14 13)
+ (put (spawn-pt 'trog) 13 14)
  (put (mk-ambient-sound 'sound-wind) 13 13)
  )
 
