@@ -162,53 +162,51 @@
 (define (mk-anaxes)
   (let ((kchar
          (bind 
-          (kern-char-force-drop
-           (kern-mk-char 
-            'ch_lux          ; tag
-            "Anaxes"         ; name
-            anaxes-species   ; species
-            anaxes-occ       ; occ
-            s_lich           ; sprite
-            faction-men      ; starting alignment
-            0 0 0            ; str/int/dex
-            0 0              ; hp mod/mult
-            0 0              ; mp mod/mult
-            max-health       ; hp
-            -1               ; xp
-            max-health       ; mp
-            0
-            anaxes-lvl       ; level
-            #f               ; dead
-            'anaxes-conv     ; conv
-            nil              ; sched
-            'lich-ai         ; special ai
-            (mk-inventory
-             ;; hack: as the kernel is currently written, he won't drop his
-             ;; readied arms on death, and he won't ready arms from inventory
-             ;; (its all messed up), but he will drop his inventory. So put
-             ;; some decent arms in as loot.
-             (list (list 1 t_armor_chain)
-                   (list 1 t_chain_coif)
-                   (list 1 t_morning_star)
-                   (list 1 t_shield)
-                   (list 3 mandrake)
-                   (list 3 nightshade)
-                   (list 8 sulphorous_ash)
-                   (list 5 blood_moss)
-                   (list 5 black_pearl)
-                   (list 50 t_gold_coins)
-                   (list 1 t_anaxes_letter)
-                   (list 1 t_lichs_blood)
-                   ))
-            ;; readied
-            (list
-             t_armor_chain_4
-             t_chain_coif_4
-             t_morning_star_2
-             t_shield_4
-             )
-            ) ; kern-mk-char
-           #t) ; kern-char-force-drop
+          (kern-mk-char 
+           'ch_lux          ; tag
+           "Anaxes"         ; name
+           anaxes-species   ; species
+           anaxes-occ       ; occ
+           s_lich           ; sprite
+           faction-men      ; starting alignment
+           0 0 0            ; str/int/dex
+           0 0              ; hp mod/mult
+           0 0              ; mp mod/mult
+           max-health       ; hp
+           -1               ; xp
+           max-health       ; mp
+           0
+           anaxes-lvl       ; level
+           #f               ; dead
+           'anaxes-conv     ; conv
+           nil              ; sched
+           'lich-ai         ; special ai
+           (mk-inventory
+            ;; hack: as the kernel is currently written, he won't drop his
+            ;; readied arms on death, and he won't ready arms from inventory
+            ;; (its all messed up), but he will drop his inventory. So put
+            ;; some decent arms in as loot.
+            (list (list 1 t_armor_chain)
+                  (list 1 t_chain_coif)
+                  (list 1 t_morning_star)
+                  (list 1 t_shield)
+                  (list 3 mandrake)
+                  (list 3 nightshade)
+                  (list 8 sulphorous_ash)
+                  (list 5 blood_moss)
+                  (list 5 black_pearl)
+                  (list 50 t_gold_coins)
+                  (list 1 t_anaxes_letter)
+                  (list 1 t_lichs_blood)
+                  ))
+           ;; readied
+           (list
+            t_armor_chain_4
+            t_chain_coif_4
+            t_morning_star_2
+            t_shield_4
+            )
+           ) ; kern-mk-char
           (anaxes-mk)) ; bind
          ))
     (map (lambda (eff) (kern-obj-add-effect kchar eff nil))

@@ -156,7 +156,6 @@
 
 (define (mk-gholet)
   (bind 
-   (kern-char-force-drop
    (kern-mk-char 
     'ch_my           ; tag
     "Gholet"             ; name
@@ -178,10 +177,9 @@
     nil              ; special ai
     ;;..........container (and contents)
     (mk-inventory
-              (list
-               (list 1 t_skull_ring_g)
-               ))
+     (list
+      (list 1 t_skull_ring_g)
+      ))
     nil              ; readied
     )
-   #t)
   (gholet-mk)))

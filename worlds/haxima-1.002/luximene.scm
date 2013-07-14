@@ -175,39 +175,37 @@
 (define (mk-lich-king)
   (let ((kchar 
          (bind 
-          (kern-char-force-drop
-           (kern-mk-char 
-            'ch_lich_king           ; tag
-            "Lich King" ; name
-            sp_lich         ; species
-            oc_wizard              ; occ
-            s_lich     ; sprite
-            faction-monster      ; starting alignment
-            10 10 10            ; str/int/dex
-            10 1              ; hp mod/mult
-            0  0              ; mp mod/mult
-            max-health ; hp
-            -1                   ; xp
-            max-health ; mp
-            0
-            8
-            #f               ; dead
-            nil              ; conv
-            nil             ; sched
-            'lich-ai        ; special ai
-            (mk-inventory
-             (list (list 1 t_morning_star)
-                   (list 1 t_armor_chain_4)
-                   (list 1 t_chain_coif_4)
-                   (list 100 t_gold_coins)
-                   (list 3 t_mana_potion)
-                   (list 3 t_heal_potion)
-                   (list 1 t_lich_skull)
-                   (list 1 t_lichs_blood)
-                   ))
-            nil              ; readied
-            )
-           #t)
+          (kern-mk-char 
+           'ch_lich_king           ; tag
+           "Lich King" ; name
+           sp_lich         ; species
+           oc_wizard              ; occ
+           s_lich     ; sprite
+           faction-monster      ; starting alignment
+           10 10 10            ; str/int/dex
+           10 1              ; hp mod/mult
+           0  0              ; mp mod/mult
+           max-health ; hp
+           -1                   ; xp
+           max-health ; mp
+           0
+           8
+           #f               ; dead
+           nil              ; conv
+           nil             ; sched
+           'lich-ai        ; special ai
+           (mk-inventory
+            (list (list 1 t_morning_star)
+                  (list 1 t_armor_chain_4)
+                  (list 1 t_chain_coif_4)
+                  (list 100 t_gold_coins)
+                  (list 3 t_mana_potion)
+                  (list 3 t_heal_potion)
+                  (list 1 t_lich_skull)
+                  (list 1 t_lichs_blood)
+                  ))
+           nil              ; readied
+           )
           (lux-mk))))
     (map (lambda (eff) (kern-obj-add-effect kchar eff nil))
          undead-effects)

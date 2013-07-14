@@ -175,17 +175,16 @@ Character::Character(const char *tag, const char *name,
           container(NULL), 
           //sprite(sprite),
           sched_chars_node(0),
-          forceContainerDrop(false)
-          , fleePathFound(false)
-          , fleeX(0)
-          , fleeY(0)
-          , fleePathFlags(0)
-          , currentMmode(0)
-          , known(false)
-          , taskname(NULL)
-          , taskproc(NULL)
-          , taskgob(NULL)
-          , taskInterruptOnDamage(false)
+	  fleePathFound(false),
+	  fleeX(0),
+	  fleeY(0),
+	  fleePathFlags(0),
+	  currentMmode(0),
+	  known(false),
+	  taskname(NULL),
+	  taskproc(NULL),
+	  taskgob(NULL),
+	  taskInterruptOnDamage(false)
 {
         if (tag) {
                 this->tag = strdup(tag);
@@ -265,16 +264,15 @@ Character::Character():hm(0), xp(0), order(-1),
                        container(NULL), 
                        //sprite(0),
                        sched_chars_node(0),
-                       forceContainerDrop(false)
-                       , fleePathFound(false)
-                       , fleeX(0)
-                       , fleeY(0)
-                       , fleePathFlags(0)
-                       , currentMmode(0)
-                       , known(false)
-                       , taskname(NULL)
-                       , taskproc(NULL)
-                       , taskgob(NULL)
+		       fleePathFound(false),
+		       fleeX(0),
+		       fleeY(0),
+		       fleePathFlags(0),
+		       currentMmode(0),
+		       known(false),
+		       taskname(NULL),
+		       taskproc(NULL),
+		       taskgob(NULL)
 {
         // This method is probably obsolete now
 
@@ -1364,33 +1362,6 @@ bool Character::flee()
                     || evade()));
 }
 
-void Character::dropRdyArms()
-{
-	assert(!isPlayerControlled());
-
-	for (int i = 0; i < species->n_slots; i++) {
-
-		// Anything in this slot?
-		if (rdyArms[i] == NULL)
-			continue;
-
-                // roll to drop
-                if ((rand() % 100) > ITEM_DROP_PROB)
-                        continue;
-
-		// Create an object of this type and drop it on the map
-		class Object *object = new Object();
-		if (!object)
-			continue;
-		object->init(rdyArms[i]);
-		object->relocate(getPlace(), getX(), getY());
-
-		// Unready it
-		unready(rdyArms[i]);
-
-	}
-}
-
 void Character::unreadyAll()
 {
 	for (int i = 0; i < species->n_slots; i++) {
@@ -1406,45 +1377,26 @@ void Character::unreadyAll()
 	}
 }
 
-bool Character::dropItems()
+void Character::dropItems()
 {
 	assert(!isPlayerControlled());
-
-	if (container == NULL)
-		return false;
-
-        if (container->isEmpty())
-                return true;
-
-        if (! container->isEmpty()
-            && (forceContainerDrop
-                || (rand() % 100) <= CHEST_DROP_PROB))
-                container->relocate(getPlace(), getX(), getY());
-        obj_dec_ref(container);
-	container = NULL;
-
-	return true;
+	if (container) {
+		container->relocate(getPlace(), getX(), getY());
+		obj_dec_ref(container);
+		container = NULL;
+	}
 }
 
 void Character::kill()
 {
-    // Why not turn this on again...? At least dropItems?
-// 	if (!isPlayerControlled() && isOnMap()) {
-// 		dropRdyArms();
-// 		dropItems();
-// 	}
+ 	if (!isPlayerControlled() && isOnMap()) {
+		unreadyAll();
+ 		dropItems();
+ 	}
 
         // when a PC dies unready all arms so other party members can use them
         if (isPlayerControlled()) {
                 unreadyAll();
-        }
-
-        if (isOnMap()
-            && container
-            && forceContainerDrop) {
-                container->relocate(getPlace(), getX(), getY());
-                obj_dec_ref(container);
-                container = NULL;
         }
 
         if (engagedInTask()) {
@@ -1539,8 +1491,7 @@ void Character::armThyself(void)
 		if (!ks.solution[i])
 			continue;
 		class ArmsType *arms = (class ArmsType *) ks.item[i];
-		if (ready(arms) != Character::Readied)
-			continue;
+		ready(arms);
 	}
 
       destroy_ks:
@@ -3228,10 +3179,6 @@ void Character::save(struct save *save)
                 // wrap the declaration in a call to bind the object to the
                 // gob 
                 save->enter(save, "(bind\n");
-
-                if (getForceContainerDrop()) {
-                        save->enter(save, "(kern-char-force-drop");
-                }
         }
 
         // Create the object within a 'let' block
@@ -3303,10 +3250,6 @@ void Character::save(struct save *save)
 
         // Close the 'let' block
         save->exit(save, "kchar) ;; end (let ...)\n");
-
-        if (getForceContainerDrop()) {
-                save->exit(save, "#t) ;; kern-char-force-drop\n");
-        }
 
         if (getGob()) {
 
@@ -3541,16 +3484,6 @@ struct closure *Character::getAI()
 void Character::setDead(bool val)
 {
         dead = val;
-}
-
-bool Character::getForceContainerDrop()
-{
-        return forceContainerDrop;
-}
-
-void Character::setForceContainerDrop(bool val)
-{
-        forceContainerDrop = val;
 }
 
 bool Character::isStationary()

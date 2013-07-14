@@ -138,7 +138,6 @@
                   (npct-conv npct)))
                 lvl)
                (npcg-mk npct-tag))))
-    ;; revisit -- will this work or will effects need to be symbol-tags?
     (map (lambda (eff) (apply-eff-pkg npc eff))
          (npct-effects npct))
     (if (not (null? (npct-drop-fx npct)))
@@ -277,6 +276,7 @@
         (list 100 "2d6-2" t_gold_coins)
         (list 50  "1d5"   t_food)
         (list 10  "1d3"   t_torch)
+        (list 15  "1d3"   t_smoke_bomb)
         ))
 (define wrogue-2-equip
   (list (list 100 "1"     t_sword)
@@ -425,7 +425,6 @@
 
 (define archer-loot 
   (list
-        (list 100 "1d6"   't_arrow)
         (list 100 "1d10"  't_gold_coins)
         (list 20  "1d3"   't_food)
         (list 10  "1"   't_bow)
@@ -434,109 +433,51 @@
   (list
         (list 100 "1d15"  't_gold_coins)
         (list 30  "1d3"   't_food)
-        (list 10  "1d2"    't_dagger)
         ))
 (define slinger-loot 
   (list (list 100 "1d10"  't_gold_coins)
         (list 20  "1d3"   't_food)
-        (list 10  "1"     't_sling)
         ))
 (define berserker-loot 
   (list (list 100 "1d2"   't_heal_potion)
         (list 100 "1d15"  't_gold_coins)
         (list 30  "1d3"   't_food)
-        (list 10  "1"   't_axe)
         ))
 (define ranger-loot
   (list (list 100 "1d10" 't_gold_coins)
-        (list 100 "1d10" 't_arrow)
         (list 30  "1d3"   't_food)
         (list 100 "1d3-1" 't_heal_potion)
-        (list 3 "1"     't_sword)
-        (list 6 "1"     't_bow)
-        (list 7 "1"     't_leather_helm)
-        (list 4 "1"     't_armor_leather)
         ))
 (define skel-war-loot
   (list (list 100 "1d20"  't_gold_coins)
-  		  (list 3 "1"     't_sword)
-        (list 3 "1"     't_shield)
-        (list 3 "1"     't_iron_helm)
         ))
 (define spear-thrower-loot
-  (list (list 50 "1d3" 't_spear)
-        (list 100 "1d20"  't_gold_coins)
-        (list 3  "1"     't_iron_helm)
-        (list 3  "1"     't_axe)
+  (list (list 100 "1d20"  't_gold_coins)
         ))
 (define dea-kni-loot
   (list
         (list 100 "1d20"  't_gold_coins)
-        (list 100 "1d3-1" 't_mana_potion)
-        (list 2 "1"     't_2h_axe)
-        ;;(list 1 "1"     't_armor_plate)  if you wear anything that comes off one of these, something *really* nasty should happen
-        (list 4 "1"     't_iron_helm)
         ))
 (define cra-arch-loot
-  (list (list 100 "1d5" 't_bolt)
-        (list 100 "1d20"  't_gold_coins)
-        (list 100 "1d3-1" 't_mana_potion)
-		  (list 10  "1"   't_bow)
-        ;;(list 1 "1"     't_armor_plate)  if you wear anything that comes off one of these, something *really* nasty should happen
-        (list 4   "1"     't_iron_helm)
+  (list (list 100 "1d20"  't_gold_coins)
         ))
 (define knight-loot
   (list (list 100 "1d20"  't_gold_coins)
-        (list 100 "1d3-1" 't_heal_potion)
-        (list 2 "1"     't_2h_sword)
-        (list 1 "1"     't_armor_plate)
-        (list 4 "1"     't_iron_helm)
         ))
 (define squire-loot
-  (list (list 100 "1d10"  't_bolt)
-        (list 100 "1d10"  't_gold_coins)
-        (list 100 "1d2-1" 't_heal_potion)
-        (list 2  "1"     't_crossbow)
-        (list 10 "1"     't_dagger)
-        (list 3 "1"     't_armor_chain)
-        (list 5 "1"     't_chain_coif)
+  (list (list 100 "1d10"  't_gold_coins)
         ))
 (define halberdier-loot
-  (list (list 100 "1d3-1" 't_heal_potion)
-        (list 10  "1"     't_vas_mani_scroll)
-        (list 10  "1"     't_in_an_scroll)
-        (list 50  "1d5"   't_food)
-        (list 1   "1"     't_halberd)
-        (list 5   "1"     't_chain_coif)
-        (list 3   "1"     't_armor_chain)
+  (list (list 50  "1d5"   't_food)
         ))
 (define crossbowman-loot
-  (list (list 100 "1d10"    't_bolt)
-        (list 100 "1d3-1" 't_heal_potion)
-        (list 10  "1"     't_vas_mani_scroll)
-        (list 10  "1"     't_in_an_scroll)
-        (list 50  "1d5"   't_food)
-        (list 2   "1"     't_crossbow)
-        (list 5   "1"     't_chain_coif)
-        (list 10  "1"     't_dagger)
-        (list 3   "1"     't_armor_chain)
-        ))
-(define wrogue-1-loot
-  (list (list 100 "2d6-2" 't_gold_coins)
-        (list 50  "1d5"   't_food)
-        (list 10  "1d3"   't_torch)
-        (list 10  "1"     't_dagger)
-        (list 15  "1d3"   't_smoke_bomb)
+  (list (list 50  "1d5"   't_food)
         ))
 (define wrogue-2-loot
   (list (list 100 "2d6-2" 't_gold_coins)
         (list 100 "1d3-1" 't_picklock)
         (list 50  "1d5"   't_food)
         (list 10  "1d3"   't_torch)
-        (list 5   "1"     't_sword)
-        (list 7   "1"     't_sling)
-        (list 5   "1"     't_leather_helm)
-        (list 4   "1"     't_armor_leather)
         (list 10  "1d3"  't_smoke_bomb)
         ))
 (define wrogue-3-loot
@@ -544,11 +485,6 @@
         (list 100 "1d3-1" 't_picklock)
         (list 50  "1d5"   't_food)
         (list 10  "1d3"   't_torch)
-        (list 100 "1d10"  't_arrow)
-        (list 5   "1"     't_sword)
-        (list 6   "1"     't_leather_helm)
-        (list 7   "1"     't_armor_leather)
-        (list 3   "1"   't_bow)
         (list 5   "1d3"   't_smoke_bomb)
         ))
 (define wrogue-4-loot
@@ -565,10 +501,6 @@
         (list 10  "1"     't_cure_potion)
         (list 10  "1"     't_poison_immunity_potion)
         (list 10  "1d3"   't_torch)
-        (list 3   "1"     't_armor_chain)
-        (list 5   "1"     't_chain_coif)
-        (list 5   "1"     't_sword)
-        (list 3   "1"     't_crossbow)
         (list 2   "1d3"   't_smoke_bomb)
         ))
 (define medik-loot
@@ -584,34 +516,24 @@
         (list 10  "1d3"   'black_pearl)
         (list 5   "1d2"   'nightshade)
         (list 5   "1d2"   'mandrake)
-        (list 5   "1"     't_chain_coif)
-        (list 7   "1"     't_staff)
-        (list 3   "1"     't_armor_chain)
         ))
 (define troll-loot
-  (list (list 100 "1d3-1" 't_thrown_boulder)
-        (list 25  "1d3"   't_food)
+  (list (list 25  "1d3"   't_food)
         (list 100 "2d10"  't_gold_coins)
         ))
 (define geomancer-loot
   (list (list 50  "1d3"   't_gem)
         (list 50  "1d20"  't_gold_coins)
-        (list 100 "1d3-1" 't_mana_potion)
         ))
 (define gint-loot
   (list (list 100 "4d25"  't_gold_coins)
         (list 100 "1d5"   't_food)
-        (list 100 "1d3-1" 't_heal_potion)
-        (list 3   "1"      't_2h_axe)
-        (list 3   "1"      't_2h_sword)
         ))
 (define reaper-loot
   (list (list 100 "1d5"   't_torch)
         ))
 (define headless-loot
   (list (list 100 "1d5-1" 't_gold_coins)
-  		  (list 2 "1"     't_axe)
-        (list 2 "1"     't_shield)
         ))
 (define dragon-loot
   (list (list 100 "1d100+19" 't_gold_coins)
@@ -658,7 +580,6 @@
         
 (define demon-loot
   (list (list 100 "2d20" 't_gold_coins)
-        (list 5   "1"    't_flaming_sword)
         ))
         
 (define ghast-loot
@@ -702,15 +623,8 @@
         )) 
 
 (define accursed-5-loot
-  (list (list 100 "1d10"    't_bolt)
-        (list 10 "1d3-1" 't_heal_potion)
-        (list 50  "1d5"   't_food)
+  (list (list 50  "1d5"   't_food)
         (list 100 "2d10" 't_gold_coins)
-        (list 4 "1" 't_sword)
-        (list 6 "1" 't_shield)
-        (list 5 "1" 't_chain_coif)
-        (list 7 "1" 't_armor_chain)
-        (list 3 "1" 't_crossbow)
         ))  
         
         
@@ -760,7 +674,7 @@
 (define glasdrin-crossbowman   (mk-npct2 "crossbowman"   sp_human    oc_warrior s_xbowguard        no-traps crossbowman-equip  nil 'guard-ai faction-glasdrin   nil 'drop-generic crossbowman-loot))
 
 ;; Bandit types
-(define footpad    (mk-npct2 "footpad"    sp_human oc_wrogue s_brigand wrogue-traps wrogue-1-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-1-loot))
+(define footpad    (mk-npct2 "footpad"    sp_human oc_wrogue s_brigand wrogue-traps wrogue-1-equip nil 'std-ai faction-outlaw nil nil nil))
 (define bandit     (mk-npct2 "bandit"     sp_human oc_wrogue s_brigand wrogue-traps wrogue-2-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-2-loot))
 (define highwayman (mk-npct2 "highwayman" sp_human oc_wrogue s_brigand wrogue-traps wrogue-3-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-3-loot))
 (define blackguard (mk-npct2 "blackguard" sp_human oc_wrogue s_brigand wrogue-traps wrogue-4-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-4-loot))
@@ -817,12 +731,12 @@
 (define griffin-chick   (mk-npct "griffin chick"          sp_griffin_chick nil        s_griffin_chick nil         nil           nil           'griffin-ai      faction-monster       nil))
 
 ;; accursed
-(define accursed-acolyte    (mk-npct2 "an accursed acolyte"    sp_human oc_wizard s_shepherd nil accursed-1-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic accursed-1-loot))
+(define accursed-acolyte    (mk-npct2 "an accursed acolyte"    sp_human oc_wizard s_shepherd nil accursed-1-equip nil 'spell-sword-ai faction-accursed nil nil nil))
 (define accursed-apprentice (mk-npct2 "an accursed apprentice" sp_human oc_wizard s_shepherd nil accursed-2-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic accursed-1-loot))
 (define accursed-journeyman (mk-npct2 "an accursed journeyman" sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
 (define accursed-master     (mk-npct2 "an accursed master"     sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
 (define accursed-adept      (mk-npct2 "an accursed adept"      sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
-(define accursed-guardian   (mk-npct2 "an accursed guardian"   sp_human oc_warrior s_fighter nil accursed-4-equip nil 'std-ai         faction-accursed nil 'drop-generic wrogue-1-loot))
+(define accursed-guardian   (mk-npct2 "an accursed guardian"   sp_human oc_warrior s_fighter nil accursed-4-equip nil 'std-ai         faction-accursed nil  'drop-generic wizard-loot))
 (define accursed-defender   (mk-npct2 "an accursed defender"   sp_human oc_warrior s_knight  nil accursed-5-equip nil 'std-ai         faction-accursed nil 'drop-generic accursed-5-loot))
 (define accursed-templar    (mk-npct2 "an accursed templar"    sp_human oc_warrior s_avatar  nil accursed-6-equip nil 'std-ai         faction-accursed nil 'drop-generic wrogue-4-loot))
 

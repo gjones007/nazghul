@@ -249,44 +249,42 @@
 ;;----------------------------------------------------------------------------
 (define (mk-mouse)
   (bind 
-   (kern-char-force-drop
-    (kern-char-arm-self
-     (kern-mk-char 
-      'ch_mouse ;;..tag
-      "Mouse" ;;....name
-      sp_human ;;.....species
-      nil ;;..........occupation
-      s_brigand ;;.....sprite
-      faction-men ;;..faction
-      0 ;;............custom strength modifier
-      0 ;;............custom intelligence modifier
-      6 ;;............custom dexterity modifier
-      2 ;;............custom base hp modifier
-      2 ;;............custom hp multiplier (per-level)
-      1 ;;............custom base mp modifier
-      1 ;;............custom mp multiplier (per-level)
-      max-health ;;..current hit points
-      -1 ;;...........current experience points
-      max-health ;;..current magic points
-      0
-      mouse-start-lvl  ;;..current level
-      #f ;;...........dead?
-      'mouse-conv ;;...conversation (optional)
-      nil ;;..........schedule (optional)
-      nil ;;..........custom ai (optional)
-      
-      ;;..........container (and contents)
-      (mk-inventory
-       (list
-        (list 1 t_rune_k)
-        (list 1 t_armor_leather)
-        (list 1 t_leather_helm)
-        (list 1 t_sword)
-        (list 1 t_bow)
-        (list 50 t_arrow)))
-      
-      nil ;;..........readied arms (in addition to the container contents)
-      nil ;;..........hooks in effect
-      ))
-    #t)
+   (kern-char-arm-self
+    (kern-mk-char 
+     'ch_mouse ;;..tag
+     "Mouse" ;;....name
+     sp_human ;;.....species
+     nil ;;..........occupation
+     s_brigand ;;.....sprite
+     faction-men ;;..faction
+     0 ;;............custom strength modifier
+     0 ;;............custom intelligence modifier
+     6 ;;............custom dexterity modifier
+     2 ;;............custom base hp modifier
+     2 ;;............custom hp multiplier (per-level)
+     1 ;;............custom base mp modifier
+     1 ;;............custom mp multiplier (per-level)
+     max-health ;;..current hit points
+     -1 ;;...........current experience points
+     max-health ;;..current magic points
+     0
+     mouse-start-lvl  ;;..current level
+     #f ;;...........dead?
+     'mouse-conv ;;...conversation (optional)
+     nil ;;..........schedule (optional)
+     nil ;;..........custom ai (optional)
+     
+     ;;..........container (and contents)
+     (mk-inventory
+      (list
+       (list 1 t_rune_k)
+       (list 1 t_armor_leather)
+       (list 1 t_leather_helm)
+       (list 1 t_sword)
+       (list 1 t_bow)
+       (list 50 t_arrow)))
+     
+     nil ;;..........readied arms (in addition to the container contents)
+     nil ;;..........hooks in effect
+     ))
    (mouse-mk)))

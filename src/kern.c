@@ -4375,25 +4375,6 @@ KERN_API_CALL(kern_char_set_sleep)
         return sc->T;
 }
 
-KERN_API_CALL(kern_char_force_drop)
-{
-        class Character *ch;
-        int val;
-
-        ch = (class Character*)unpack_obj(sc, &args, "kern-char-force-drop");
-        if (!ch)
-                return sc->NIL;
-
-        if (unpack(sc, &args, "b", &val)) {
-                rt_err("kern-char-force-drop: bad args");
-                goto done;
-        }
-
-        ch->setForceContainerDrop(val);
- done:
-        return scm_mk_ptr(sc, ch);
-}
-
 KERN_API_CALL(kern_char_unready)
 {
         class Character *ch;
@@ -10170,7 +10151,6 @@ scheme *kern_init(void)
         API_DECL(sc, "kern-char-attack", kern_char_attack);
         API_DECL(sc, "kern-char-dec-mana", kern_char_dec_mana);
         API_DECL(sc, "kern-char-charm", kern_char_charm);
-        API_DECL(sc, "kern-char-force-drop", kern_char_force_drop);
         API_DECL(sc, "kern-char-get-arms", kern_char_get_arms);
         API_DECL(sc, "kern-char-get-experience-value", kern_char_get_experience_value);		
         API_DECL(sc, "kern-char-get-hp", kern_char_get_hp);

@@ -216,8 +216,6 @@ class Character:public Being {
         struct closure *getAI();
         void setDead(bool val);
         void introduce();
-        void setForceContainerDrop(bool val);
-        bool getForceContainerDrop();
 
         void beginLoitering(int hours);
         void endLoitering();
@@ -275,9 +273,6 @@ class Character:public Being {
 	bool inCombat;
         sound_t *damage_sound;
 
-	// *** NPC fields
-	virtual void dropRdyArms();
-	virtual bool dropItems();
 	class Container *container;
 	bool rearm;
 
@@ -309,13 +304,13 @@ class Character:public Being {
         bool dead;
 
         struct node *sched_chars_node;   /* for chars with multiplace scheds */
-        bool forceContainerDrop; // ensure the container is dropped on death
         
   protected:
         virtual void switchPlaces(class Being *);
 
  private:
         bool atAppointment();
+	void dropItems();
         bool nextToAppointment();
         bool playerIsInMyBed();
         void kickPlayerOutOfMyBed();

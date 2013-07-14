@@ -269,7 +269,6 @@
        ))
      nil              ; readied
      )))
- (kern-char-force-drop knpc #t)
   (bind knpc (meaney-mk))
   (kern-obj-add-effect knpc 
            ef_generic_death

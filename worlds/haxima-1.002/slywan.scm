@@ -106,7 +106,6 @@
 
 (define (mk-slywan)
   (bind 
-   (kern-char-force-drop
    (kern-mk-char 
     'ch_slywan           ; tag
     "Slywan"             ; name
@@ -133,5 +132,4 @@
 					         t_armor_leather
 					         )               ; readied
     )
-   #t)
    (slywan-mk)))

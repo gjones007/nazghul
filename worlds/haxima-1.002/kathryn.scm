@@ -201,51 +201,49 @@
 ;;----------------------------------------------------------------------------
 (define (mk-kathryn)
   (bind 
-   (kern-char-force-drop
-    (kern-char-arm-self
-     (kern-mk-char 
-      'ch_kathryn ;;..tag
-      "Kathryn" ;;....name
-      sp_human ;;.....species
-      oc_wizard ;;....occupation
-      s_wizard ;;.....sprite
-      faction-men ;;..faction
-      0 ;;............custom strength modifier
-      4 ;;............custom intelligence modifier
-      0 ;;............custom dexterity modifier
-      2 ;;............custom base hp modifier
-      1 ;;............custom hp multiplier (per-level)
-      4 ;;............custom base mp modifier
-      2 ;;............custom mp multiplier (per-level)
-      max-health ;; current hit points
-      -1  ;;...........current experience points
-      max-health ;; current magic points
-      0
-      kathryn-start-lvl  ;;..current level
-      #f ;;...........dead?
-      'kathryn-conv ;;conversation (optional)
-      sch_kathryn ;;..schedule (optional)
-      'spell-sword-ai ;;...custom ai (optional)
-      ;;..............container (and contents)
-      (mk-inventory
-       (list
-        (list 1 t_kathryns_letter)
-        (list 100 t_gold_coins)
-        (list 5 sulphorous_ash )
-        (list 5 ginseng )
-        (list 5 garlic )
-        (list 3 spider_silk )
-        (list 3 blood_moss )
-        (list 2 black_pearl )
-        (list 1 nightshade )
-        (list 1 mandrake )
-        (list 1 t_wis_quas_scroll)
-        ))
-      ;;..............readied arms (in addition to the container contents)
+   (kern-char-arm-self
+    (kern-mk-char 
+     'ch_kathryn ;;..tag
+     "Kathryn" ;;....name
+     sp_human ;;.....species
+     oc_wizard ;;....occupation
+     s_wizard ;;.....sprite
+     faction-men ;;..faction
+     0 ;;............custom strength modifier
+     4 ;;............custom intelligence modifier
+     0 ;;............custom dexterity modifier
+     2 ;;............custom base hp modifier
+     1 ;;............custom hp multiplier (per-level)
+     4 ;;............custom base mp modifier
+     2 ;;............custom mp multiplier (per-level)
+     max-health ;; current hit points
+     -1  ;;...........current experience points
+     max-health ;; current magic points
+     0
+     kathryn-start-lvl  ;;..current level
+     #f ;;...........dead?
+     'kathryn-conv ;;conversation (optional)
+     sch_kathryn ;;..schedule (optional)
+     'spell-sword-ai ;;...custom ai (optional)
+     ;;..............container (and contents)
+     (mk-inventory
       (list
-       t_staff
-       )
-      nil ;;..........hooks in effect
-      ))
-    #t)
+       (list 1 t_kathryns_letter)
+       (list 100 t_gold_coins)
+       (list 5 sulphorous_ash )
+       (list 5 ginseng )
+       (list 5 garlic )
+       (list 3 spider_silk )
+       (list 3 blood_moss )
+       (list 2 black_pearl )
+       (list 1 nightshade )
+       (list 1 mandrake )
+       (list 1 t_wis_quas_scroll)
+       ))
+     ;;..............readied arms (in addition to the container contents)
+     (list
+      t_staff
+      )
+     nil ;;..........hooks in effect
+     ))
    (kathryn-mk)))

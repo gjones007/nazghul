@@ -320,8 +320,10 @@
   (kern-log-msg "To the southwest you see a cave.")
   )
 
+(define start-loc (list p_trigrave 0 15))
+
 (define (simple-start kplayer)
-  (kern-obj-put-at kplayer (eval-loc slimy-cavern-loc)))
+  (kern-obj-put-at kplayer start-loc))
   
 (define (create-char kplayer)
  (kern-obj-put-at kplayer (list p_char_setup 10 17)
@@ -335,11 +337,11 @@
 ;;(kern-set-start-proc simple-start)
 ;;(kern-add-hook 'new_game_start_hook 'create-char)
 (kern-add-hook 'new_game_start_hook 'simple-start)
+
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))
 
 (kern-progress-bar-finish)
-(println "r2g")
 
 
 ;;quickstart stuff for playtesting
@@ -454,7 +456,7 @@
 	 (500 t_bolt)
 
          ))
-       (list p_char_setup 16 17))
+       start-loc)
        
       (kern-obj-put-at
        (mk-ladder-down 'p_moongate_clearing 18 18) 

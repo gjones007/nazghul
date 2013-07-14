@@ -142,7 +142,6 @@
 			nil              ; readied
 		)))
 		(bind knpc  (jorn-mk))
-		(kern-char-force-drop knpc #t)
 		(kern-char-arm-self knpc)
 		(kern-obj-add-effect knpc 
 			ef_generic_death

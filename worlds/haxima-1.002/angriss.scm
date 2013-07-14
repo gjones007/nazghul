@@ -205,30 +205,28 @@
 
 (define (mk-angriss)
   (bind 
-   (kern-char-force-drop
-    (kern-mk-char 
-     'ch_angriss         ; tag
-     "Angriss"           ; name
-     sp_queen_spider     ; species
-     nil                 ; occ
-     s_purple_spider     ; sprite
-     faction-spider ; starting alignment
-     20 0 20             ; str/int/dex
-     10 5                ; hp mod/mult
-     10 5                ; mp mod/mult
-     max-health ;;..current hit points
-     -1 ;;...........current experience points
-     max-health ;;..current magic points
-     0
-     angriss-lvl
-     #f                  ; dead
-     'angriss-conv       ; conv
-     nil                 ; sched
-     'angriss-ai          ; special ai
-     
-     ;;..........container (and contents)
-     (mk-inventory (list (list 1 t_rune_f)))
-     nil                 ; readied
-     )
-    #t)
+   (kern-mk-char 
+    'ch_angriss         ; tag
+    "Angriss"           ; name
+    sp_queen_spider     ; species
+    nil                 ; occ
+    s_purple_spider     ; sprite
+    faction-spider ; starting alignment
+    20 0 20             ; str/int/dex
+    10 5                ; hp mod/mult
+    10 5                ; mp mod/mult
+    max-health ;;..current hit points
+    -1 ;;...........current experience points
+    max-health ;;..current magic points
+    0
+    angriss-lvl
+    #f                  ; dead
+    'angriss-conv       ; conv
+    nil                 ; sched
+    'angriss-ai          ; special ai
+    
+    ;;..........container (and contents)
+    (mk-inventory (list (list 1 t_rune_f)))
+    nil                 ; readied
+    )
     (angriss-mk)))
