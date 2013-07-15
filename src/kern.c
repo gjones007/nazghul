@@ -1718,7 +1718,7 @@ static pointer kern_mk_char(scheme *sc, pointer args)
                    &intl, &dex, &hpmod, &hpmult, &mpmod, &mpmult, 
                    &hp, &xp, &mp, &unused, &lvl, &dead,
                    &conv, &sched, &ai, &inventory)) {
-                load_err("kern-mk-char %s: bad args", tag);
+                load_err("kern-mk-char %s (%s): bad args", tag, name);
                 return sc->NIL;
         }
 

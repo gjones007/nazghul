@@ -394,9 +394,6 @@
       (use-ranged-spell-on-foes? kchar all-field-spells)
       ))
 
-(define (generic-ai kchar)
-  (std-ai kchar))
-
 ;; Death knights can use Vampiric Touch at L3 and Disease at L6
 (define (death-knight-ai kchar)
   (or (nolight-ai kchar)

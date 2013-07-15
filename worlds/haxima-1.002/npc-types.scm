@@ -11,6 +11,56 @@
 ;; Local Procedures
 ;;----------------------------------------------------------------------------
 
+;; Lookup the value of symbol 'key' in associated list 'alist'. If not found,
+;; return 'default' if specified else throw an error. Evaluate symbol values,
+;; just return atoms.
+(define (get alist key . default)
+  (let ((entry (assoc key alist)))
+    (if entry 
+        (if (symbol? (cdr entry))
+            (eval (cdr entry))
+            (cdr entry))
+        (if (pair? default)
+            (car default)
+            (error "Missing key:" key)))))
+
+;; Wrapper to kern-mk-char that supports variable args and provides defaults,
+;; when possible, where nothing is specified. 'kwargs' should be an associated
+;; list of keyword-argument pairs.
+(define (mk-char kwargs)
+  (define (optarg key default)
+    (get kwargs key default))
+  (define (arg key)
+    (get kwargs key))
+  (kern-mk-char (optarg 'tag nil)
+                (optarg 'name nil)
+                (arg 'species)
+                (optarg 'occ nil)
+                (arg 'sprite)
+                (arg 'faction)
+                (optarg 'str 0)
+                (optarg 'int 0)
+                (optarg 'dex 0)
+                (optarg 'hp_mod 0)
+                (optarg 'hp_mult 0)
+                (optarg 'mp_mod 0)
+                (optarg 'mp_mult 0)
+                (optarg 'hp 0)
+                (optarg 'xp -1)
+                (optarg 'mp 0)
+                (optarg 'ap 0)
+                (optarg 'lvl default-level)
+                (optarg 'dead #f)
+                (optarg 'conv nil)
+                (optarg 'sched nil)
+                (eval (optarg 'ai ''std-ai))
+                (mk-inventory (filter notnull?
+                                      (map (lambda (x) 
+                                             (apply roll-to-add x))
+                                           (optarg 'stuff nil))))
+                (optarg 'arms nil)
+                (optarg 'hooks nil)))
+
 ;; mk-stock-char -- convenience wrapper for kern-mk-char. Handles the
 ;; boilerplate associated with first-time "stock" character creations. A stock
 ;; character is a monster, guard or similar cannon-fodder NPC, with no
@@ -58,22 +108,22 @@
              (kern-dice-roll lvl-dice)))
 
 ;; npct -- NPC type
-(define (mk-npct2 name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms)
-  (list name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms))
-(define (mk-npct name spec occ spr traps equip eff ai faction conv)
-  (mk-npct2 name spec occ spr traps equip eff ai faction conv nil nil))
-(define (npct-name npct) (car npct))
-(define (npct-spec npct) (cadr npct))
-(define (npct-occ npct) (caddr npct))
-(define (npct-spr npct) (cadddr npct))
-(define (npct-traps npct) (list-ref npct 4))
-(define (npct-eqp npct) (list-ref npct 5))
-(define (npct-effects npct) (list-ref npct 6))
-(define (npct-ai npct) (list-ref npct 7))
-(define (npct-faction npct) (list-ref npct 8))
-(define (npct-conv npct) (list-ref npct 9))
-(define (npct-drop-fx npct) (list-ref npct 10))
-(define (npct-drop-fx-parms npct) (list-ref npct 11))
+;; (define (mk-npct2 name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms)
+;;   (list name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms))
+;; (define (mk-npct name spec occ spr traps equip eff ai faction conv)
+;;   (mk-npct2 name spec occ spr traps equip eff ai faction conv nil nil))
+;; (define (npct-name npct) (car npct))
+;; (define (npct-spec npct) (cadr npct))
+;; (define (npct-occ npct) (caddr npct))
+;; (define (npct-spr npct) (cadddr npct))
+;; (define (npct-traps npct) (list-ref npct 4))
+;; (define (npct-eqp npct) (list-ref npct 5))
+;; (define (npct-effects npct) (list-ref npct 6))
+;; (define (npct-ai npct) (list-ref npct 7))
+;; (define (npct-faction npct) (list-ref npct 8))
+;; (define (npct-conv npct) (list-ref npct 9))
+;; (define (npct-drop-fx npct) (list-ref npct 10))
+;; (define (npct-drop-fx-parms npct) (list-ref npct 11))
 
 
 
@@ -117,40 +167,55 @@
   (kern-mk-inventory contents))
 
 ;; mk-npc -- create a kernel character of the given type, faction and level
+;; (define (mk-npc npct-tag lvl)
+;;   (let* ((npct (eval npct-tag))
+;;          (npc (bind
+;;                (set-level
+;;                 (kern-char-arm-self
+;;                  (mk-stock-char
+;;                   (npct-name npct)
+;;                   (npct-spec npct)
+;;                   (npct-occ npct)
+;;                   (npct-spr npct)
+;;                   (npct-faction npct)
+;;                   (npct-ai npct)
+;;                   (mk-inventory
+;;                    (filter notnull?
+;;                            (map (lambda (x)
+;;                                   (apply roll-to-add x))
+;;                                 (npct-eqp npct))))
+;;                   nil
+;;                   (npct-conv npct)))
+;;                 lvl)
+;;                (npcg-mk npct-tag))))
+;;     (map (lambda (eff) (apply-eff-pkg npc eff))
+;;          (npct-effects npct))
+;;     (if (not (null? (npct-drop-fx npct)))
+;;         (kern-obj-add-effect npc 
+;;                              ef_loot_drop 
+;;                              (loot-drop-mk (npct-drop-fx npct)
+;;                                            (npct-drop-fx-parms npct))))
+;;     npc))
+
 (define (mk-npc npct-tag lvl)
   (let* ((npct (eval npct-tag))
-         (npc (bind
-               (set-level
-                (kern-char-arm-self
-                 (mk-stock-char
-                  (npct-name npct)
-                  (npct-spec npct)
-                  (npct-occ npct)
-                  (npct-spr npct)
-                  (npct-faction npct)
-                  (npct-ai npct)
-                  (mk-inventory
-                   (filter notnull?
-                           (map (lambda (x)
-                                  (apply roll-to-add x))
-                                (npct-eqp npct))))
-                  nil
-                  (npct-conv npct)))
-                lvl)
-               (npcg-mk npct-tag))))
-    (map (lambda (eff) (apply-eff-pkg npc eff))
-         (npct-effects npct))
-    (if (not (null? (npct-drop-fx npct)))
-        (kern-obj-add-effect npc 
-                             ef_loot_drop 
-                             (loot-drop-mk (npct-drop-fx npct)
-                                           (npct-drop-fx-parms npct))))
+         (npc (mk-char npct)))
+    (kern-char-arm-self npc)
+    (set-level npc lvl)
+    (bind npc (npcg-mk npct-tag))
+    (map (lambda (eff) 
+           (apply-eff-pkg npc eff))
+         (get npct 'effects nil))
     npc))
 
 ;; spawn-npc -- like mk-npc but mark the npc as spawned (this allows monster
 ;; managers to periodically clean up old spawned NPC's)
+;(define (spawn-npc npct-tag lvl)
+;  (let ((kchar (mk-npc npct-tag lvl)))
+;    (npcg-set-spawned! (gob kchar) #t)
+;    kchar))
+
 (define (spawn-npc npct-tag lvl)
-  
   (let ((kchar (mk-npc npct-tag lvl)))
     (npcg-set-spawned! (gob kchar) #t)
     kchar))
@@ -645,107 +710,707 @@
 ;; npc types
 ;;      scheme variable                 name                       species          occup.     sprite             chest traps  equipment              effects       ai               faction
 ;;      ======================          ========================== ================ ========== ================== ============ ====================== ============= ==============   ========
-(define forest-goblin-shaman  (mk-npct2 "forest goblin shaman"  sp_forest_goblin oc_wizard  s_fgob_shaman wizard-traps wizard-equip  nil 'shaman-ai  faction-forest-goblin nil 'drop-generic wizard-loot ))
-(define forest-goblin-hunter  (mk-npct2 "forest goblin hunter"  sp_forest_goblin oc_warrior s_fgob_archer  basic-traps  archer-equip  nil 'generic-ai faction-forest-goblin nil 'drop-generic archer-loot ))
-(define forest-goblin-stalker (mk-npct2 "forest goblin stalker" sp_forest_goblin oc_warrior s_fgob_stalker  basic-traps  stalker-equip nil 'generic-ai faction-forest-goblin nil 'drop-generic stalker-loot))
+;;(define forest-goblin-shaman  (mk-npct2 "forest goblin shaman"  sp_forest_goblin oc_wizard  s_fgob_shaman wizard-traps wizard-equip  nil 'shaman-ai  faction-forest-goblin nil 'drop-generic wizard-loot ))
+(define forest-goblin-shaman
+  '((name    . "forest goblin shaman")
+    (species . sp_forest_goblin)
+    (occ     . oc_wizard)
+    (sprite  . s_fgob_shaman)
+    (stuff   . wizard-equip)
+    (ai      . 'shaman-ai)
+    (faction . faction-forest-goblin)))
 
-(define cave-goblin-slinger   (mk-npct2 "cave goblin slinger"   sp_cave_goblin  oc_warrior s_cgob_slinger    basic-traps  slinger-equip    nil 'generic-ai faction-cave-goblin  nil 'drop-generic slinger-loot))
-(define cave-goblin-berserker (mk-npct2 "cave goblin berserker" sp_cave_goblin  oc_warrior s_cgob_berserk    basic-traps  berserker-equip  nil 'generic-ai faction-cave-goblin  nil 'drop-generic berserker-loot))
-(define cave-goblin-priest    (mk-npct2 "cave goblin priest"    sp_cave_goblin  oc_wizard  s_cgob_shaman    wizard-traps wizard-equip     nil 'priest-ai  faction-cave-goblin  nil 'drop-generic wizard-loot))
+(define forest-goblin-hunter
+  '((name    . "forest goblin hunter")
+    (species . sp_forest_goblin)
+    (occ     . oc_warrior)
+    (sprite  . s_fgob_archer)
+    (stuff   . archer-equip)
+    (faction . faction-forest-goblin)))
 
-(define ranger                (mk-npct2 "ranger"                sp_human        oc_ranger s_ranger basic-traps  ranger-equip     nil 'ranger-ai  faction-men  'ranger-conv 'drop-generic ranger-loot))
+(define forest-goblin-stalker
+  '((name    . "forest goblin stalker")
+    (species . sp_forest_goblin)
+    (occ     . oc_warrior)
+    (sprite  . s_fgob_stalker)
+    (stuff   . stalker-equip)
+    (faction . faction-forest-goblin)))
 
-(define skeletal-spear-thrower (mk-npct2 "skeletal spear-thrower" sp_skeleton oc_warrior s_spearskeleton basic-traps spear-thrower-equip    undead-effects 'nolight-ai faction-monster nil 'drop-generic spear-thrower-loot))
-(define skeletal-warrior (mk-npct2 "skeletal warrior" sp_skeleton oc_warrior s_skeleton basic-traps skeletal-warrior-equip undead-effects 'nolight-ai faction-monster nil 'drop-generic skel-war-loot))
-(define skeletal-archer (mk-npct2 "skeletal archer" sp_skeleton oc_warrior s_skeletonarcher basic-traps archer-equip undead-effects 'nolight-ai faction-monster nil 'drop-generic archer-loot))
+(define cave-goblin-slinger
+  '((name    . "cave goblin slinger")
+    (species . sp_cave_goblin)
+    (occ     . oc_warrior)
+    (sprite  . s_cgob_slinger)
+    (stuff   . slinger-equip)
+    (faction . faction-cave-goblin)))
 
-(define death-knight  (mk-npct2 "death knight"  sp_skeleton oc_warrior s_deathknight   basic-traps death-knight-equip  undead-effects 'death-knight-ai faction-monster  nil 'drop-generic dea-kni-loot))
-(define craven-archer (mk-npct2 "craven archer" sp_skeleton oc_warrior s_deatharcher   basic-traps craven-archer-equip nil            'craven-archer-ai faction-monster nil 'drop-generic cra-arch-loot))
+(define cave-goblin-berserker
+  '((name    . "cave goblin berserker")
+    (species . sp_cave_goblin)
+    (occ     . oc_warrior)
+    (sprite  . s_cgob_berserk)
+    (stuff   . berserker-equip)
+    (faction . faction-cave-goblin)))
 
-(define halberdier    (mk-npct2 "halberdier"    sp_human    oc_warrior s_guard        no-traps halberdier-equip   nil 'guard-ai faction-men   nil 'drop-generic halberdier-loot))
-(define crossbowman   (mk-npct2 "crossbowman"   sp_human    oc_warrior s_xbowguard        no-traps crossbowman-equip  nil 'guard-ai faction-men   nil 'drop-generic crossbowman-loot))
-(define medik         (mk-npct2 "medik"         sp_human    oc_wizard  s_blue_wizard  no-traps medik-equip        nil 'medik-ai faction-men   nil 'drop-generic medik-loot))
-(define trog         (mk-npct2 "trog"         sp_trog    oc_warrior s_male_trog        no-traps trog-equip        nil 'std-ai   faction-trog nil nil nil))
-(define glasdrin-halberdier    (mk-npct2 "halberdier"    sp_human    oc_warrior s_guard        no-traps halberdier-equip   nil 'guard-ai faction-glasdrin   nil 'drop-generic halberdier-loot))
-(define glasdrin-crossbowman   (mk-npct2 "crossbowman"   sp_human    oc_warrior s_xbowguard        no-traps crossbowman-equip  nil 'guard-ai faction-glasdrin   nil 'drop-generic crossbowman-loot))
+(define cave-goblin-priest
+  '((name    . "cave goblin priest")
+    (species . sp_cave_goblin)
+    (occ     . oc_wizard)
+    (sprite  . s_cgob_shaman)
+    (stuff   . wizard-equip)
+    (ai      . 'priest-ai)
+    (faction . faction-cave-goblin)))
+
+(define ranger
+  '((name    . "ranger")
+    (species . sp_human)
+    (occ     . oc_ranger)
+    (sprite  . s_nager)
+    (stuff   . ranger-equip)
+    (ai      . 'ranger-ai)
+    (faction . faction-men)))
+
+(define skeletal-spear-thrower
+  '((name    . "skeletal spear-thrower")
+    (species . sp_skeleton)
+    (occ     . oc_warrior)
+    (sprite  . s_spearskeleton)
+    (stuff   . spear-thrower-equip)
+    (effects . undead-effects)
+    (ai      . 'nolight-ai)
+    (faction . faction-monster)))
+
+(define skeletal-warrior
+  '((name    . "skeletal warrior")
+    (species . sp_skeleton)
+    (occ     . oc_warrior)
+    (sprite  . s_skeleton)
+    (stuff   . skeletal-warrior-equip)
+    (effects . undead-effects)
+    (ai      . 'nolight-ai)
+    (faction . faction-monster)))
+
+(define skeletal-archer
+  '((name    . "skeletal archer")
+    (species . sp_skeleton)
+    (occ     . oc_archer)
+    (sprite  . s_skeletonarcher)
+    (stuff   . archer-equip)
+    (effects . undead-effects)
+    (ai      . 'nolight-ai)
+    (faction . faction-monster)))
+
+(define death-knight
+  '((name    . "death knight")
+    (species . sp_skeleton)
+    (occ     . oc_warrior)
+    (sprite  . s_deathknight)
+    (stuff   . death-knight-equip)
+    (effects . undead-effects)
+    (ai      . 'death-knight-ai)
+    (faction . faction-monster)))
+
+(define craven-archer
+  '((name    . "craven archer")
+    (species . sp_skeleton)
+    (occ     . oc_warrior)
+    (sprite  . s_deatharcher)
+    (stuff   . craven-archer-equip)
+    (effects . undead-effects)
+    (ai      . 'craven-archer-ai)
+    (faction . faction-monster)))
+
+(define halberdier    
+  '((name . "halberdier")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_guard)
+    (stuff . halberdier-equip)
+    (ai . 'guard-ai)
+    (faction . faction-men)))
+
+(define crossbowman   
+  '((name . "crossbowman")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_xbowguard)
+    (stuff . crossbowman-equip)
+    (ai . 'guard-ai)
+    (faction . faction-men)))
+
+(define medik         
+  '((name . "medik")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_blue_wizard)
+    (stuff . medik-equip)
+    (ai . 'medik-ai)
+    (faction . faction-men)))
+
+(define trog         
+  '((name . "trog")
+    (species . sp_trog)
+    (occ . oc_warrior)
+    (sprite . s_male_trog)
+    (stuff . trog-equip)
+    (ai . 'std-ai)
+    (faction . faction-trog)))
+
+(define glasdrin-halberdier    
+  '((name . "halberdier")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_guard)
+    (stuff . halberdier-equip)
+    (ai . 'guard-ai)
+    (faction . faction-glasdrin)))
+
+(define glasdrin-crossbowman   
+  '((name . "crossbowman")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_xbowguard)
+    (stuff . crossbowman-equip)
+    (ai . 'guard-ai)
+    (faction . faction-glasdrin)))
 
 ;; Bandit types
-(define footpad    (mk-npct2 "footpad"    sp_human oc_wrogue s_brigand wrogue-traps wrogue-1-equip nil 'std-ai faction-outlaw nil nil nil))
-(define bandit     (mk-npct2 "bandit"     sp_human oc_wrogue s_brigand wrogue-traps wrogue-2-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-2-loot))
-(define highwayman (mk-npct2 "highwayman" sp_human oc_wrogue s_brigand wrogue-traps wrogue-3-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-3-loot))
-(define blackguard (mk-npct2 "blackguard" sp_human oc_wrogue s_brigand wrogue-traps wrogue-4-equip nil 'std-ai faction-outlaw nil 'drop-generic wrogue-4-loot))
-(define bomber     (mk-npct2 "mad jester" sp_human oc_wrogue s_jester  wrogue-traps bomber-equip   nil 'std-ai faction-outlaw nil 'drop-generic bomber-loot))
 
-(define bat (mk-npct2 "bat" sp_bat nil s_bat nil nil nil 'animal-ai faction-monster nil 'drop-generic animal-loot))
-(define rat (mk-npct2 "dire rat" sp_rat nil s_rat nil nil nil 'rat-ai faction-monster nil 'drop-generic animal-loot))
-(define zorn (mk-npct2 "zorn" sp_zorn oc_wrogue s_zorn wrogue-traps nil nil 'animal-ai faction-monster nil 'drop-generic zorn-loot))
-(define bull (mk-npct "bull" sp_bull nil s_bull nil nil nil 'animal-ai faction-none nil 'drop-generic bull-loot))
-(define lich (mk-npct2 "lich" sp_lich oc_wizard s_lich wizard-traps wizard-equip undead-effects 'spell-sword-ai faction-monster nil 'drop-generic lich-loot))
-(define dryad (mk-npct2 "dryad" sp_dryad nil s_reaper nil nil nil 'dryad-ai faction-monster nil 'drop-generic dryad-loot))
-(define gazer (mk-npct2 "gazer" sp_gazer oc_wizard s_gazer wizard-traps nil nil 'gazer-ai faction-monster nil 'drop-generic wizard-loot))
-(define demon (mk-npct2 "demon" sp_demon nil s_demon basic-traps demon-equip demon-effects 'demon-ai faction-monster nil 'drop-generic demon-loot))
-(define ghast (mk-npct2 "ghast" sp_ghast nil s_ghost nil nil undead-effects 'std-ai faction-monster nil 'drop-generic ghast-loot))
-(define snake (mk-npct "snake" sp_snake nil s_snake nil nil nil 'snake-ai faction-monster nil 'drop-generic animal-loot))
-(define insect (mk-npct "insect swarm" sp_insect nil s_insects nil nil nil 'animal-ai faction-monster nil 'drop-generic animal-loot))
-(define dragon (mk-npct2 "dragon" sp_dragon nil s_dragon wizard-traps nil drag-effects 'dragon-ai faction-monster nil 'drop-generic dragon-loot))
-(define knight (mk-npct2 "knight" sp_human oc_warrior s_knight no-traps knight-equip nil 'guard-ai faction-trigrave 'knight-conv 'drop-generic knight-loot))
-(define paladin (mk-npct2 "paladin" sp_human oc_warrior s_companion_paladin no-traps knight-equip nil 'std-ai faction-men 'knight-conv 'drop-generic knight-loot))
-(define tinker (mk-npct2 "tinker" sp_human oc_warrior s_companion_tinker no-traps wrogue-4-equip nil 'std-ai faction-men nil 'drop-generic wrogue-4-loot))
-(define squire (mk-npct2 "squire" sp_human oc_warrior s_xbowguard no-traps squire-equip nil 'guard-ai faction-trigrave 'knight-conv 'drop-generic squire-loot))
-(define warlock (mk-npct2 "warlock" sp_human oc_wizard s_wizard wizard-traps wizard-equip nil 'warlock-ai faction-monster nil 'drop-generic wizard-loot))
-(define wizard (mk-npct2 "wizard" sp_human oc_wizard s_companion_wizard wizard-traps wizard-equip nil 'spell-sword-ai faction-men nil 'drop-generic wizard-loot))
-(define headless (mk-npct2 "headless" sp_headless oc_warrior s_headless basic-traps headless-equip nil 'animal-ai faction-monster nil 'drop-generic headless-loot))
-(define gint-mage (mk-npct2 "gint mage" sp_gint oc_wizard s_gint_mage wizard-traps wizard-equip nil 'shaman-ai faction-gint nil 'drop-generic wizard-loot))
-(define gint-warrior (mk-npct2 "gint warrior" sp_gint oc_warrior s_gint basic-traps gint-warrior-equip nil 'std-ai faction-gint nil 'drop-generic gint-loot))
-(define yellow-slime (mk-npct2 "yellow slime" sp_yellow_slime nil s_yellow_slime nil nil yellow-slime-effects 'yellow-slime-ai faction-monster nil 'drop-generic yellow-slime-loot))
-(define trog-geomancer (mk-npct2 "trog geomancer" sp_trog oc_wizard s_female_trog no-traps geomancer-equip nil 'geomancer-ai faction-trog nil nil nil))
-(define corrupt-halberdier (mk-npct2 "halberdier" sp_human oc_warrior s_guard no-traps halberdier-equip nil 'guard-ai faction-monster nil 'drop-generic halberdier-loot))
-(define corrupt-crossbowman (mk-npct2 "crossbowman" sp_human oc_warrior s_guard no-traps crossbowman-equip nil 'guard-ai faction-monster nil 'drop-generic crossbowman-loot))
-(define giant-spider (mk-npct2 "giant spider" sp_spider nil s_spider nil nil nil 'spider-ai faction-monster nil 'drop-generic spider-loot))
-(define queen-spider (mk-npct2 "queen spider" sp_queen_spider nil s_queen_spider nil nil nil 'spider-ai faction-monster nil 'drop-generic queen-spider-loot))
-(define fire-slime (mk-npct2 "fire slime" sp_fire_slime nil s_red_slime nil nil fire-slime-effects 'animal-ai faction-monster nil 'drop-generic fire-slime-loot))
-(define hydra (mk-npct2 "hydra" sp_hydra nil s_hydra no-traps nil hydra-effects 'hydra-ai faction-monster nil 'drop-generic hydra-loot))
-(define mimic (mk-npct2 "mimic" sp_mimic nil s_mimic no-traps nil nil 'animal-ai faction-monster nil 'drop-generic zorn-loot))
-(define ratling-swarmer (mk-npct2 "ratling swarmer" sp_ratling nil s_mouse no-traps nil nil 'ratling-ai faction-monster nil 'drop-generic animal-loot))
-(define ratling-sorcerer (mk-npct2 "ratling sorcerer"  sp_ratling oc_wizard s_ratling_sorcerer wizard-traps wizard-equip  nil 'ratling-sorcerer-ai faction-monster nil 'drop-generic animal-loot))
-(define carabid (mk-npct2 "carabid" sp_carabid nil s_carabid nil nil nil 'carabid-ai faction-monster nil 'drop-generic animal-loot))
-(define deer (mk-npct2 "deer" sp_deer nil s_deer nil nil nil nil faction-none nil 'drop-generic deer-loot))
-(define chicken (mk-npct2 "chicken" sp_chicken nil s_chicken nil nil nil 'animal-ai faction-none nil 'drop-generic animal-loot))
+(define footpad    
+  '((name . "footpad")
+    (species . sp_human)
+    (occ . oc_wrogue)
+    (sprite . s_brigand)
+    (stuff . wrogue-1-equip)
+    (ai . 'std-ai)
+    (faction . faction-outlaw)))
+
+(define bandit     
+  '((name . "bandit")
+    (species . sp_human)
+    (occ . oc_wrogue)
+    (sprite . s_brigand)
+    (stuff . wrogue-2-equip)
+    (ai . 'std-ai)
+    (faction . faction-outlaw)))
+
+(define highwayman 
+  '((name . "highwayman")
+    (species . sp_human)
+    (occ . oc_wrogue)
+    (sprite . s_brigand)
+    (stuff . wrogue-3-equip)
+    (ai . 'std-ai)
+    (faction . faction-outlaw)))
+
+(define blackguard 
+  '((name . "blackguard")
+    (species . sp_human)
+    (occ . oc_wrogue)
+    (sprite . s_brigand)
+    (stuff . wrogue-4-equip)
+    (ai . 'std-ai)
+    (faction . faction-outlaw)))
+
+(define bomber     
+  '((name . "mad jester")
+    (species . sp_human)
+    (occ . oc_wrogue)
+    (sprite . s_jester)
+    (stuff . bomber-equip)
+    (ai . 'std-ai)
+    (faction . faction-outlaw)))
+
+
+(define bat 
+  '((name . "bat")
+    (species . sp_bat)
+    (sprite . s_bat)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define rat 
+  '((name . "dire rat")
+    (species . sp_rat)
+    (sprite . s_rat)
+    (ai . 'rat-ai)
+    (faction . faction-monster)))
+
+(define zorn 
+  '((name . "zorn")
+    (species . sp_zorn)
+    (occ . oc_wrogue)
+    (sprite . s_zorn)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define bull 
+  '((name . "bull")
+    (species . sp_bull)
+    (sprite . s_bull)
+    (ai . 'animal-ai)
+    (faction . faction-none)))
+
+(define lich 
+  '((name . "lich")
+    (species . sp_lich)
+    (occ . oc_wizard)
+    (sprite . s_lich)
+    (stuff . wizard-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-monster)))
+
+(define dryad 
+  '((name . "dryad")
+    (species . sp_dryad)
+    (sprite . s_reaper)
+    (ai . 'dryad-ai)
+    (faction . faction-monster)))
+
+(define gazer 
+  '((name . "gazer")
+    (species . sp_gazer)
+    (occ . oc_wizard)
+    (sprite . s_gazer)
+    (ai . 'gazer-ai)
+    (faction . faction-monster)))
+
+(define demon 
+  '((name . "demon")
+    (species . sp_demon)
+    (sprite . s_demon)
+    (stuff . demon-equip)
+    (ai . 'demon-ai)
+    (faction . faction-monster)))
+
+(define ghast 
+  '((name . "ghast")
+    (species . sp_ghast)
+    (sprite . s_ghost)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
+
+(define snake 
+  '((name . "snake")
+    (species . sp_snake)
+    (sprite . s_snake)
+    (ai . 'snake-ai)
+    (faction . faction-monster)))
+
+(define insect 
+  '((name . "insect swarm")
+    (species . sp_insect)
+    (sprite . s_insects)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define dragon 
+  '((name . "dragon")
+    (species . sp_dragon)
+    (sprite . s_dragon)
+    (ai . 'dragon-ai)
+    (faction . faction-monster)))
+
+(define knight 
+  '((name . "knight")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_knight)
+    (stuff . knight-equip)
+    (ai . 'guard-ai)
+    (faction . faction-trigrave)))
+
+(define paladin 
+  '((name . "paladin")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_companion_paladin)
+    (stuff . knight-equip)
+    (ai . 'std-ai)
+    (faction . faction-men)))
+
+(define tinker 
+  '((name . "tinker")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_companion_tinker)
+    (stuff . wrogue-4-equip)
+    (ai . 'std-ai)
+    (faction . faction-men)))
+
+(define squire 
+  '((name . "squire")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_xbowguard)
+    (stuff . squire-equip)
+    (ai . 'guard-ai)
+    (faction . faction-trigrave)))
+
+(define warlock 
+  '((name . "warlock")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_wizard)
+    (stuff . wizard-equip)
+    (ai . 'warlock-ai)
+    (faction . faction-monster)))
+
+(define wizard 
+  '((name . "wizard")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_companion_wizard)
+    (stuff . wizard-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-men)))
+
+(define headless 
+  '((name . "headless")
+    (species . sp_headless)
+    (occ . oc_warrior)
+    (sprite . s_headless)
+    (stuff . headless-equip)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define gint-mage 
+  '((name . "gint mage")
+    (species . sp_gint)
+    (occ . oc_wizard)
+    (sprite . s_gint_mage)
+    (stuff . wizard-equip)
+    (ai . 'shaman-ai)
+    (faction . faction-gint)))
+
+(define gint-warrior 
+  '((name . "gint warrior")
+    (species . sp_gint)
+    (occ . oc_warrior)
+    (sprite . s_gint)
+    (stuff . gint-warrior-equip)
+    (ai . 'std-ai)
+    (faction . faction-gint)))
+
+(define yellow-slime 
+  '((name . "yellow slime")
+    (species . sp_yellow_slime)
+    (sprite . s_yellow_slime)
+    (ai . 'yellow-slime-ai)
+    (faction . faction-monster)))
+
+(define trog-geomancer 
+  '((name . "trog geomancer")
+    (species . sp_trog)
+    (occ . oc_wizard)
+    (sprite . s_female_trog)
+    (stuff . geomancer-equip)
+    (ai . 'geomancer-ai)
+    (faction . faction-trog)))
+
+(define corrupt-halberdier 
+  '((name . "halberdier")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_guard)
+    (stuff . halberdier-equip)
+    (ai . 'guard-ai)
+    (faction . faction-monster)))
+
+(define corrupt-crossbowman 
+  '((name . "crossbowman")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_guard)
+    (stuff . crossbowman-equip)
+    (ai . 'guard-ai)
+    (faction . faction-monster)))
+
+(define giant-spider 
+  '((name . "giant spider")
+    (species . sp_spider)
+    (sprite . s_spider)
+    (ai . 'spider-ai)
+    (faction . faction-monster)))
+
+(define queen-spider 
+  '((name . "queen spider")
+    (species . sp_queen_spider)
+    (sprite . s_queen_spider)
+    (ai . 'spider-ai)
+    (faction . faction-monster)))
+
+(define fire-slime 
+  '((name . "fire slime")
+    (species . sp_fire_slime)
+    (sprite . s_red_slime)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define hydra 
+  '((name . "hydra")
+    (species . sp_hydra)
+    (sprite . s_hydra)
+    (ai . 'hydra-ai)
+    (faction . faction-monster)))
+
+(define mimic 
+  '((name . "mimic")
+    (species . sp_mimic)
+    (sprite . s_mimic)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define ratling-swarmer 
+  '((name . "ratling swarmer")
+    (species . sp_ratling)
+    (sprite . s_mouse)
+    (ai . 'ratling-ai)
+    (faction . faction-monster)))
+
+(define ratling-sorcerer 
+  '((name . "ratling sorcerer")
+    (species . sp_ratling)
+    (occ . oc_wizard)
+    (sprite . s_ratling_sorcerer)
+    (stuff . wizard-equip)
+    (ai . 'ratling-sorcerer-ai)
+    (faction . faction-monster)))
+
+(define carabid 
+  '((name . "carabid")
+    (species . sp_carabid)
+    (sprite . s_carabid)
+    (ai . 'carabid-ai)
+    (faction . faction-monster)))
+
+(define deer 
+  '((name . "deer")
+    (species . sp_deer)
+    (sprite . s_deer)
+    (faction . faction-none)))
+
+(define chicken 
+  '((name . "chicken")
+    (species . sp_chicken)
+    (sprite . s_chicken)
+    (ai . 'animal-ai)
+    (faction . faction-none)))
 
 ;; NPC's with no drops
 
-(define green-slime     (mk-npct "green slime"            sp_green_slime   nil        s_slime        nil          nil           slime-effects 'animal-ai       faction-monster       nil))
-(define kraken          (mk-npct "kraken"                 sp_kraken        nil        s_kraken       nil          nil           nil           'kraken-ai       faction-monster       nil))
-(define sea-serpent     (mk-npct "sea serpent"            sp_sea_serpent   nil        s_sea_serpent  nil          nil           nil           'sea-serpent-ai  faction-monster       nil))
-(define wolf            (mk-npct "wolf"                   sp_wolf          nil        s_wolf         nil          nil           nil           'wolf-ai       faction-monster       nil))
-(define wisp            (mk-npct "wisp"                   sp_wisp          nil        s_wisp         nil          nil           wisp-effects  'wisp-ai         faction-monster       nil))
-(define nixie-spearman  (mk-npct "nixie spearman"         sp_nixie         oc_warrior s_nixie_spear  no-traps     nixie-1-equip nil           'nixie-ai        faction-monster       nil))
-(define nixie-swordsman (mk-npct "nixie swordsman"        sp_nixie         oc_warrior s_nixie_sword  no-traps     nixie-2-equip nil           'nixie-ai        faction-monster       nil))
-(define sludge-kraken   (mk-npct "sludge kraken"          sp_great_kraken  nil        s_great_kraken nil          nil           sludge-kraken-effects 'sludge-kraken-ai faction-monster nil))
-(define sludge-tentacle (mk-npct "sludge kraken tentacle" sp_kraken_tentacle nil      s_tentacle     nil          nil           nil           'sludge-tentacle-ai faction-monster    nil))
-(define griffin         (mk-npct "griffin"                sp_griffin       nil        s_griffin      nil          nil           nil           'griffin-ai      faction-monster       nil))
-(define griffin-chick   (mk-npct "griffin chick"          sp_griffin_chick nil        s_griffin_chick nil         nil           nil           'griffin-ai      faction-monster       nil))
+(define green-slime
+  '((name . "green slime")
+    (species . sp_green_slime)
+    (sprite . s_slime)
+    (effects . slime-effects)
+    (ai . 'animal-ai)
+    (faction . faction-monster)))
+
+(define kraken          
+  '((name . "kraken")
+    (species . sp_kraken)
+    (sprite . s_kraken)
+    (ai . 'kraken-ai)
+    (faction . faction-monster)))
+
+(define sea-serpent     
+  '((name . "sea serpent")
+    (species . sp_sea_serpent)
+    (sprite . s_sea_serpent)
+    (ai . 'sea-serpent-ai)
+    (faction . faction-monster)))
+
+(define wolf            
+  '((name . "wolf")
+    (species . sp_wolf)
+    (sprite . s_wolf)
+    (ai . 'wolf-ai)
+    (faction . faction-monster)))
+
+(define wisp            
+  '((name . "wisp")
+    (species . sp_wisp)
+    (sprite . s_wisp)
+    (effects . wisp-effects)
+    (ai . 'wisp-ai)
+    (faction . faction-monster)))
+(define nixie-spearman  
+  '((name . "nixie spearman")
+    (species . sp_nixie)
+    (occ . oc_warrior)
+    (sprite . s_nixie_spear)
+    (equip . nixie-1-equip)
+    (ai . 'nixie-ai)
+    (faction . faction-monster)))
+
+(define nixie-swordsman 
+  '((name . "nixie swordsman")
+    (species . sp_nixie)
+    (occ . oc_warrior)
+    (sprite . s_nixie_sword)
+    (equip . nixie-2-equip)
+    (ai . 'nixie-ai)
+    (faction . faction-monster)))
+
+(define sludge-kraken   
+  '((name . "sludge kraken")
+    (species . sp_great_kraken)
+    (sprite . s_great_kraken)
+    (effects . sludge-kraken-effects)
+    (ai . 'sludge-kraken-ai)
+    (faction . faction-monster)))
+
+(define sludge-tentacle 
+  '((name . "sludge kraken tentacle")
+    (species . sp_kraken_tentacle)
+    (sprite . s_tentacle)
+    (ai . 'sludge-tentacle-ai)
+    (faction . faction-monster)))
+
+(define griffin         
+  '((name . "griffin")
+    (species . sp_griffin)
+    (sprite . s_griffin)
+    (ai . 'griffin-ai)
+    (faction . faction-monster)))
+
+(define griffin-chick   
+  '((name . "griffin chick")
+    (species . sp_griffin_chick)
+    (sprite . s_griffin_chick)
+    (ai . 'griffin-ai)
+    (faction . faction-monster)))
 
 ;; accursed
-(define accursed-acolyte    (mk-npct2 "an accursed acolyte"    sp_human oc_wizard s_shepherd nil accursed-1-equip nil 'spell-sword-ai faction-accursed nil nil nil))
-(define accursed-apprentice (mk-npct2 "an accursed apprentice" sp_human oc_wizard s_shepherd nil accursed-2-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic accursed-1-loot))
-(define accursed-journeyman (mk-npct2 "an accursed journeyman" sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
-(define accursed-master     (mk-npct2 "an accursed master"     sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
-(define accursed-adept      (mk-npct2 "an accursed adept"      sp_human oc_wizard s_wizard   nil accursed-3-equip nil 'spell-sword-ai faction-accursed nil 'drop-generic wizard-loot))
-(define accursed-guardian   (mk-npct2 "an accursed guardian"   sp_human oc_warrior s_fighter nil accursed-4-equip nil 'std-ai         faction-accursed nil  'drop-generic wizard-loot))
-(define accursed-defender   (mk-npct2 "an accursed defender"   sp_human oc_warrior s_knight  nil accursed-5-equip nil 'std-ai         faction-accursed nil 'drop-generic accursed-5-loot))
-(define accursed-templar    (mk-npct2 "an accursed templar"    sp_human oc_warrior s_avatar  nil accursed-6-equip nil 'std-ai         faction-accursed nil 'drop-generic wrogue-4-loot))
+
+(define accursed-acolyte    
+  '((name . "an accursed acolyte")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_shepherd)
+    (stuff . accursed-1-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-accursed)))
+
+(define accursed-apprentice 
+  '((name . "an accursed apprentice")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_shepherd)
+    (stuff . accursed-2-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-accursed)))
+
+(define accursed-journeyman 
+  '((name . "an accursed journeyman")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_wizard)
+    (stuff . accursed-3-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-accursed)))
+
+(define accursed-master     
+  '((name . "an accursed master")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_wizard)
+    (stuff . accursed-3-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-accursed)))
+
+(define accursed-adept      
+  '((name . "an accursed adept")
+    (species . sp_human)
+    (occ . oc_wizard)
+    (sprite . s_wizard)
+    (stuff . accursed-3-equip)
+    (ai . 'spell-sword-ai)
+    (faction . faction-accursed)))
+
+(define accursed-guardian   
+  '((name . "an accursed guardian")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_fighter)
+    (stuff . accursed-4-equip)
+    (ai . 'std-ai)
+    (faction . faction-accursed)))
+
+(define accursed-defender   
+  '((name . "an accursed defender")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_knight)
+    (stuff . accursed-5-equip)
+    (ai . 'std-ai)
+    (faction . faction-accursed)))
+
+(define accursed-templar    
+  '((name . "an accursed templar")
+    (species . sp_human)
+    (occ . oc_warrior)
+    (sprite . s_avatar)
+    (stuff . accursed-6-equip)
+    (ai . 'std-ai)
+    (faction . faction-accursed)))
 
 ;; npcs with odd alignments
-(define gint-warrior-m (mk-npct2 "gint warrior" sp_gint oc_warrior s_gint basic-traps gint-warrior-equip nil 'std-ai faction-monster nil 'drop-generic gint-loot))
-(define trog-m         (mk-npct2 "trog"         sp_trog    oc_warrior s_male_trog        no-traps trog-equip        nil 'std-ai   faction-monster nil nil nil))
-(define cave-goblin-slinger-m   (mk-npct2 "cave goblin slinger"   sp_cave_goblin  oc_warrior s_cgob_slinger    basic-traps  slinger-equip    nil 'generic-ai faction-monster  nil 'drop-generic slinger-loot))
-(define cave-goblin-berserker-m (mk-npct2 "cave goblin berserker" sp_cave_goblin  oc_warrior s_cgob_berserk    basic-traps  berserker-equip  nil 'generic-ai faction-monster  nil 'drop-generic berserker-loot))
-(define gint-mage-m (mk-npct2 "gint mage" sp_gint oc_wizard s_gint_mage wizard-traps wizard-equip nil 'shaman-ai faction-monster nil 'drop-generic wizard-loot))
-(define trog-geomancer-m (mk-npct2 "trog geomancer" sp_trog oc_wizard s_female_trog no-traps geomancer-equip nil 'std-ai faction-monster nil nil nil))
 
+(define gint-warrior-m 
+  '((name . "gint warrior")
+    (species . sp_gint)
+    (occ . oc_warrior)
+    (sprite . s_gint)
+    (stuff . gint-warrior-equip)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
 
-;;define                        (mk-npct "                          sp_              oc_        s_                 nil          nil                    nil           'std-ai           ))
+(define trog-m         
+  '((name . "trog")
+    (species . sp_trog)
+    (occ . oc_warrior)
+    (sprite . s_male_trog)
+    (stuff . trog-equip)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
+
+(define cave-goblin-slinger-m   
+  '((name . "cave goblin slinger")
+    (species . sp_cave_goblin)
+    (occ . oc_warrior)
+    (sprite . s_cgob_slinger)
+    (stuff . slinger-equip)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
+
+(define cave-goblin-berserker-m 
+  '((name . "cave goblin berserker")
+    (species . sp_cave_goblin)
+    (occ . oc_warrior)
+    (sprite . s_cgob_berserk)
+    (stuff . berserker-equip)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
+
+(define gint-mage-m 
+  '((name . "gint mage")
+    (species . sp_gint)
+    (occ . oc_wizard)
+    (sprite . s_gint_mage)
+    (stuff . wizard-equip)
+    (ai . 'shaman-ai)
+    (faction . faction-monster)))
+
+(define trog-geomancer-m 
+  '((name . "trog geomancer")
+    (species . sp_trog)
+    (occ . oc_wizard)
+    (sprite . s_female_trog)
+    (stuff . geomancer-equip)
+    (ai . 'std-ai)
+    (faction . faction-monster)))
 
 ;;----------------------------------------------------------------------------
 ;; Type queries
