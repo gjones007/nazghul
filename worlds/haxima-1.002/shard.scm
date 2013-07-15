@@ -619,7 +619,7 @@
 (kern-load "raise-merciful-death.scm")
 
 (kern-mk-place 
- 'p_shard
+ 'p_hring
  "The Shard Surface"
  nil          ; sprite 
  m_shard      ; map
@@ -716,5 +716,5 @@
  nil ; edge entrances
  )
 
-(kern-obj-put-at (mk-world-musicdata 'ml-travelling) (list p_shard 0 0))
-(kern-place-add-on-entry-hook p_shard 'music-on-combat-entry)
+(kern-obj-put-at (mk-world-musicdata 'ml-travelling) (list p_hring 0 0))
+(kern-place-add-on-entry-hook p_hring 'music-on-combat-entry)

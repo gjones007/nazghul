@@ -2,7 +2,7 @@
 (define merciful-death-y 525)
 
 (define (raise-merciful-death)
-  (let ((loc (mk-loc p_shard 
+  (let ((loc (mk-loc p_hring 
                      merciful-death-x 
                      merciful-death-y)))
   (kern-log-msg "From her watery grave...")
