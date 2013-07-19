@@ -1559,10 +1559,6 @@
                                                    nil)
                                 (cdr sprites))))
 
-;   (foldr (lambda (s1 s2) (kern-sprite-append-decoration s1 s2))
-;          (kern-sprite-clone (car sprites) nil)
-;          (cdr sprites)))
-
 (define (kchar-in-vehicle? kchar)
   (let ((kparty (kern-char-get-party kchar)))
     (if (null? kparty)

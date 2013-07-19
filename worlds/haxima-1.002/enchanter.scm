@@ -458,7 +458,6 @@
      sp_human ;;.....species
      oc_wizard ;;.. .occupation
      s_old_mage ;;..sprite
-     ;;(mk-composite-sprite (list s_hum_body s_hum_belt s_hum_beard))
      faction-men ;;..faction
      0 ;;...........custom strength modifier
      7 ;;...........custom intelligence modifier

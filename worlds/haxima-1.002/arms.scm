@@ -537,14 +537,6 @@
 (kern-mk-sprite 's_mystic_sword   ss_arms 2 42 #f 0)
 (kern-mk-sprite 's_flaming_sword  ss_arms 2 44 #f 0)
 
-;; Paper-doll sprites
-(kern-mk-sprite 's_hum_staff_gold     ss_arms 4 56 #f 0)
-(kern-mk-sprite 's_hum_staffglo_blue  ss_arms 4 60 #f 0)
-(kern-sprite-apply-matrix (kern-sprite-clone s_hum_staffglo_blue 
-                                             's_hum_staffglo_green) 
-                          mat_blue_to_green)
-(kern-mk-sprite 's_hum_halberd ss_arms 4 64 #f 0)
-
 (define melee-arms-types
   (list
    ;;     ===================================================================================================================================================
@@ -718,16 +710,6 @@
 
 (define (arms-type-needs-ammo? karms)
   (in-list? karms arms-types-needing-ammo))
-
-;;----------------------------------------------------------------------------
-;; Test paper doll sprites: add a gob to the staff arms type with a "readied"
-;; sprite.
-;;----------------------------------------------------------------------------
-(kern-type-set-gob t_staff 
-                   (kern-sprite-blit-over s_hum_staff_gold 
-                                          s_hum_staffglo_blue))
-
-(kern-type-set-gob t_halberd s_hum_halberd)
 
 ;;--------------------------------------------------------------------------
 ;; Cannon mounting for shipboard combat (and maybe anywhere else we can think of later)

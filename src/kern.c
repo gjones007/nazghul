@@ -9294,47 +9294,6 @@ KERN_API_CALL(kern_sprite_strip_decorations)
         return scm_mk_ptr(sc, orig);
 }
 
-KERN_API_CALL(kern_sprite_apply_matrix)
-{
-        struct sprite *sprite;
-        float matrix[4][3];
-        int row;
-        pointer pcol;
-
-        /* unpack the sprite */
-        if (unpack(sc, &args, "p", &sprite)) {
-                load_err("kern-sprite-apply-matrix: bad args");
-                return sc->NIL;
-        }
-
-        if (!scm_is_pair(sc, args)) {
-                load_err("kern-sprite-apply-matrix: no matrix!");
-                goto abort;
-        }
-        args = scm_car(sc, args);
-
-        /* unpack the matrix */
-        for (row = 0; row < 4; row++) {
-                if (! scm_is_pair(sc, args)) {
-                        load_err("kern-sprite-apply-matrix: only %d of 4 rows!", row);
-                        goto abort;
-                }
-                pcol = scm_car(sc, args);
-                args = scm_cdr(sc, args);
-                if (unpack(sc, &pcol, "fff", &matrix[row][0],
-                           &matrix[row][1],
-                           &matrix[row][2])) {
-                        load_err("kern-sprite-apply-matrix: bad args in row %d!", row);
-                        goto abort;
-                }
-        }
-
-        sprite_apply_matrix(sprite, matrix);
- abort:
-        return scm_mk_ptr(sc, sprite);
-}
-
-
 KERN_API_CALL(kern_los_invalidate)
 {
         vmask_flush_all();
@@ -10514,7 +10473,6 @@ scheme *kern_init(void)
         /* kern-sprite api */
         API_DECL(sc, "kern-sprite-clone", kern_sprite_clone);
         API_DECL(sc, "kern-sprite-append-decoration", kern_sprite_append_decoration);
-        API_DECL(sc, "kern-sprite-apply-matrix", kern_sprite_apply_matrix);
         API_DECL(sc, "kern-sprite-blit-over", kern_sprite_blit_over);
         API_DECL(sc, "kern-sprite-get-tag", kern_sprite_get_tag);
         API_DECL(sc, "kern-sprite-strip-decorations", kern_sprite_strip_decorations);

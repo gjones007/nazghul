@@ -65,17 +65,6 @@ extern int sprite_can_face(struct sprite *sprite, int facing);
 /* sprite_save - save to file for reload. */
 extern void sprite_save(struct sprite *sprite, struct save *save);
 
-/* sprite_apply_matrix - applies a color conversion matrix. This is good for
- * converting monotone or grayscale images into other tones. The matrix is
- * applied as follows:
- *
- * r = R*m[0][0] + G*m[0][1] + B*m[0][2] + m[3][0]
- * g = R*m[1][0] + G*m[1][1] + B*m[1][2] + m[3][1]
- * b = R*m[2][0] + G*m[2][1] + B*m[2][2] + m[3][2]
- *
- */
-void sprite_apply_matrix(struct sprite *sprite, float matrix[4][3]);
-
 /**
  * Remove all decorations from the sprite and discard them (see
  * sprite_append_decoration()). Useful for rebuilding decorated sprites from
