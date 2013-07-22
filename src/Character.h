@@ -275,10 +275,6 @@ class Character:public Being {
 
 	class Container *container;
 	bool rearm;
-
-	// *** PC fields
-	//struct sprite *sprite;
-
         bool charmed;
 
         // --------------------------------------------------------------------
