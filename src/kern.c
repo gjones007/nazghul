@@ -9248,22 +9248,6 @@ KERN_API_CALL(kern_sprite_append_decoration)
         return scm_mk_ptr(sc, orig);
 }
 
-KERN_API_CALL(kern_sprite_blit_over)
-{
-        struct sprite *orig, *decor;
-
-        if (unpack(sc, &args, "pp", &orig, &decor)) {
-                rt_err("kern-sprite-append-decoration: bad args");
-                return sc->NIL;
-        }
-        if (!orig || ! decor) {
-                rt_err("kern-sprite-append-decoration: null arg");
-                return sc->NIL;
-        }
-        sprite_blit_over(orig, decor);
-        return scm_mk_ptr(sc, orig);
-}
-
 KERN_API_CALL(kern_sprite_get_tag)
 {
         struct sprite *sprite;
@@ -10473,7 +10457,6 @@ scheme *kern_init(void)
         /* kern-sprite api */
         API_DECL(sc, "kern-sprite-clone", kern_sprite_clone);
         API_DECL(sc, "kern-sprite-append-decoration", kern_sprite_append_decoration);
-        API_DECL(sc, "kern-sprite-blit-over", kern_sprite_blit_over);
         API_DECL(sc, "kern-sprite-get-tag", kern_sprite_get_tag);
         API_DECL(sc, "kern-sprite-strip-decorations", kern_sprite_strip_decorations);
 
