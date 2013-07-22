@@ -632,36 +632,6 @@
 		(send-signal nil kobj 'update-gfx)
 	))
 
-;;----------------------------------------------------------------------------
-;; Ready/Unready hooks
-;;----------------------------------------------------------------------------
-(define (uses-paper-doll? kobj)
-  (and (obj-is-char? kobj)
-       (eqv? (kern-char-get-species kobj)
-             sp_human)))
-
-(define (ktype-get-sprite ktype)
-  (let ((gob (kern-type-get-gob ktype)))
-    (if (null? gob)
-        nil
-        gob)))
-
-(define (rebuild-humanoid-sprite khum)
-  (re-mk-composite-sprite (cons (kern-sprite-strip-decorations 
-                                 (kern-obj-get-sprite khum))
-                                (filter notnull?
-                                        (map ktype-get-sprite
-                                             (kern-char-get-arms khum))))))
-
-(define (ready-equip fgob kobj karms slot)
-  (if (uses-paper-doll? kobj)
-      (begin
-        (kern-obj-set-sprite kobj (rebuild-humanoid-sprite kobj))
-        (kern-map-set-dirty))))
-
-(define (unready-equip fgob kobj karms slot)
-  (ready-equip fgob kobj karms slot))
-
 ;; ----------------------------------------------------------------------------
 ;; Cleanup tentacles (for sludge krakens when they die). Note that this is a
 ;; hack, in that ALL tentacles in the current place are cleaned up, whether
