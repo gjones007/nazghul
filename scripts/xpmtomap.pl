@@ -16,7 +16,7 @@ This program is made available under the GPL. Detailed conditions should be foun
 Note that as currently implemented, the output of the program is a derivitive work of the input data, but NOT a derivitive work of the program itself.
 
 Usage:
-xpmtomap.pl palette_data_file xpm_input_data
+xpmtomap.pl palette_data_file xpm_input_data map_name
 
 Output is a scm list suitable for use as a Nazghul map.
 
@@ -41,6 +41,8 @@ while (<FILEIN>)
 close FILEIN;
 
 open (FILEIN,$ARGV[1]) or die "failed to open: $ARGV[1]";
+
+my $map_name = $ARGV[2];
 
 # check for file header
 my $line = <FILEIN>;
@@ -95,7 +97,7 @@ undef %colourToSymbol; #may as well free some memory (we may need it in a bit)
 #my $curline=$firstline;
 #my $prevline=$lastline;
 
-print "(kern-mk-map 'm_hring ".$width." ".$height." pal_expanded\n";
+print "(kern-mk-map '".$map_name." ".$width." ".$height." pal_expanded\n";
 print "             (list\n";
 while (<FILEIN>)
 {
