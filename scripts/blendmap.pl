@@ -99,7 +99,6 @@ my $mapin;
 my $mapout;
 my $width;
 my $height;
-
 my $border;
 
 if ($ARGV[2] =~ /^(\S\S)$/)
@@ -202,7 +201,7 @@ while (<FILEIN>)
 			}
 		}
 		$charmaps{$name}=$chars;
-		#print STDERR "map $name '@{$charmaps{$name}}'\n";
+		print STDERR "map $name '@{$charmaps{$name}}'\n";
 	}
 	elsif ($_ =~ /^\s*#/)
 	{
@@ -671,9 +670,11 @@ sub initOut
 	}
 }
 
+my $map_name;
+
 sub printMap
 {
-    print "(kern-mk-map 'm_test ".$width." ".$height." pal_expanded\n";
+    print "(kern-mk-map '".$map_name." ".$width." ".$height." pal_expanded\n";
     print "             (list\n";
     foreach my $line (@{$mapout})
     {
@@ -721,6 +722,10 @@ while (<FILEIN>)
 		$mapin=[];
 		$inmap=1;
 	}
+        elsif ($_ =~ /.*\(kern-mk-map\s+['](\S+)\s+.*/)
+        {
+            $map_name = $1;
+        }
 } 
 
 
