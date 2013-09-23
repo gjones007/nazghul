@@ -324,7 +324,7 @@
     (list  "~E" t_grassw_wes)
     (list  "~F" t_grassw_c)
 	
-	(list  "{#" t_hilli_nw)             ;; hills + grass
+    (list  "{#" t_hilli_nw)             ;; hills + grass
     (list  "{%" t_hilli_ne)
     (list  "{&" t_hilli_nwe)
     (list  "{A" t_hilli_ws)
