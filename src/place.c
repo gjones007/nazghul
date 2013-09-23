@@ -21,6 +21,7 @@
 /* 12/14/2002 Sam Glasby added place_get_terrain()
  */
 #include "mem.h"
+#include "nazghul.h"  // for DeveloperMode
 #include "sound.h"
 #include "place.h"
 #include "sprite.h"
@@ -1393,7 +1394,10 @@ struct terrain *place_get_terrain(struct place *place, int x, int y)
 static void place_describe_terrain(struct place *place, int x, int y)
 {
 	struct terrain *t = place_get_terrain(place, x, y);
-	log_continue("%s", t->name);	    
+	log_continue("%s", t->name);
+	if (DeveloperMode) {
+		log_continue(" (%d)", t->alpha);
+	}
 }
 
 static int place_describe_objects(struct place *place, int x, int y, 
