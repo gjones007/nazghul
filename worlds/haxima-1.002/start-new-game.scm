@@ -320,7 +320,7 @@
   (kern-log-msg "To the southwest you see a cave.")
   )
 
-(define start-loc (eval-loc brundegardt-loc))
+(define start-loc (list p_hring 231 409))
 
 (define (simple-start kplayer)
   (kern-obj-put-at kplayer start-loc))

@@ -58,38 +58,40 @@
 ;;----------------------------------------------------------------------------
 (kern-mk-place 'p_moongate_clearing "Moongate Clearing"
   s_shrine ;; sprite
-  (kern-mk-map 'm_moongate_clearing 23 28 pal_expanded
-    (list
-		"^3 ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^d t3 tt tt tt td ^3 ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^5 "
-		"^^ {{ {{ {{ ^^ ^^ ^^ ^c t3 tt tt || || ^b ^^ ^^ {{ {{ {{ ^^ {{ {{ ^^ "
-		"^^ {{ {{ {{ {{ ^^ t3 tt tt || tt tt || |% ^a ^^ {C t7 {{ ^^ ^^ {{ ^^ "
-		"^^ {{ {{ {{ {{ {C tt || || || || tt || || |% ^e t3 tt {A {{ ^^ {{ ^^ "
-		"^^ ^^ {{ {{ {C t3 || || || || tt tt tt || || tt tt tt t5 {A {{ {{ ^^ "
-		"^^ ^^ ^^ ^^ t3 tt || || || tt tt tt tt tt tt tt tt tt tt td {{ ^^ ^^ "
-		"^^ ^^ ^^ ^^ || || || || tt tt tc bb ta tt tt tt tt tt || ^b ^^ ^^ ^c "
-		"^^ ^^ ^^ ^^ || || || tt tt bb .. .. .. bb tt tt tt || || |% ^a ^c |& "
-		"^^ ^^ ^^ ^c || || tt tt tt td .. .. .. tb tt tt tt tt || || || || || "
-		"^^ ^c |# || || || tt tt bb .. .. .. .. .. bb tt tt tt tt tt tt tt tt "
-		"^^ |# || || || || tt tc .. .. .. .. .. .. .. ta tt tt tt tt tt tt tc "
-		"{{ |A || || || || tt bb .. .. .. .. .. .. .. bb tt tt tt tt tt tc {& "
-		"{{ {% |A || || tt tt t5 .. .. .. .. .. .. .. t3 tt tc {# {% te {# {{ "
-		"^^ {{ {{ {{ {% ta tt tt bb .. .. .. .. .. bb tt tc {# {{ {{ {{ {{ {{ "
-		"^^ ^^ ^^ {{ {{ {% ta tt tt td .. .. .. tb tt tt {# ^^ ^^ {{ {{ ^^ ^^ "
-		"^^ ^^ ^^ ^^ {{ {{ {% ta tt bb .. .. .. bb tt tt {A ^^ ^^ ^^ {{ {{ ^^ "
-		"^^ ^^ {7 ^^ ^^ ^^ {{ {% tt td .. .. .. tb tt tt td {{ ^^ ^^ {{ {{ ^^ "
-		"^^ {3 .. {1 {5 ^^ {{ {{ tt bb .. .. .. bb tt tt {B {{ {{ {{ {{ ^^ ^^ "
-		"^^ {2 .. .. {4 ^^ {{ {{ tt td .. .. .. tb tt tt tt tt t5 {A ^^ ^^ ^^ "
-		"^^ {a .. {8 {c ^^ {{ {{ tt bb .. .. .. bb te bb te bb tt t5 ^^ ^^ ^^ "
-		"^^ ^^ {e ^^ ^^ ^^ {{ {{ tt td .. .. .. .. .. .. .. .. ta tt ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ ^^ ^^ {{ tt bb .. .. .. .. .. .. .. .. bb tt ^^ ^^ ^^ "
-		"^^ ^^ ,H ,A ,I ,L ^^ ^^ tt t5 .. .. .. .. .. .. .. .. tb tt ^a ^^ ^^ "
-		"^^ {3 .. .. .. .. {5 ^^ ta tc bb .. bb t7 bb .. .. .. bb tt t5 ^a ^^ "
-		"^^ {2 .. .. .. .. .. {9 .. .. .. tC t3 tt td .. .. .. tb tt tt t5 ^e "
-		"^^ {2 .. .. .. .. {4 ^^ t3 || tt tt tt tt bb .. .. .. bb tt tt tt t5 "
-		"^^ ,S ,E ,E ,K ,E ,R ^^ || || || tt tt tc .. .. .. .. .. ta tt tt tt "
-		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ta || tt tt tc bb .. .. .. .. .. bb ta tt tc "
-     )
-    )
+  (kern-mk-map
+   'm_moongate_shrine 19 30 pal_expanded
+   (list
+    "rn rn rn rn rn rn rn xx ,, ,, ,, xx rn rn rn rn rn rn rn "
+    "rn rn rn rn rn rn rn xx ,, ,, ,, xx rn rn rn rn rn rn rn "
+    "rn rn rn rn xx xx xx xx ,, ,, ,, xx xx xx xx rn rn rn rn "
+    "rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+    "rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+    "rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+    "rn rn rn rn xx xx xx xx ,, ,, ,, xx xx xx xx rn rn rn rn "
+    "rn rn rn rn rn rc t7 xx ,, ,, ,, xx t3 t5 r2 rn rn rn rn "
+    "rn rn rn rn rc t3 tt xx ,, ,, ,, xx tt tt ra rn rn rn rn "
+    "rn rn rn r4 t3 tt tt xx xx ,, xx xx tt tt t5 r2 rn rn rn "
+    "rn rn rn rc tt tt tt tt t5 .. t3 tt tt tt tt ra rn rn rn "
+    "rn rn rc |# || tt tt bb tt .. tt bb tt tt || |% ra rn rn "
+    "rn r4 |# || || || tt tt tt .. tt tt tt || || || |% r2 rn "
+    "rn r4 || || || || tt tt tt .. tt tt tt || || || || r2 rn "
+    "rn r4 || || || tt tt bb tt .. tt bb tt tt || || || r2 rn "
+    "rn rc || || tt tt tt tt tc .. ta tt tt tt tt || || ra rn "
+    "r4 |# || || tt bb tt tc t# .. t% ta tt bb tt || || |% r2 "
+    "r4 || || tt tt tt tt t# .. .. .. t% tt tt tt tt || || r2 "
+    "r4 || || tt tt tt tt .. .. dd .. .. tt tt tt tt || || r2 "
+    "r4 || || tt tt tt tt tA .. .. .. tC tt tt tt tt || || r2 "
+    "r4 |A || || tt bb tt t5 tA .. tC t3 tt bb tt || || |C r2 "
+    "rn r5 || || tt tt tt tt tt tt tt tt tt tt tt || || r3 rn "
+    "rn r4 || || || tt tt bb tt tt tt bb tt tt || || || r2 rn "
+    "rn r4 || || || || tt tt tt tt tt tt tt || || || || r2 rn "
+    "rn r4 |A || || || || || tt tt tt || || || || || |C r2 rn "
+    "rn rn r5 |A || || || || || || || || || || || |C r3 rn rn "
+    "rn rn rn r1 r5 |A || || || || || || || |C r3 r1 rn rn rn "
+    "rn rn rn rn rn r1 r5 |A || || || |C r3 r1 rn rn rn rn rn "
+    "rn rn rn rn rn rn rn r5 |A || |C r3 rn rn rn rn rn rn rn "
+    "rn rn rn rn rn rn rn rn r9 r9 r9 rn rn rn rn rn rn rn rn "
+    ))
   #f #f #f #f
   ;; subplaces
   nil
@@ -104,14 +106,7 @@
    )
 
   nil ;; hooks
-  (list  ;; edge entrances
-   (list north 16 27)
-   (list east   0 11)
-   (list west  22 10)
-   (list northeast 8 27)
-   (list southeast   9 0)
-   (list southwest  22 7)
-   )
+  nil ;; edge entrances
 ) ;; end of place p_moongate_clearing
 
 (mk-place-music p_moongate_clearing 'ml-small-town)

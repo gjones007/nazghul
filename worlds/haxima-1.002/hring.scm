@@ -15,15 +15,14 @@
 
  ;; subplaces:
  (list
-  (list p_moongate_clearing 336 389)
-  (list p_test_place 337 390)
-  (list p_gregors_hut       338  436)
-  (list p_abandoned_farm    284  377)
-  (list p_trigrave          271  400)
+  (list p_moongate_clearing 231 410)
+  (list p_gregors_hut       225 399)
+  (list p_abandoned_farm    284 377)
+  (list p_trigrave          271 400)
   (list p_enchanters_tower  143 239)
-  (list p_green_tower       380  398)
-  (list p_bole              404  304)
-  (list p_glasdrin          276  207)
+  (list p_green_tower       380 398)
+  (list p_bole              404 304)
+  (list p_glasdrin          276 207)
   (list p_oparine           240 455)
   (list p_absalot           367 141)
 ;;  (list p_engineers_hut     50   4)
