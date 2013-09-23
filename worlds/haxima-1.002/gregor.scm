@@ -243,11 +243,6 @@
        (method 'ilya (lambda (knpc kpc) (say knpc "Yep. She lives at my place now "
                                              "that her parents are dead.")))
 
-       ;; SAM: I dont' see any reference to this lake anywhere, commenting this one out for now...
-       ;;       (method 'lake (lambda (knpc kpc) (say knpc "Exit this shrine and ye'll find yourself in a "
-       ;;                                             "hidden valley. Head south and you'll see the Gray Lake "
-       ;;                                             "to the west.")))
-
        (method 'offe (lambda (knpc kpc) (say knpc "There in the cave you'll find a chest. "
                                              "Take what's inside. Wanderers enter this world with little, "
                                              "and in the past some have done great good, "
@@ -293,35 +288,36 @@
        (method 'wise (lambda (knpc kpc) (say knpc "The Wise are both strong and -mostly- good. "
                                              "They help the land, as they can, "
 					     "and keep the Accursed at bay.")))
-       (method 'accu (lambda (knpc kpc) 
-                       (say knpc "The Accursed? Rumour has it they trade their souls for power. "
-                            "If not for the Wise they would overrun the Shard.")))     
-
+       (method
+        'accu
+        (lambda (knpc kpc) 
+          (say knpc "The Accursed? People say they trade their souls for power. "
+               "If not for the Wise they would overrun the Shard.")))     
+       
        (method 'witc (lambda (knpc kpc) (say knpc "Don't know of any witches in these parts any more.")))
        ))
 
-;;----------------------------------------------------------------------------
-;; Ctor
 (define (mk-gregor)
   (bind 
-   (kern-mk-char 'ch_gregor ; tag
-                 "Gregor"              ; name
-                 sp_human            ; species
-                 nil                 ; occ
-                 s_old_townsman          ; sprite
-                 faction-men         ; starting alignment
-                 0 10 5              ; str/int/dex
-                 0 0                 ; hp mod/mult
-                 0 0                 ; mp mod/mult
-                 max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
-                 #f                  ; dead
-                 'gregor-conv        ; conv
-                 sch_gregor          ; sched
-                 'townsman-ai                 ; special ai
-                 nil                 ; container
-                 (list t_axe
-                       t_armor_leather
-                       )              ; readied
-                 )
+   (kern-mk-char
+    'ch_gregor ; tag
+    "Gregor"              ; name
+    sp_human            ; species
+    nil                 ; occ
+    s_old_townsman          ; sprite
+    faction-men         ; starting alignment
+    0 10 5              ; str/int/dex
+    0 0                 ; hp mod/mult
+    0 0                 ; mp mod/mult
+    max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
+    #f                  ; dead
+    'gregor-conv        ; conv
+    sch_gregor          ; sched
+    'townsman-ai                 ; special ai
+    nil                 ; container
+    (list t_axe
+          t_armor_leather
+          )              ; readied
+    )
    (gregor-mk)
    ))
