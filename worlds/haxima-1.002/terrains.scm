@@ -93,7 +93,7 @@
    (list 't_forest_l        "forest"        pclass-forest    s_forest            dns 0 nil)
    (list 't_forest_b        "forest"        pclass-forest    s_forest            opq 0 nil)
 
-   (list 't_hills           "hills"         pclass-hills     s_hills             trn 0 nil)
+   (list 't_hills           "hills"         pclass-hills     s_hills             opq 0 nil)
    (list 't_mountains_v     "mountains"     pclass-vmountains s_mountains         trn 0 nil)
    (list 't_mountains_b     "mountains (below)"     pclass-space s_mountains         trn 0 nil)
    (list 't_mountains       "mountains"     pclass-mountains s_mountains         opq 0 nil)

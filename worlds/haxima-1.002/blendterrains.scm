@@ -151,7 +151,7 @@
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "hills" pclass-hills
                    (mk-composite-sprite (cons s_grass (cons s_hills_c sprites)))
-                   dns 0 nil))
+                   opq 0 nil))
 
 (mk-blend-terrain 't_hilli_ne s_hills_se s_hills_sw s_hills_nw)
 (mk-blend-terrain 't_hilli_nw s_hills_se s_hills_sw s_hills_ne)
