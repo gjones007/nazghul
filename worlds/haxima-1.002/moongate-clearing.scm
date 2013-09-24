@@ -100,7 +100,7 @@
 
   ;; *** contents of the place ***
   (list
-   (list (kern-tag 'black-gate (mk-moongate nil)) 11 11)
+   (list (kern-tag 'black-gate (mk-moongate nil)) 9 18)
    (list (mk-gregor) 1 23)
    (list supplies_chest   1 24)
    )

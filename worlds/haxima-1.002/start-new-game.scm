@@ -302,7 +302,7 @@
 
   (kern-log-enable #f)
   (kern-char-set-sleep ch_wanderer #t)
-  (kern-obj-put-at kplayer (list p_moongate_clearing 11 12))
+  (kern-obj-put-at kplayer (kern-obj-get-location black-gate))
 
   (kern-log-enable #t)
   (kern-log-msg "Then closes without a trace...")
@@ -317,7 +317,6 @@
   (kern-player-set-follow-mode)
   (kern-log-enable #t)  
   (kern-log-msg "...then awaken to a strange new world.")
-  (kern-log-msg "To the southwest you see a cave.")
   )
 
 (define start-loc (list p_hring 231 409))
@@ -326,17 +325,15 @@
   (kern-obj-put-at kplayer start-loc))
   
 (define (create-char kplayer)
- (kern-obj-put-at kplayer (list p_char_setup 10 17)
-                   ))
+  (kern-obj-put-at kplayer (list p_char_setup 10 17)))
       
 ;;----------------------------------------------------------------------------
 ;; To skip the extended start scene comment out this next line and uncomment
 ;; the line after it.
 ;;----------------------------------------------------------------------------
-;;(kern-set-start-proc start-scene)
-;;(kern-set-start-proc simple-start)
+(kern-add-hook 'new_game_start_hook 'start-scene)
 ;;(kern-add-hook 'new_game_start_hook 'create-char)
-(kern-add-hook 'new_game_start_hook 'simple-start)
+;;(kern-add-hook 'new_game_start_hook 'simple-start)
 
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))
@@ -346,7 +343,7 @@
 
 ;;quickstart stuff for playtesting
 
-(if #t
+(if #f
     (begin
       (kern-obj-put-at 
        (mk-chest
