@@ -267,6 +267,7 @@
 (kern-mk-sprite 's_yellow_slime         ss_addon 4 42 #f 0 )
 (kern-mk-sprite 's_yellow_slime_asleep  ss_addon 1 42 #f 0 )
 (kern-mk-sprite 's_wall_torch           ss_addon 2 46 #f 0 )
+(kern-mk-sprite 's_unlit_wall_torch     ss_addon 1 54 #f 0 )
 (kern-mk-sprite 's_water_elemental      ss_addon 1 48 #t 0 )
 (kern-mk-sprite 's_toy_horse                                  ss_addon 1 55 #f 0 )
 ;;(kern-mk-sprite 's_closed_solid_wood_door_in_stone            ss_addon 1 49 #f 0 )

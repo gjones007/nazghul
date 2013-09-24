@@ -319,7 +319,7 @@
   (kern-log-msg "...then awaken to a strange new world.")
   )
 
-(define start-loc (list p_hring 231 409))
+(define start-loc (kern-obj-get-location black-gate))
 
 (define (simple-start kplayer)
   (kern-obj-put-at kplayer start-loc))
@@ -331,9 +331,9 @@
 ;; To skip the extended start scene comment out this next line and uncomment
 ;; the line after it.
 ;;----------------------------------------------------------------------------
-(kern-add-hook 'new_game_start_hook 'start-scene)
+;;(kern-add-hook 'new_game_start_hook 'start-scene)
 ;;(kern-add-hook 'new_game_start_hook 'create-char)
-;;(kern-add-hook 'new_game_start_hook 'simple-start)
+(kern-add-hook 'new_game_start_hook 'simple-start)
 
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))
