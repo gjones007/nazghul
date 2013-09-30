@@ -1396,7 +1396,7 @@ static void place_describe_terrain(struct place *place, int x, int y)
 	struct terrain *t = place_get_terrain(place, x, y);
 	log_continue("%s", t->name);
 	if (DeveloperMode) {
-		log_continue(" (%d)", t->alpha);
+		log_continue(" [%s] (%d)", t->tag, t->alpha);
 	}
 }
 

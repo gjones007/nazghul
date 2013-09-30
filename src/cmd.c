@@ -2764,9 +2764,6 @@ int detailed_examine_XY(struct place *place, int x, int y, void *unused)
 
 bool cmdXamine(class Object * pc)
 {
-        // SAM: Working on an improved (L)ook command,
-        // which works as a "Look Mode" rather than a 
-        // "look at 1 tile" command...
         int x, y;
         bool ret = true;
 
@@ -2792,7 +2789,7 @@ bool cmdXamine(class Object * pc)
         log_end_group();
 
         return ret;
-} // cmdXamine()
+}
 
 const char * name_of_context (void)
 {
@@ -2956,9 +2953,6 @@ bool cmd_save_current_place (struct place * place)
     const char *   file_path;
     save_t * save;
     int ret;
-
-    //log_msg("cmd_save_current_place");
-    //printf("cmd_save_current_place()\n");
 
     file_path = "_test_save_place";
 

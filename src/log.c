@@ -121,8 +121,9 @@ static inline void log_pop()
         list_remove(log_stk.next);
         
         /* If the msg stack is now empty then log all msgs on the queue */
-        if (list_empty(&log_stk))
+        if (list_empty(&log_stk)) {
                 log_print_queued_msgs();
+	}
         log_end_group();
 }
 
