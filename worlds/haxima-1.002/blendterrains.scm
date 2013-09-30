@@ -85,11 +85,11 @@
 (kern-mk-terrain 't_treew_c "trees" pclass-trees
                    (mk-composite-sprite (list s_shoals s_trees_c))
                    lgt 0 nil)
-				   
+			
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "hills" pclass-hills
                    (mk-composite-sprite (cons s_shoals (cons s_hills_c sprites)))
-                   dns 0 nil))
+                   hill-opacity 0 nil))
 
 (mk-blend-terrain 't_hillw_ne s_hills_se s_hills_sw s_hills_nw)
 (mk-blend-terrain 't_hillw_nw s_hills_se s_hills_sw s_hills_ne)
@@ -102,7 +102,7 @@
 
 (kern-mk-terrain 't_hillw_c "hills" pclass-trees
                    (mk-composite-sprite (list s_shoals s_hills_c))
-                   dns 0 nil)
+                   hill-opacity 0 nil)
 				   
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "mountains" pclass-mountains
@@ -151,7 +151,7 @@
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "hills" pclass-hills
                    (mk-composite-sprite (cons s_grass (cons s_hills_c sprites)))
-                   opq 0 nil))
+                   hill-opacity 0 nil))
 
 (mk-blend-terrain 't_hilli_ne s_hills_se s_hills_sw s_hills_nw)
 (mk-blend-terrain 't_hilli_nw s_hills_se s_hills_sw s_hills_ne)
@@ -164,7 +164,7 @@
 
 (kern-mk-terrain 't_hilli_c "hills" pclass-trees
                    (mk-composite-sprite (list s_grass s_hills_c))
-                   1 0 nil)
+                   hill-opacity 0 nil)
 
 ;;---------------------------------------------------------------------------
 ;; swamp corners
@@ -212,7 +212,7 @@
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "forest" pclass-forest
                    (mk-composite-sprite (cons s_grass (cons s_forest_c sprites)))
-                   hvy 0 nil))
+                   opq 0 nil))
 
 (mk-blend-terrain 't_forestg_ne s_forest_se s_forest_sw s_forest_nw)
 (mk-blend-terrain 't_forestg_nw s_forest_se s_forest_sw s_forest_ne)
@@ -266,7 +266,7 @@
 (define (mk-blend-terrain tag . sprites)
   (kern-mk-terrain tag "hills" pclass-hills
                    (mk-composite-sprite (cons s_null (cons s_hills_c sprites)))
-                   dns 0 nil))
+                   hill-opacity 0 nil))
 
 (mk-blend-terrain 't_hillv_ne s_hills_se s_hills_sw s_hills_nw)
 (mk-blend-terrain 't_hillv_nw s_hills_se s_hills_sw s_hills_ne)
