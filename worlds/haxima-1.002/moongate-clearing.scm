@@ -56,7 +56,7 @@
 ;;
 ;; This is where the player starts out.
 ;;----------------------------------------------------------------------------
-(kern-mk-place 'p_moongate_clearing "Moongate Clearing"
+(kern-mk-place 'p_moongate_clearing "The Shrine of the Black Gate"
   s_shrine ;; sprite
   (kern-mk-map
    'm_moongate_shrine 19 30 pal_expanded
@@ -76,12 +76,12 @@
       "rn r4 |# || || || tt tt tt .. tt tt tt || || || |% r2 rn "
       "rn r4 || || || || tt tt tt .. tt tt tt || || || || r2 rn "
       "rn r4 || || || tt tt bb tt .. tt bb tt tt || || || r2 rn "
-      "rn rc || || tt tt tt tt tc .. ta tt tt tt tt || || ra rn "
-      "r4 |# || || tt bb tt tc t# .. t% ta tt bb tt || || |% r2 "
-      "r4 || || tt tt tt tt t# .. .. .. t% tt tt tt tt || || r2 "
-      "r4 || || tt tt tt tt .. .. dd .. .. tt tt tt tt || || r2 "
-      "r4 || || tt tt tt tt tA .. .. .. tC tt tt tt tt || || r2 "
-      "r4 |A || || tt bb tt t5 tA .. tC t3 tt bb tt || || |C r2 "
+      "rn rc || || tt tt tt tt tt .. tt tt tt tt tt || || ra rn "
+      "r4 |# || || tt bb tt tt tc .. ta tt tt bb tt || || |% r2 "
+      "r4 || || tt tt tt tt tc t# .. t% ta tt tt tt tt || || r2 "
+      "r4 || || tt tt tt tt tB .. dd .. tD tt tt tt tt || || r2 "
+      "r4 || || tt tt tt tt t5 tA .. tC t3 tt tt tt tt || || r2 "
+      "r4 |A || || tt bb tt tt t5 tE t3 tt tt bb tt || || |C r2 "
       "rn r5 || || tt tt tt tt tt tt tt tt tt tt tt || || r3 rn "
       "rn r4 || || || tt tt bb tt tt tt bb tt tt || || || r2 rn "
       "rn r4 || || || || tt tt tt tt tt tt tt || || || || r2 rn "
