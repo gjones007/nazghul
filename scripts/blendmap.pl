@@ -355,13 +355,9 @@ sub checkNeighbor
 }
 
 
-my $tx=11;
-my $ty=10;
-
 sub getTally
 {
 	my ($rule,$length,$x,$y) = @_;
-        #if ($x==$tx and $y==$ty) { print STDERR getCell($x,$y)." >>\n"; }
 	if (!inList(ruleTargetTerrain($rule),getCell($x,$y)))
 	{
 		return undef;	
@@ -378,7 +374,6 @@ sub getTally
 		}
 		$tallyinc *= 2;
 	}
-        #if ($x==$tx and $y==$ty) { print STDERR $tally."\n"; }
 	return $tally
 }
 
@@ -399,7 +394,6 @@ sub baseCheck
 	my $length = 4;
 	my $tally = getTally($rule,$length,$x,$y);
 	defined ($tally) or return;
-        #if ($x==$tx and $y==$ty) { print STDERR " =>".ruleOutputTerrain($rule)->[$tally]."\n"; }
 	writeMap($x, $y, ruleOutputTerrain($rule)->[$tally]);
 }
 
@@ -555,7 +549,6 @@ sub getEdgeTally
 		return undef;	
 	}
 	my $tally=0;
-	#print getCell($x,$y)." >>\n";
 	for (my $neighbor = 0; $neighbor < 4; $neighbor++)
 	{
 		my ($tallyinc,$xoff,$yoff)=@{$edgeOffsets->[$neighbor]};
@@ -569,16 +562,13 @@ sub getEdgeTally
 		{
 			$yedge=1;
 		}
-		#print "    $tallyinc ($x $y) ($xoff $yoff) ";
 		my $cellValue = checkEdgeCell($rule,$x+$xoff,$y+$yoff,$xedge,$yedge);
-		#print "= $cellValue \n";
 		defined ($cellValue) or return undef;
 		if ($cellValue)
 		{
 			$tally |= $tallyinc;
 		}
 	}
-	#print $tally."\n";
 	return $tally
 };
 
