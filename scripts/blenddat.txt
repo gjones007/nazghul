@@ -179,6 +179,9 @@ reset
 # roads
 basic ( /f ) ( &roadblend ) ( &road ) ( &water &lava &land &manmade &bridge rr )
 
+# bridges
+basic ( &bridge ) ( &nc == =| &nc =| &nc =| &nc == == &nc &nc &nc &nc &nc &nc ) ( &water &void &lava ) ( &manmade &dryland )
+
 #randomise void
 random ( ** ) [ 0.5 ] ( ** *. )
 
