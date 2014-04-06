@@ -57,22 +57,22 @@ extern int load_errs;
 extern int save_errs;
 
 typedef struct {
-        int duration;
-        struct sprite *sprite;
+	int duration;
+	struct sprite *sprite;
 } global_effect_t;
 
 /* Indices into the hook table */
 #define SESSION_DECL_HOOK(id) id
 typedef enum {
-#       include "session_hooks.h"
-        NUM_HOOKS
+#include "session_hooks.h"
+	NUM_HOOKS
 } session_hook_id_t;
 
 /* Indices into the query table */
 #define SESSION_DECL_QUERY(id) id
 typedef enum {
-#       include "session_queries.h"
-        NUM_QUERIES
+#include "session_queries.h"
+	NUM_QUERIES
 } session_query_id_t;
 
 /* Backwards-compatible replacements for the old global flags: */
@@ -128,161 +128,159 @@ struct skill_set;
 
 struct session {
 
-        // This list keeps track of all loaded object types. It's private to
-        // the session management code which uses it to save and delete objects
-        // when tearing down a session. (aka the "orphan list").
-        struct list data_objects;
+	// This list keeps track of all loaded object types. It's private to
+	// the session management code which uses it to save and delete objects
+	// when tearing down a session. (aka the "orphan list").
+	struct list data_objects;
 
-        struct list terrains; /* list of all terrains */
+	struct list terrains;	/* list of all terrains */
 
-        // The global crosshair type is per-session and several many places
-        class ObjectType *crosshair_type;
-        class Cursor *crosshair;
+	// The global crosshair type is per-session and several many places
+	class ObjectType *crosshair_type;
+	class Cursor *crosshair;
 
-        // The damage sprite is used in mapPaintDamage
-        struct sprite *damage_sprite;
+	// The damage sprite is used in mapPaintDamage
+	struct sprite *damage_sprite;
 
-        // Global clock settings
-        struct clock clock;
+	// Global clock settings
+	struct clock clock;
 
-        // Saved status window state.
-        enum StatusMode status_mode;
+	// Saved status window state.
+	enum StatusMode status_mode;
 
-        // Saved LOS style.
-        const char *los;
+	// Saved LOS style.
+	const char *los;
 
-        // Only one palette per session will be allowed, and it will be
-        // globally accessible here. This is to accomodate the creation of
-        // temporary combat maps in the wilderness.
-        struct terrain_palette *palette;
+	// Only one palette per session will be allowed, and it will be
+	// globally accessible here. This is to accomodate the creation of
+	// temporary combat maps in the wilderness.
+	struct terrain_palette *palette;
 
-        // The sky is used by sky.c
-        struct sky sky;
+	// The sky is used by sky.c
+	struct sky sky;
 
-        // Magic is used in cmd.c
-        struct magic magic;
+	// Magic is used in cmd.c
+	struct magic magic;
 
-        // The interpreter is private
-        void *interp;
+	// The interpreter is private
+	void *interp;
 
-        // This starts at zero when the session is loaded and is incremented
-        // each time the session is saved. A copy of its value is kept in the
-        // saved struct below.
-        int session_id;
+	// This starts at zero when the session is loaded and is incremented
+	// each time the session is saved. A copy of its value is kept in the
+	// saved struct below.
+	int session_id;
 
-        // Temporary wilderness combat place requires special handling so that
-        // it is saved in the proper order.
-        struct place *combat_place;
-        char saved_combat_place : 1;
+	// Temporary wilderness combat place requires special handling so that
+	// it is saved in the proper order.
+	struct place *combat_place;
+	char saved_combat_place:1;
 
-        int reloaded : 1; /* Old session destroyed, this one is new */
+	int reloaded:1;		/* Old session destroyed, this one is new */
 
-        /* Flag to signal a reload has been requested and is pending */
-        int reload;
+	/* Flag to signal a reload has been requested and is pending */
+	int reload;
 
-        /* The number of turns until the "reveal hidden" effect expires: */
-        global_effect_t reveal;
+	/* The number of turns until the "reveal hidden" effect expires: */
+	global_effect_t reveal;
 
-        /* The number of turns until the "quicken" effect expires: */
-        global_effect_t quicken;
+	/* The number of turns until the "quicken" effect expires: */
+	global_effect_t quicken;
 
-        /* The number of turns until the "time stop" effect expires: */
-        global_effect_t time_stop;
+	/* The number of turns until the "time stop" effect expires: */
+	global_effect_t time_stop;
 
-        /* During time stop, sprites for player-controlled objects should be
-         * the only ones that animate. Instead of advancing the general
-         * animation tick counter in sprites.c, advance a special tick counter
-         * here. In object.c it will use this special tick counter for
-         * advancing only player-controlled object sprites. */
-        int time_stop_ticks;
+	/* During time stop, sprites for player-controlled objects should be
+	 * the only ones that animate. Instead of advancing the general
+	 * animation tick counter in sprites.c, advance a special tick counter
+	 * here. In object.c it will use this special tick counter for
+	 * advancing only player-controlled object sprites. */
+	int time_stop_ticks;
 
-        /* The number of turns until the "magic negated" effect expires: */
-        global_effect_t magic_negated;
+	/* The number of turns until the "magic negated" effect expires: */
+	global_effect_t magic_negated;
 
-        /* The number of turns until the "xray vision" effect expires: */
-        global_effect_t xray;
+	/* The number of turns until the "xray vision" effect expires: */
+	global_effect_t xray;
 
-        /* The passability table */
-        struct ptable *ptable;
+	/* The passability table */
+	struct ptable *ptable;
 
-        /* The diplomacy table */
-        struct dtable *dtable;
+	/* The diplomacy table */
+	struct dtable *dtable;
 
-        /* The turn/tick work queues */
-        struct list turnq;
-        struct list tickq;
+	/* The turn/tick work queues */
+	struct list turnq;
+	struct list tickq;
 
-        /* Startup script */
-        struct closure *start_proc;
+	/* Startup script */
+	struct closure *start_proc;
 
-        /* A multiplier for temporarily speeding up time (used when the player
-         * is camping or resting) */
-        float time_accel;
+	/* A multiplier for temporarily speeding up time (used when the player
+	 * is camping or resting) */
+	float time_accel;
 
-        struct list hook_table[NUM_HOOKS];
-        struct closure *query_table[NUM_QUERIES];
+	struct list hook_table[NUM_HOOKS];
+	struct closure *query_table[NUM_QUERIES];
 
-        struct node sched_chars;   /* characters with multi-place schedules */
+	struct node sched_chars;	/* characters with multi-place schedules */
 
-        /* This is a flat-out hack. I decided to add some things like
-         * describing if beings are hostile for the xamine command and showing
-         * red or green squares around NPCs for the attack command, and these
-         * require knowledge of a "who wants to know?" nature deep in the guts
-         * of some call stacks. So, I added this global variable. It's
-         * wrong, I know. Be careful with it. */
-        Being *subject;
+	/* This is a flat-out hack. I decided to add some things like
+	 * describing if beings are hostile for the xamine command and showing
+	 * red or green squares around NPCs for the attack command, and these
+	 * require knowledge of a "who wants to know?" nature deep in the guts
+	 * of some call stacks. So, I added this global variable. It's
+	 * wrong, I know. Be careful with it. */
+	Being *subject;
 
-        struct list skills;     /* list of all skills in the game     */
-        struct list skill_sets; /* list of all skill sets in the game */
-        struct list blenders;   /* obsolete?                          */
+	struct list skills;	/* list of all skills in the game     */
+	struct list skill_sets;	/* list of all skill sets in the game */
+	struct list blenders;	/* obsolete?                          */
 
-        /* The turn count shown in the foogod window; incremented once per game
-         * loop in play.c */
-        int turn_count;
+	/* The turn count shown in the foogod window; incremented once per game
+	 * loop in play.c */
+	int turn_count;
 
-        /* The player party object for this session */
-        class PlayerParty *player;
+	/* The player party object for this session */
+	class PlayerParty *player;
 
-        char show_boxes : 1;  /* draw red/green/yellow boxes around npcs */
-	char is_demo : 1; /* demo mode session */
-	
-        struct tree *freezer;
+	char show_boxes:1;	/* draw red/green/yellow boxes around npcs */
+	char is_demo:1;		/* demo mode session */
 
-        int num_kern_includes; /* Number of times kern-include was used when
-                                * loading the session. Needed for generating
-                                * progress bar code in the save file. */
+	struct tree *freezer;
 
-        unsigned int major, minor, release; /* script version */
+	int num_kern_includes;	/* Number of times kern-include was used when
+				 * loading the session. Needed for generating
+				 * progress bar code in the save file. */
+
+	unsigned int major, minor, release;	/* script version */
 };
 
 // Callback table for saving objects
 typedef struct save {
 
-        FILE *file;
-        int indent;
+	FILE *file;
+	int indent;
 
-        // This is so objects can tell if they've saved themselves already for
-        // the current session.
-        int session_id;
+	// This is so objects can tell if they've saved themselves already for
+	// the current session.
+	int session_id;
 
-        // printf with tabs
-        void (*write)(struct save *save, const char *fmt, ...);
+	// printf with tabs
+	void (*write) (struct save * save, const char *fmt, ...);
 
-        // printf without tabs
-        void (*append)(struct save *save, const char *fmt, ...);
+	// printf without tabs
+	void (*append) (struct save * save, const char *fmt, ...);
 
-        // printf with tabs & incr tabs
-        void (*enter)(struct save *save, const char *fmt, ...);
+	// printf with tabs & incr tabs
+	void (*enter) (struct save * save, const char *fmt, ...);
 
-        // printf with tabs & decr tabs
-        void (*exit)(struct save *save, const char *fmt, ...);
-
-        
+	// printf with tabs & decr tabs
+	void (*exit) (struct save * save, const char *fmt, ...);
 
 } save_t;
 
-save_t * save_new(FILE *   file);
-void     save_del(save_t * save);
+save_t *save_new(FILE * file);
+void save_del(save_t * save);
 
 extern int session_load(char *filename);
 extern int session_save(char *fname);
@@ -302,28 +300,33 @@ void session_del(struct session *session);
 // the object if you want to remove it from the session (NOTE: calling
 // session_rm() will NOT invoke the dtor provided to session_add()).
 // ----------------------------------------------------------------------------
-extern void * session_add(struct session *session, void *obj, 
-                          void (*dtor)(void *),
-                          void (*save)(save_t *save, void *obj),
-                          void (*start)(void *obj)
-        );
-extern void * session_add_connection(struct session *session, void *obj, 
-                                     void (*dtor)(void *),
-                                     void (*save)(save_t *save, void *obj)
-        );
+extern void *session_add(struct session *session, void *obj,
+			 void (*dtor) (void *),
+			 void (*save) (save_t * save, void *obj),
+			 void (*start) (void *obj)
+    );
+extern void *session_add_connection(struct session *session, void *obj,
+				    void (*dtor) (void *),
+				    void (*save) (save_t * save, void *obj)
+    );
 extern void session_rm(struct session *session, void *handle);
 
-extern void session_run_hook(struct session *session, session_hook_id_t id, const char *fmt, ...);
-extern void *session_add_hook(struct session *session, session_hook_id_t id, struct closure *proc, pointer args);
-extern void session_rm_hook(struct session *session, session_hook_id_t id, pointer code);
-extern int session_run_query(struct session *session, session_query_id_t id, const char *fmt, ...);
-extern void session_add_query(struct session *session, session_query_id_t id, struct closure *proc);
+extern void session_run_hook(struct session *session, session_hook_id_t id,
+			     const char *fmt, ...);
+extern void *session_add_hook(struct session *session, session_hook_id_t id,
+			      struct closure *proc, pointer args);
+extern void session_rm_hook(struct session *session, session_hook_id_t id,
+			    pointer code);
+extern int session_run_query(struct session *session, session_query_id_t id,
+			     const char *fmt, ...);
+extern void session_add_query(struct session *session, session_query_id_t id,
+			      struct closure *proc);
 extern const char *session_hook_id_to_str(session_hook_id_t id);
 extern session_hook_id_t session_str_to_hook_id(char *str);
 
 extern void save_err(const char *fmt, ...);
 extern struct node *session_add_sched_char(struct session *session,
-                                           class Character *npc);
+					   class Character * npc);
 extern void session_rm_sched_char(struct node *node);
 extern void session_synch_sched_chars(struct session *session);
 extern void session_intro_sched_chars(struct session *session);

@@ -27,9 +27,7 @@
 #include "macros.h"
 #include <stdarg.h>
 
-BEGIN_DECL
-
-extern int DEBUG;
+BEGIN_DECL extern int DEBUG;
 extern int VERBOSE;
 
 extern void dbg(const char *fmt, ...);
@@ -39,5 +37,4 @@ extern void warn(const char *fmt, ...);
 extern void vwarn(const char *fmt, va_list args);
 
 END_DECL
-
 #endif

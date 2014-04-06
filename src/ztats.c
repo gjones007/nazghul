@@ -34,9 +34,9 @@
 #include <string.h>
 
 struct ztats {
-        struct applet base;
-        struct list panes;
-        struct ztats_pane *current;
+	struct applet base;
+	struct list panes;
+	struct ztats_pane *current;
 };
 
 /**
@@ -47,62 +47,64 @@ static struct ztats ztats;
 
 static void ztats_op_paint(struct applet *applet)
 {
-        DECL_CAST(struct ztats, ztats, applet);
+	DECL_CAST(struct ztats, ztats, applet);
 
-        screen_erase(&applet->dims);
-        ztats->current->ops->paint(ztats->current);
-        screen_update(&applet->dims);
+	screen_erase(&applet->dims);
+	ztats->current->ops->paint(ztats->current);
+	screen_update(&applet->dims);
 
-        status_repaint_title();
+	status_repaint_title();
 }
 
 static void ztats_scroll(struct ztats *ztats, enum StatusScrollDir dir)
 {
-        struct list *list = 0;
+	struct list *list = 0;
 
-        if (! ztats->current) {
-                return;
-        }
+	if (!ztats->current) {
+		return;
+	}
 
-        /* let the pane have first crack at handling it */
-        if (ztats->current->ops->scroll 
-            && ztats->current->ops->scroll(ztats->current, dir)) {
-                ztats_op_paint(&ztats->base);
-                return;
-        }
+	/* let the pane have first crack at handling it */
+	if (ztats->current->ops->scroll
+	    && ztats->current->ops->scroll(ztats->current, dir)) {
+		ztats_op_paint(&ztats->base);
+		return;
+	}
 
-        switch (dir) {
-        case ScrollRight:
-                list = ztats->current->list.next;
-                if (list == &ztats->panes) {
-                        list = list->next;
-                        assert(list != &ztats->panes);
-                }
-                break;
-        case ScrollLeft:
-                list = ztats->current->list.prev;
-                if (list == &ztats->panes) {
-                        list = list->prev;
-                        assert(list != &ztats->panes);
-                }
-                break;
-        default:
-                /* ignore non-horizontal scrolling */
-                return;
-        }
+	switch (dir) {
+	case ScrollRight:
+		list = ztats->current->list.next;
+		if (list == &ztats->panes) {
+			list = list->next;
+			assert(list != &ztats->panes);
+		}
+		break;
+	case ScrollLeft:
+		list = ztats->current->list.prev;
+		if (list == &ztats->panes) {
+			list = list->prev;
+			assert(list != &ztats->panes);
+		}
+		break;
+	default:
+		/* ignore non-horizontal scrolling */
+		return;
+	}
 
-        ztats->current = list_entry(list, struct ztats_pane, list);
-        if (ztats->current->ops->enter) {
-                ztats->current->ops->enter(ztats->current, ztats->base.session->player, dir, &ztats->base.dims);
-        }
+	ztats->current = list_entry(list, struct ztats_pane, list);
+	if (ztats->current->ops->enter) {
+		ztats->current->ops->enter(ztats->current,
+					   ztats->base.session->player, dir,
+					   &ztats->base.dims);
+	}
 
-        ztats_op_paint(&ztats->base);
+	ztats_op_paint(&ztats->base);
 
 }
 
-static int ztats_key_handler(struct KeyHandler * handler, int key, int keymod)
+static int ztats_key_handler(struct KeyHandler *handler, int key, int keymod)
 {
-        DECL_CAST(struct ztats, ztats, handler->data);
+	DECL_CAST(struct ztats, ztats, handler->data);
 
 	switch (key) {
 	case KEY_NORTH:
@@ -128,12 +130,12 @@ static int ztats_key_handler(struct KeyHandler * handler, int key, int keymod)
 	case SDLK_RETURN:
 	case SDLK_SPACE:
 	case SDLK_KP_ENTER:
-        case KEY_HERE:
+	case KEY_HERE:
 	case '\n':
-                if (ztats->current->ops->select) {
-                        ztats->current->ops->select(ztats->current);
-                        ztats_op_paint(&ztats->base); /* in case applet ran */
-                }
+		if (ztats->current->ops->select) {
+			ztats->current->ops->select(ztats->current);
+			ztats_op_paint(&ztats->base);	/* in case applet ran */
+		}
 		return 0;
 	case SDLK_ESCAPE:
 	case 'q':
@@ -145,71 +147,73 @@ static int ztats_key_handler(struct KeyHandler * handler, int key, int keymod)
 	return 0;
 }
 
-static void ztats_op_run(struct applet *applet, SDL_Rect *dims, struct session *session)
+static void ztats_op_run(struct applet *applet, SDL_Rect * dims,
+			 struct session *session)
 {
-        DECL_CAST(struct ztats, ztats, applet);
+	DECL_CAST(struct ztats, ztats, applet);
 
-        if (list_empty(&ztats->panes)) {
-                return;
-        }
+	if (list_empty(&ztats->panes)) {
+		return;
+	}
 
 	cmdwin_clear();
 	cmdwin_spush("Stats");
 	cmdwin_spush("<ESC to exit>");
-        foogodSetHintText("\200\201=scroll ESC=exit");
-        foogodSetMode(FOOGOD_HINT);        
-        
-        applet->dims = *dims;
-        applet->session = session;
+	foogodSetHintText("\200\201=scroll ESC=exit");
+	foogodSetMode(FOOGOD_HINT);
 
-        ztats->current = list_entry(ztats->panes.next, struct ztats_pane, list);
-        ztats->current->ops->enter(ztats->current, session->player, ScrollRight, dims);
-        ztats_op_paint(applet);
+	applet->dims = *dims;
+	applet->session = session;
 
-        eventRunKeyHandler(ztats_key_handler, ztats);
+	ztats->current = list_entry(ztats->panes.next, struct ztats_pane, list);
+	ztats->current->ops->enter(ztats->current, session->player, ScrollRight,
+				   dims);
+	ztats_op_paint(applet);
 
-        foogodSetMode(FOOGOD_DEFAULT);
+	eventRunKeyHandler(ztats_key_handler, ztats);
+
+	foogodSetMode(FOOGOD_DEFAULT);
 	cmdwin_pop();
 	cmdwin_spush("ok");
 
-        /* Reset to NULL; else if the current pane removes itself during a
-         * session teardown it will trigger a scroll action, which will
-         * probably crash. */
-        ztats->current = NULL;
+	/* Reset to NULL; else if the current pane removes itself during a
+	 * session teardown it will trigger a scroll action, which will
+	 * probably crash. */
+	ztats->current = NULL;
 
 }
 
 void ztats_init(void)
 {
-        static struct applet_ops ztats_ops = {
-                ztats_op_run,
-                ztats_op_paint
-        };
+	static struct applet_ops ztats_ops = {
+		ztats_op_run,
+		ztats_op_paint
+	};
 
-        memset(&ztats, 0, sizeof(ztats));
-        list_init(&ztats.panes);
-        ztats.base.ops = &ztats_ops;
+	memset(&ztats, 0, sizeof(ztats));
+	list_init(&ztats.panes);
+	ztats.base.ops = &ztats_ops;
 }
 
 void ztats_add_pane(struct ztats_pane *pane)
 {
-        list_add_tail(&ztats.panes, &pane->list);
+	list_add_tail(&ztats.panes, &pane->list);
 }
 
 void ztats_rm_pane(struct ztats_pane *pane)
 {
-        if (pane == ztats.current) {
-                ztats_scroll(&ztats, ScrollRight);
-                if (pane == ztats.current) {
-                        /* last pane in the list */
-                        ztats.current = NULL;
-                }
-        }
+	if (pane == ztats.current) {
+		ztats_scroll(&ztats, ScrollRight);
+		if (pane == ztats.current) {
+			/* last pane in the list */
+			ztats.current = NULL;
+		}
+	}
 
-        list_remove(&pane->list);
+	list_remove(&pane->list);
 }
 
 struct applet *ztats_get_applet(void)
 {
-        return &ztats.base;
+	return &ztats.base;
 }

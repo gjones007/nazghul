@@ -24,9 +24,7 @@
 
 #include "macros.h"
 
-BEGIN_DECL
-
-extern int windInit(void);
+BEGIN_DECL extern int windInit(void);
 extern void windSetDirection(int dir, int duration);
 extern int windGetDirection(void);
 extern void windAdvanceTurns(void);
@@ -34,6 +32,4 @@ extern void windRepaint(void);
 extern void windSave(struct save *save);
 
 END_DECL
-
-
 #endif

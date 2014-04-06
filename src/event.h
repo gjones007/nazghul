@@ -25,10 +25,8 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #include "list.h"
 #include <SDL.h>
-
 /* Map directions to the numeric keypad */
 #define KEY_NORTHWEST   SDLK_KP7
 #define KEY_NORTH       SDLK_KP8
@@ -43,19 +41,15 @@ BEGIN_DECL
 #define KEY_DOWN        KEY_SOUTH
 #define KEY_RIGHT       KEY_EAST
 #define KEY_LEFT        KEY_WEST
-
-#define KEY_SHIFT (1 << 9) /* 512, SDLK_LAST is 323 */
-
+#define KEY_SHIFT (1 << 9)	/* 512, SDLK_LAST is 323 */
 #define KEY_SHIFT_NORTH (KEY_NORTH|KEY_SHIFT)
 #define KEY_SHIFT_SOUTH (KEY_SOUTH|KEY_SHIFT)
 #define KEY_SHIFT_EAST  (KEY_EAST|KEY_SHIFT)
 #define KEY_SHIFT_WEST  (KEY_WEST|KEY_SHIFT)
-
 #define KEY_SHIFT_NORTHEAST (KEY_NORTHEAST|KEY_SHIFT)
 #define KEY_SHIFT_NORTHWEST (KEY_NORTHWEST|KEY_SHIFT)
 #define KEY_SHIFT_SOUTHEAST (KEY_SOUTHEAST|KEY_SHIFT)
 #define KEY_SHIFT_SOUTHWEST (KEY_SOUTHWEST|KEY_SHIFT)
-
 /* 
  * Give canonical names to the UNICODE versions of the CTRL keypresses 
  * that we care about.
@@ -74,50 +68,51 @@ BEGIN_DECL
 #define KEY_CTRL_S      0x13
 #define KEY_CTRL_T      0x14
 #define KEY_CTRL_Z      0x1A
-
-typedef int (*key_handler_fx_t)(struct KeyHandler * handler, int key, int keymod);
+typedef int (*key_handler_fx_t) (struct KeyHandler * handler, int key,
+				 int keymod);
 
 struct TickHandler {
-        struct list list;
-        bool(*fx) (struct TickHandler * handler);
-        void *data;
+	struct list list;
+	 bool(*fx) (struct TickHandler * handler);
+	void *data;
 };
 
-
 struct KeyHandler {
-        struct list list;
-        key_handler_fx_t fx;
-        void *data;  
-        // The data field should always be filled with a struct, 
-        // rather than a scalar such as bool or int,
-        // to facilitate expansions to two or more subfields
-        // For example, the 'struct cursor_movement_keyhandler' above.
+	struct list list;
+	key_handler_fx_t fx;
+	void *data;
+	// The data field should always be filled with a struct, 
+	// rather than a scalar such as bool or int,
+	// to facilitate expansions to two or more subfields
+	// For example, the 'struct cursor_movement_keyhandler' above.
 };
 
 struct QuitHandler {
-        struct list list;
-        bool(*fx) (struct QuitHandler * handler);
-        void *data;
+	struct list list;
+	 bool(*fx) (struct QuitHandler * handler);
+	void *data;
 };
 
 struct MouseMotionHandler {
-        struct list list;
-        bool(*fx) (struct MouseMotionHandler * handler, SDL_MouseMotionEvent *event);
-        void *data;
+	struct list list;
+	 bool(*fx) (struct MouseMotionHandler * handler,
+		    SDL_MouseMotionEvent * event);
+	void *data;
 };
 
 struct MouseButtonHandler {
-        struct list list;
-        bool(*fx) (struct MouseButtonHandler * handler, SDL_MouseButtonEvent *event);
-        void *data;
+	struct list list;
+	 bool(*fx) (struct MouseButtonHandler * handler,
+		    SDL_MouseButtonEvent * event);
+	void *data;
 };
 
 extern int eventInit(void);
 extern void eventExit(void);
 extern void eventHandle(void);
-extern void eventHandlePending(void); /* non-blocking version of eventHandle */
+extern void eventHandlePending(void);	/* non-blocking version of eventHandle */
 extern void eventPushKeyHandler(struct KeyHandler *keyh);
-extern struct KeyHandler * eventPopKeyHandler(void);
+extern struct KeyHandler *eventPopKeyHandler(void);
 extern void eventPushTickHandler(struct TickHandler *keyh);
 extern void eventPopTickHandler(void);
 extern void eventPushQuitHandler(struct QuitHandler *keyh);
@@ -131,5 +126,4 @@ extern void eventClearHook(void);
 extern void eventRunKeyHandler(key_handler_fx_t fx, void *data);
 
 END_DECL
-
 #endif

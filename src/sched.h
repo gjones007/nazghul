@@ -25,8 +25,8 @@
 /* NPC schedules */
 
 #include "list.h"
-#include "scheme.h"           /* for pointer */
-#include "scheme-private.h"   /* for scheme */
+#include "scheme.h"		/* for pointer */
+#include "scheme-private.h"	/* for scheme */
 #include "place.h"
 
 /* Reserved activities (if you add one don't forget to update the
@@ -41,27 +41,25 @@
 #define NUM_ACTIVITIES 7
 
 struct appt {
-        int hr, min, x, y, w, h, act;
-        int index;             /* into sched array */
-        pointer place_sym;     /* scheme var name for place */   
-        struct place *place;   /* appt place */
+	int hr, min, x, y, w, h, act;
+	int index;		/* into sched array */
+	pointer place_sym;	/* scheme var name for place */
+	struct place *place;	/* appt place */
 };
 struct sched {
-        /* struct list list; */
-        char *tag;
-        int n_appts;
-        struct appt *appts;
-        scheme *sc;
+	/* struct list list; */
+	char *tag;
+	int n_appts;
+	struct appt *appts;
+	scheme *sc;
 };
 
 extern struct sched *sched_new(char *tag, int n_appts);
-extern void sched_del(struct sched*);
+extern void sched_del(struct sched *);
 extern int sched_name_to_activity(char *activity_name);
 extern const char *sched_activity_to_name(int activity);
-extern struct appt *sched_get_appointment(struct sched *sched, 
-                                          int hr, int min);
-extern struct place *sched_appt_get_place(struct sched *sched, 
-                                          struct appt *appt);
-
+extern struct appt *sched_get_appointment(struct sched *sched, int hr, int min);
+extern struct place *sched_appt_get_place(struct sched *sched,
+					  struct appt *appt);
 
 #endif

@@ -7,143 +7,143 @@
 /*------------------ Ugly internals -----------------------------------*/
 /*------------------ Of interest only to FFI users --------------------*/
 
-enum scheme_port_kind { 
-  port_free=0, 
-  port_file=1, 
-  port_string=2, 
-  port_input=16, 
-  port_output=32 
+enum scheme_port_kind {
+	port_free = 0,
+	port_file = 1,
+	port_string = 2,
+	port_input = 16,
+	port_output = 32
 };
 
 typedef struct port {
-  unsigned char kind;
-  union {
-    struct {            
-      FILE *file;
-      int closeit;
+	unsigned char kind;
+	union {
+		struct {
+			FILE *file;
+			int closeit;
 #if USE_FILE_AND_LINE
-      char *name;
-      int line;
+			char *name;
+			int line;
 #endif
-    } stdio;
-    struct {
-      char *start;
-      char *past_the_end;
-      char *curr;
-    } string;
-  } rep;
+		} stdio;
+		struct {
+			char *start;
+			char *past_the_end;
+			char *curr;
+		} string;
+	} rep;
 } port;
 
 /* cell structure */
 struct cell {
 #if USE_PROTECT
-  struct list plist;
-  int pref;
+	struct list plist;
+	int pref;
 #endif
-  unsigned int _flag;
-  union {
-    struct {
-      char   *_svalue;
-      int   _length;
-    } _string;
-    num _number;
-    port *_port;
-    foreign_func _ff;
-    struct {
-      struct cell *_car;
-      struct cell *_cdr;
-    } _cons;
-  } _object;
+	unsigned int _flag;
+	union {
+		struct {
+			char *_svalue;
+			int _length;
+		} _string;
+		num _number;
+		port *_port;
+		foreign_func _ff;
+		struct {
+			struct cell *_car;
+			struct cell *_cdr;
+		} _cons;
+	} _object;
 };
 
 struct scheme {
 /* arrays for segments */
-        func_alloc malloc;
-        func_dealloc free;
-        
+	func_alloc malloc;
+	func_dealloc free;
+
 /* return code */
-        int retcode;
-        int tracing;
-        
-#define CELL_SEGSIZE    16*5000  /* # of cells in one segment */
-#define CELL_NSEGMENT   10    /* # of segments for cells */
-        char *alloc_seg[CELL_NSEGMENT];
-        pointer cell_seg[CELL_NSEGMENT];
-        int     last_cell_seg;
-        
+	int retcode;
+	int tracing;
+
+#define CELL_SEGSIZE    16*5000	/* # of cells in one segment */
+#define CELL_NSEGMENT   10	/* # of segments for cells */
+	char *alloc_seg[CELL_NSEGMENT];
+	pointer cell_seg[CELL_NSEGMENT];
+	int last_cell_seg;
+
 /* We use 4 registers. */
-        pointer args;            /* register for arguments of function */
-        pointer envir;           /* stack register for current environment */
-        pointer code;            /* register for current code */
-        pointer dump;            /* stack register for next evaluation */
+	pointer args;		/* register for arguments of function */
+	pointer envir;		/* stack register for current environment */
+	pointer code;		/* register for current code */
+	pointer dump;		/* stack register for next evaluation */
 
-        int interactive_repl;    /* are we in an interactive REPL? */
+	int interactive_repl;	/* are we in an interactive REPL? */
 
-        struct cell _sink;
-        pointer sink;            /* when mem. alloc. fails */
-        struct cell _NIL;
-        pointer NIL;             /* special cell representing empty cell */
-        struct cell _HASHT;
-        pointer T;               /* special cell representing #t */
-        struct cell _HASHF;
-        pointer F;               /* special cell representing #f */
-        struct cell _EOF_OBJ;
-        pointer EOF_OBJ;         /* special cell representing end-of-file object */
-        pointer oblist;          /* pointer to symbol table */
-        pointer global_env;      /* pointer to global environment */
+	struct cell _sink;
+	pointer sink;		/* when mem. alloc. fails */
+	struct cell _NIL;
+	pointer NIL;		/* special cell representing empty cell */
+	struct cell _HASHT;
+	pointer T;		/* special cell representing #t */
+	struct cell _HASHF;
+	pointer F;		/* special cell representing #f */
+	struct cell _EOF_OBJ;
+	pointer EOF_OBJ;	/* special cell representing end-of-file object */
+	pointer oblist;		/* pointer to symbol table */
+	pointer global_env;	/* pointer to global environment */
 
 /* global pointers to special symbols */
-        pointer LAMBDA;               /* pointer to syntax lambda */
-        pointer QUOTE;           /* pointer to syntax quote */
+	pointer LAMBDA;		/* pointer to syntax lambda */
+	pointer QUOTE;		/* pointer to syntax quote */
 
-        pointer QQUOTE;               /* pointer to symbol quasiquote */
-        pointer UNQUOTE;         /* pointer to symbol unquote */
-        pointer UNQUOTESP;       /* pointer to symbol unquote-splicing */
-        pointer FEED_TO;         /* => */
-        pointer COLON_HOOK;      /* *colon-hook* */
-        pointer ERROR_HOOK;      /* *error-hook* */
-        pointer SHARP_HOOK;  /* *sharp-hook* */
+	pointer QQUOTE;		/* pointer to symbol quasiquote */
+	pointer UNQUOTE;	/* pointer to symbol unquote */
+	pointer UNQUOTESP;	/* pointer to symbol unquote-splicing */
+	pointer FEED_TO;	/* => */
+	pointer COLON_HOOK;	/* *colon-hook* */
+	pointer ERROR_HOOK;	/* *error-hook* */
+	pointer SHARP_HOOK;	/* *sharp-hook* */
 
-        pointer free_cell;       /* pointer to top of free cells */
-        long    fcells;          /* # of free cells */
+	pointer free_cell;	/* pointer to top of free cells */
+	long fcells;		/* # of free cells */
 
-        pointer inport;
-        pointer outport;
-        pointer save_inport;
-        pointer loadport;
+	pointer inport;
+	pointer outport;
+	pointer save_inport;
+	pointer loadport;
 
 #define MAXFIL 64
-        port load_stack[MAXFIL];     /* Stack of open files for port -1 (LOADing) */
-        int nesting_stack[MAXFIL];
-        int file_i;
-        int nesting;
+	port load_stack[MAXFIL];	/* Stack of open files for port -1 (LOADing) */
+	int nesting_stack[MAXFIL];
+	int file_i;
+	int nesting;
 
-        char    gc_verbose;      /* if gc_verbose is not zero, print gc status */
-        char    no_memory;       /* Whether mem. alloc. has failed */
+	char gc_verbose;	/* if gc_verbose is not zero, print gc status */
+	char no_memory;		/* Whether mem. alloc. has failed */
 
-        char    strbuff[4096];
+	char strbuff[4096];
 
-        FILE *tmpfp;
-        int tok;
-        int print_flag;
-        pointer value;
-        int op;
+	FILE *tmpfp;
+	int tok;
+	int print_flag;
+	pointer value;
+	int op;
 
-        void *ext_data;     /* For the benefit of foreign functions */
-        long gensym_cnt;
+	void *ext_data;		/* For the benefit of foreign functions */
+	long gensym_cnt;
 
-        struct scheme_interface *vptr;
-        void *dump_base;	 /* pointer to base of allocated dump stack */
-        int dump_size;		 /* number of frames allocated for dump stack */
+	struct scheme_interface *vptr;
+	void *dump_base;	/* pointer to base of allocated dump stack */
+	int dump_size;		/* number of frames allocated for dump stack */
 
 #if USE_PROTECT
-        struct list protect;
-        int ignore_protect;
+	struct list protect;
+	int ignore_protect;
 #endif
-        char inside; /* gmcnutt: flag to check recursive entry from C */
+	char inside;		/* gmcnutt: flag to check recursive entry from C */
 
 #if USE_CUSTOM_FINALIZE
-        void (*custom_finalize)(scheme *sc, pointer pp);
+	void (*custom_finalize) (scheme * sc, pointer pp);
 #endif
 };
 
@@ -190,7 +190,7 @@ int is_promise(pointer p);
 int is_environment(pointer p);
 int is_immutable(pointer p);
 void setimmutable(pointer p);
-int scm_len(scheme *sc, pointer list);
+int scm_len(scheme * sc, pointer list);
 
 /* convenience macros for extrenal code that uses scheme internals */
 #define scm_protect(sc, cell) \
@@ -219,7 +219,6 @@ int scm_len(scheme *sc, pointer list);
                                   (sc)->global_env,  \
                                   (sc)->vptr->mk_symbol(sc, (sym)), \
                                   (val))
-
 
 #define scm_define_int(sc, sym, val) \
         scm_define(sc, sym, (sc)->vptr->mk_integer((sc), (val)))
@@ -251,6 +250,5 @@ int scm_len(scheme *sc, pointer list);
 #define scm_closure_env(sc, arg) ((sc)->vptr->closure_env(arg))
 
 #define scm_set_cust_fin(sc, arg) ((sc)->vptr->setcustfin(arg))
-
 
 #endif

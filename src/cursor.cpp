@@ -25,14 +25,14 @@
 #include "templ.h"
 
 Cursor::Cursor()
-        : range(0)
-          , bounded(0)
-          , originX(0)
-          , originY(0)
-          , active(false)
-          , useRange(false)
-          , useZone(false)
-          , zone(0)
+ : range(0)
+    , bounded(0)
+    , originX(0)
+    , originY(0)
+    , active(false)
+    , useRange(false)
+    , useZone(false)
+    , zone(0)
 {
 }
 
@@ -47,152 +47,152 @@ void Cursor::init(class ObjectType * type)
 
 bool Cursor::inRange(int x, int y)
 {
-        if (useRange) {
-                // this works on wrapping maps
-                int d = place_flying_distance(getPlace(), originX, originY, 
-                                              x, y);
-        
-                // Is the new location out of range?
-                if (d > range) {
-                        return false;
-                }
-        }
+	if (useRange) {
+		// this works on wrapping maps
+		int d = place_flying_distance(getPlace(), originX, originY,
+					      x, y);
 
-        if (useZone) {
-                assert(zone);
-                if (! templ_get(zone, x, y)) {
-                        return false;
-                }
-        }
+		// Is the new location out of range?
+		if (d > range) {
+			return false;
+		}
+	}
 
-        return true;
+	if (useZone) {
+		assert(zone);
+		if (!templ_get(zone, x, y)) {
+			return false;
+		}
+	}
+
+	return true;
 }
 
 enum MoveResult Cursor::move(int dx, int dy)
 {
-        // SAM: Found a few things, noted below.
-        // 
-        // -- Cursor sometimes not drawn:
-        // If the cursor is moved out of LOS, it is not drawn.
-        // That is not desirable, methinks.
-        // 
-        // -- Cursor range "any range within viewport"
-        // Cursor::setViewportBounded() makes this possible.
-        // The caller need only set the range to some large value,
-        // and turn on 'bounded'.
+	// SAM: Found a few things, noted below.
+	// 
+	// -- Cursor sometimes not drawn:
+	// If the cursor is moved out of LOS, it is not drawn.
+	// That is not desirable, methinks.
+	// 
+	// -- Cursor range "any range within viewport"
+	// Cursor::setViewportBounded() makes this possible.
+	// The caller need only set the range to some large value,
+	// and turn on 'bounded'.
 	int newx = getX() + dx;
 	int newy = getY() + dy;
-        
-        newx = place_wrap_x(getPlace(), newx);
-        newy = place_wrap_y(getPlace(), newy);
-        
-        // Is the new location off the map?
-        if (place_off_map(getPlace(), newx, newy))
-            return OffMap;
-        
-        // Is the new location out of the current viewport (without scrolling)?
-        if (bounded && !mapTileIsWithinViewport(newx,newy))
-                return OutOfRange;
-        
-        // Is the new location out of range?
-        if (! inRange(newx, newy))
-                return OutOfRange;
 
-        // move the cursor
-        relocate(getPlace(), newx, newy, REL_NOTRIG);
+	newx = place_wrap_x(getPlace(), newx);
+	newy = place_wrap_y(getPlace(), newy);
 
-        // Keep the cursor in view.
-        if (! mapIsInCameraView(getPlace(), getX(), getY())) {
-                mapCenterCamera(getX(), getY());
-        }
-        
-        return MovedOk;
+	// Is the new location off the map?
+	if (place_off_map(getPlace(), newx, newy))
+		return OffMap;
+
+	// Is the new location out of the current viewport (without scrolling)?
+	if (bounded && !mapTileIsWithinViewport(newx, newy))
+		return OutOfRange;
+
+	// Is the new location out of range?
+	if (!inRange(newx, newy))
+		return OutOfRange;
+
+	// move the cursor
+	relocate(getPlace(), newx, newy, REL_NOTRIG);
+
+	// Keep the cursor in view.
+	if (!mapIsInCameraView(getPlace(), getX(), getY())) {
+		mapCenterCamera(getX(), getY());
+	}
+
+	return MovedOk;
 }
 
 void Cursor::setViewportBounded(bool val)
 {
-        bounded = val;
+	bounded = val;
 }
 
 void Cursor::setRange(int val)
 {
 	range = val;
-        useRange = true;
+	useRange = true;
 }
 
 void Cursor::setOrigin(int x, int y)
 {
 	originX = x;
 	originY = y;
-        if (zone) {
-                templ_set_origin(zone, x, y);
-        }
+	if (zone) {
+		templ_set_origin(zone, x, y);
+	}
 }
 
 void Cursor::relocate(struct place *newplace, int newx, int newy, bool noStep,
-                      struct closure *place_switch_hook)
+		      struct closure *place_switch_hook)
 {
-        Object::relocate(newplace, newx, newy, REL_NOTRIG, NULL);
-        active = true;
+	Object::relocate(newplace, newx, newy, REL_NOTRIG, NULL);
+	active = true;
 }
 
 void Cursor::remove()
 {
-        Object::remove();
-        active = false;
+	Object::remove();
+	active = false;
 }
 
 bool Cursor::is_active(void)
 {
-        return active;
+	return active;
 }
 
 int Cursor::getRange()
 {
-        return range;
+	return range;
 }
 
 int Cursor::getOriginX()
 {
-        return originX;
+	return originX;
 }
 
 int Cursor::getOriginY()
 {
-        return originY;
+	return originY;
 }
 
 void Cursor::shadeRange(bool val)
 {
-        shade = val;
+	shade = val;
 }
 
 bool Cursor::isRangeShaded()
 {
-        return shade;
+	return shade;
 }
 
 void Cursor::setZone(struct templ *val)
 {
-        if (zone) {
-                templ_unref(zone);
-                zone = 0;
-                useZone = false;
-        }
-        
-        if (val) {
-                templ_ref(val);
-                zone = val;
-                useZone = true;
-                templ_set_origin(zone, originX, originY);
-        }
+	if (zone) {
+		templ_unref(zone);
+		zone = 0;
+		useZone = false;
+	}
+
+	if (val) {
+		templ_ref(val);
+		zone = val;
+		useZone = true;
+		templ_set_origin(zone, originX, originY);
+	}
 }
 
 void Cursor::reset()
 {
-        setZone(0);
-        setRange(0);
-        useRange = false;
-        shade    = false;
-        active   = false;
+	setZone(0);
+	setRange(0);
+	useRange = false;
+	shade = false;
+	active = false;
 }

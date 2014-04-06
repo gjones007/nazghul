@@ -28,41 +28,44 @@
 #define MISSILE_IGNORE_LOS (1 << 0)
 #define MISSILE_HIT_PARTY  (1 << 1)
 
-class MissileType:public ObjectType
-{
-public:
+class MissileType:public ObjectType {
+ public:
 	MissileType();
-	MissileType(const char *tag, const char *name, struct sprite *sprite, bool isBeam, bool isFixedRange, struct mmode *mmode);
-	virtual ~ MissileType();
-	
+	MissileType(const char *tag, const char *name, struct sprite *sprite,
+		    bool isBeam, bool isFixedRange, struct mmode *mmode);
+	 virtual ~ MissileType();
+
 	virtual bool isType(int classID);
 	virtual int getType();
 	virtual bool isBeam();
 	virtual bool isFixedRange();
-	virtual void fireHitLoc(Object *attacker, Object *target, struct place *place, int x, int y, int dam);
-	virtual bool fireEnterTile(Missile* missile, struct place *place, int x, int y);
-		
-protected:
-	bool beam;
+	virtual void fireHitLoc(Object * attacker, Object * target,
+				struct place *place, int x, int y, int dam);
+	virtual bool fireEnterTile(Missile * missile, struct place *place,
+				   int x, int y);
+
+ protected:
+	 bool beam;
 	bool fixedrange;
 };
 
-class Missile:public Object
-{
-public:
-	Missile(MissileType*);
-	virtual ~Missile();
-	
+class Missile:public Object {
+ public:
+	Missile(MissileType *);
+	virtual ~ Missile();
+
 	virtual class MissileType *getObjectType();
-	virtual void animate(int Ax, int Ay, int *Bx, int *By, int flags, float fixedrange);
-	virtual void fireHitLoc(Object *attacker, Object *target, struct place *place, int x, int y, int dam);
+	virtual void animate(int Ax, int Ay, int *Bx, int *By, int flags,
+			     float fixedrange);
+	virtual void fireHitLoc(Object * attacker, Object * target,
+				struct place *place, int x, int y, int dam);
 	virtual bool hitTarget();
 	virtual class Object *getStruck();
 	virtual bool enterTile(struct place *place, int x, int y);
 	virtual bool obstructed(struct place *place, int x, int y);
-	
-protected:
-	bool hit;
+
+ protected:
+	 bool hit;
 	class Object *struck;
 	int flags;
 };

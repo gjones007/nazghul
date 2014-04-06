@@ -25,21 +25,18 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 /* Food-Gold-Date window */
-typedef enum {
-        FOOGOD_DEFAULT = 0
-        , FOOGOD_HINT
-        , FOOGOD_PROGRESS_BAR
+    typedef enum {
+	FOOGOD_DEFAULT = 0, FOOGOD_HINT, FOOGOD_PROGRESS_BAR
 } foogod_mode_t;
 
 typedef enum {
-        FOOGOD_QUICKEN = 0,
-        FOOGOD_REVEAL,
-        FOOGOD_MAGIC_NEGATED,
-        FOOGOD_TIME_STOP,
-        FOOGOD_XRAY_VISION,
-        FOOGOD_NUM_EFFECTS
+	FOOGOD_QUICKEN = 0,
+	FOOGOD_REVEAL,
+	FOOGOD_MAGIC_NEGATED,
+	FOOGOD_TIME_STOP,
+	FOOGOD_XRAY_VISION,
+	FOOGOD_NUM_EFFECTS
 } foogod_effect_t;
 
 extern int foogodInit(void);
@@ -59,5 +56,4 @@ extern void foogod_progress_bar_finish(void);
 extern void foogod_set_title(const char *fmt, ...);
 
 END_DECL
-
 #endif

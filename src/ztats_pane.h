@@ -30,20 +30,22 @@
 #include <SDL.h>
 
 struct ztats_pane_ops {
-        void (*enter)(struct ztats_pane *pane, class Party *party, enum StatusScrollDir via, SDL_Rect *dims);
-        /* Scroll returns non-zero iff it handled the scroll request */
-        int (*scroll)(struct ztats_pane *pane, enum StatusScrollDir dir);
-        void (*paint)(struct ztats_pane *pane);
-        void (*select)(struct ztats_pane *pane);
+	void (*enter) (struct ztats_pane * pane, class Party * party,
+		       enum StatusScrollDir via, SDL_Rect * dims);
+	/* Scroll returns non-zero iff it handled the scroll request */
+	int (*scroll) (struct ztats_pane * pane, enum StatusScrollDir dir);
+	void (*paint) (struct ztats_pane * pane);
+	void (*select) (struct ztats_pane * pane);
 };
 
 struct ztats_pane {
-        struct list list;
-        SDL_Rect dims;
-        class Party *party;
-        struct ztats_pane_ops *ops;
+	struct list list;
+	SDL_Rect dims;
+	class Party *party;
+	struct ztats_pane_ops *ops;
 };
 
-extern void ztats_pane_enter(struct ztats_pane *pane, class Party *party, enum StatusScrollDir via, SDL_Rect *dims);
+extern void ztats_pane_enter(struct ztats_pane *pane, class Party * party,
+			     enum StatusScrollDir via, SDL_Rect * dims);
 
 #endif

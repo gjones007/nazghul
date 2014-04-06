@@ -21,7 +21,7 @@
 /* 12/14/2002 Sam Glasby added place_get_terrain()
  */
 #include "mem.h"
-#include "nazghul.h"  // for DeveloperMode
+#include "nazghul.h"		// for DeveloperMode
 #include "sound.h"
 #include "place.h"
 #include "sprite.h"
@@ -39,7 +39,7 @@
 #include "factions.h"
 #include "vmask.h"
 #include "combat.h"
-#include "event.h" /* for demo */
+#include "event.h"		/* for demo */
 #include "kern_intvar.h"
 
 // #define DEBUG
@@ -91,6 +91,7 @@ struct place *Place;
 
 /* For stats */
 static struct list place_list = { &place_list, &place_list };
+
 static int place_allocs = 0;
 static int place_frees = 0;
 static int place_tile_allocs = 0;
@@ -107,7 +108,7 @@ struct tile {
 
 static void tile_fin(void *arg)
 {
-	struct tile *tile = (struct tile*)arg;
+	struct tile *tile = (struct tile *)arg;
 	list_remove(&tile->hashlink.list);
 	place_tile_frees++;
 }
@@ -132,13 +133,15 @@ static struct tile *tile_new(int hashkey)
 	return tile;
 }
 
-static void tile_for_each_object(struct tile *tile, void (*fx)(class Object *obj, void *data), void *data)
+static void tile_for_each_object(struct tile *tile,
+				 void (*fx) (class Object * obj, void *data),
+				 void *data)
 {
 	struct node *elem;
 	class Object *obj;
 
-	for (elem = node_next(&tile->objstack); elem != &tile->objstack; ) {
-		obj = (class Object *)elem->ptr;
+	for (elem = node_next(&tile->objstack); elem != &tile->objstack;) {
+		obj = (class Object *) elem->ptr;
 		elem = node_next(elem);
 		fx(obj, data);
 	}
@@ -148,15 +151,16 @@ static void tile_for_each_object(struct tile *tile, void (*fx)(class Object *obj
 	}
 }
 
-static Object *tile_get_filtered_object(struct tile *tile, int (*filter)(Object*))
+static Object *tile_get_filtered_object(struct tile *tile,
+					int (*filter) (Object *))
 {
 	struct node *elem;
 	class Object *obj;
 
 	/* Traverse the list in reverse order, so the first item returned is
 	 * the one shown by the UI as topmost in the pile. */
-	for (elem = node_prev(&tile->objstack); elem != &tile->objstack; ) {
-		obj = (class Object *)elem->ptr;
+	for (elem = node_prev(&tile->objstack); elem != &tile->objstack;) {
+		obj = (class Object *) elem->ptr;
 		elem = node_prev(elem);
 		if (filter(obj)) {
 			return obj;
@@ -176,9 +180,9 @@ static Object *tile_get_top_object_at_layer(struct tile *tile, enum layer layer)
 
 	node = node_lookup(&tile->objstack, layer);
 	if (node) {
-		return (Object*)node->ptr;
+		return (Object *) node->ptr;
 	}
-	
+
 	return NULL;
 }
 
@@ -195,7 +199,7 @@ static int tile_get_light(struct tile *tile)
 
 	/* Check all objects */
 	node_for_each(&tile->objstack, node) {
-		obj = (class Object *)node->ptr;
+		obj = (class Object *) node->ptr;
 		light += obj->getLight();
 	}
 
@@ -207,8 +211,8 @@ static int tile_is_transparent(struct tile *tile)
 	struct node *elem;
 	class Object *obj;
 
-	for (elem = node_next(&tile->objstack); elem != &tile->objstack; ) {
-		obj = (class Object *)elem->ptr;
+	for (elem = node_next(&tile->objstack); elem != &tile->objstack;) {
+		obj = (class Object *) elem->ptr;
 		elem = node_next(elem);
 		if (obj->isOpaque()) {
 			return 0;
@@ -218,7 +222,7 @@ static int tile_is_transparent(struct tile *tile)
 	return 1;
 }
 
-static void tile_remove_object(struct tile *tile, class Object *object)
+static void tile_remove_object(struct tile *tile, class Object * object)
 {
 	if (object->isType(VEHICLE_ID)) {
 		if (tile->vehicle == object) {
@@ -241,12 +245,12 @@ static void tile_remove_object(struct tile *tile, class Object *object)
 
 }
 
-static void tile_add_object(struct tile *tile, class Object *object)
+static void tile_add_object(struct tile *tile, class Object * object)
 {
 	obj_inc_ref(object);
 
 	if (object->isType(VEHICLE_ID)) {
-		assert(! tile->vehicle);
+		assert(!tile->vehicle);
 		tile->vehicle = (class Vehicle *) object;
 	} else {
 		/* Create a new container link node for the object and add it to the
@@ -296,7 +300,7 @@ static void tile_paint(struct tile *tile, int sx, int sy)
 	}
 
 	node_for_each(&tile->objstack, node) {
-		obj = (Object*)node->ptr;
+		obj = (Object *) node->ptr;
 		sprite = obj->getSprite();
 		if (!sprite)
 			continue;
@@ -327,11 +331,10 @@ static void tile_paint(struct tile *tile, int sx, int sy)
 			rect.h = TILE_H;
 			screen_highlight(&rect);
 		}
-
 		// Paint a red box around hostiles, green around allies, and
 		// yellow around neutrals.
 		else if (Session->show_boxes
-			 && Session->subject 
+			 && Session->subject
 			 && obj->getLayer() == being_layer) {
 			SDL_Rect rect;
 			Uint32 color = Yellow;
@@ -339,9 +342,9 @@ static void tile_paint(struct tile *tile, int sx, int sy)
 			rect.y = sy;
 			rect.w = TILE_W;
 			rect.h = TILE_H;
-			if (are_allies(Session->subject, (Being*)obj))
+			if (are_allies(Session->subject, (Being *) obj))
 				color = Green;
-			else if (are_hostile(Session->subject, (Being*)obj))
+			else if (are_hostile(Session->subject, (Being *) obj))
 				color = Red;
 			screen_highlightColored(&rect, color);
 		}
@@ -353,18 +356,18 @@ static void tile_paint(struct tile *tile, int sx, int sy)
 
 /*****************************************************************************/
 
-static void place_for_each_tile(struct place *place, 
-				void (*fx)(struct tile *tile, void *data), 
+static void place_for_each_tile(struct place *place,
+				void (*fx) (struct tile * tile, void *data),
 				void *data);
 
-static inline int place_is_diagonal(struct place *place, int from_x, 
+static inline int place_is_diagonal(struct place *place, int from_x,
 				    int from_y, int to_x, int to_y)
 {
 	/* FIXME: probably doesn't work on wrapping places... */
 	int dx = from_x - to_x;
 	int dy = from_y - to_y;
-	return (((dx==1) || (dx==-1))
-		&& ((dy==1) || (dy==-1)));
+	return (((dx == 1) || (dx == -1))
+		&& ((dy == 1) || (dy == -1)));
 }
 
 static void place_set_default_edge_entrance(struct place *place)
@@ -411,29 +414,29 @@ static void place_init_turn_list(struct place *place)
 	node_init(&place->turn_list);
 }
 
-static void place_add_to_turn_list(struct place *place, Object *object)
+static void place_add_to_turn_list(struct place *place, Object * object)
 {
 	struct node *node;
 	node = node_new(object);
 	node_add(&place->turn_list, node);
 }
 
-static void place_remove_from_turn_list(struct place *place, Object *object)
+static void place_remove_from_turn_list(struct place *place, Object * object)
 {
 	struct node *node;
 
-        // Find the node.
-        node = node_next(&place->turn_list);
-        while (node != &place->turn_list && node->ptr != object) {
-                node = node_next(node);
-        }
-        assert(node != &place->turn_list);
+	// Find the node.
+	node = node_next(&place->turn_list);
+	while (node != &place->turn_list && node->ptr != object) {
+		node = node_next(node);
+	}
+	assert(node != &place->turn_list);
 
 	/* If we are in the middle of place_exec, this object may be the next
-           object to be processed in the turn_list. In this special case we
-           must setup the next object after this to be processed instead. This
-           can happen when one object destroys or picks up another object on
-           its turn. */
+	   object to be processed in the turn_list. In this special case we
+	   must setup the next object after this to be processed instead. This
+	   can happen when one object destroys or picks up another object on
+	   its turn. */
 	if (place->turn_elem == node) {
 		place->turn_elem = node_next(node);
 	}
@@ -442,13 +445,12 @@ static void place_remove_from_turn_list(struct place *place, Object *object)
 	node_unref(node);
 }
 
-static void place_del_tile_object_visitor(class Object *obj, void *data)
+static void place_del_tile_object_visitor(class Object * obj, void *data)
 {
 	// Called by tile_for_each_object()
-	struct tile *tile = (struct tile*)data;
+	struct tile *tile = (struct tile *)data;
 	tile_remove_object(tile, obj);
 }
-
 
 static void place_del_tile_visitor(struct tile *tile, void *data)
 {
@@ -465,7 +467,7 @@ static void place_del_on_entry_hook(struct place *place)
 {
 	struct list *elem = place->on_entry_hook.next;
 	while (elem != &place->on_entry_hook) {
-		closure_list_t *node = (closure_list_t*)elem;
+		closure_list_t *node = (closure_list_t *) elem;
 		elem = elem->next;
 		list_remove(&node->list);
 		closure_unref(node->closure);
@@ -475,7 +477,7 @@ static void place_del_on_entry_hook(struct place *place)
 
 static void place_fin(void *arg)
 {
-	struct place *place = (struct place*)arg;
+	struct place *place = (struct place *)arg;
 
 	// Destroy all tiles, objects and subplaces recursively.
 	place_for_each_tile(place, place_del_tile_visitor, 0);
@@ -499,17 +501,14 @@ static void place_fin(void *arg)
 }
 
 struct place *place_new(const char *tag,
-			const char *name, 
+			const char *name,
 			struct sprite *sprite,
 			struct terrain_map *terrain_map,
 			int wraps,
-			int underground,
-			int wilderness,
-			int wild_combat)
-			
+			int underground, int wilderness, int wild_combat)
 {
 	struct place *place = MEM_ALLOC_TYPE(struct place, place_fin);
- 
+
 	place->tag = strdup(tag);
 	assert(place->tag);
 
@@ -547,7 +546,7 @@ struct place *place_new(const char *tag,
 	return place;
 }
 
-static int place_generic_is_passable(class Object *subject, int flags, 
+static int place_generic_is_passable(class Object * subject, int flags,
 				     int pclass, struct closure *effect)
 {
 	// Is it passable?
@@ -567,7 +566,7 @@ static int place_generic_is_passable(class Object *subject, int flags,
 }
 
 static int place_terrain_is_passable(struct place *place, int x, int y,
-				     class Object *subject, int flags)
+				     class Object * subject, int flags)
 {
 	struct terrain *terrain;
 
@@ -575,7 +574,7 @@ static int place_terrain_is_passable(struct place *place, int x, int y,
 
 	// Can we use the generic passability test?
 	if (flags & PFLAG_IGNOREVEHICLES)
-		return place_generic_is_passable(subject, flags, 
+		return place_generic_is_passable(subject, flags,
 						 terrain_pclass(terrain),
 						 terrain->effect);
 
@@ -600,13 +599,13 @@ static int place_terrain_is_passable(struct place *place, int x, int y,
 }
 
 static int place_field_is_passable(struct place *place, int x, int y,
-				   class Object *subject, int flags)
+				   class Object * subject, int flags)
 {
 	class Field *field;
 
 	// Is there a field there?
 	field = (class Field *) place_get_object(place, x, y, field_layer);
-	if (! field)
+	if (!field)
 		return 1;
 
 	return place_generic_is_passable(subject, flags,
@@ -614,8 +613,8 @@ static int place_field_is_passable(struct place *place, int x, int y,
 					 field->getObjectType()->effect);
 }
 
-static int place_obj_is_passable(class Object *obj,
-				class Object *subject, int flags)
+static int place_obj_is_passable(class Object * obj,
+				 class Object * subject, int flags)
 {
 	int pclass = obj->getPclass();
 
@@ -632,7 +631,7 @@ static int place_obj_is_passable(class Object *obj,
 }
 
 int place_is_passable(struct place *place, int x, int y,
-		      class Object *subject, int flags)
+		      class Object * subject, int flags)
 {
 	class Object *mech;
 	int tfeat_pass = IGNORES_PASSABILITY;
@@ -649,10 +648,10 @@ int place_is_passable(struct place *place, int x, int y,
 	// Does the caller want to check terrain features?
 	if (0 == (flags & PFLAG_IGNORETFEAT)) {
 		class Object *tfeat = NULL;
-		
+
 		tfeat = place_get_object(place, x, y, tfeat_layer);
 		if (tfeat) {
-			tfeat_pass = place_obj_is_passable(tfeat, subject, 
+			tfeat_pass = place_obj_is_passable(tfeat, subject,
 							   flags);
 
 			// Does it specifically block passability?
@@ -660,60 +659,58 @@ int place_is_passable(struct place *place, int x, int y,
 				return 0;
 		}
 	}
-
 	// Does the caller want to check terrain, and if so is there no
 	// overriding terrain feature?
 	if (0 == (flags & PFLAG_IGNORETERRAIN) &&
 	    IGNORES_PASSABILITY == tfeat_pass) {
 
 		// Is the terrain passable?
-		if (! place_terrain_is_passable(place, x, y, subject, flags))
+		if (!place_terrain_is_passable(place, x, y, subject, flags))
 			return 0;
 	}
-
 	// Does the caller want to check fields?
 	if (0 == (flags & PFLAG_IGNOREFIELDS)) {
 
 		// Is the field passable?
-		if (! place_field_is_passable(place, x, y, subject, flags))
+		if (!place_field_is_passable(place, x, y, subject, flags))
 			return 0;
 
 	}
+	// Does the caller want to check mechs?
+	if (0 == (flags & PFLAG_IGNOREMECHS)) {
 
-		// Does the caller want to check mechs?
-		if (0 == (flags & PFLAG_IGNOREMECHS)) {
-			
-			// Is the mech passable?
-			mech = place_get_object(place, x, y, mech_layer);
-			if (mech &&
-			    (place_obj_is_passable(mech, subject, flags) == 
-			     BLOCKS_PASSABILITY))
-				return 0;
-		}
+		// Is the mech passable?
+		mech = place_get_object(place, x, y, mech_layer);
+		if (mech &&
+		    (place_obj_is_passable(mech, subject, flags) ==
+		     BLOCKS_PASSABILITY))
+			return 0;
+	}
 
 	return 1;
 }
 
 int place_move_is_passable(struct place *place, int from_x, int from_y,
 			   int to_x, int to_y,
-			   class Object *subject, int flags)
+			   class Object * subject, int flags)
 {
 	/* check destination tile */
-	if (! place_is_passable(place, to_x, to_y, subject, flags)) {
+	if (!place_is_passable(place, to_x, to_y, subject, flags)) {
 		return 0;
 	}
 
 	/* check if this is a one-tile diagonal move then check both adjacent
 	 * neighbors. */
 	if (place_is_diagonal(place, from_x, from_y, to_x, to_y)
-	    && ! place_is_passable(place, from_x, to_y, subject, flags & ~PFLAG_MOVEATTEMPT)
-	    && ! place_is_passable(place, to_x, from_y, subject, flags & ~PFLAG_MOVEATTEMPT)) {
+	    && !place_is_passable(place, from_x, to_y, subject,
+				  flags & ~PFLAG_MOVEATTEMPT)
+	    && !place_is_passable(place, to_x, from_y, subject,
+				  flags & ~PFLAG_MOVEATTEMPT)) {
 		return 0;
 	}
 
 	return 1;
 }
-
 
 int place_is_occupied(struct place *place, int x, int y)
 {
@@ -732,8 +729,7 @@ static struct tile *place_lookup_tile(struct place *place, int x, int y)
 	return outcast(olist, struct tile, hashlink);
 }
 
-static struct tile *place_create_and_add_tile(struct place *place, int x, 
-					      int y)
+static struct tile *place_create_and_add_tile(struct place *place, int x, int y)
 {
 	struct tile *tile;
 	tile = tile_new(INDEX(x, y, place_w(place)));
@@ -752,8 +748,7 @@ struct tile *placeGetTile(struct place *place, int x, int y)
 	return place_create_and_add_tile(place, x, y);
 }
 
-void place_paint_objects(struct place *place, int mx, int my,
-			 int sx, int sy)
+void place_paint_objects(struct place *place, int mx, int my, int sx, int sy)
 {
 	struct tile *tile;
 
@@ -781,7 +776,7 @@ int place_visibility(struct place *place, int x, int y)
 		return ALPHA_OPAQUE;
 
 	tile = place_lookup_tile(place, x, y);
-	if (tile && ! tile_is_transparent(tile))
+	if (tile && !tile_is_transparent(tile))
 		return ALPHA_OPAQUE;
 
 	return terrain->alpha;
@@ -806,8 +801,7 @@ unsigned int place_walking_distance(struct place *place,
 	return dx + dy;
 }
 
-int place_flying_distance(struct place *place,
-				   int x0, int y0, int x1, int y1)
+int place_flying_distance(struct place *place, int x0, int y0, int x1, int y1)
 {
 	int dx;
 	int dy;
@@ -821,25 +815,24 @@ int place_flying_distance(struct place *place,
 	return ((dy > dx) ? (dy + (dx >> 1)) : (dx + (dy >> 1)));
 }
 
-void place_get_direction_vector(struct place *place, int x0, int y0, int x1, 
-			       int y1, int *dx, int *dy)
+void place_get_direction_vector(struct place *place, int x0, int y0, int x1,
+				int y1, int *dx, int *dy)
 {
 	int east, west, north, south;
 
 	// fixme: is this code assuming that (x0,y0) and (x1,y1) are already
 	// wrapped?
 
-	if (! place->wraps) {
+	if (!place->wraps) {
 		*dx = x1 - x0;
 		*dy = y1 - y0;
 		return;
 	}
-
 	// Four possibilities for dx:
 	//
-	// |	x0-->x1	   | (a) direct east
+	// |    x0-->x1    | (a) direct east
 	// |<--x0     x1<--| (b) west across map boundary
-	// |	x1<--x0	   | (c) direct west
+	// |    x1<--x0    | (c) direct west
 	// |-->x1     x0-->| (d) east across map boundary
 	//
 	// Note that since west is always to the left, it is a negative vector.
@@ -862,14 +855,14 @@ void place_get_direction_vector(struct place *place, int x0, int y0, int x1,
 	// Four possibilities for dy:
 	//
 	// ---------------
-	//	^	|
-	// y0	|   y1	v
-	// |	y0  ^	y1
-	// v	    |
-	// y1	    y0
-	//	y1	y0
-	//	^	|
-	//	|	V
+	//      ^       |
+	// y0   |   y1  v
+	// |    y0  ^   y1
+	// v        |
+	// y1       y0
+	//      y1      y0
+	//      ^       |
+	//      |       V
 	// ---------------
 	// (a) (b) (c) (d)
 	//
@@ -894,14 +887,12 @@ void place_get_direction_vector(struct place *place, int x0, int y0, int x1,
 		*dy = south;
 }
 
-void place_move_object(struct place *place, Object * object, 
-		       int newx, int newy)
+void place_move_object(struct place *place, Object * object, int newx, int newy)
 {
 	struct tile *old_tile;
 	struct tile *new_tile;
 
-	if (newx == object->getX() &&
-	    newy == object->getY())
+	if (newx == object->getX() && newy == object->getY())
 		return;
 
 	old_tile = place_lookup_tile(place, object->getX(), object->getY());
@@ -913,7 +904,7 @@ void place_move_object(struct place *place, Object * object,
 		new_tile = place_create_and_add_tile(place, newx, newy);
 		assert(new_tile);
 	}
-	
+
 	obj_inc_ref(object);
 	tile_remove_object(old_tile, object);
 	tile_add_object(new_tile, object);
@@ -964,7 +955,8 @@ Object *place_get_object(struct place *place, int x, int y, enum layer layer)
 	return tile_get_top_object_at_layer(tile, layer);
 }
 
-Object *place_get_filtered_object(struct place *place, int x, int y, int (*filter)(Object*))
+Object *place_get_filtered_object(struct place * place, int x, int y,
+				  int (*filter) (Object *))
 {
 	struct tile *tile;
 
@@ -1018,9 +1010,9 @@ struct terrain_map *place_get_combat_terrain_map(struct place *place,
 
 /* Pathfinding ***************************************************************/
 
-static int place_pathfind_is_valid_location(
-	struct place_pathfind_context *context, int from_x, int from_y,
-	int x, int y)
+static int place_pathfind_is_valid_location(struct place_pathfind_context
+					    *context, int from_x, int from_y,
+					    int x, int y)
 {
 	class Object *portal;
 
@@ -1032,16 +1024,16 @@ static int place_pathfind_is_valid_location(
 	 * not what the caller wants, they need to se the PFLAG_ADJACENTNOTOK
 	 * flag. */
 	if ((!(context->pflags & PFLAG_ADJACENTNOTOK))
-	    && x == context->target_x 
-	    && y == context->target_y) {
+	    && x == context->target_x && y == context->target_y) {
 		//dbg("ok\n");
 		return 1;
 	}
 
-	if (!place_move_is_passable(context->place, from_x, from_y, x, y, context->requestor, context->pflags)) {
+	if (!place_move_is_passable
+	    (context->place, from_x, from_y, x, y, context->requestor,
+	     context->pflags)) {
 		return 0;
 	}
-
 	// --------------------------------------------------------------------
 	// Check if the caller is blocked by an occupant on this tile.
 	// --------------------------------------------------------------------
@@ -1050,12 +1042,12 @@ static int place_pathfind_is_valid_location(
 		class Object *occupant;
 		occupant = place_get_object(context->place, x, y, being_layer);
 		if (occupant != NULL) {
-			if (! (context->pflags & PFLAG_IGNORECOMPANIONS) || ! context->requestor->isCompanionOf(occupant)) {
+			if (!(context->pflags & PFLAG_IGNORECOMPANIONS)
+			    || !context->requestor->isCompanionOf(occupant)) {
 				return 0;
 			}
 		}
 	}
-
 	// --------------------------------------------------------------------
 	// I used to penalize portals in the heuristic routine, but that was
 	// back in the day when I would pathfind for the player on a
@@ -1076,7 +1068,9 @@ static int place_pathfind_is_valid_location(
 	// --------------------------------------------------------------------
 
 	if (!(context->pflags & PFLAG_IGNORESTEPTRIG)) {
-		if ((portal = place_get_object(context->place, x, y, mech_layer)) && portal->canStep()) {
+		if ((portal =
+		     place_get_object(context->place, x, y, mech_layer))
+		    && portal->canStep()) {
 			return 0;
 		}
 	}
@@ -1085,13 +1079,13 @@ static int place_pathfind_is_valid_location(
 }
 
 static void place_pathfind_heuristic(struct astar_search_info *info,
-				     int *goodness, int *cost, 
+				     int *goodness, int *cost,
 				     int from_x, int from_y)
 {
 	struct terrain *terrain;
 	struct place_pathfind_context *context;
 
-	context = (struct place_pathfind_context *) info->context;
+	context = (struct place_pathfind_context *)info->context;
 
 	/* The basic goodness is walking distance. Duplicate that algorithm
 	 * except pay attention to the info->flags. */
@@ -1101,11 +1095,12 @@ static void place_pathfind_heuristic(struct astar_search_info *info,
 		// destination.
 		if (context->place->wraps) {
 			*goodness -= WRAP_DISTANCE(min(info->x0, info->x1),
-						  max(info->x0, info->x1),
-					       context->place->terrain_map->w);
+						   max(info->x0, info->x1),
+						   context->place->terrain_map->
+						   w);
 		} else {
-			*goodness -= max(info->x0, info->x1) - 
-				min(info->x0, info->x1);
+			*goodness -= max(info->x0, info->x1) -
+			    min(info->x0, info->x1);
 		}
 	}
 
@@ -1114,18 +1109,20 @@ static void place_pathfind_heuristic(struct astar_search_info *info,
 		// destination.
 		if (context->place->wraps) {
 			*goodness -= WRAP_DISTANCE(min(info->y0, info->y1),
-						  max(info->y0, info->y1),
-					       context->place->terrain_map->h);
+						   max(info->y0, info->y1),
+						   context->place->terrain_map->
+						   h);
 		} else {
 			*goodness -= max(info->y0, info->y1) -
-				min(info->y0, info->y1);
+			    min(info->y0, info->y1);
 		}
 	}
 
 	/* Add the terrain cost. */
-	*cost += place_get_diagonal_movement_cost(context->place, from_x, 
-						  from_y, info->x0, info->y0, 
-						  context->requestor, PFLAG_IGNOREMECHS);
+	*cost += place_get_diagonal_movement_cost(context->place, from_x,
+						  from_y, info->x0, info->y0,
+						  context->requestor,
+						  PFLAG_IGNOREMECHS);
 
 	/* And penalize tiles with hazards on them. I really should assign
 	 * different penalties to different hazerds. */
@@ -1148,10 +1145,10 @@ static void place_pathfind_heuristic(struct astar_search_info *info,
 static int place_find_path_impossible(struct place_pathfind_context *context)
 {
 	/* Check final destination */
-	if ((context->pflags & PFLAG_ADJACENTNOTOK) 
-	    && ! place_is_passable(context->place, context->target_x, 
-				   context->target_y, context->requestor, 
-				   context->pflags)) {
+	if ((context->pflags & PFLAG_ADJACENTNOTOK)
+	    && !place_is_passable(context->place, context->target_x,
+				  context->target_y, context->requestor,
+				  context->pflags)) {
 		return 0;
 	}
 
@@ -1159,23 +1156,23 @@ static int place_find_path_impossible(struct place_pathfind_context *context)
 	if (place_pathfind_is_valid_location(context,
 					     context->target_x,
 					     context->target_y,
-					     context->target_x-1,
+					     context->target_x - 1,
 					     context->target_y)
 	    || place_pathfind_is_valid_location(context,
 						context->target_x,
 						context->target_y,
-						context->target_x+1,
+						context->target_x + 1,
 						context->target_y)
 	    || place_pathfind_is_valid_location(context,
 						context->target_x,
 						context->target_y,
 						context->target_x,
-						context->target_y-1)
+						context->target_y - 1)
 	    || place_pathfind_is_valid_location(context,
 						context->target_x,
 						context->target_y,
 						context->target_x,
-						context->target_y+1))
+						context->target_y + 1))
 		return 0;
 
 	/* all 4 neighbors impassable so forget it */
@@ -1183,9 +1180,9 @@ static int place_find_path_impossible(struct place_pathfind_context *context)
 
 }
 
-struct astar_node *place_find_path(struct place *place, 
-				   struct astar_search_info *info, 
-				   class Object *requestor)
+struct astar_node *place_find_path(struct place *place,
+				   struct astar_search_info *info,
+				   class Object * requestor)
 {
 	struct astar_node *path;
 	struct place_pathfind_context context;
@@ -1199,11 +1196,10 @@ struct astar_node *place_find_path(struct place *place,
 
 	if (place_find_path_impossible(&context))
 		return NULL;
-	
+
 	/* Fill out the search information */
-	info->is_valid_location =
-	    (int (*)(void *, int, int, int, int))
-		place_pathfind_is_valid_location;
+	info->is_valid_location = (int (*)(void *, int, int, int, int))
+	    place_pathfind_is_valid_location;
 	info->heuristic = place_pathfind_heuristic;
 	info->width = place_w(place);
 	info->height = place_h(place);
@@ -1222,14 +1218,14 @@ struct astar_node *place_find_path(struct place *place,
  */
 struct astar_node *place_find_path_to_edge(struct place *place, int x0, int y0,
 					   int edgedir, int pflags,
-					   class Object *requestor)
+					   class Object * requestor)
 {
 	struct astar_search_info info;
 
 	info.x0 = x0;
 	info.y0 = y0;
 	info.flags = pflags;
-	
+
 	/* setup search info to seek the map edge */
 	switch (edgedir) {
 	case NORTH:
@@ -1239,17 +1235,17 @@ struct astar_node *place_find_path_to_edge(struct place *place, int x0, int y0,
 		break;
 	case SOUTH:
 		info.x1 = 0;
-		info.y1 = place_h(place)-1;
+		info.y1 = place_h(place) - 1;
 		info.flags |= ASTAR_HORZ;
 		break;
 	case EAST:
-		info.x1 = place_w(place)-1;
+		info.x1 = place_w(place) - 1;
 		info.y1 = 0;
 		info.flags |= ASTAR_VERT;
 		break;
 	case WEST:
 		info.x1 = 0;
-		info.y1 = place_h(place)-1;
+		info.y1 = place_h(place) - 1;
 		info.flags |= ASTAR_VERT;
 		break;
 	default:
@@ -1296,7 +1292,7 @@ static void place_run_on_entry_hook(struct place *place)
 {
 	struct list *elem;
 	list_for_each(&place->on_entry_hook, elem) {
-		closure_list_t *node = (closure_list_t*)elem;
+		closure_list_t *node = (closure_list_t *) elem;
 		closure_exec(node->closure, "pp", place, player_party);
 	}
 }
@@ -1307,8 +1303,8 @@ void place_enter(struct place *place)
 	place_synchronize(place);
 }
 
-int place_get_movement_cost(struct place *place, int x, int y, 
-			    class Object *obj, int flags)
+int place_get_movement_cost(struct place *place, int x, int y,
+			    class Object * obj, int flags)
 {
 	int cost;
 	struct terrain *t;
@@ -1344,13 +1340,14 @@ int place_get_movement_cost(struct place *place, int x, int y,
 			}
 		}
 	}
-	
+
 	return cost;
 }
 
-int place_get_diagonal_movement_cost(struct place *place, 
-				     int from_x, int from_y, 
-				     int to_x, int to_y, class Object *obj,int flags)
+int place_get_diagonal_movement_cost(struct place *place,
+				     int from_x, int from_y,
+				     int to_x, int to_y, class Object * obj,
+				     int flags)
 {
 	int cost = place_get_movement_cost(place, to_x, to_y, obj, flags);
 
@@ -1368,10 +1365,10 @@ int place_is_hazardous(struct place *place, int x, int y)
 	WRAP_COORDS(place, x, y);
 	struct terrain *t = TERRAIN(place, x, y);
 	if (t->effect)
-		return 1;	 
+		return 1;
 	if (place_get_object(place, x, y, field_layer) != NULL)
-		return 1; 
-       return 0;
+		return 1;
+	return 0;
 }
 
 void place_set_terrain(struct place *place, int x, int y,
@@ -1400,7 +1397,7 @@ static void place_describe_terrain(struct place *place, int x, int y)
 	}
 }
 
-static int place_describe_objects(struct place *place, int x, int y, 
+static int place_describe_objects(struct place *place, int x, int y,
 				  int first_thing_listed)
 {
 
@@ -1414,7 +1411,7 @@ static int place_describe_objects(struct place *place, int x, int y,
 	tile = place_lookup_tile(place, x, y);
 	if (!tile)
 		return n_described;
-	
+
 	// Let's make things simple. Inefficient, but simple. Efficiency is not
 	// so critical here. We'll do this in two passes. Pass one will count
 	// the number of things we need to list. Pass two will print the things
@@ -1438,39 +1435,37 @@ static int place_describe_objects(struct place *place, int x, int y,
 
 	node_for_each(&tile->objstack, l) {
 
-		obj = (Object *)l->ptr;
+		obj = (Object *) l->ptr;
 
 		if (obj->getLayer() == cursor_layer)
 			// Special case: don't describe the cursor
 			continue;
 
-		if (! obj->isVisible() && ! Reveal && ! obj->isShaded())
+		if (!obj->isVisible() && !Reveal && !obj->isShaded())
 			continue;
-		
+
 		// hack: objects without names are assumed to be invisible
-		if (! obj->getName())
+		if (!obj->getName())
 			continue;
-		
-		if(obj->getObjectType() != type
-		   || ! obj->getObjectType()) {
-			
+
+		if (obj->getObjectType() != type || !obj->getObjectType()) {
+
 			// We just found a new type of thing (we know because
 			// it's different from the last type of thing).
 			type = obj->getObjectType();
 			if (obj->isVisible() || Reveal || obj->isShaded())
 				n_types++;
-			
+
 		}
 	}
 
-	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal || 
+	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal ||
 			      obj->isShaded()))
 		n_types++;
 
 	if (n_types == 0)
 		// Nothing to list so we're done.
 		return n_described;
-
 
 	// Step 2: now we actually list the things, using the count to help us
 	// decide how to punctuate.
@@ -1480,19 +1475,19 @@ static int place_describe_objects(struct place *place, int x, int y,
 
 	node_for_each(&tile->objstack, l) {
 
-		obj = (Object *)l->ptr;
+		obj = (Object *) l->ptr;
 
 		if (obj->getLayer() == cursor_layer)
 			// Special case: don't describe the cursor
 			continue;
 
-		if (! obj->isVisible() && ! Reveal && ! obj->isShaded())
+		if (!obj->isVisible() && !Reveal && !obj->isShaded())
 			continue;
 
 		// hack: objects without names are assumed to be invisible
-		if (! obj->getName())
+		if (!obj->getName())
 			continue;
-		
+
 		if (prev_obj == NULL) {
 
 			// This is the first type of thing we need to
@@ -1508,7 +1503,7 @@ static int place_describe_objects(struct place *place, int x, int y,
 			// can print the last type of thing since we know how
 			// many there are of it.
 
-			if (prev_obj->isVisible() || Reveal || 
+			if (prev_obj->isVisible() || Reveal ||
 			    prev_obj->isShaded()) {
 				if (first_thing_listed) {
 					first_thing_listed = 0;
@@ -1532,7 +1527,7 @@ static int place_describe_objects(struct place *place, int x, int y,
 	}
 
 	// Now we have to print the last object in the stack.
-	if (prev_obj && (prev_obj->isVisible()	|| Reveal || 
+	if (prev_obj && (prev_obj->isVisible() || Reveal ||
 			 prev_obj->isShaded())) {
 		if (!first_thing_listed) {
 			if (n_types == 1)
@@ -1546,7 +1541,7 @@ static int place_describe_objects(struct place *place, int x, int y,
 		n_types--;
 	}
 
-	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal || 
+	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal ||
 			      obj->isShaded())) {
 		if (n_types == 1)
 			log_continue(" and ");
@@ -1577,30 +1572,30 @@ static void place_examine_objects(struct place *place, int x, int y)
 	if (tile->subplace) {
 		log_continue("\nthe entrance to %s", tile->subplace->name);
 	}
-	
+
 	node_for_each(&tile->objstack, l) {
-		obj = (Object *)l->ptr;
+		obj = (Object *) l->ptr;
 
 		if (obj->getLayer() == cursor_layer)
-				// Special case: don't describe the cursor
-				continue;
+			// Special case: don't describe the cursor
+			continue;
 
-		if (! obj->isVisible() && ! Reveal && ! obj->isShaded())
-				continue;
+		if (!obj->isVisible() && !Reveal && !obj->isShaded())
+			continue;
 
 		// hack: objects without names are assumed to be invisible
-		if (! obj->getName())
-				continue;
-	 
+		if (!obj->getName())
+			continue;
+
 		log_end("");
-		log_begin("");	 
-		obj->examine();	  
+		log_begin("");
+		obj->examine();
 	}
 
-	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal || 
+	if (tile->vehicle && (tile->vehicle->isVisible() || Reveal ||
 			      obj->isShaded())) {
 		log_end("");
-		log_begin("");	 
+		log_begin("");
 		tile->vehicle->examine();
 	}
 }				// place_examine_objects()
@@ -1620,8 +1615,9 @@ void place_describe(struct place *place, int x, int y, int flags)
 		count = 1;
 	}
 	if (flags & PLACE_DESCRIBE_OBJECTS)
-		count += place_describe_objects(place, x, y, 
-				       (flags & PLACE_DESCRIBE_TERRAIN) == 0);
+		count += place_describe_objects(place, x, y,
+						(flags & PLACE_DESCRIBE_TERRAIN)
+						== 0);
 	if (!count)
 		log_continue("nothing!");
 }
@@ -1634,12 +1630,14 @@ void place_examine(struct place *place, int x, int y)
 		log_continue("nothing!");
 		return;
 	}
-	
+
 	place_describe_terrain(place, x, y);
 	place_examine_objects(place, x, y);
 }
 
-void place_for_each_tile(struct place *place, void (*fx)(struct tile *tile, void *data), void *data)
+void place_for_each_tile(struct place *place,
+			 void (*fx) (struct tile * tile, void *data),
+			 void *data)
 {
 	int i;
 	struct olist *tileList;
@@ -1652,23 +1650,23 @@ void place_for_each_tile(struct place *place, void (*fx)(struct tile *tile, void
 	 * objects! */
 
 	/* for each bucket */
-	for (i = 0; i < place->objects->n /*&& !Quit*/; i++) {
+	for (i = 0; i < place->objects->n /*&& !Quit */ ; i++) {
 
 		tileList = &place->objects->buckets[i];
 		tileElem = tileList->list.next;
 		assert(tileElem->prev == &tileList->list);
 
 		/* for each tile */
-		while (tileElem != &tileList->list /*&& !Quit*/) {
+		while (tileElem != &tileList->list /*&& !Quit */ ) {
 
 			tileTmp = tileElem->next;
 			tile = outcast(tileElem, struct tile, hashlink.list);
-			
+
 			/* invoke the function on the tile */
 			tile_ref(tile);
 			fx(tile, data);
 			tile_deref(tile);
-			
+
 			tileElem = tileTmp;
 			count++;
 		}
@@ -1683,11 +1681,12 @@ struct forobj_tile_visitor_info {
 void place_forobj_tile_visitor(struct tile *tile, void *data)
 {
 	struct forobj_tile_visitor_info *info;
-	info = (struct forobj_tile_visitor_info*)data;
+	info = (struct forobj_tile_visitor_info *)data;
 	tile_for_each_object(tile, info->fx, info->data);
 }
 
-void place_for_each_object(struct place *place, void (*fx) (class Object *, void *data), void *data)
+void place_for_each_object(struct place *place,
+			   void (*fx) (class Object *, void *data), void *data)
 {
 	struct forobj_tile_visitor_info info;
 	info.fx = fx;
@@ -1695,7 +1694,7 @@ void place_for_each_object(struct place *place, void (*fx) (class Object *, void
 	place_for_each_tile(place, place_forobj_tile_visitor, &info);
 }
 
-static void place_remove_and_destroy_object(class Object *obj, void *unused)
+static void place_remove_and_destroy_object(class Object * obj, void *unused)
 {
 	obj_inc_ref(obj);
 	obj->remove();
@@ -1707,12 +1706,12 @@ void place_remove_and_destroy_all_objects(struct place *place)
 	place_for_each_object(place, place_remove_and_destroy_object, NULL);
 }
 
-void place_apply_tile_effects(struct place *place, class Object *obj)
+void place_apply_tile_effects(struct place *place, class Object * obj)
 {
 	class Object *tfeat;
 	class Field *field;
 
-	assert(! obj->isDestroyed());
+	assert(!obj->isDestroyed());
 
 	// --------------------------------------------------------------------
 	// First check for a terrain feature, which will override any terrain
@@ -1723,7 +1722,7 @@ void place_apply_tile_effects(struct place *place, class Object *obj)
 		if (tfeat->canStep())
 			tfeat->step(obj);
 	} else {
-		struct terrain *terrain;		
+		struct terrain *terrain;
 		terrain = place_get_terrain(place, obj->getX(), obj->getY());
 		if (terrain->effect) {
 			obj->applyEffect(terrain->effect);
@@ -1735,29 +1734,26 @@ void place_apply_tile_effects(struct place *place, class Object *obj)
 	// --------------------------------------------------------------------
 	if (obj->isDestroyed())
 		return;
-	
+
 	// --------------------------------------------------------------------
 	// Now apply effects from any fields on that tile.
 	// --------------------------------------------------------------------
-	field = (class Field *)place_get_object(place, 
-						obj->getX(),
-						obj->getY(), 
-						field_layer);
-	if (field && 
-	    field != obj && 
-	    field->getObjectType()->effect) {
+	field = (class Field *) place_get_object(place,
+						 obj->getX(),
+						 obj->getY(), field_layer);
+	if (field && field != obj && field->getObjectType()->effect) {
 		obj->applyEffect(field->getObjectType()->effect);
 	}
 
 }
 
-static int place_timed_obj_exec(Object *obj)
+static int place_timed_obj_exec(Object * obj)
 {
 	int time = SDL_GetTicks();
 	dbg("%s:%20s ----------\n", __FUNCTION__, obj->getName());
 	obj->exec();
 	return SDL_GetTicks() - time;
-	
+
 }
 
 /***************************************************************************** 
@@ -1774,31 +1770,30 @@ void place_exec(struct place *place)
 	/* FIXME: not sure if we still need this assert */
 	assert(Place == place);
 #endif
-	
+
 	/* Prevent destruction of the place. */
 	place_ref(place);
-	
+
 	/* Flush ambient noises one cycle */
 	sound_flush_ambient();
-	
+
 	/* Start with the first node */
 	place->turn_elem = node_next(&place->turn_list);
 
 	/* Loop over all nodes or until the player quits or dies. */
 	while (place->turn_elem != &place->turn_list
-	       && ! Quit
-	       && ! player_party->allDead()
-	       && ! Reload
+	       && !Quit && !player_party->allDead()
+	       && !Reload
 #if ! CONFIG_CONCURRENT_WILDERNESS
-	       && place == Place /* otherwise projectiles and damage flashes
-				  * from the old place are shown in the new
-				  * place until the turn is over when the
-				  * player does a switch */
+	       && place == Place	/* otherwise projectiles and damage flashes
+					 * from the old place are shown in the new
+					 * place until the turn is over when the
+					 * player does a switch */
 #endif
-		) {
+	    ) {
 
 		/* Keep a pointer to the object in the node */
-		obj = (class Object *)place->turn_elem->ptr;
+		obj = (class Object *) place->turn_elem->ptr;
 		obj_inc_ref(obj);
 
 		/* Advance the node pointer now in case we need to remove the
@@ -1825,7 +1820,7 @@ void place_exec(struct place *place)
 			 * effects. */
 			if (obj->isOnMap()
 			    && null_layer != obj->getLayer()
-				) {
+			    ) {
 				/* Bugfix: as a result of executing its turn,
 				 * the object may now be in a different
 				 * place! */
@@ -1847,7 +1842,7 @@ void place_exec(struct place *place)
 			}
 
 			/* Make sure the object was already removed. */
-			assert(! obj->isOnMap());
+			assert(!obj->isOnMap());
 
 			/* Used to destroy the object explicitly here with
 			 * delete. Now rely on the unref at the bottom of the
@@ -1855,7 +1850,7 @@ void place_exec(struct place *place)
 		}
 
 		/* check for end of combat */
-                combat_on_end_of_turn();
+		combat_on_end_of_turn();
 
 		obj_dec_ref(obj);
 
@@ -1942,8 +1937,7 @@ int place_los_blocked(struct place *place, int Ax, int Ay, int Bx, int By)
 				Px += Xincr;
 				Py += Yincr;
 				P += dPru;
-			}
-			else {
+			} else {
 				Px += Xincr;
 				P += dPr;
 			}
@@ -1969,8 +1963,7 @@ int place_los_blocked(struct place *place, int Ax, int Ay, int Bx, int By)
 				Px += Xincr;
 				Py += Yincr;
 				P += dPru;
-			}
-			else {
+			} else {
 				Py += Yincr;
 				P += dPr;
 			}
@@ -1983,26 +1976,26 @@ int place_los_blocked(struct place *place, int Ax, int Ay, int Bx, int By)
 /*****************************************************************************
  * place_contains_hostile -- helper utility to scan for hostiles
  *****************************************************************************/
-int place_contains_hostiles(struct place *place, Being *subject)
+int place_contains_hostiles(struct place *place, Being * subject)
 {
 	struct node *node;
 	class Object *obj;
-	
+
 	node_for_each(&place->turn_list, node) {
-		obj = (class Object *)node->ptr;
-		if (! obj_is_being(obj))
+		obj = (class Object *) node->ptr;
+		if (!obj_is_being(obj))
 			continue;
-		if (are_hostile((Being*)obj, subject))
+		if (are_hostile((Being *) obj, subject))
 			return 1;
 	}
 
 	return 0;
 }
 
-static void place_save_object(class Object *object, void *data)
+static void place_save_object(class Object * object, void *data)
 {
 	struct save *save;
-	save = (struct save*)data;
+	save = (struct save *)data;
 	save->enter(save, "(list\n");
 	object->save(save);
 	save->exit(save, "%d %d)\n", object->getX(), object->getY());
@@ -2014,10 +2007,10 @@ static void place_save_objects(struct place *place, struct save *save)
 
 	/* Two subtle points about this process:
 	   1. to preserve order, save backwards, because the list will be
-	      reloaded backwards
+	   reloaded backwards
 	   2. the object which is currently being exec'd gets saved at the head
-	      of the list; this ensure that when we restart, the order of exec
-	      will continue right where it left off
+	   of the list; this ensure that when we restart, the order of exec
+	   will continue right where it left off
 	 */
 
 	save->enter(save, "(list ;; objects in %s\n", place->tag);
@@ -2026,16 +2019,16 @@ static void place_save_objects(struct place *place, struct save *save)
 	do {
 		pnode = node_prev(pnode);
 		if (pnode != &place->turn_list) {
-			place_save_object((class Object*)pnode->ptr, save);
+			place_save_object((class Object *) pnode->ptr, save);
 		}
 	} while (pnode != node_prev(place->turn_elem));
 
 	save->exit(save, ") ;; end of objects in %s\n", place->tag);
 }
 
-void place_add_on_entry_hook(struct place *place, closure_t *hook_fx)
+void place_add_on_entry_hook(struct place *place, closure_t * hook_fx)
 {
-	closure_list_t *node = (closure_list_t*)malloc(sizeof(*node));
+	closure_list_t *node = (closure_list_t *) malloc(sizeof(*node));
 	assert(node);
 	node->closure = hook_fx;
 	list_add(&place->on_entry_hook, &node->list);
@@ -2052,7 +2045,7 @@ static void place_save_hooks(struct place *place, struct save *save)
 
 	save->enter(save, "(list ;; on-entry-hooks\n");
 	list_for_each(&place->on_entry_hook, elem) {
-		closure_list_t *node = (closure_list_t*)elem;
+		closure_list_t *node = (closure_list_t *) elem;
 		closure_save(node->closure, save);
 	}
 	save->exit(save, ")\n");
@@ -2099,17 +2092,15 @@ void place_save(struct save *save, void *val)
 	place->saving_now = 1;
 
 	save->enter(save, "(kern-mk-place '%s \"%s\"\n",
-		    place->tag, 
-		    place->name);
-	save->write(save, "%s ;; sprite\n", 
+		    place->tag, place->name);
+	save->write(save, "%s ;; sprite\n",
 		    place->sprite ? sprite_get_tag(place->sprite) : "nil");
 	terrain_map_save(save, place->terrain_map);
 	save->write(save, "%s %s %s %s\n",
 		    place->wraps ? "#t" : "#f",
 		    place->underground ? "#t" : "#f",
 		    place->wilderness ? "#t" : "#f",
-		    place->is_wilderness_combat ? "#t" : "#f"
-		);
+		    place->is_wilderness_combat ? "#t" : "#f");
 
 	/* Save all subplaces recursively. */
 
@@ -2124,10 +2115,9 @@ void place_save(struct save *save, void *val)
 			assert(subplace->location.place = place);
 			save->enter(save, "(list\n");
 			place_save(save, subplace);
-			save->exit(save, "%d %d) ;; coords of %s\n", 
-				   subplace->location.x, 
-				   subplace->location.y,
-				   subplace->tag);
+			save->exit(save, "%d %d) ;; coords of %s\n",
+				   subplace->location.x,
+				   subplace->location.y, subplace->tag);
 		}
 		save->exit(save, ") ; end of subplaces\n");
 	}
@@ -2155,8 +2145,7 @@ void place_save(struct save *save, void *val)
 	for (i = 0; i < array_sz(place->neighbors); i++) {
 		if (place->neighbors[i]
 		    //&& place->neighbors[i]->saved != save->session_id
-		    && ! place->neighbors[i]->saving_now
-			)
+		    && !place->neighbors[i]->saving_now)
 			break;
 	}
 
@@ -2169,14 +2158,13 @@ void place_save(struct save *save, void *val)
 		for (i = 0; i < array_sz(place->neighbors); i++) {
 			if (place->neighbors[i]
 			    //&& place->neighbors[i]->saved != save->session_id
-			    && ! place->neighbors[i]->saving_now
-				) {
+			    && !place->neighbors[i]->saving_now) {
 				save->enter(save, "(list\n");
 				place_save(save, place->neighbors[i]);
 				save->exit(save, "%d)\n", i);
 			}
 		}
-		save->exit(save, ") ;; end neighbors of %s\n",	place->tag);
+		save->exit(save, ") ;; end neighbors of %s\n", place->tag);
 	}
 
 	/* Save the contents */
@@ -2191,7 +2179,7 @@ void place_save(struct save *save, void *val)
 	place->saving_now = 0;
 }
 
-static void place_start_object(class Object *object, void *data)
+static void place_start_object(class Object * object, void *data)
 {
 	object->start();
 }
@@ -2227,7 +2215,7 @@ void place_start(void *val)
 	place_for_each_object(place, place_start_object, NULL);
 }
 
-int place_add_subplace(struct place *place, struct place *subplace, 
+int place_add_subplace(struct place *place, struct place *subplace,
 		       int x, int y)
 {
 	struct tile *tile;
@@ -2242,7 +2230,7 @@ int place_add_subplace(struct place *place, struct place *subplace,
 		if (!tile)
 			return -1;
 	}
-	
+
 	/* Bugfix: combat_enter() was calling this and not checking the return
 	 * value. If combat was started over a town this would fail, but combat
 	 * would proceed normally. This caused two problems: 1. If we saved in
@@ -2281,9 +2269,9 @@ void place_remove_subplace(struct place *place, struct place *subplace)
 	/* Bugfix: if wilderness combat is initiated over a town, on exit the
 	 * town would be removed from the map! See comments in
 	 * place_add_subplace() */
-	if (! subplace->is_wilderness_combat) {
+	if (!subplace->is_wilderness_combat) {
 		struct tile *tile;
-		tile = place_lookup_tile(place, subplace->location.x, 
+		tile = place_lookup_tile(place, subplace->location.x,
 					 subplace->location.y);
 		assert(tile);
 		tile_remove_subplace(tile);
@@ -2292,8 +2280,8 @@ void place_remove_subplace(struct place *place, struct place *subplace)
 	// FIXME: make it an orphan?
 }
 
-void place_for_each_object_at(struct place *place, int x, int y, 
-			      void (*fx)(class Object *, void *), void *data)
+void place_for_each_object_at(struct place *place, int x, int y,
+			      void (*fx) (class Object *, void *), void *data)
 {
 	struct tile *tile;
 
@@ -2302,7 +2290,7 @@ void place_for_each_object_at(struct place *place, int x, int y,
 		tile_for_each_object(tile, fx, data);
 }
 
-static void place_object_on_exit(class Object *obj, void *unused)
+static void place_object_on_exit(class Object * obj, void *unused)
 {
 	if (obj->isTemporary()) {
 		place_remove_and_destroy_object(obj, unused);
@@ -2330,8 +2318,7 @@ int place_set_edge_entrance(struct place *place, int dir, int x, int y)
 	if (dir < 0 || dir >= NUM_PLANAR_DIRECTIONS)
 		return -1;
 
-	if (x < 0 || x >= place_w(place) ||
-	    y < 0 || y >= place_h(place))
+	if (x < 0 || x >= place_w(place) || y < 0 || y >= place_h(place))
 		return -1;
 
 	place->edge_entrance[dir][0] = x;
@@ -2342,14 +2329,14 @@ int place_set_edge_entrance(struct place *place, int dir, int x, int y)
 
 struct place *place_get_neighbor(struct place *place, int dir)
 {
-    if (dir < 0 || dir >= NUM_DIRECTIONS) {
-	return NULL;
-    }
-    return place->neighbors[dir];
+	if (dir < 0 || dir >= NUM_DIRECTIONS) {
+		return NULL;
+	}
+	return place->neighbors[dir];
 }
 
 int place_in_los(struct place *p1, int x1, int y1,
-		   struct place *p2, int x2, int y2)
+		 struct place *p2, int x2, int y2)
 {
 	char *vmask;
 	int x3, y3;
@@ -2359,23 +2346,20 @@ int place_in_los(struct place *p1, int x1, int y1,
 
 	/* Translate (x2, y2) into vmask coordinates. Notationally, let:
 
-	      a = vector from place origin to (x1, y1)
-	      b = vector from place origin to (x2, y2)
-	      o = vector from place origin to vmask origin
+	   a = vector from place origin to (x1, y1)
+	   b = vector from place origin to (x2, y2)
+	   o = vector from place origin to vmask origin
 
 	   We already know a, b and (a - o) = (VMASK_W/2, VMASK_H/2). We need
 	   to solve for (b - o) and then wrap if the place supports wrapping.
 
-	      b - a + (a - o) = b - o
-	*/
+	   b - a + (a - o) = b - o
+	 */
 
-	x3 = place_wrap_x(p1, x2 - x1 + VMASK_W/2);
-	y3 = place_wrap_y(p1, y2 - y1 + VMASK_H/2);
+	x3 = place_wrap_x(p1, x2 - x1 + VMASK_W / 2);
+	y3 = place_wrap_y(p1, y2 - y1 + VMASK_H / 2);
 
-	if (x3 < 0 ||
-	    y3 < 0 ||
-	    x3 >= VMASK_W ||
-	    y3 >= VMASK_H)
+	if (x3 < 0 || y3 < 0 || x3 >= VMASK_W || y3 >= VMASK_H)
 		return 0;
 
 	return vmask[x3 + y3 * VMASK_W];
@@ -2383,8 +2367,8 @@ int place_in_los(struct place *p1, int x1, int y1,
 
 void place_set_neighbor(struct place *place, int dir, struct place *neighbor)
 {
-	int opdir = directionToOpposite(dir); 
-       
+	int opdir = directionToOpposite(dir);
+
 	/* unlink current neighbors */
 	if (place->neighbors[dir]) {
 		place->neighbors[dir]->neighbors[opdir] = 0;
@@ -2420,12 +2404,15 @@ void place_dump_stats(void)
 	struct list *entry;
 	int index = 0;
 	list_for_each(&place_list, entry) {
-		struct place *place = list_entry(entry, struct place, all_places);
+		struct place *place =
+		    list_entry(entry, struct place, all_places);
 		index++;
-		info("%c %3d. %s [%d]\n", (place == Place ? '*':' '), index, place_name(place), mem_get_refs(place));
+		info("%c %3d. %s [%d]\n", (place == Place ? '*' : ' '), index,
+		     place_name(place), mem_get_refs(place));
 	}
 	info("Places: allocs=%d / frees=%d\n", place_allocs, place_frees);
-	info(" Tiles: allocs=%d / frees=%d\n", place_tile_allocs, place_tile_frees);
+	info(" Tiles: allocs=%d / frees=%d\n", place_tile_allocs,
+	     place_tile_frees);
 }
 
 void place_ref(struct place *place)

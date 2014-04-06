@@ -28,25 +28,22 @@
 
 #include "macros.h"
 
-BEGIN_DECL
-
-typedef struct hstack hstack_t;
+BEGIN_DECL typedef struct hstack hstack_t;
 
 extern hstack_t *hstack_new();
-extern void hstack_del(hstack_t *stack);
-extern void hstack_init(hstack_t *stack);
-extern void hstack_set_free_handle(hstack_t *hstack);
-extern int hstack_push(hstack_t *stack, void *data);
-extern void hstack_restore(hstack_t *stack, void *data, int handle);
-extern void hstack_pop(hstack_t *stack);
-extern void * hstack_top(hstack_t *stack);
-extern void hstack_rm(hstack_t *stack, int handle);
-extern int hstack_depth(hstack_t *stack);
-extern int hstack_empty(hstack_t *stack);
+extern void hstack_del(hstack_t * stack);
+extern void hstack_init(hstack_t * stack);
+extern void hstack_set_free_handle(hstack_t * hstack);
+extern int hstack_push(hstack_t * stack, void *data);
+extern void hstack_restore(hstack_t * stack, void *data, int handle);
+extern void hstack_pop(hstack_t * stack);
+extern void *hstack_top(hstack_t * stack);
+extern void hstack_rm(hstack_t * stack, int handle);
+extern int hstack_depth(hstack_t * stack);
+extern int hstack_empty(hstack_t * stack);
 
-extern void hstack_save(hstack_t *stack, struct save *save,
-                        void (*save_data)(struct save *save, void *data));
+extern void hstack_save(hstack_t * stack, struct save *save,
+			void (*save_data) (struct save * save, void *data));
 
 END_DECL
-
 #endif

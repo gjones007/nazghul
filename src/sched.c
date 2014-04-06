@@ -28,52 +28,51 @@
 #include <stdlib.h>
 
 const char *activity_names[NUM_ACTIVITIES] = {
-        "idle",
-        "working",
-        "sleeping",
-        "commuting",
-        "eating",
-        "drunk",
-        "fighting"
+	"idle",
+	"working",
+	"sleeping",
+	"commuting",
+	"eating",
+	"drunk",
+	"fighting"
 };
 
 int sched_name_to_activity(char *activity_name)
 {
-        int i;
-        for (i = 0; i < NUM_ACTIVITIES; i++) {
-                if (! strcmp(activity_name, activity_names[i]))
-                        return i;
-        }
-        return -1;
+	int i;
+	for (i = 0; i < NUM_ACTIVITIES; i++) {
+		if (!strcmp(activity_name, activity_names[i]))
+			return i;
+	}
+	return -1;
 }
 
 const char *sched_activity_to_name(int activity)
 {
-        if (activity < NUM_ACTIVITIES &&
-            activity >= 0)
-                return activity_names[activity];
-        return NULL;
+	if (activity < NUM_ACTIVITIES && activity >= 0)
+		return activity_names[activity];
+	return NULL;
 }
 
 struct sched *sched_new(char *tag, int n_appts)
 {
-        struct sched *sched;
-        int i;
+	struct sched *sched;
+	int i;
 
-        sched = (struct sched*)calloc(1, sizeof(*sched));
-        assert(sched);
+	sched = (struct sched *)calloc(1, sizeof(*sched));
+	assert(sched);
 
-        sched->tag = strdup(tag);
-        assert(sched->tag);
+	sched->tag = strdup(tag);
+	assert(sched->tag);
 
-        sched->n_appts = n_appts;
-        sched->appts = (struct appt*)calloc(n_appts, sizeof(struct appt));
-        assert(sched->appts);
+	sched->n_appts = n_appts;
+	sched->appts = (struct appt *)calloc(n_appts, sizeof(struct appt));
+	assert(sched->appts);
 
-        for (i = 0; i < n_appts; i++)
-                sched->appts[i].index = i;
+	for (i = 0; i < n_appts; i++)
+		sched->appts[i].index = i;
 
-        return sched;
+	return sched;
 }
 
 void sched_del(struct sched *sched)
@@ -84,58 +83,57 @@ void sched_del(struct sched *sched)
 		free(sched->tag);
 	if (sched->appts)
 		free(sched->appts);
-        free(sched);
+	free(sched);
 }
 
-static struct place *sched_scheme_sym_to_place(scheme *sc, pointer sym)
+static struct place *sched_scheme_sym_to_place(scheme * sc, pointer sym)
 {
-        pointer pair;
+	pointer pair;
 
-        assert(sym);
-        assert(sc);
-        assert(sc->vptr->is_symbol(sym));
+	assert(sym);
+	assert(sc);
+	assert(sc->vptr->is_symbol(sym));
 
-        pair = sc->vptr->find_slot_in_env(sc, sc->envir, sym, 1);
-        assert(sc->vptr->is_pair(pair));
+	pair = sc->vptr->find_slot_in_env(sc, sc->envir, sym, 1);
+	assert(sc->vptr->is_pair(pair));
 
-        return (struct place*)sc->vptr->pair_car(sc->vptr->pair_cdr(pair));
+	return (struct place *)sc->vptr->pair_car(sc->vptr->pair_cdr(pair));
 }
 
 struct appt *sched_get_appointment(struct sched *sched, int hr, int min)
 {
-        int i = 0;
-        struct appt *appt = 0;
+	int i = 0;
+	struct appt *appt = 0;
 
-        assert(hr >= 0);
-        assert(hr <= 23);
+	assert(hr >= 0);
+	assert(hr <= 23);
 
-        for (i = 0; i < sched->n_appts; i++) {
-                if (hr < sched->appts[i].hr)
-                        break;
-        }
+	for (i = 0; i < sched->n_appts; i++) {
+		if (hr < sched->appts[i].hr)
+			break;
+	}
 
-        assert(i);
-        assert(i <= sched->n_appts);
+	assert(i);
+	assert(i <= sched->n_appts);
 
-        appt = &sched->appts[i-1];
+	appt = &sched->appts[i - 1];
 
-        /* resolve the place symbol to a place */
-        if (! appt->place) {
-                appt->place = sched_scheme_sym_to_place(sched->sc, 
-                                                        appt->place_sym);
-                assert(appt->place);
-        }
+	/* resolve the place symbol to a place */
+	if (!appt->place) {
+		appt->place = sched_scheme_sym_to_place(sched->sc,
+							appt->place_sym);
+		assert(appt->place);
+	}
 
-        return appt;
+	return appt;
 }
 
-struct place *sched_appt_get_place(struct sched *sched,
-                                         struct appt *appt)
+struct place *sched_appt_get_place(struct sched *sched, struct appt *appt)
 {
-        if (! appt->place) {
-                appt->place = sched_scheme_sym_to_place(sched->sc, 
-                                                        appt->place_sym);
-                assert(appt->place);
-        }
-        return appt->place;
+	if (!appt->place) {
+		appt->place = sched_scheme_sym_to_place(sched->sc,
+							appt->place_sym);
+		assert(appt->place);
+	}
+	return appt->place;
 }

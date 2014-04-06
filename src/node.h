@@ -26,14 +26,11 @@
 #include "macros.h"
 #include "olist.h"
 
-BEGIN_DECL
-
-struct node {
-        struct olist olist;
-        void *ptr;
-        int ref;
+BEGIN_DECL struct node {
+	struct olist olist;
+	void *ptr;
+	int ref;
 };
-
 
 #define nodelst(n) (&((n)->olist.list))
 #define nodekeyedlst(n) (&((n)->olist))
@@ -56,10 +53,8 @@ extern struct node *node_new(void *data);
 extern struct node *node_new_keyed(void *data, int key);
 extern void node_unref(struct node *node);
 extern void node_foldr(struct node *node,
-                       void (*fx)(struct node *node, void *data),
-                       void *data);
+		       void (*fx) (struct node * node, void *data), void *data);
 extern int node_list_len(struct node *head);
 extern void node_list_unlink_and_unref(struct node *head);
 END_DECL
-
-#endif /* node_h */
+#endif				/* node_h */

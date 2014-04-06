@@ -27,92 +27,90 @@
 #define CFG_HASH_SIZE 31
 
 struct cfg_entry {
-        struct cfg_entry *next;
-        char *key, *val;        
+	struct cfg_entry *next;
+	char *key, *val;
 } *cfg_hash[CFG_HASH_SIZE];
 
 static struct cfg_entry *cfg_entry_new(const char *key, const char *val)
 {
-        struct cfg_entry *entry = (struct cfg_entry*)malloc(sizeof(*entry));
-        assert(entry);
-        entry->next = 0;
-        entry->key = strdup(key);
-        assert(entry->key);
-        if (val) {
-                entry->val = strdup(val);
-                assert(entry->val);
-        } else {
-                entry->val = 0;
-        }
-        return entry;
+	struct cfg_entry *entry = (struct cfg_entry *)malloc(sizeof(*entry));
+	assert(entry);
+	entry->next = 0;
+	entry->key = strdup(key);
+	assert(entry->key);
+	if (val) {
+		entry->val = strdup(val);
+		assert(entry->val);
+	} else {
+		entry->val = 0;
+	}
+	return entry;
 }
 
 static int hashfn(const char *key)
 {
-        unsigned int hashed = 0; 
-        const char *c; 
-        static const int bits_per_int = sizeof(unsigned int)*8; 
+	unsigned int hashed = 0;
+	const char *c;
+	static const int bits_per_int = sizeof(unsigned int) * 8;
 
-        for (c = key; *c; c++) { 
-                /* letters have about 5 bits in them */ 
-                hashed = (hashed<<5) | (hashed>>(bits_per_int-5)); 
-                hashed ^= *c; 
-        } 
-        return hashed % CFG_HASH_SIZE;
+	for (c = key; *c; c++) {
+		/* letters have about 5 bits in them */
+		hashed = (hashed << 5) | (hashed >> (bits_per_int - 5));
+		hashed ^= *c;
+	}
+	return hashed % CFG_HASH_SIZE;
 }
 
 int cfg_init()
 {
-        memset(cfg_hash, 0, sizeof(cfg_hash));
-        return 0;
+	memset(cfg_hash, 0, sizeof(cfg_hash));
+	return 0;
 }
 
 void cfg_set(const char *key, const char *val)
 {
-        int hashkey = hashfn(key);
-        struct cfg_entry *entry = cfg_hash[hashkey];
-        if (! entry) {
-                cfg_hash[hashkey] = cfg_entry_new(key, val);
-        } else {
-                int match = !strcmp(entry->key, key);
-                while (! match
-                       && entry->next) {
-                        entry = entry->next;
-                        match = !strcmp(entry->key, key);
-                }
-                if (match) {
-                        repstr(&entry->val, val);
-                } else {
-                        entry->next = cfg_entry_new(key, val);
-                }
-        }
+	int hashkey = hashfn(key);
+	struct cfg_entry *entry = cfg_hash[hashkey];
+	if (!entry) {
+		cfg_hash[hashkey] = cfg_entry_new(key, val);
+	} else {
+		int match = !strcmp(entry->key, key);
+		while (!match && entry->next) {
+			entry = entry->next;
+			match = !strcmp(entry->key, key);
+		}
+		if (match) {
+			repstr(&entry->val, val);
+		} else {
+			entry->next = cfg_entry_new(key, val);
+		}
+	}
 }
 
 char *cfg_get(const char *key)
 {
-        int hashkey = hashfn(key);
-        struct cfg_entry *entry = cfg_hash[hashkey];
-        if (! entry) {
-                return 0;
-        } else {
-                int match = !strcmp(entry->key, key);
-                while (! match
-                       && entry->next) {
-                        entry = entry->next;
-                        match = !strcmp(entry->key, key);
-                }
-                if (match) {
-                        return entry->val;
-                } else {
-                        return 0;
-                }
-        }
+	int hashkey = hashfn(key);
+	struct cfg_entry *entry = cfg_hash[hashkey];
+	if (!entry) {
+		return 0;
+	} else {
+		int match = !strcmp(entry->key, key);
+		while (!match && entry->next) {
+			entry = entry->next;
+			match = !strcmp(entry->key, key);
+		}
+		if (match) {
+			return entry->val;
+		} else {
+			return 0;
+		}
+	}
 }
 
-void cfg_print(int (*printfx)(const char *fmt, ...))
+void cfg_print(int (*printfx) (const char *fmt, ...))
 {
 	unsigned int i = 0;
-	for (i = 0; i < sizeof(cfg_hash)/sizeof(cfg_hash[0]); i++) {
+	for (i = 0; i < sizeof(cfg_hash) / sizeof(cfg_hash[0]); i++) {
 		struct cfg_entry *entry;
 		entry = cfg_hash[i];
 		while (entry) {

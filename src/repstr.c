@@ -28,15 +28,15 @@
 
 void repstr(char **sptr, const char *val)
 {
-        if (*sptr == val)
-                return;
+	if (*sptr == val)
+		return;
 
-        if (*sptr) {
-                free(*sptr);
-                *sptr = 0;
-        }
-        if (val) {
-                *sptr = strdup(val);
-                assert(*sptr);
-        }
+	if (*sptr) {
+		free(*sptr);
+		*sptr = 0;
+	}
+	if (val) {
+		*sptr = strdup(val);
+		assert(*sptr);
+	}
 }

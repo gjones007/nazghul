@@ -25,20 +25,16 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #define STAT_CHARS_PER_LINE 46
-
 #define TILE_W   32
 #define TILE_H   32
 #define ASCII_W  8
 #define ASCII_H  16
 #define BORDER_W 16
 #define BORDER_H 16
-
 #define MIN_MAP_SIZE 11
 #define MAX_MAP_SIZE 19
 #define DEF_MAP_SIZE 19
-
 extern int STATUS_MAX_MSG_SZ;
 extern int SCREEN_W;
 extern int SCREEN_H;
@@ -88,5 +84,4 @@ extern int SKY_SPRITE_W;
 int dimensions_init();
 
 END_DECL
-
 #endif

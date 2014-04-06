@@ -25,20 +25,17 @@
 
 #include "macros.h"
 
-BEGIN_DECL
-
-struct mmode {
-        char *tag;
-        char *name;  /* for UI selection */
-        int index;   /* into passability table (see ptable.h) */
+BEGIN_DECL struct mmode {
+	char *tag;
+	char *name;		/* for UI selection */
+	int index;		/* into passability table (see ptable.h) */
 };
 
 #define mmode_name(mmode) ((mmode)->name)
 #define mmode_index(mmode) ((mmode)->index)
 
-extern struct mmode * mmode_new(char *tag, char *name, int index);
+extern struct mmode *mmode_new(char *tag, char *name, int index);
 extern void mmode_del(struct mmode *mmode);
 
 END_DECL
-
 #endif

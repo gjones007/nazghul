@@ -33,7 +33,8 @@
  * twice via session.h.
  */
 
-SESSION_DECL_QUERY(str_based_attack_query), /* character */
-SESSION_DECL_QUERY(dex_based_attack_query), /* character */
-SESSION_DECL_QUERY(damage_bonus_query), /* character */
-SESSION_DECL_QUERY(defense_bonus_query), /* character */
+SESSION_DECL_QUERY(str_based_attack_query),	/* character */
+    SESSION_DECL_QUERY(dex_based_attack_query),	/* character */
+    SESSION_DECL_QUERY(damage_bonus_query),
+					/* character */
+    SESSION_DECL_QUERY(defense_bonus_query),	/* character */

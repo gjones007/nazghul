@@ -27,13 +27,14 @@
 /* These are used to list the skills in a skill set, and to associate a minimum
  * required level to use each skill. */
 struct skill_set_entry {
-        struct list list;         /* list of other skills in the skill set */
-        struct skill *skill;      /* the skill                             */
-        int level;                /* min skill level to use this skill     */
-        int refcount;             /* memory management                     */
+	struct list list;	/* list of other skills in the skill set */
+	struct skill *skill;	/* the skill                             */
+	int level;		/* min skill level to use this skill     */
+	int refcount;		/* memory management                     */
 };
 
-extern struct skill_set_entry *skill_set_entry_new(struct skill *skill, int level);
+extern struct skill_set_entry *skill_set_entry_new(struct skill *skill,
+						   int level);
 extern void skill_set_entry_ref(struct skill_set_entry *ssent);
 extern void skill_set_entry_unref(struct skill_set_entry *ssent);
 

@@ -39,7 +39,7 @@
  */
 struct applet_ops {
 
-        /**
+	/**
          * Run an applet. This is called to start the applet. It should not
          * return until the applet is done. This function is required.
          *
@@ -51,9 +51,10 @@ struct applet_ops {
          * variable Session, but using this parameter is preferred for all new
          * code).
          */
-        void (*run)(struct applet *applet, SDL_Rect *dims, struct session *session);
+	void (*run) (struct applet * applet, SDL_Rect * dims,
+		     struct session * session);
 
-        /**
+	/**
          * Paint the applet. This function is required. The status code calls
          * this function for animation repaints. If the applet wants to repaint
          * itself it should typically call statusRepaint(), which will invoke
@@ -61,9 +62,9 @@ struct applet_ops {
          *
          * @param applet is the applet instance.
          */
-        void (*paint)(struct applet *applet);
+	void (*paint) (struct applet * applet);
 
-        /**
+	/**
          * Get the desired height (in lines) that the applet wants to use for
          * its window. This is called prior to run, so the status code can
          * resize the window before starting the applet. This function is
@@ -72,7 +73,7 @@ struct applet_ops {
          *
          * @param applet is the applet instance.
          */
-        int (*get_desired_height)(struct applet *applet);
+	int (*get_desired_height) (struct applet * applet);
 };
 
 /**
@@ -80,10 +81,10 @@ struct applet_ops {
  * structure with their own fields.
  */
 struct applet {
-        struct list list; /* used to stack applets in the status code */
-        SDL_Rect dims; /* window dimensions passed into run may be kept here */
-        struct session *session; /* the session pointer passed to run may be kept here */
-        struct applet_ops *ops; /* the applet's call table */
+	struct list list;	/* used to stack applets in the status code */
+	SDL_Rect dims;		/* window dimensions passed into run may be kept here */
+	struct session *session;	/* the session pointer passed to run may be kept here */
+	struct applet_ops *ops;	/* the applet's call table */
 };
 
 #endif

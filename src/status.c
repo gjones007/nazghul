@@ -63,7 +63,6 @@
 #define MAX_TITLE_LEN (STAT_CHARS_PER_LINE-2)
 #define STAT_MAX_H TALL_H
 
-
 #define STAT_MODE_STACK_DEPTH 10
 
 static struct status {
@@ -102,10 +101,10 @@ static struct status {
          * The text that appears in the title bar at the top of the status
          * window.
          */
-	char title[MAX_TITLE_LEN+1];
+	char title[MAX_TITLE_LEN + 1];
 
 	const char *pg_title;
-        char *pg_text;
+	char *pg_text;
 	SDL_Surface *pg_surf;
 	SDL_Rect pg_rect;
 	int pg_max_y;
@@ -115,10 +114,10 @@ static struct status {
 	struct trade_info *trades;
 	struct stat_list_entry *list;
 	const char **strlist;
-	
+
 	Container *container;
 	struct filter *filter;
-	void (*show_thing)(SDL_Rect * rect, void *thing);
+	void (*show_thing) (SDL_Rect * rect, void *thing);
 
 	/**
          * Sometimes I just don't want to repaint until I'm done doing more
@@ -127,7 +126,7 @@ static struct status {
          */
 	int suppressRepaint;
 
-        glyph_formatter_t *gf;
+	glyph_formatter_t *gf;
 
 	/**
          * New experimental super-generic stuff
@@ -136,7 +135,7 @@ static struct status {
 
 	enum StatusMode stack[STAT_MODE_STACK_DEPTH];
 	int top;
-        struct list applet_stack;
+	struct list applet_stack;
 
 } Status;
 
@@ -145,8 +144,8 @@ static bool stat_filter_ready_arms(struct inv_entry *ie, void *fdata);
 static bool stat_filter_drop(struct inv_entry *ie, void *fdata);
 
 /* functions to show specific types of things from status_show_containe() */
-static void status_show_generic_object_type(SDL_Rect *rect, void *thing);
-static void status_show_mix_reagent(SDL_Rect *rect, void *thing);
+static void status_show_generic_object_type(SDL_Rect * rect, void *thing);
+static void status_show_mix_reagent(SDL_Rect * rect, void *thing);
 
 /* super-generic functions */
 static void stat_super_generic_paint();
@@ -175,26 +174,25 @@ static bool stat_filter_mixable(struct inv_entry *ie, void *fdata)
 	return (ie->type->isMixable());
 }
 
-
 static struct filter stat_mix_filter = {
 	stat_filter_mixable, 0
 };
 
 static bool stat_filter_ready_arms(struct inv_entry *ie, void *fdata)
 {
-	if (! ie->type->isReadyable()) {
+	if (!ie->type->isReadyable()) {
 		return false;
 	}
-				
+
 	/* Are any available? */
 	if (ie->count > ie->ref)
 		return true;
-				
+
 	/* Is one already readied by the current party member? */
-	if (ie->ref && 
-			player_party->getMemberAtIndex(Status.pcIndex)->
-				hasReadied((class ArmsType *)ie->type))
-	{
+	if (ie->ref &&
+	    player_party->getMemberAtIndex(Status.
+					   pcIndex)->hasReadied((class ArmsType
+								 *) ie->type)) {
 		return true;
 	}
 
@@ -203,7 +201,7 @@ static bool stat_filter_ready_arms(struct inv_entry *ie, void *fdata)
 
 static bool stat_filter_drop(struct inv_entry *ie, void *fdata)
 {
-	return (! ie->type->isCastable()
+	return (!ie->type->isCastable()
 		&& (ie->ref < ie->count));
 }
 
@@ -225,14 +223,14 @@ static void switch_to_tall_mode(void)
 static void status_set_line_height(int lines)
 {
 	int height = lines * ASCII_H;
-	
+
 	if (height > STAT_MAX_H) {
 		height = STAT_MAX_H;
 	}
-	
+
 	Status.screenRect.h = height;
 	Status.numLines = Status.screenRect.h / ASCII_H;
-	
+
 	foogod_set_y(STAT_Y + Status.screenRect.h + BORDER_H);
 	foogodRepaint();
 	console_repaint();
@@ -247,7 +245,7 @@ static void switch_to_short_mode(void)
 	if (Status.screenRect.h == party_height)
 		return;
 
-	Status.numLines	= num_in_party;
+	Status.numLines = num_in_party;
 	Status.screenRect.h = party_height;
 
 	foogod_set_y(STAT_Y + Status.screenRect.h + BORDER_H);
@@ -266,7 +264,7 @@ int statusInit()
 	Status.screenRect.y = STAT_Y;
 	Status.screenRect.w = STAT_W;
 	Status.screenRect.h = TILE_H;
-					
+
 	Status.titleRect.x = STAT_X;
 	Status.titleRect.y = 0;
 	Status.titleRect.w = STAT_W;	// - (2 * BORDER_W);
@@ -280,30 +278,30 @@ int statusInit()
 	Status.numLines = Status.screenRect.h / LINE_H;
 
 	foogod_set_y(STAT_Y + Status.screenRect.h + BORDER_H);
-        Status.gf = glyph_formatter_alloc();
+	Status.gf = glyph_formatter_alloc();
 
-        list_init(&Status.applet_stack);
+	list_init(&Status.applet_stack);
 
 #ifdef ztats_h
-        ztats_init();
+	ztats_init();
 #endif
 #ifdef ztats_pm_h
-        ztats_pm_init();
+	ztats_pm_init();
 #endif
 #ifdef ztats_arms_h
-        ztats_arms_init();
+	ztats_arms_init();
 #endif
 #ifdef ztats_reagents_h
-        ztats_reagents_init();
+	ztats_reagents_init();
 #endif
 #ifdef ztats_spells_h
-        ztats_spells_init();
+	ztats_spells_init();
 #endif
 #ifdef ztats_items_h
-        ztats_items_init();
+	ztats_items_init();
 #endif
 #ifdef ztats_misc_h
-        ztats_misc_init();
+	ztats_misc_init();
 #endif
 
 	return 0;
@@ -312,14 +310,14 @@ int statusInit()
 void status_set_title(const char *title)
 {
 	strncpy(Status.title, title, MAX_TITLE_LEN);
-	Status.title[MAX_TITLE_LEN]=0;
+	Status.title[MAX_TITLE_LEN] = 0;
 }
 
 void status_repaint_title(void)
 {
 	screen_erase(&Status.titleRect);
-	screen_print(&Status.titleRect, SP_CENTERED | SP_ONBORDER, "%s", 
-						Status.title);
+	screen_print(&Status.titleRect, SP_CENTERED | SP_ONBORDER, "%s",
+		     Status.title);
 	screen_update(&Status.titleRect);
 }
 
@@ -335,26 +333,23 @@ static char status_arms_stat_color(char *dice)
 
 /* status_show_arms_stats -- helper function to print the arms stats the same
  * way for all viewers. */
-void status_show_arms_stats(SDL_Rect *rect, ArmsType *arms)
+void status_show_arms_stats(SDL_Rect * rect, ArmsType * arms)
 {
-	char *hit   = arms->getToHitDice();
-	char *dmg   = arms->getDamageDice();
+	char *hit = arms->getToHitDice();
+	char *dmg = arms->getDamageDice();
 
-	char *def   = arms->getToDefendDice();
+	char *def = arms->getToDefendDice();
 	char *armor = arms->getArmorDice();
 
-	screen_print(rect, 0, 
-		    "^c+%cHit:^c%c%s ^c%cDmg:^c%c%s ^c%cDef:^c%c%s ^c%cArm:^c%c%s^c-", 
-
-		    STAT_LABEL_CLR,
-		    status_arms_stat_color(hit), hit,
-		    STAT_LABEL_CLR,
-		    status_arms_stat_color(dmg), dmg,
-		    STAT_LABEL_CLR,
-		    status_arms_stat_color(def), def,
-		    STAT_LABEL_CLR,
-		    status_arms_stat_color(armor), armor
-		);
+	screen_print(rect, 0,
+		     "^c+%cHit:^c%c%s ^c%cDmg:^c%c%s ^c%cDef:^c%c%s ^c%cArm:^c%c%s^c-",
+		     STAT_LABEL_CLR,
+		     status_arms_stat_color(hit), hit,
+		     STAT_LABEL_CLR,
+		     status_arms_stat_color(dmg), dmg,
+		     STAT_LABEL_CLR,
+		     status_arms_stat_color(def), def,
+		     STAT_LABEL_CLR, status_arms_stat_color(armor), armor);
 	rect->y += (TILE_H - ASCII_H);
 }
 
@@ -363,39 +358,35 @@ void status_show_arms_stats(SDL_Rect *rect, ArmsType *arms)
  * character in question */
 static void status_show_ready_arms(SDL_Rect * rect, void *thing)
 {
-	struct inv_entry *ie = (struct inv_entry*)thing;
-	ArmsType *arms = (ArmsType*)ie->type;
+	struct inv_entry *ie = (struct inv_entry *)thing;
+	ArmsType *arms = (ArmsType *) ie->type;
 	int inUse = 0;
 	int avail = ie->count - ie->ref;
-	
+
 	assert(ie->count);
 	assert(avail >= 0);
-	
+
 	/* sprite */
 	sprite_paint(arms->getSprite(), 0, rect->x, rect->y);
 	rect->x += TILE_W;
-	
-	if (ie->ref && 
-		player_party->getMemberAtIndex(Status.pcIndex)->
-		hasReadied(arms)) {
-			inUse = 1;
+
+	if (ie->ref &&
+	    player_party->getMemberAtIndex(Status.pcIndex)->hasReadied(arms)) {
+		inUse = 1;
 	}
-	
+
 	/* quantity and name */
 	if (avail) {
 		screen_print(rect, 0, "^c+%c%2d%c%s^c-",
-			(inUse?STAT_INUSE_CLR:STAT_NULL_CLR),
-			avail,
-			(inUse?'*':' '),
-			arms->getName());
+			     (inUse ? STAT_INUSE_CLR : STAT_NULL_CLR),
+			     avail, (inUse ? '*' : ' '), arms->getName());
 	} else {
 		screen_print(rect, 0, "^c+%c--%c%s^c-",
-			(inUse?STAT_INUSE_CLR:STAT_UNAVAIL_CLR),
-			(inUse?'*':' '),
-			arms->getName());
+			     (inUse ? STAT_INUSE_CLR : STAT_UNAVAIL_CLR),
+			     (inUse ? '*' : ' '), arms->getName());
 	}
 	rect->y += ASCII_H;
-	
+
 	/* stats */
 	status_show_arms_stats(rect, arms);
 	rect->x -= TILE_W;
@@ -405,49 +396,47 @@ static void status_show_ready_arms(SDL_Rect * rect, void *thing)
  * level of a statistic */
 char status_range_color(int cur, int max)
 {
-	if (cur > max/2)
-	{
+	if (cur > max / 2) {
 		return STAT_OK_CLR;
-	} 
-	else if (cur > max/4)
-	{
+	} else if (cur > max / 4) {
 		return STAT_WARNING_CLR;
-	} 
-	else
-	{
+	} else {
 		return STAT_CRITICAL_CLR;
 	}
 }
 
-static void status_show_character_var_stats(SDL_Rect *rect, 
-                                            class Character *pm)
+static void status_show_character_var_stats(SDL_Rect * rect,
+					    class Character * pm)
 {
 	/* Show the xp, hp and mp */
-	/* Note that getXpForLevel(2) - getXpForLevel(1) != getXpForLevel(1)*/
-	screen_print(rect, 0, 
-			"^c+%cHP:^c%c%d^cw/%d "
-			"^c%cMP:^c%c%d^cw/%d "
-			"^c%cAP:^c%c%d^cw/%d "
-			"^c%cLvl:^cw%d^c%c(%d%%)^c-"
-			, STAT_LABEL_CLR
-			, status_range_color(pm->getHp(), pm->getMaxHp())
-			, pm->getHp(), pm->getMaxHp()
+	/* Note that getXpForLevel(2) - getXpForLevel(1) != getXpForLevel(1) */
+	screen_print(rect, 0,
+		     "^c+%cHP:^c%c%d^cw/%d "
+		     "^c%cMP:^c%c%d^cw/%d "
+		     "^c%cAP:^c%c%d^cw/%d "
+		     "^c%cLvl:^cw%d^c%c(%d%%)^c-", STAT_LABEL_CLR,
+		     status_range_color(pm->getHp(), pm->getMaxHp())
+		     , pm->getHp(), pm->getMaxHp()
 
-			, STAT_LABEL_CLR
-			, status_range_color(pm->getMana(), pm->getMaxMana())
-			, pm->getMana(), pm->getMaxMana()
+		     , STAT_LABEL_CLR, status_range_color(pm->getMana(),
+							  pm->getMaxMana())
+		     , pm->getMana(), pm->getMaxMana()
 
-			, STAT_LABEL_CLR
-			, status_range_color(pm->getActionPoints(), 
-										pm->getActionPointsPerTurn())
-			, pm->getActionPoints()
-			, pm->getActionPointsPerTurn()
+		     , STAT_LABEL_CLR, status_range_color(pm->getActionPoints(),
+							  pm->
+							  getActionPointsPerTurn
+							  ())
+		     , pm->getActionPoints()
+		     , pm->getActionPointsPerTurn()
 
-			, STAT_LABEL_CLR
-			, pm->getLevel()
-			, STAT_LABEL_CLR
-			, (100 * (pm->getExperience()-pm->getXpForLevel(pm->getLevel()))/(pm->getXpForLevel(pm->getLevel()+1)-pm->getXpForLevel(pm->getLevel())))
-		);
+		     , STAT_LABEL_CLR, pm->getLevel()
+		     , STAT_LABEL_CLR,
+		     (100 *
+		      (pm->getExperience() -
+		       pm->getXpForLevel(pm->getLevel())) /
+		      (pm->getXpForLevel(pm->getLevel() + 1) -
+		       pm->getXpForLevel(pm->getLevel())))
+	    );
 	rect->y += ASCII_H;
 }
 
@@ -473,22 +462,22 @@ static void myShadeHalfLines(int line, int n)
 
 /* status_show_generic_object_type -- show a generic object type (just name and
  * quantity) */
-static void status_show_generic_object_type(SDL_Rect *rect, void *thing)
+static void status_show_generic_object_type(SDL_Rect * rect, void *thing)
 {
-	struct inv_entry *ie = (struct inv_entry*)thing;
+	struct inv_entry *ie = (struct inv_entry *)thing;
 	if (ie->type->getSprite()) {
-				sprite_paint(ie->type->getSprite(), 0, rect->x, rect->y);
+		sprite_paint(ie->type->getSprite(), 0, rect->x, rect->y);
 	}
-	
+
 	/* Indent past the sprite column. */
 	rect->x += TILE_W;
 
 	/* This is a single-line entry in a two-line rect, so center it
-		* vertically. */
+	 * vertically. */
 	rect->y += LINE_H / 4;
 
-	screen_print(rect, 0, "%2d %s", ie->count - ie->ref, 
-					ie->type->getName());
+	screen_print(rect, 0, "%2d %s", ie->count - ie->ref,
+		     ie->type->getName());
 
 	/* Carriage-return line-feed */
 	rect->y += (LINE_H * 3) / 4;
@@ -497,28 +486,26 @@ static void status_show_generic_object_type(SDL_Rect *rect, void *thing)
 
 /* status_show_mix_reagent -- show a reagent during the M)ix UI. Marks reagents
  * which have been selected for mixing. */
-static void status_show_mix_reagent(SDL_Rect *rect, void *thing)
+static void status_show_mix_reagent(SDL_Rect * rect, void *thing)
 {
-	struct inv_entry *ie = (struct inv_entry*)thing;
+	struct inv_entry *ie = (struct inv_entry *)thing;
 	if (ie->type->getSprite()) {
 		sprite_paint(ie->type->getSprite(), 0, rect->x, rect->y);
 	}
-	
+
 	/* Indent past the sprite column. */
 	rect->x += TILE_W;
-	
+
 	/* This is a single-line entry in a two-line rect, so center it
-		* vertically. */
+	 * vertically. */
 	rect->y += LINE_H / 4;
 
 	/* During mixing, if the ref field is set that means the reagent has
-		* been selected to be part of the mixture (see cmdMix() in cmd.c, this
-		* is something of a hack). Show an asterisk to mark selected
-		* reagents. */
-	screen_print(rect, 0, "%2d%c%s", 
-			ie->count, 
-			(ie->ref ? '*':' '), 
-			ie->type->getName());
+	 * been selected to be part of the mixture (see cmdMix() in cmd.c, this
+	 * is something of a hack). Show an asterisk to mark selected
+	 * reagents. */
+	screen_print(rect, 0, "%2d%c%s",
+		     ie->count, (ie->ref ? '*' : ' '), ie->type->getName());
 
 	/* Carriage-return line-feed */
 	rect->y += (LINE_H * 3) / 4;
@@ -539,29 +526,27 @@ static void stat_show_container()
 	rect.h = LINE_H;
 
 	for (ie = Status.container->first(Status.filter);
-			ie != NULL; 
-			ie = Status.container->next(ie, Status.filter))
-	{
+	     ie != NULL; ie = Status.container->next(ie, Status.filter)) {
 
 		/* Check the scrolling window */
 		if (top) {
 			top--;
 			continue;
 		}
-	
+
 		/* Use a specific function to show whatever it is. This should
-		* advance the rect to the next entry position before it
-		* returns. */
+		 * advance the rect to the next entry position before it
+		 * returns. */
 		Status.show_thing(&rect, ie);
-	
+
 		/* Highlight the selected item by shading all the other
-		* entries. */
+		 * entries. */
 		if (Status.selectedEntry && ie != Status.selectedEntry) {
 			myShadeLines(line, 2);
 		}
-	
+
 		line++;
-	
+
 		/* Don't print outside the status window. */
 		if (line >= N_LINES)
 			break;
@@ -582,24 +567,24 @@ static void stat_scroll_container(enum StatusScrollDir dir)
 
 	switch (dir) {
 	case ScrollUp:
-		tmp = Status.container->prev(Status.selectedEntry, 
-															Status.filter);
+		tmp = Status.container->prev(Status.selectedEntry,
+					     Status.filter);
 		if (!tmp)
 			break;
 		Status.selectedEntry = tmp;
 		if (Status.topLine &&
-			Status.curLine < (n_lines - Status.numLines / 2))
+		    Status.curLine < (n_lines - Status.numLines / 2))
 			Status.topLine--;
 		Status.curLine--;
 		break;
 	case ScrollDown:
-		tmp = Status.container->next(Status.selectedEntry, 
-															Status.filter);
+		tmp = Status.container->next(Status.selectedEntry,
+					     Status.filter);
 		if (!tmp)
 			break;
 		Status.selectedEntry = tmp;
 		if (Status.topLine < Status.maxLine &&
-			Status.curLine >= (Status.numLines / 2))
+		    Status.curLine >= (Status.numLines / 2))
 			Status.topLine++;
 		Status.curLine++;
 		break;
@@ -621,9 +606,9 @@ static void stat_scroll_container(enum StatusScrollDir dir)
 /* status_show_effect_icon -- visitor function for
  * status_show_party_view_character_effects(), called for each effect on a
  * character and paints the status icons if the effect has one */
-static int status_show_effect_icon(hook_entry_t *entry, void *data)
+static int status_show_effect_icon(hook_entry_t * entry, void *data)
 {
-	SDL_Rect *rect = (SDL_Rect*)data;
+	SDL_Rect *rect = (SDL_Rect *) data;
 	struct effect *eff = entry->effect;
 
 	/* Skip effects which have no icon. */
@@ -632,10 +617,10 @@ static int status_show_effect_icon(hook_entry_t *entry, void *data)
 
 	/* Blit the effect sprite. */
 	sprite_paint(eff->sprite, 0, rect->x, rect->y);
-	
+
 	/* Shift the rectangle one left. */
 	rect->x -= ASCII_W;
-	
+
 	/* If we hit the left edge abort. */
 	if (rect->x == (Status.lineRect.x + BORDER_W)) {
 		return -1;
@@ -647,8 +632,8 @@ static int status_show_effect_icon(hook_entry_t *entry, void *data)
 /* status_show_party_view_character_effects -- shows the party member's effects
  * as little mini-icons on the right side of the status line during Party View
  * mode. */
-static void status_show_party_view_character_effects(class Character *pm, 
-																	SDL_Rect *rect)
+static void status_show_party_view_character_effects(class Character * pm,
+						     SDL_Rect * rect)
 {
 	int hook;
 
@@ -670,13 +655,13 @@ static void status_show_party_view_character_effects(class Character *pm,
 /* status_show_party_view_character_arms -- shows the party member's readied
  * arms as little mini-icons on the right side of the status line during Party
  * View mode. */
-static void status_show_party_view_character_arms(class Character *pm, 
-																SDL_Rect *rect)
+static void status_show_party_view_character_arms(class Character * pm,
+						  SDL_Rect * rect)
 {
 	class ArmsType *arms = NULL;
 
 	/* Use half the normal width for the arms icons. */
-	const int ICON_W = TILE_W/2;
+	const int ICON_W = TILE_W / 2;
 
 	/* remember the left edge for the limit check in the loop */
 	int left_edge = rect->x;
@@ -688,28 +673,27 @@ static void status_show_party_view_character_arms(class Character *pm,
 	sprite_zoom_out(2);
 	screen_zoom_out(2);
 
-		/* for each readied armament */
-	int armsIndex=0;
-	for (arms = pm->enumerateArms(&armsIndex); arms != NULL; 
-				arms = pm->getNextArms(&armsIndex))
-	{
+	/* for each readied armament */
+	int armsIndex = 0;
+	for (arms = pm->enumerateArms(&armsIndex); arms != NULL;
+	     arms = pm->getNextArms(&armsIndex)) {
 
 		/* blit it */
 		sprite_paint(arms->getSprite(), 0, rect->x, rect->y);
-		
+
 		/* shift the rectangle one left */
 		rect->x -= ICON_W;
-		
+
 		/* if we hit the left edge abort */
 		if (rect->x == left_edge) {
-					break;
+			break;
 		}
 	}
 
 	/* Tell the sprite lib to go back to unscaled sprites */
 	screen_zoom_in(2);
 	sprite_zoom_in(2);
-	
+
 	/* restore the left edge for the caller */
 	rect->x = left_edge;
 }
@@ -723,16 +707,15 @@ static bool status_show_party_view_character(class Character * pm, void *data)
 		return true;
 
 	/* Paint the sprite. Using the time_stop_ticks as the frame arg to
-         * animate during Time Stop. */
-	sprite_paint(pm->getSprite(), Session->time_stop_ticks, Status.screenRect.x, 
-		Status.lineRect.y);
+	 * animate during Time Stop. */
+	sprite_paint(pm->getSprite(), Session->time_stop_ticks,
+		     Status.screenRect.x, Status.lineRect.y);
 
 	/* Paint the name on line 1 */
-	screen_print(&Status.lineRect, 0, "%-*s", MAX_NAME_LEN,
-			pm->getName());
+	screen_print(&Status.lineRect, 0, "%-*s", MAX_NAME_LEN, pm->getName());
 
 	/* Show the readied arms as scaled-down icons right-justified on line
-		* 1 */
+	 * 1 */
 	status_show_party_view_character_arms(pm, &Status.lineRect);
 
 	/* Go to line 2 */
@@ -741,18 +724,18 @@ static bool status_show_party_view_character(class Character * pm, void *data)
 	/* Show character stats on line 2, left-justified. */
 	status_show_character_var_stats(&Status.lineRect, pm);
 
-        /* the above auto-advances; backup to show the condition codes on the
-         * same line */
+	/* the above auto-advances; backup to show the condition codes on the
+	 * same line */
 	Status.lineRect.y -= ASCII_H;
 
 	/* Show the character effects as mini-icons right-justified on line
-         * 2 */
+	 * 2 */
 	status_show_party_view_character_effects(pm, &Status.lineRect);
 	Status.lineRect.y += ASCII_H;
 
 	if (Status.pcIndex != -1 && pm->getOrder() != Status.pcIndex) {
 		/* Highlight the selected party member by shading all the other
-		* entries. */
+		 * entries. */
 		myShadeLines(Y_TO_LINE(Status.lineRect.y - 2 * ASCII_H), 2);
 	}
 
@@ -761,16 +744,16 @@ static bool status_show_party_view_character(class Character * pm, void *data)
 
 static void myShowParty(void)
 {
-        /* This can happen on reload. */
-        if (! player_party) {
-                return;
-        }
+	/* This can happen on reload. */
+	if (!player_party) {
+		return;
+	}
 
 	/* Setup the text rectangle */
 	Status.lineRect.y = Status.screenRect.y;
 	Status.lineRect.w = Status.screenRect.w - (2 * BORDER_W);
 
-        /* Show members */
+	/* Show members */
 	player_party->forEachMember(status_show_party_view_character, 0);
 
 }
@@ -787,7 +770,8 @@ static void myScrollParty(enum StatusScrollDir dir)
 	case ScrollLeft:
 	case ScrollPageUp:
 		Status.pcIndex =
-			(Status.pcIndex + player_party->getSize() - 1) % player_party->getSize();
+		    (Status.pcIndex + player_party->getSize() -
+		     1) % player_party->getSize();
 		break;
 	default:
 		break;
@@ -811,15 +795,16 @@ static void myScrollPage(enum StatusScrollDir dir)
 		break;
 	case ScrollDown:
 		Status.pg_rect.y = min(Status.pg_max_y,
-				Status.pg_rect.y + ASCII_H);
+				       Status.pg_rect.y + ASCII_H);
 		break;
 	case ScrollPageUp:
 		Status.pg_rect.y = max(Status.pg_rect.y -
-				(Status.pg_rect.h - ASCII_H), 0);
+				       (Status.pg_rect.h - ASCII_H), 0);
 		break;
 	case ScrollPageDown:
 		Status.pg_rect.y = min(Status.pg_rect.y +
-				(Status.pg_rect.h - ASCII_H), Status.pg_max_y);
+				       (Status.pg_rect.h - ASCII_H),
+				       Status.pg_max_y);
 		break;
 	default:
 		break;
@@ -833,13 +818,13 @@ static void myScrollPage(enum StatusScrollDir dir)
 static void status_get_scratch_surface(int lines)
 {
 	/* If we can reuse the existing scratch buffer then do so. Otherwise
-           make a new one. If this fails then silently abort this
-           request. Fixme: need to adjust the status ifc to return errors. */
-        int hh = lines * ASCII_H;
-	if (! Status.pg_surf || Status.pg_surf->h < hh) {
+	   make a new one. If this fails then silently abort this
+	   request. Fixme: need to adjust the status ifc to return errors. */
+	int hh = lines * ASCII_H;
+	if (!Status.pg_surf || Status.pg_surf->h < hh) {
 		if (Status.pg_surf) {
 			SDL_FreeSurface(Status.pg_surf);
-                        Status.pg_surf = NULL;
+			Status.pg_surf = NULL;
 		}
 		Status.pg_surf = screen_create_surface(STAT_W, hh);
 	}
@@ -854,44 +839,44 @@ static void status_set_page_mode(void)
 	assert(Status.pg_title);
 	assert(Status.pg_text);
 
-        /* Convert the text to a glyph string. */
-        glyph_buf_t *gbuf = glyph_buf_alloc_and_format(Status.gf, 
-                                                       Status.pg_text);
+	/* Convert the text to a glyph string. */
+	glyph_buf_t *gbuf = glyph_buf_alloc_and_format(Status.gf,
+						       Status.pg_text);
 
-        /* Layout the glyph string in a glyph doc with nice line breaks. */
-        glyph_doc_t *gdoc = glyph_doc_alloc_and_layout(gbuf, CONS_W / ASCII_W);
-        glyph_buf_deref(gbuf);
+	/* Layout the glyph string in a glyph doc with nice line breaks. */
+	glyph_doc_t *gdoc = glyph_doc_alloc_and_layout(gbuf, CONS_W / ASCII_W);
+	glyph_buf_deref(gbuf);
 
-        /* Setup the scratch buffer for rendering. */
-        int h = glyph_doc_get_num_lines(gdoc);
-        status_get_scratch_surface(h);
+	/* Setup the scratch buffer for rendering. */
+	int h = glyph_doc_get_num_lines(gdoc);
+	status_get_scratch_surface(h);
 	SDL_FillRect(Status.pg_surf, 0, Black);
 
-        /* Render the glyphs to the scratch buffer. */
-        int row = 0;
+	/* Render the glyphs to the scratch buffer. */
+	int row = 0;
 
-        /* For each glyph line... */
-        glyph_buf_t *gline;
-        glyph_doc_iter_t *gdi = glyph_doc_iter_alloc(gdoc);
-        while ((gline = glyph_doc_iter_next(gdi))) {
-                int col = 0;
-                glyph_t gl;
+	/* For each glyph line... */
+	glyph_buf_t *gline;
+	glyph_doc_iter_t *gdi = glyph_doc_iter_alloc(gdoc);
+	while ((gline = glyph_doc_iter_next(gdi))) {
+		int col = 0;
+		glyph_t gl;
 
-                /* For each glyph... */
-                glyph_buf_iter_t *gbi = glyph_buf_iter_alloc(gline);
-                while ((gl = glyph_buf_iter_next(gbi))) {
+		/* For each glyph... */
+		glyph_buf_iter_t *gbi = glyph_buf_iter_alloc(gline);
+		while ((gl = glyph_buf_iter_next(gbi))) {
 
-                        /* Render it and advance the column */
-                        ascii_paint_glyph(gl, col, row, Status.pg_surf);
-                        col += ASCII_W;
-                }
-                glyph_buf_iter_deref(gbi);
-                row += ASCII_H;
-        }
-        glyph_doc_iter_deref(gdi);
+			/* Render it and advance the column */
+			ascii_paint_glyph(gl, col, row, Status.pg_surf);
+			col += ASCII_W;
+		}
+		glyph_buf_iter_deref(gbi);
+		row += ASCII_H;
+	}
+	glyph_doc_iter_deref(gdi);
 
-        /* Cleanup. */
-        glyph_doc_deref(gdoc);
+	/* Cleanup. */
+	glyph_doc_deref(gdoc);
 
 	// Position the paging rect at the top of the window.
 	Status.pg_rect.x = 0;
@@ -935,13 +920,12 @@ static void myPaintTrade(void)
 	nrect.h = ASCII_H;
 
 	qrect = Status.screenRect;
-	if (Status.trades[0].show_sprite)
-	{
+	if (Status.trades[0].show_sprite) {
 		// shift quantity left to leave room for sprite
 		qrect.x += TILE_W;
 		qrect.w -= TILE_W;
 	}
-	
+
 	qrect.y += ASCII_H;
 	qrect.h = ASCII_H;
 
@@ -960,8 +944,7 @@ static void myPaintTrade(void)
 
 	line = 0;
 
-	for (i = 0; i < Status.list_sz && line < N_LINES; i++)
-	{
+	for (i = 0; i < Status.list_sz && line < N_LINES; i++) {
 		// Skip entries until we encounter the index which is at the
 		// top of our scrolled window.
 		if (top) {
@@ -971,19 +954,19 @@ static void myPaintTrade(void)
 		// sprite
 		if (Status.trades[i].show_sprite) {
 			sprite_paint(Status.trades[i].sprite, 0, srect.x,
-					srect.y);
+				     srect.y);
 		}
 		// name
 		screen_print(&nrect, 0, "%s", Status.trades[i].name);
 
 		// quantity
 		if (Status.trades[i].show_quantity) {
-			screen_print(&qrect, 0, "[You have %d]", 
-												Status.trades[i].quantity);
+			screen_print(&qrect, 0, "[You have %d]",
+				     Status.trades[i].quantity);
 		}
 		// price
 		screen_print(&prect, SP_RIGHTJUSTIFIED, "%dgp",
-				Status.trades[i].cost);
+			     Status.trades[i].cost);
 
 		// Shade unselected items.
 		if (i != Status.curLine) {
@@ -1012,7 +995,7 @@ static void statusPaintGenericList(void)
 	srect.w = TILE_W;
 	srect.h = TILE_H;
 
-		// Setup line 1 rect1
+	// Setup line 1 rect1
 	l1rect = Status.screenRect;
 	if (Status.list[0].sprite) {
 		l1rect.x += TILE_W;
@@ -1031,27 +1014,23 @@ static void statusPaintGenericList(void)
 
 	line = 0;
 
-	for (i = 0; i < Status.list_sz && line < N_LINES; i++)
-	{
+	for (i = 0; i < Status.list_sz && line < N_LINES; i++) {
 		// Skip entries until we encounter the index which is at the
 		// top of our scrolled window.
 		if (top) {
 			top--;
 			continue;
 		}
-
 		// paint sprite (if applicable)
 		if (Status.list[i].sprite) {
 			sprite_paint(Status.list[i].sprite, 0, srect.x,
-					srect.y);
+				     srect.y);
 		}
-
 		// print line 1
 		screen_print(&l1rect, 0, "%s", Status.list[i].line1);
 
 		// print line 2
 		screen_print(&l2rect, 0, "%s", Status.list[i].line2);
-
 
 		// Shade unselected items.
 		if (i != Status.curLine) {
@@ -1090,15 +1069,13 @@ static void statusPaintStringList(void)
 
 	line = 0;
 
-	for (i = 0; i < Status.list_sz && line < N_LINES; i++)
-	{
+	for (i = 0; i < Status.list_sz && line < N_LINES; i++) {
 		// Skip entries until we encounter the index which is at the
 		// top of our scrolled window.
 		if (top) {
 			top--;
 			continue;
 		}
-
 		// print line 1
 		screen_print(&l1rect, 0, "%s", Status.strlist[i]);
 
@@ -1118,65 +1095,57 @@ static void myScrollGeneric(enum StatusScrollDir dir)
 {
 	int i;
 
-	switch (dir)
-	{
+	switch (dir) {
 	case ScrollUp:
 		// If the window is not at the top of the list and the current
 		// line is centered in the window then move the window up.
 		if (Status.topLine &&
-				Status.curLine < (Status.list_sz - Status.numLines / 2))
-		{
+		    Status.curLine < (Status.list_sz - Status.numLines / 2)) {
 			Status.topLine--;
 		}
 		// Move up the currently selected line.
 		if (Status.curLine)
 			Status.curLine--;
 		break;
-		
+
 	case ScrollDown:
 		// If the window is not at the bottom of the list and the
 		// current line is centered in the window then move the window
 		// down.
 		if (Status.topLine < Status.maxLine &&
-			Status.curLine >= (Status.numLines / 2))
-		{
+		    Status.curLine >= (Status.numLines / 2)) {
 			Status.topLine++;
 		}
 		if (Status.curLine < (Status.list_sz - 1))
 			Status.curLine++;
 		break;
-		
+
 	case ScrollTop:
 		Status.topLine = 0;
 		Status.curLine = 0;
 		break;
-		
+
 	case ScrollBottom:
 		Status.curLine = Status.list_sz - 1;
-		if (Status.list_sz > Status.numLines)
-		{
+		if (Status.list_sz > Status.numLines) {
 			Status.topLine = Status.list_sz - Status.numLines;
-		} 
-		else
-		{
+		} else {
 			Status.topLine = 0;
 		}
 		break;
-		
+
 	case ScrollPageUp:
-		for (i = 0; i < Status.numLines; i++)
-		{
+		for (i = 0; i < Status.numLines; i++) {
 			myScrollGeneric(ScrollUp);
 		}
 		break;
-		
+
 	case ScrollPageDown:
-		for (i = 0; i < Status.numLines; i++)
-		{
+		for (i = 0; i < Status.numLines; i++) {
 			myScrollGeneric(ScrollDown);
 		}
 		break;
-		
+
 	default:
 		break;
 	}
@@ -1185,7 +1154,7 @@ static void myScrollGeneric(enum StatusScrollDir dir)
 void statusRepaint(void)
 {
 	static int repainting = 0;
-        struct applet *applet;
+	struct applet *applet;
 
 	if (Status.suppressRepaint)
 		return;
@@ -1193,17 +1162,16 @@ void statusRepaint(void)
 	// Prevent recursive entry since it messes up the coordinate counters
 	if (repainting)
 		return;
-		
+
 	repainting = 1;
 
 	screen_erase(&Status.screenRect);
 
-        if (Status.paint) {
-                Status.paint();
-        } else if ((applet = statusGetCurrentApplet())) {
-                applet->ops->paint(applet);
-        }
-
+	if (Status.paint) {
+		Status.paint();
+	} else if ((applet = statusGetCurrentApplet())) {
+		applet->ops->paint(applet);
+	}
 
 	status_repaint_title();
 	screen_update(&Status.screenRect);
@@ -1237,11 +1205,9 @@ void statusScroll(enum StatusScrollDir dir)
 void statusSetMode(enum StatusMode mode)
 {
 	/* Unref the old super generic struct if applicable */
-	if (Status.mode == SuperGeneric)
-	{
+	if (Status.mode == SuperGeneric) {
 		assert(Status.super_generic);
-		if (Status.super_generic->unref)
-		{
+		if (Status.super_generic->unref) {
 			Status.super_generic->unref(Status.super_generic);
 		}
 		Status.super_generic = 0;
@@ -1250,24 +1216,23 @@ void statusSetMode(enum StatusMode mode)
 	Status.mode = mode;
 
 	/* note: must always repaint title AFTER switching mode because
-		* switching modes repaints the border, and the * title must be painted
-		* over the border. */
+	 * switching modes repaints the border, and the * title must be painted
+	 * over the border. */
 
-	switch (mode)
-	{
-		
+	switch (mode) {
+
 	case DisableStatus:
-		Status.paint=0;
+		Status.paint = 0;
 		break;
-		
+
 	case ShowParty:
 		switch_to_short_mode();
-		status_set_title("Party");	
+		status_set_title("Party");
 		Status.pcIndex = -1;
 		Status.scroll = 0;
 		Status.paint = myShowParty;
 		break;
-		
+
 	case SelectCharacter:
 		switch_to_tall_mode();
 		status_set_title("Select Member");
@@ -1275,23 +1240,24 @@ void statusSetMode(enum StatusMode mode)
 		Status.paint = myShowParty;
 		Status.pcIndex = 0;
 		break;
-		
+
 	case Ready:
 		switch_to_tall_mode();
-		status_set_title(player_party->
-				getMemberAtIndex(Status.pcIndex)->getName());
+		status_set_title(player_party->getMemberAtIndex
+				 (Status.pcIndex)->getName());
 		Status.topLine = 0;
 		Status.curLine = 0;
 		Status.container = player_party->inventory;
 		Status.filter = &stat_ready_arms_filter;
-		Status.maxLine = Status.container->
-				filter_count(Status.filter) - Status.numLines;
+		Status.maxLine =
+		    Status.container->filter_count(Status.filter) -
+		    Status.numLines;
 		Status.paint = stat_show_container;
 		Status.scroll = stat_scroll_container;
 		Status.show_thing = status_show_ready_arms;
 		Status.selectedEntry = Status.container->first(Status.filter);
 		break;
-		
+
 	case Use:
 		switch_to_tall_mode();
 		status_set_title("Use");
@@ -1299,19 +1265,20 @@ void statusSetMode(enum StatusMode mode)
 		Status.curLine = 0;
 		Status.container = player_party->inventory;
 		Status.filter = &stat_use_filter;
-		Status.maxLine = Status.container->
-				filter_count(Status.filter) - Status.numLines;
+		Status.maxLine =
+		    Status.container->filter_count(Status.filter) -
+		    Status.numLines;
 		Status.paint = stat_show_container;
 		Status.scroll = stat_scroll_container;
 		Status.show_thing = status_show_generic_object_type;
 		Status.selectedEntry = Status.container->first(Status.filter);
 		break;
-		
+
 	case Page:
 		switch_to_tall_mode();
 		status_set_page_mode();
 		break;
-		
+
 	case Trade:
 		switch_to_tall_mode();
 		status_set_title("Trade");
@@ -1322,7 +1289,7 @@ void statusSetMode(enum StatusMode mode)
 		Status.scroll = myScrollGeneric;
 		Status.selectedEntry = 0;
 		break;
-		
+
 	case MixReagents:
 		switch_to_tall_mode();
 		status_set_title("Select Reagents");
@@ -1330,14 +1297,15 @@ void statusSetMode(enum StatusMode mode)
 		Status.curLine = 0;
 		Status.container = player_party->inventory;
 		Status.filter = &stat_mix_filter;
-		Status.maxLine = Status.container->
-				filter_count(Status.filter) - Status.numLines;
+		Status.maxLine =
+		    Status.container->filter_count(Status.filter) -
+		    Status.numLines;
 		Status.paint = stat_show_container;
 		Status.scroll = stat_scroll_container;
 		Status.show_thing = status_show_mix_reagent;
 		Status.selectedEntry = Status.container->first(Status.filter);
 		break;
-		
+
 	case GenericList:
 		switch_to_tall_mode();
 		status_set_title(Status.list_title);
@@ -1346,9 +1314,9 @@ void statusSetMode(enum StatusMode mode)
 		Status.maxLine = Status.list_sz - Status.numLines;
 		Status.paint = statusPaintGenericList;
 		Status.scroll = myScrollGeneric;
-		Status.selectedEntry = 0;					
+		Status.selectedEntry = 0;
 		break;
-		
+
 	case StringList:
 		status_set_line_height(max(Status.list_sz, 5));
 		status_set_title(Status.list_title);
@@ -1357,28 +1325,30 @@ void statusSetMode(enum StatusMode mode)
 		Status.maxLine = Status.list_sz - Status.numLines;
 		Status.paint = statusPaintStringList;
 		Status.scroll = myScrollGeneric;
-		Status.selectedEntry = 0;					
+		Status.selectedEntry = 0;
 		break;
-		
+
 	case SuperGeneric:
 		assert(Status.super_generic);
 		switch_to_tall_mode();
 		status_set_title(Status.super_generic->title);
 		Status.topLine = 0;
 		Status.curLine = 0;
-		Status.maxLine = node_list_len(&Status.super_generic->list) 
-				- Status.numLines;
+		Status.maxLine = node_list_len(&Status.super_generic->list)
+		    - Status.numLines;
 		Status.paint = stat_super_generic_paint;
 		Status.scroll = stat_super_generic_scroll;
-                Status.super_generic->last_shown = 0; /* unknown */
-                Status.super_generic->first_to_selected = 0;
-                Status.super_generic->first_to_last = 0; /* unknown */
+		Status.super_generic->last_shown = 0;	/* unknown */
+		Status.super_generic->first_to_selected = 0;
+		Status.super_generic->first_to_last = 0;	/* unknown */
 		if (node_list_empty(&Status.super_generic->list)) {
 			Status.super_generic->first_shown = 0;
 		} else {
-			Status.super_generic->first_shown = node_next(&Status.super_generic->list);
+			Status.super_generic->first_shown =
+			    node_next(&Status.super_generic->list);
 		}
-		Status.super_generic->selected = Status.super_generic->first_shown;
+		Status.super_generic->selected =
+		    Status.super_generic->first_shown;
 		break;
 	}
 
@@ -1387,29 +1357,28 @@ void statusSetMode(enum StatusMode mode)
 
 const void *statusGetSelected(enum StatusSelection sel)
 {
-	switch (sel)
-	{
+	switch (sel) {
 	case Character:
 		return player_party->getMemberAtIndex(Status.pcIndex);
-		
+
 	case InventoryItem:
 	case Reagents:
 		return Status.selectedEntry;
-		
+
 	case Generic:
 		return Status.list_sz ? Status.list[Status.curLine].data : 0;
-		
+
 	case TradeItem:
 		return Status.list_sz ? &Status.trades[Status.curLine] : 0;
-		
+
 	case String:
 		return Status.list_sz ? Status.strlist[Status.curLine] : 0;
-		
+
 	case SelectSuperGeneric:
 		assert(Status.super_generic);
 		return Status.super_generic->selected;
 		break;
-		
+
 	default:
 		return 0;
 	}
@@ -1417,16 +1386,15 @@ const void *statusGetSelected(enum StatusSelection sel)
 
 int statusGetSelectedIndex(enum StatusSelection sel)
 {
-	switch (sel)
-	{
+	switch (sel) {
 	case Character:
 		return Status.pcIndex;
-		
+
 	case Generic:
 	case TradeItem:
 	case String:
 		return Status.list_sz ? Status.curLine : -1;
-		
+
 	default:
 		return -1;
 	}
@@ -1434,21 +1402,20 @@ int statusGetSelectedIndex(enum StatusSelection sel)
 
 void statusSetSelectedIndex(int index)
 {
-	switch (Status.mode)
-	{
+	switch (Status.mode) {
 	case StringList:
 	case Trade:
 	case GenericList:
 		while (index < Status.curLine) {
-					Status.scroll(ScrollUp);
+			Status.scroll(ScrollUp);
 		}
 		while (index > Status.curLine) {
-					Status.scroll(ScrollDown);
+			Status.scroll(ScrollDown);
 		}
-		/*Status.curLine = index;*/
+		/*Status.curLine = index; */
 		statusRepaint();
 		break;
-		
+
 	default:
 		assert(0);
 		break;
@@ -1463,11 +1430,11 @@ void statusSelectCharacter(int partyOrderIndex)
 void statusSetPageText(const char *title, const char *text)
 {
 	Status.pg_title = title;
-        if (Status.pg_text) {
-                free(Status.pg_text);
-                Status.pg_text = NULL;
-        }
-        /* Make a writable copy so we can insert newlines during formatting. */
+	if (Status.pg_text) {
+		free(Status.pg_text);
+		Status.pg_text = NULL;
+	}
+	/* Make a writable copy so we can insert newlines during formatting. */
 	Status.pg_text = strdup(text);
 }
 
@@ -1487,12 +1454,12 @@ void statusUpdateTradeInfo(int list_sz, struct trade_info *trades)
 	statusRepaint();
 }
 
-void statusSetGenericList(const char *title, int list_sz, 
-                          struct stat_list_entry *list)
+void statusSetGenericList(const char *title, int list_sz,
+			  struct stat_list_entry *list)
 {
 	Status.list_title = title;
 	Status.list_sz = list_sz;
-	Status.list	= list;
+	Status.list = list;
 }
 
 void statusSetStringList(const char *title, int list_sz, const char **strings)
@@ -1515,24 +1482,22 @@ int status_get_h(void)
 void statusFlashSelected(unsigned int color)
 {
 	SDL_Rect rect;
-	switch (Status.mode)
-	{
+	switch (Status.mode) {
 	case StringList:
 	case Trade:
 	case GenericList:
 		rect.x = Status.screenRect.x;
-		rect.y = (Status.screenRect.y 
-					+ ((Status.curLine - Status.topLine) 
-						* ASCII_H));
-		if (rect.y >= (Status.screenRect.y 
-							+ Status.screenRect.h))
-					return;
+		rect.y = (Status.screenRect.y
+			  + ((Status.curLine - Status.topLine)
+			     * ASCII_H));
+		if (rect.y >= (Status.screenRect.y + Status.screenRect.h))
+			return;
 		rect.w = Status.screenRect.w;
 		rect.h = ASCII_H;
 		screen_flash(&rect, 50, color);
 		statusRepaint();
 		break;
-		
+
 	default:
 		break;
 	}
@@ -1546,7 +1511,7 @@ void statusDisableRepaint()
 void statusEnableRepaint()
 {
 	assert(Status.suppressRepaint);
-	Status.suppressRepaint--;		
+	Status.suppressRepaint--;
 }
 
 void statusPushMode(enum StatusMode mode)
@@ -1570,47 +1535,44 @@ static void stat_super_generic_paint()
 	struct node *node = Status.super_generic->first_shown;
 	struct node *end = &Status.super_generic->list;
 	int window_bottom = Status.screenRect.y + Status.screenRect.h;
-        Status.super_generic->first_to_last = 0;
+	Status.super_generic->first_to_last = 0;
 
 	/* check for empty list */
-	if (!node)
-	{
+	if (!node) {
 		screen_print(&rect, 0, "No Skills!");
 		return;
 	}
 
-	for (;;)
-	{
+	for (;;) {
 		/* check for end-of-list */
 		if (node == end) {
-                        break;
+			break;
 		}
-		
+
 		/* check for bottom of window */
 		if (rect.y >= window_bottom) {
-                        break;
+			break;
 		}
 
 		/* Clip the rect to fit */
 		rect.h = window_bottom - rect.y;
 
 		/* Paint the entry. If it won't fit it will return non-zero,
-                 * and we won't advance any further. */
+		 * and we won't advance any further. */
 		if (Status.super_generic->paint(Status.super_generic,
-                                                  node,
-                                                  &rect)) {
-                        break;
-                }
+						node, &rect)) {
+			break;
+		}
 
-                /* Remember the last one painted */
-                Status.super_generic->last_shown = node;
-                Status.super_generic->first_to_last++;
-                
-                /* Advance the list */
-                node = node_next(node);
+		/* Remember the last one painted */
+		Status.super_generic->last_shown = node;
+		Status.super_generic->first_to_last++;
+
+		/* Advance the list */
+		node = node_next(node);
 	}
 
-        Status.super_generic->first_to_last--; /* overcounted by 1 */
+	Status.super_generic->first_to_last--;	/* overcounted by 1 */
 }
 
 static void stat_super_generic_scroll(enum StatusScrollDir dir)
@@ -1624,52 +1586,53 @@ static void stat_super_generic_scroll(enum StatusScrollDir dir)
 		return;
 	}
 
-	switch (dir)
-	{
+	switch (dir) {
 	case ScrollPageUp:
 	case ScrollUp:
 		if (gen->selected != first) {
 			gen->selected = node_prev(gen->selected);
-                        
-                        /* If the selected item has reached the middle of the
-                         * window, and there is more stuff to see above the
-                         * window, then move the window up the list. */
-                        int selected_to_last = gen->first_to_last - gen->first_to_selected;
-                        if ((gen->first_shown != first)
-                            && (selected_to_last > gen->first_to_selected)) {
-                                gen->first_shown = node_prev(gen->first_shown);
-                        } else {
-                                gen->first_to_selected--;
-                        }
+
+			/* If the selected item has reached the middle of the
+			 * window, and there is more stuff to see above the
+			 * window, then move the window up the list. */
+			int selected_to_last =
+			    gen->first_to_last - gen->first_to_selected;
+			if ((gen->first_shown != first)
+			    && (selected_to_last > gen->first_to_selected)) {
+				gen->first_shown = node_prev(gen->first_shown);
+			} else {
+				gen->first_to_selected--;
+			}
 		}
 		break;
-		
+
 	case ScrollPageDown:
 	case ScrollDown:
 		if (gen->selected != last) {
 			gen->selected = node_next(gen->selected);
-                        
-                        /* If the selected item has reached the middle of the
-                         * window, and there is more stuff to see below the
-                         * window, then move the window down the list. */
-                        int selected_to_last = gen->first_to_last - gen->first_to_selected;
-                        if ((gen->last_shown != last)
-                            && (selected_to_last <= gen->first_to_selected)) {
-                                gen->first_shown = node_next(gen->first_shown);
-                        } else {
-                                gen->first_to_selected++;
-                        }
+
+			/* If the selected item has reached the middle of the
+			 * window, and there is more stuff to see below the
+			 * window, then move the window down the list. */
+			int selected_to_last =
+			    gen->first_to_last - gen->first_to_selected;
+			if ((gen->last_shown != last)
+			    && (selected_to_last <= gen->first_to_selected)) {
+				gen->first_shown = node_next(gen->first_shown);
+			} else {
+				gen->first_to_selected++;
+			}
 		}
 		break;
-		
+
 	case ScrollTop:
 		gen->selected = first;
 		break;
-		
+
 	case ScrollBottom:
 		gen->selected = last;
 		break;
-		
+
 	default:
 		break;
 	}
@@ -1680,17 +1643,16 @@ void statusSetSuperGenericData(struct stat_super_generic_data *data)
 	if (data == Status.super_generic) {
 		return;
 	}
-	
-	if (Status.super_generic
-		&& Status.super_generic->unref) {
-			Status.super_generic->unref(Status.super_generic);
+
+	if (Status.super_generic && Status.super_generic->unref) {
+		Status.super_generic->unref(Status.super_generic);
 	}
-	
+
 	Status.super_generic = data;
 	data->refcount++;
 }
 
-void statusBrowseContainer(class Container *container, const char *title)
+void statusBrowseContainer(class Container * container, const char *title)
 {
 	switch_to_tall_mode();
 	status_set_title(title);
@@ -1698,36 +1660,38 @@ void statusBrowseContainer(class Container *container, const char *title)
 	Status.curLine = 0;
 	Status.container = container;
 	Status.filter = &stat_drop_filter;
-	Status.maxLine = container->filter_count(Status.filter) - Status.numLines;
+	Status.maxLine =
+	    container->filter_count(Status.filter) - Status.numLines;
 	Status.paint = stat_show_container;
 	Status.scroll = stat_scroll_container;
 	Status.show_thing = status_show_generic_object_type;
 	Status.selectedEntry = container->first(Status.filter);
-        statusRepaint();
+	statusRepaint();
 }
 
 void statusRunApplet(struct applet *applet)
 {
-        /* set the window height */
-        if (! applet->ops->get_desired_height) {
-                switch_to_tall_mode();
-        } else {
-                int hpix = applet->ops->get_desired_height(applet);
-                hpix = min(hpix, TALL_H);
-                hpix = max(hpix, LINE_H);
-                status_set_line_height(hpix/ASCII_H);
-        }
+	/* set the window height */
+	if (!applet->ops->get_desired_height) {
+		switch_to_tall_mode();
+	} else {
+		int hpix = applet->ops->get_desired_height(applet);
+		hpix = min(hpix, TALL_H);
+		hpix = max(hpix, LINE_H);
+		status_set_line_height(hpix / ASCII_H);
+	}
 
-        list_add(&Status.applet_stack, &applet->list); /* push */
-        Status.paint = NULL; /* so statusRepaint will use applet->ops->paint */
-        applet->ops->run(applet, &Status.screenRect, Session); /* returns when applet done */
-        list_remove(&applet->list); /* pop */
+	list_add(&Status.applet_stack, &applet->list);	/* push */
+	Status.paint = NULL;	/* so statusRepaint will use applet->ops->paint */
+	applet->ops->run(applet, &Status.screenRect, Session);	/* returns when applet done */
+	list_remove(&applet->list);	/* pop */
 }
 
 struct applet *statusGetCurrentApplet(void)
 {
-        if (! list_empty(&Status.applet_stack)) {
-                return list_entry(Status.applet_stack.next, struct applet, list);
-        }
-        return NULL;
+	if (!list_empty(&Status.applet_stack)) {
+		return list_entry(Status.applet_stack.next, struct applet,
+				  list);
+	}
+	return NULL;
 }

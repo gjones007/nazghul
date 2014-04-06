@@ -32,55 +32,50 @@
 #define NIL_FACTION          0
 #define PLAYER_PARTY_FACTION 1
 
-static inline int are_hostile(Being *a, Being *b)
+static inline int are_hostile(Being * a, Being * b)
 {
-        return dtable_are_hostile(session_dtable(),
-                                  a->getCurrentFaction(),
-                                  b->getCurrentFaction());
+	return dtable_are_hostile(session_dtable(),
+				  a->getCurrentFaction(),
+				  b->getCurrentFaction());
 }
 
-static inline int are_natively_hostile(Being *a, Being *b)
+static inline int are_natively_hostile(Being * a, Being * b)
 {
-        return dtable_are_hostile(session_dtable(),
-                                  a->getBaseFaction(),
-                                  b->getBaseFaction());
+	return dtable_are_hostile(session_dtable(),
+				  a->getBaseFaction(), b->getBaseFaction());
 }
 
-static inline int are_allies(Being *a, Being *b)
+static inline int are_allies(Being * a, Being * b)
 {
-        return dtable_are_allies(session_dtable(),
-                                  a->getCurrentFaction(),
-                                  b->getCurrentFaction());
+	return dtable_are_allies(session_dtable(),
+				 a->getCurrentFaction(),
+				 b->getCurrentFaction());
 }
 
-static inline void make_hostile(Being *a, Being *b)
+static inline void make_hostile(Being * a, Being * b)
 {
-        dtable_set(session_dtable(),
-                   a->getCurrentFaction(),
-                   b->getCurrentFaction(),
-                   dtable_hostile(session_dtable()));
+	dtable_set(session_dtable(),
+		   a->getCurrentFaction(),
+		   b->getCurrentFaction(), dtable_hostile(session_dtable()));
 }
 
-static inline void make_allies(Being *a, Being *b)
+static inline void make_allies(Being * a, Being * b)
 {
-        dtable_set(session_dtable(),
-                   a->getCurrentFaction(),
-                   b->getCurrentFaction(),
-                   dtable_allies(session_dtable()));
+	dtable_set(session_dtable(),
+		   a->getCurrentFaction(),
+		   b->getCurrentFaction(), dtable_allies(session_dtable()));
 }
 
-static inline void improve_relations(Being *a, Being *b)
+static inline void improve_relations(Being * a, Being * b)
 {
-        dtable_inc(session_dtable(),
-                   a->getCurrentFaction(),
-                   b->getCurrentFaction());
+	dtable_inc(session_dtable(),
+		   a->getCurrentFaction(), b->getCurrentFaction());
 }
 
-static inline const char * diplomacy_string(Being *a, Being *b)
+static inline const char *diplomacy_string(Being * a, Being * b)
 {
-        return dtable_describe(session_dtable(),
-                               a->getCurrentFaction(),
-                               b->getCurrentFaction());
+	return dtable_describe(session_dtable(),
+			       a->getCurrentFaction(), b->getCurrentFaction());
 }
 
 #endif

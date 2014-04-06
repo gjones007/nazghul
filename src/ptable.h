@@ -25,28 +25,23 @@
 
 #include "macros.h"
 
-BEGIN_DECL
-
-struct ptable {
-        int n_mmode;  /* number of movement modes */
-        int n_pclass; /* number of passability classes */
-        int *table;   /* 2d lookup indexed by mmode & pclass */
+BEGIN_DECL struct ptable {
+	int n_mmode;		/* number of movement modes */
+	int n_pclass;		/* number of passability classes */
+	int *table;		/* 2d lookup indexed by mmode & pclass */
 };
 
 #define PTABLE_IMPASSABLE 255
 #define PCLASS_NONE 0
-#define PTABLE_NO_DROP		100 		/* movement cost that disallows dropping objects */
-
+#define PTABLE_NO_DROP		100	/* movement cost that disallows dropping objects */
 
 #define ptable_is_passable(ptable,mmode,pclass) \
         (ptable_get((ptable),(mmode),(pclass)) != PTABLE_IMPASSABLE)
 
 extern struct ptable *ptable_new(int n_mmodes, int n_pclass);
-extern void ptable_set(struct ptable *ptable, int mmode, int pclass, 
-                       int cost);
+extern void ptable_set(struct ptable *ptable, int mmode, int pclass, int cost);
 extern int ptable_get(struct ptable *ptable, int mmode, int pclass);
 extern void ptable_del(struct ptable *pass);
 
 END_DECL
-
 #endif

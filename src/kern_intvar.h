@@ -20,8 +20,8 @@
 #ifndef kern_intvar_h
 #define kern_intvar_h
 
-int  kern_intvar_init();
+int kern_intvar_init();
 void kern_intvar_set(const char *key, int value);
-int  kern_intvar_get(const char *key);
+int kern_intvar_get(const char *key);
 
 #endif

@@ -27,68 +27,67 @@
 
 struct node *node_new(void *data)
 {
-        struct node *node;
+	struct node *node;
 
-        node = (struct node *)calloc(1, sizeof(*node));
-        assert(node);
-        node->ptr = data;
-        node->ref = 1;
-        return node;
+	node = (struct node *)calloc(1, sizeof(*node));
+	assert(node);
+	node->ptr = data;
+	node->ref = 1;
+	return node;
 }
 
 struct node *node_new_keyed(void *data, int key)
 {
-        struct node *node;
+	struct node *node;
 
-        node = node_new(data);
-        node_key(node) = key;
+	node = node_new(data);
+	node_key(node) = key;
 
-        return node;
+	return node;
 }
 
 void node_unref(struct node *node)
 {
-        assert(node->ref);
-        node->ref--;
-        if (! node->ref)
-                free(node);
+	assert(node->ref);
+	node->ref--;
+	if (!node->ref)
+		free(node);
 }
 
 void node_foldr(struct node *head,
-                void (*fx)(struct node *node, void *data),
-                void *data)
+		void (*fx) (struct node * node, void *data), void *data)
 {
-        struct node *i;
-        struct node *p;
+	struct node *i;
+	struct node *p;
 
-        i = node_next(head);
+	i = node_next(head);
 
-        while (i != head) {
-                p = i;
-                i = node_next(i);
+	while (i != head) {
+		p = i;
+		i = node_next(i);
 
-                fx(p, data);
-        }
+		fx(p, data);
+	}
 }
 
 int node_list_len(struct node *head)
 {
-        struct node *node = node_next(head);
-        int n = 0;
-        while (node != head) {
-                node = node_next(node);
-                n++;
-        }
-        return n;
+	struct node *node = node_next(head);
+	int n = 0;
+	while (node != head) {
+		node = node_next(node);
+		n++;
+	}
+	return n;
 }
 
 void node_list_unlink_and_unref(struct node *head)
 {
-        struct node *node = node_next(head);
-        while (node != head) {
-                struct node *tmp = node_next(node);
-                node_remove(node);
-                node_unref(node);
-                node = tmp;
-        }
+	struct node *node = node_next(head);
+	while (node != head) {
+		struct node *tmp = node_next(node);
+		node_remove(node);
+		node_unref(node);
+		node = tmp;
+	}
 }

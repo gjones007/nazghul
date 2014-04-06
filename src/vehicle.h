@@ -30,88 +30,84 @@
 class VehicleType:public ObjectType {
  public:
 	virtual int getType();
-        virtual bool isType(int classID);
-        VehicleType(const char *tag, const char *name, struct sprite *sprite,
-                    struct terrain_map *map,
-                    class ArmsType *ordnance,
-                    bool vulnerable,
-                    bool killsOccupants,
-                    bool mustTurn,
-                    char *mv_desc,
-                    sound_t *mv_sound,
-                    int tailwind_penalty,
-                    int headwind_penalty,
-                    int crosswind_penalty,
-                    int maxHp,
-                    int speed
-                    );
-	virtual ~VehicleType();
+	virtual bool isType(int classID);
+	 VehicleType(const char *tag, const char *name, struct sprite *sprite,
+		     struct terrain_map *map,
+		     class ArmsType * ordnance,
+		     bool vulnerable,
+		     bool killsOccupants,
+		     bool mustTurn,
+		     char *mv_desc,
+		     sound_t * mv_sound,
+		     int tailwind_penalty,
+		     int headwind_penalty,
+		     int crosswind_penalty, int maxHp, int speed);
+	 virtual ~ VehicleType();
 	virtual class ArmsType *getOrdnance();
 	virtual char *getMvDesc();
 	virtual sound_t *get_movement_sound();
 	virtual bool mustTurn();
-        virtual class Object *createInstance();
-        virtual int getWindPenalty(int facing);
-        
+	virtual class Object *createInstance();
+	virtual int getWindPenalty(int facing);
 
-        bool isVulnerable();
-        bool killsOccupants();
+	bool isVulnerable();
+	bool killsOccupants();
 
-        struct formation *formation;
-        struct terrain_map *map;
-        closure_t *renderCombat;
-        struct mmode *mmode;
+	struct formation *formation;
+	struct terrain_map *map;
+	closure_t *renderCombat;
+	struct mmode *mmode;
 
  protected:
-        class ArmsType *ordnance;
-        bool is_vulnerable;
-        bool kills_occupants; /* on destroy */
-        bool must_turn;
-        char *mv_desc;
-        sound_t *mv_sound;
-        int pmask;
-        int tailwind_penalty;
-        int headwind_penalty;
-        int crosswind_penalty;
-        int maxHp;
+	 class ArmsType * ordnance;
+	bool is_vulnerable;
+	bool kills_occupants;	/* on destroy */
+	bool must_turn;
+	char *mv_desc;
+	sound_t *mv_sound;
+	int pmask;
+	int tailwind_penalty;
+	int headwind_penalty;
+	int crosswind_penalty;
+	int maxHp;
 };
 
 class Vehicle:public Object {
  public:
-        virtual bool isType(int classID);
+	virtual bool isType(int classID);
 	virtual int getType();
-        Vehicle (VehicleType*);
-        Vehicle (VehicleType*, int facing, int hp);
-	virtual ~Vehicle();
-        virtual class VehicleType *getObjectType();
+	 Vehicle(VehicleType *);
+	 Vehicle(VehicleType *, int facing, int hp);
+	 virtual ~ Vehicle();
+	virtual class VehicleType *getObjectType();
 	virtual const char *getName();
-        virtual int getX();
-        virtual int getY();
-        virtual class ArmsType *getOrdnance();
-        virtual struct mmode *getMovementMode();
+	virtual int getX();
+	virtual int getY();
+	virtual class ArmsType *getOrdnance();
+	virtual struct mmode *getMovementMode();
 	virtual char *getMvDesc();
-        virtual sound_t *get_movement_sound();
+	virtual sound_t *get_movement_sound();
 	virtual bool mustTurn();
-        virtual int get_facing_to_fire_weapon(int dx, int dy);
-        virtual bool fire_weapon(int dx, int dy, class Object *user);
-        virtual struct formation *get_formation();
-        virtual struct place *getPlace();
-        virtual void destroy();
-        virtual void save(struct save *save);
-        virtual void describe();
+	virtual int get_facing_to_fire_weapon(int dx, int dy);
+	virtual bool fire_weapon(int dx, int dy, class Object * user);
+	virtual struct formation *get_formation();
+	virtual struct place *getPlace();
+	virtual void destroy();
+	virtual void save(struct save *save);
+	virtual void describe();
 
-        bool isVulnerable();
-        bool turn(int dx, int dy, int *cost);
-        int getMovementCostMultiplier();
-        void damage(int amount);
-        void setName(char *val);
-        class Object *getOccupant();
-        void setOccupant(class Object *val);
-        bool isNamed();
+	bool isVulnerable();
+	bool turn(int dx, int dy, int *cost);
+	int getMovementCostMultiplier();
+	void damage(int amount);
+	void setName(char *val);
+	class Object *getOccupant();
+	void setOccupant(class Object * val);
+	bool isNamed();
 
  protected:
-        char *name;
-        class Object *occupant;
+	char *name;
+	class Object *occupant;
 };
 
 #endif				// vehicle_h

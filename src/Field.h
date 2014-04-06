@@ -27,10 +27,10 @@
 
 class FieldType:public ObjectType {
 
-      public:
-        FieldType(const char *tag, const char *name, struct sprite *sprite, int light, 
-                  int duration, int pclass, closure_t *effect);
-	virtual ~FieldType();
+ public:
+	FieldType(const char *tag, const char *name, struct sprite * sprite,
+		  int light, int duration, int pclass, closure_t * effect);
+	virtual ~ FieldType();
 	virtual bool isType(int classID);
 	virtual int getType();
 	virtual int getLight();
@@ -39,30 +39,30 @@ class FieldType:public ObjectType {
 	virtual int getDuration();
 	virtual class Object *createInstance();
 
-        bool isPermanent();
+	bool isPermanent();
 
-        closure_t *effect; /* when stepped on */
-        int pclass;
+	closure_t *effect;	/* when stepped on */
+	int pclass;
 
-      protected:
+ protected:
 	int light;
 	int duration;
 };
 
 class Field:public Object {
 
-      public:
+ public:
 	virtual class FieldType * getObjectType();
 	Field();
-        Field(class FieldType *type);
-        Field(class FieldType *type, int duration);
-	virtual ~ Field();
+	Field(class FieldType * type);
+	Field(class FieldType * type, int duration);
+	 virtual ~ Field();
 	virtual int getLight();
 	virtual void exec();
-        virtual void save(struct save *save);
-        virtual int getPclass();
+	virtual void save(struct save *save);
+	virtual int getPclass();
 
-      protected:
+ protected:
 	int duration;
 };
 

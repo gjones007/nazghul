@@ -30,43 +30,42 @@
 
 struct position_info {
 
-        struct place *place; // The place where the members are getting
-                             // distributed.
+	struct place *place;	// The place where the members are getting
+	// distributed.
 
-        int x, y;            // The "home position". The placement rectangle
-                             // (see below) will be centered on this
-                             // location. If the placement algorithm fails to
-                             // find a safe place to put a member (due to
-                             // passability, etc) it will put the member
-                             // here. In extreme cases the whole party may get
-                             // stacked on this one location.
+	int x, y;		// The "home position". The placement rectangle
+	// (see below) will be centered on this
+	// location. If the placement algorithm fails to
+	// find a safe place to put a member (due to
+	// passability, etc) it will put the member
+	// here. In extreme cases the whole party may get
+	// stacked on this one location.
 
-        int dx, dy;          // The orientation vector (most formations are
-                             // directional). Typically set to the last
-                             // direction the party was travelling in.
+	int dx, dy;		// The orientation vector (most formations are
+	// directional). Typically set to the last
+	// direction the party was travelling in.
 
-        int rx, ry, rw, rh;  // The placement rectangle.
+	int rx, ry, rw, rh;	// The placement rectangle.
 
-        int px, py;          // The initial preferred location of a party
-                             // member (this is set just before running the
-                             // placement algorithm on a member). This depends
-                             // on the "order" of the member in the party, the
-                             // formation, and the direction vector.
+	int px, py;		// The initial preferred location of a party
+	// member (this is set just before running the
+	// placement algorithm on a member). This depends
+	// on the "order" of the member in the party, the
+	// formation, and the direction vector.
 
-        class Object *subject; // Use the subject being positioned instead of
-                               // the obsolete pmask.
+	class Object *subject;	// Use the subject being positioned instead of
+	// the obsolete pmask.
 
-        bool find_party;     // When running the placement algorithm, true iff
-                             // the party member must be able to pathfind back
-                             // to the party coordinates.
+	bool find_party;	// When running the placement algorithm, true iff
+	// the party member must be able to pathfind back
+	// to the party coordinates.
 
-        int placed;          // Count of the number of party members actually
-                             // placed. Used to detect when none of a party
-                             // found a location.
+	int placed;		// Count of the number of party members actually
+	// placed. Used to detect when none of a party
+	// found a location.
 
-        struct formation *formation;     // The formation to use when placing
-                                         // party members.
-
+	struct formation *formation;	// The formation to use when placing
+	// party members.
 
 };
 

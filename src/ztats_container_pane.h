@@ -30,20 +30,23 @@
 #include <SDL.h>
 
 struct ztats_container_pane_ops {
-        void (*paint_item)(struct inv_entry *ie, SDL_Rect *rect);
+	void (*paint_item) (struct inv_entry * ie, SDL_Rect * rect);
 };
 
 struct ztats_container_pane {
-        struct ztats_pane base;
-        const char *title;
-        struct ztats_container_pane_ops *ops;
-        struct filter *filter;
-        int top_line;
-        int max_line;
-        int num_lines;
+	struct ztats_pane base;
+	const char *title;
+	struct ztats_container_pane_ops *ops;
+	struct filter *filter;
+	int top_line;
+	int max_line;
+	int num_lines;
 };
 
-extern void ztats_container_pane_init(struct ztats_container_pane *zcp, const char *title, struct filter *filter, struct ztats_container_pane_ops *ops);
-extern void ztats_container_paint_item_generic(struct inv_entry *ie, SDL_Rect *rect);
+extern void ztats_container_pane_init(struct ztats_container_pane *zcp,
+				      const char *title, struct filter *filter,
+				      struct ztats_container_pane_ops *ops);
+extern void ztats_container_paint_item_generic(struct inv_entry *ie,
+					       SDL_Rect * rect);
 
 #endif

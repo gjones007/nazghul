@@ -28,24 +28,22 @@
 #include "ztats.h"
 #include "ztats_container_pane.h"
 
-
 static bool ztats_items_filter_cb(struct inv_entry *ie, void *fdata)
 {
 	return (ie->type->isUsable());
 }
 
-
 void ztats_items_init(void)
 {
-        static struct ztats_container_pane pane;
-        static struct ztats_container_pane_ops ops = {
-                ztats_container_paint_item_generic,
-        };
-        static struct filter filter = {
-                ztats_items_filter_cb,
-                NULL
-        };
+	static struct ztats_container_pane pane;
+	static struct ztats_container_pane_ops ops = {
+		ztats_container_paint_item_generic,
+	};
+	static struct filter filter = {
+		ztats_items_filter_cb,
+		NULL
+	};
 
-        ztats_container_pane_init(&pane, "Usable Items", &filter, &ops);
-        ztats_add_pane(&pane.base);
+	ztats_container_pane_init(&pane, "Usable Items", &filter, &ops);
+	ztats_add_pane(&pane.base);
 }

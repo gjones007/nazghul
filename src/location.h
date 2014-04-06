@@ -24,21 +24,21 @@
 #define loc_h
 
 struct location {
-        struct place *place;
-        int x;
-        int y;
+	struct place *place;
+	int x;
+	int y;
 };
 
 #define loc_place(loc) ((loc)->place)
 #define loc_x(loc) ((loc)->x)
 #define loc_y(loc) ((loc)->y)
 
-static inline void loc_init(struct location *loc, struct place *place, int x, int y)
+static inline void loc_init(struct location *loc, struct place *place, int x,
+			    int y)
 {
-        loc_place(loc) = place;
-        loc_x(loc)     = x;
-        loc_y(loc)     = y;
+	loc_place(loc) = place;
+	loc_x(loc) = x;
+	loc_y(loc) = y;
 }
-
 
 #endif

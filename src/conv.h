@@ -28,8 +28,8 @@
 /**
  * Flags for the return value of conv_is_keyword().
  */
-#define CONV_IS_KEYWORD (1<<0) /* word is a keyword */
-#define CONV_IS_MARKED  (1<<1) /* keyword has been used */
+#define CONV_IS_KEYWORD (1<<0)	/* word is a keyword */
+#define CONV_IS_MARKED  (1<<1)	/* keyword has been used */
 
 struct conv;
 
@@ -72,7 +72,7 @@ void conv_ref(struct conv *conv);
  * @param pc is the player party member doing the talking.
  * @param conv is the conversation.
  */
-void conv_enter(class Object *npc, class Object *pc, struct conv *conv);
+void conv_enter(class Object * npc, class Object * pc, struct conv *conv);
 
 /**
  * End a conversation. This is provided so that NPC scripts can end the
@@ -129,6 +129,5 @@ int conv_init(void);
  * @param enable is non-zero to turn it on.
  */
 void conv_enable_keyword_highlighting(int enable);
-
 
 #endif

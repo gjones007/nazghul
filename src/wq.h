@@ -25,23 +25,20 @@
 #include "macros.h"
 #include "list.h"
 
-BEGIN_DECL
-
-struct wq_job {
-        struct list list;
-        int tick;
-        int period;
-        void *data;
-        void (*run) (struct wq_job *, struct list * wq);        
+BEGIN_DECL struct wq_job {
+	struct list list;
+	int tick;
+	int period;
+	void *data;
+	void (*run) (struct wq_job *, struct list * wq);
 };
 
 extern void wqAddJob(struct list *wq, struct wq_job *job);
 extern void wqRunToTick(struct list *wq, int tick);
-extern void wqCreateJob(struct list *wq, int tick, int period, void *data, 
-                        void (*run) (struct wq_job *, struct list * wq));
+extern void wqCreateJob(struct list *wq, int tick, int period, void *data,
+			void (*run) (struct wq_job *, struct list * wq));
 extern void wq_job_del(struct wq_job *);
 extern void wqReschedule(struct list *wq, struct wq_job *job);
 
 END_DECL
-
 #endif

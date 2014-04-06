@@ -25,32 +25,32 @@
 #include "Object.h"
 
 class Container:public Object {
-      public:
+ public:
 	Container();
 	virtual ~ Container();
 	void open();
 	virtual struct inv_entry *search(class ObjectType * type);
-        bool isEmpty();
+	bool isEmpty();
 
-        // Virtual methods from base class
+	// Virtual methods from base class
 	virtual bool add(class ObjectType * type, int quantity);
-        virtual void save(struct save *save);
+	virtual void save(struct save *save);
 	virtual bool takeOut(class ObjectType * type, int quantity);
-	virtual void relocate(struct place *newplace, int newx, int newy, 
-                              int flags = 0,
-                              struct closure *place_switch_hook = NULL);
-        int numAvail(class ObjectType * type);
+	virtual void relocate(struct place *newplace, int newx, int newy,
+			      int flags = 0,
+			      struct closure *place_switch_hook = NULL);
+	int numAvail(class ObjectType * type);
 
-        int filter_count(struct filter *);
+	int filter_count(struct filter *);
 	struct inv_entry *first(struct filter *);
-	struct inv_entry *next(struct inv_entry *ie, struct filter*);
-	struct inv_entry *prev(struct inv_entry *ie, struct filter*);
-        void moveToFront(struct inv_entry *ie);
+	struct inv_entry *next(struct inv_entry *ie, struct filter *);
+	struct inv_entry *prev(struct inv_entry *ie, struct filter *);
+	void moveToFront(struct inv_entry *ie);
 
 	void forEach(void (*fx) (struct inv_entry *, void *), void *);
 
-      protected:
-        void saveContents(struct save *save);
+ protected:
+	void saveContents(struct save *save);
 	struct list contents;
 };
 

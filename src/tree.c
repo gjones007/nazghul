@@ -26,24 +26,24 @@
 
 static inline int tree_cmp(struct tree *t1, struct tree *t2)
 {
-        assert(t1->key_type == t2->key_type);
-        
-        switch (t1->key_type) {
+	assert(t1->key_type == t2->key_type);
 
-        case tree_i_key:
-                return t1->key.i_key - t2->key.i_key;
-                break;
+	switch (t1->key_type) {
 
-        case tree_s_key:
-                return strcmp(t1->key.s_key, t2->key.s_key);
-                break;
+	case tree_i_key:
+		return t1->key.i_key - t2->key.i_key;
+		break;
 
-        default:
-                assert(false);
-                break;
-        }
+	case tree_s_key:
+		return strcmp(t1->key.s_key, t2->key.s_key);
+		break;
 
-        return 0;
+	default:
+		assert(false);
+		break;
+	}
+
+	return 0;
 }
 
 void tree_insert(struct tree **root, struct tree *node)
@@ -150,26 +150,26 @@ void tree_replace(struct tree **root, struct tree *out, struct tree *in)
 		in->right->p = in;
 }
 
-struct tree *tree_i_search(struct tree *root, int key) {
-        while (root && root->key.i_key != key) {
-                assert(root->key_type == tree_i_key);
-                if (key < root->key.i_key)
-                        root = root->left;
-                else
-                        root = root->right;
-        }
-        return root;
+struct tree *tree_i_search(struct tree *root, int key)
+{
+	while (root && root->key.i_key != key) {
+		assert(root->key_type == tree_i_key);
+		if (key < root->key.i_key)
+			root = root->left;
+		else
+			root = root->right;
+	}
+	return root;
 }
 
 struct tree *tree_s_search(struct tree *root, const char *key)
 {
-        while (root && strcmp(root->key.s_key, key)) {
-                assert(root->key_type == tree_s_key);
-                if (strcmp(key, root->key.s_key) < 0)
-                        root = root->left;
-                else
-                        root = root->right;
-        }
-        return root;
+	while (root && strcmp(root->key.s_key, key)) {
+		assert(root->key_type == tree_s_key);
+		if (strcmp(key, root->key.s_key) < 0)
+			root = root->left;
+		else
+			root = root->right;
+	}
+	return root;
 }
-        

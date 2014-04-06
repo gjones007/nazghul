@@ -28,11 +28,11 @@
 #define BLENDER_N_RANGE  16
 
 typedef struct blender {
-        struct list list;
-        struct terrain *inf;
-        int n_nonsup;
-        struct terrain *nonsup[BLENDER_MAX_NONSUP];
-        struct terrain *range[BLENDER_N_RANGE];
+	struct list list;
+	struct terrain *inf;
+	int n_nonsup;
+	struct terrain *nonsup[BLENDER_MAX_NONSUP];
+	struct terrain *range[BLENDER_N_RANGE];
 } blender_t;
 
 #endif

@@ -27,14 +27,14 @@
 static void move_to_map(struct inv_entry *ie, void *data)
 {
 	class Container *box = (class Container *) data;
-        assert(ie->count);
+	assert(ie->count);
 
-        class Object *obj = new Object();
-        assert(obj);
+	class Object *obj = new Object();
+	assert(obj);
 
-        obj->init(ie->type);
-        obj->setCount(ie->count);
-        obj->relocate(box->getPlace(), box->getX(), box->getY());
+	obj->init(ie->type);
+	obj->setCount(ie->count);
+	obj->relocate(box->getPlace(), box->getX(), box->getY());
 
 	box->takeOut(ie->type, ie->count);
 }
@@ -52,7 +52,7 @@ Container::Container()
 
 Container::~Container()
 {
-        return;
+	return;
 	forEach(destroy_content, NULL);
 }
 
@@ -61,30 +61,30 @@ bool Container::add(class ObjectType * type, int quantity)
 	struct inv_entry *ie;
 
 	if (quantity <= 0)
-                return false;
+		return false;
 
 	ie = search(type);
 	if (!ie) {
-                ie = new struct inv_entry;                
+		ie = new struct inv_entry;
 		list_add(&contents, &ie->list);
 		ie->ref = 0;
 		ie->count = 0;
 		ie->type = type;
 	}
 
-        ie->count += quantity;
+	ie->count += quantity;
 
-        return true;
+	return true;
 }
 
-int Container::numAvail(class ObjectType *type)
+int Container::numAvail(class ObjectType * type)
 {
 	struct inv_entry *ie;
 
 	ie = search(type);
-        if (!ie)
-                return 0;
-        return ie->count;
+	if (!ie)
+		return 0;
+	return ie->count;
 
 }
 
@@ -93,11 +93,11 @@ bool Container::takeOut(class ObjectType * type, int quantity)
 	struct inv_entry *ie;
 
 	ie = search(type);
-        if (!ie)
-                return false;
+	if (!ie)
+		return false;
 
-        if (ie->count < quantity)
-                return false;
+	if (ie->count < quantity)
+		return false;
 
 	ie->count -= quantity;
 	assert(ie->count >= 0);
@@ -107,7 +107,7 @@ bool Container::takeOut(class ObjectType * type, int quantity)
 		delete ie;
 	}
 
-        return true;
+	return true;
 }
 
 void Container::open()
@@ -142,125 +142,121 @@ struct inv_entry *Container::search(class ObjectType * type)
 
 void Container::saveContents(struct save *save)
 {
-        struct list *elem;
-        struct inv_entry *ie;
-        int count;
+	struct list *elem;
+	struct inv_entry *ie;
+	int count;
 
-        save->enter(save, "(list ");
+	save->enter(save, "(list ");
 
-        // Iterate backwards to save/reload in the same order
-        for (elem = contents.prev; elem != &contents; elem = elem->prev) {
-                ie = outcast(elem, struct inv_entry, list);
-                count = ie->count - ie->ref;
-                if (count) {
-                        save->write(save, "(list %d %s)\n", 
-                                    count,
-                                    ie->type->getTag());
-                }
-        }
-        save->exit(save, ")\n");
+	// Iterate backwards to save/reload in the same order
+	for (elem = contents.prev; elem != &contents; elem = elem->prev) {
+		ie = outcast(elem, struct inv_entry, list);
+		count = ie->count - ie->ref;
+		if (count) {
+			save->write(save, "(list %d %s)\n",
+				    count, ie->type->getTag());
+		}
+	}
+	save->exit(save, ")\n");
 }
 
 void Container::save(struct save *save)
 {
-        assert(saved < save->session_id);
+	assert(saved < save->session_id);
 
-        saved = save->session_id;
+	saved = save->session_id;
 
-        save->enter(save, "(kern-mk-inventory\n");
-        save->write(save, ";; contents\n");
-        if (list_empty(&contents)) {
-                save->write(save, "nil\n");
-        } else {
-                saveContents(save);
+	save->enter(save, "(kern-mk-inventory\n");
+	save->write(save, ";; contents\n");
+	if (list_empty(&contents)) {
+		save->write(save, "nil\n");
+	} else {
+		saveContents(save);
 	}
-        
-        Object::saveHooks(save);
 
-        save->exit(save, ")\n");
+	Object::saveHooks(save);
+
+	save->exit(save, ")\n");
 }
 
 int Container::filter_count(struct filter *filter)
 {
-        struct inv_entry *ie;
-        int q = 0;
+	struct inv_entry *ie;
+	int q = 0;
 
-        ie = first(filter);
-        while (ie) {
-                q++;
-                ie = next(ie, filter);
-        }
+	ie = first(filter);
+	while (ie) {
+		q++;
+		ie = next(ie, filter);
+	}
 
-        return q;
+	return q;
 }
 
 struct inv_entry *Container::first(struct filter *filter)
 {
-        struct list *elem;
-        struct inv_entry *ie;
+	struct list *elem;
+	struct inv_entry *ie;
 
-        elem = contents.next;
-        while (elem != &contents) {
-                ie = outcast(elem, struct inv_entry, list);
-                if (!filter ||
-                    filter->fx(ie, filter->fdata))
-                        return ie;
-                elem = elem->next;
-        }
-        return NULL;
+	elem = contents.next;
+	while (elem != &contents) {
+		ie = outcast(elem, struct inv_entry, list);
+		if (!filter || filter->fx(ie, filter->fdata))
+			return ie;
+		elem = elem->next;
+	}
+	return NULL;
 }
 
 struct inv_entry *Container::next(struct inv_entry *ie, struct filter *filter)
 {
-        struct list *elem;
+	struct list *elem;
 
-        if (ie == NULL)
-                return first(filter);
+	if (ie == NULL)
+		return first(filter);
 
-        elem = ie->list.next;
-        while (elem != &contents) {
-                ie = outcast(elem, struct inv_entry, list);
-                if (!filter ||
-                    filter->fx(ie, filter->fdata))
-                        return ie;
-                elem = elem->next;
-        }
-        return NULL;
+	elem = ie->list.next;
+	while (elem != &contents) {
+		ie = outcast(elem, struct inv_entry, list);
+		if (!filter || filter->fx(ie, filter->fdata))
+			return ie;
+		elem = elem->next;
+	}
+	return NULL;
 }
 
 struct inv_entry *Container::prev(struct inv_entry *ie, struct filter *filter)
 {
-        struct list *elem;
+	struct list *elem;
 
-        elem = ie->list.prev;
-        while (elem != &contents) {
-                ie = outcast(elem, struct inv_entry, list);
-                if (!filter ||
-                    filter->fx(ie, filter->fdata))
-                        return ie;
-                elem = elem->prev;
-        }
-        return NULL;
+	elem = ie->list.prev;
+	while (elem != &contents) {
+		ie = outcast(elem, struct inv_entry, list);
+		if (!filter || filter->fx(ie, filter->fdata))
+			return ie;
+		elem = elem->prev;
+	}
+	return NULL;
 }
 
 bool Container::isEmpty()
 {
-        return list_empty(&contents);
+	return list_empty(&contents);
 }
 
 void Container::moveToFront(struct inv_entry *ie)
 {
-        list_remove(&ie->list);
-        list_add(&contents, &ie->list);
+	list_remove(&ie->list);
+	list_add(&contents, &ie->list);
 }
 
 void Container::relocate(struct place *newplace, int newx, int newy, int flags,
-                         struct closure *place_switch_hook)
+			 struct closure *place_switch_hook)
 {
-        // Spill the contents but don't try to put this down on the map as a
-        // physical object, because it's not.
-        setPlace(newplace);
-        setX(newx);
-        setY(newy);
-        open();
+	// Spill the contents but don't try to put this down on the map as a
+	// physical object, because it's not.
+	setPlace(newplace);
+	setX(newx);
+	setY(newy);
+	open();
 }

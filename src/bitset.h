@@ -119,7 +119,7 @@ typedef unsigned int bitset_t;
  */
 static inline bitset_t *bitset_alloc(int n_bits)
 {
-        return (bitset_t*)calloc(bitset_elems(n_bits), bitset_elem_bytes);
+	return (bitset_t *) calloc(bitset_elems(n_bits), bitset_elem_bytes);
 }
 
 /**
@@ -127,9 +127,9 @@ static inline bitset_t *bitset_alloc(int n_bits)
  *
  * @param bs is the bitset.
  */
-static inline void bitset_free(bitset_t *bs)
+static inline void bitset_free(bitset_t * bs)
 {
-        free(bs);
+	free(bs);
 }
 
 #endif

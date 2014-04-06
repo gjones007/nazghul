@@ -24,49 +24,44 @@
 #ifndef magic_h
 #define magic_h
 
-#include "Object.h" /* for ObjectType */
+#include "Object.h"		/* for ObjectType */
 #include "macros.h"
 
 BEGIN_DECL
-
 /* The number of spell words or "syllables" is limited to the number of letters
  * in the English alphabet. That's because the first letter of each syllable
  * uniquely identifies it. */
 #define MAX_SPELL_WORDS 26
-
 /* The max number of reagents allowed in the mixture for a spell. */
 #define MAX_MIX_REAGENTS 8
-
 /* Arbitrary limit on the number of characters (not syllables!) in a full spell
  * name */
 #define MAX_SPELL_NAME_LENGTH 64
-
 /* Arbitrary limit on the number of syllables in a spell name. */
 #define MAX_SYLLABLES_PER_SPELL 8
-
 /* Spells are stored in a tree indexed by their "code". The code is the first
  * letter of each word in the spell. For example, An Nox has the code AN. I
  * also store the mixture here with the associated spell. For cimplicity I
  * hard-code the max number of reagents permitted in a spell. */
-struct spell {
-        ObjectType *type;
-        char *code;
-        int level;
-        int cost;
-        int context;
-        int action_points;
-        int n_reagents;
-        ObjectType *reagents[MAX_MIX_REAGENTS];
-        struct sprite *sprite;
-        struct spell *left;
-        struct spell *right;
+    struct spell {
+	ObjectType *type;
+	char *code;
+	int level;
+	int cost;
+	int context;
+	int action_points;
+	int n_reagents;
+	ObjectType *reagents[MAX_MIX_REAGENTS];
+	struct sprite *sprite;
+	struct spell *left;
+	struct spell *right;
 };
 
 /* One of these is embedded in the global session structure. It manages all the
  * magic-related information related to a session. */
 struct magic {
-        char *words[MAX_SPELL_WORDS];
-        struct spell *spells;
+	char *words[MAX_SPELL_WORDS];
+	struct spell *spells;
 };
 
 /* Initialize before loading a new session */
@@ -90,15 +85,15 @@ extern char *magic_lookup_word(struct magic *magic, char first_letter);
 extern struct spell *magic_lookup_spell(struct magic *, char *code);
 
 /* Add another reagent to a spell mixture during session load. */
-extern int spell_add_reagent(struct spell *spell, ObjectType *reagent);
+extern int spell_add_reagent(struct spell *spell, ObjectType * reagent);
 
 /* Given a spell code like "VF" convert it to a full name like "Vas Flam" */
-extern int magic_spell_code_to_name(struct magic *magic, char *buf, int len, char *code);
+extern int magic_spell_code_to_name(struct magic *magic, char *buf, int len,
+				    char *code);
 
 /* Opposite of magic_spell_code_to_name() */
-extern int magic_spell_name_to_code(struct magic *magic, char *buf, int len, const char *name);
-
+extern int magic_spell_name_to_code(struct magic *magic, char *buf, int len,
+				    const char *name);
 
 END_DECL
-
 #endif

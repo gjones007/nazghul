@@ -29,9 +29,7 @@
 #include "node.h"
 
 BEGIN_DECL
-
 #define STAT_LIST_CHARS_PER_LINE (STAT_CHARS_PER_LINE - (TILE_W / ASCII_W))
-
 /* Standard color scheme for status visual elements */
 #define STAT_LABEL_CLR          'G'
 #define STAT_BONUS_CLR          'g'
@@ -46,79 +44,78 @@ BEGIN_DECL
 #define STAT_PARTY_MEMBER_CLR   'c'
 #define STAT_INUSE_CLR          'g'
 #define STAT_UNAVAIL_CLR        'G'
-
-struct trade_info {
-        struct sprite *sprite;
-        const char *name;
-        int quantity;
-        int cost;
-        void *data; /* object type */
-        char *sales_pitch;
-        char show_quantity:1;
-        char show_sprite:1;
+    struct trade_info {
+	struct sprite *sprite;
+	const char *name;
+	int quantity;
+	int cost;
+	void *data;		/* object type */
+	char *sales_pitch;
+	char show_quantity:1;
+	char show_sprite:1;
 };
 
 struct stat_list_entry {
-        struct sprite *sprite;
-        char line1[STAT_LIST_CHARS_PER_LINE + 1];
-        char line2[STAT_LIST_CHARS_PER_LINE + 1];
-        void *data;
+	struct sprite *sprite;
+	char line1[STAT_LIST_CHARS_PER_LINE + 1];
+	char line2[STAT_LIST_CHARS_PER_LINE + 1];
+	void *data;
 };
 
 struct stat_super_generic_data {
-        const char *title;
-        struct node list;
-        struct node *selected;
-        struct node *first_shown;
-        struct node *last_shown;
-        int first_to_selected;
-        int first_to_last;
-        int (*paint)(struct stat_super_generic_data *self, struct node *node, 
-                     SDL_Rect *rect);
-        void (*unref)(struct stat_super_generic_data *self);
-        int refcount;
-        void *data;
+	const char *title;
+	struct node list;
+	struct node *selected;
+	struct node *first_shown;
+	struct node *last_shown;
+	int first_to_selected;
+	int first_to_last;
+	int (*paint) (struct stat_super_generic_data * self, struct node * node,
+		      SDL_Rect * rect);
+	void (*unref) (struct stat_super_generic_data * self);
+	int refcount;
+	void *data;
 };
 
 enum StatusScrollDir {
-        ScrollUp = 0,
-        ScrollDown,
-        ScrollRight,
-        ScrollLeft,
-        ScrollPageUp,
-        ScrollPageDown,
-        ScrollTop,
-        ScrollBottom
+	ScrollUp = 0,
+	ScrollDown,
+	ScrollRight,
+	ScrollLeft,
+	ScrollPageUp,
+	ScrollPageDown,
+	ScrollTop,
+	ScrollBottom
 };
-								
+
 enum StatusMode {
-        ShowParty,
-        SelectCharacter,
-        Ready,
-        Use,
-        Page,
-        Trade,
-        MixReagents,
-        GenericList,
-        StringList,
-        DisableStatus,
-        SuperGeneric
+	ShowParty,
+	SelectCharacter,
+	Ready,
+	Use,
+	Page,
+	Trade,
+	MixReagents,
+	GenericList,
+	StringList,
+	DisableStatus,
+	SuperGeneric
 };
-					
+
 enum StatusSelection {
-        Character,
-        InventoryItem,
-        TradeItem,
-        Reagents,
-        Generic,
-        String,
-        SelectSuperGeneric
+	Character,
+	InventoryItem,
+	TradeItem,
+	Reagents,
+	Generic,
+	String,
+	SelectSuperGeneric
 };
 
 extern int statusInit(void);
 extern void statusRepaint(void);
 extern void statusFlash(int line, unsigned int color);
-								
+
 extern void statusSetMode(enum StatusMode mode);
 extern enum StatusMode statusGetMode(void);
 extern void statusScroll(enum StatusScrollDir dir);
@@ -127,10 +124,8 @@ extern void statusSelectCharacter(int partyOrderIndex);
 
 extern void statusSetPageText(const char *title, const char *text);
 extern void statusSetTradeInfo(int list_sz, struct trade_info *trades);
-extern void statusUpdateTradeInfo(int list_sz, 
-                                  struct trade_info *trades);
+extern void statusUpdateTradeInfo(int list_sz, struct trade_info *trades);
 extern int status_get_h(void);
-        
 
 /**
  * Setup a generic list for use with the GenericList mode. A generic list has
@@ -147,8 +142,8 @@ extern int status_get_h(void);
  * call does not make its own copy, so all the pointers must remain valid while
  * the GenericList mode is in use.
  */
-extern void statusSetGenericList(const char *title, int list_sz, 
-                                 struct stat_list_entry *list);
+extern void statusSetGenericList(const char *title, int list_sz,
+				 struct stat_list_entry *list);
 
 /**
  * Setup a list of plain string entries for use with the StringList mode. Each
@@ -165,7 +160,8 @@ extern void statusSetGenericList(const char *title, int list_sz,
  * call does not make its own copy, so all the pointers must remain valid while
  * the StringList mode is in use.
  */
-extern void statusSetStringList(const char *title, int list_sz, const char **list);
+extern void statusSetStringList(const char *title, int list_sz,
+				const char **list);
 
 /**
  * When in one of the list modes, this forces the list entry at the given index
@@ -220,7 +216,8 @@ extern void statusSetSuperGenericData(struct stat_super_generic_data *data);
  * @param container is the container object to browse
  * @param title is shown at the top of the status window
  */
-extern void statusBrowseContainer(class Container *container, const char *title);
+extern void statusBrowseContainer(class Container * container,
+				  const char *title);
 
 /**
  * Set the text of the title at the top of the status window.
@@ -238,7 +235,7 @@ extern char status_range_color(int cur, int max);
 /**
  * Paint armament statistics in a standard way.
  */
-extern void status_show_arms_stats(SDL_Rect *rect, ArmsType *arms);
+extern void status_show_arms_stats(SDL_Rect * rect, ArmsType * arms);
 
 /**
  * This pushes the current applet onto the applet stack and invokes it's run
@@ -254,5 +251,4 @@ extern void statusRunApplet(struct applet *applet);
 extern struct applet *statusGetCurrentApplet(void);
 
 END_DECL
-
 #endif

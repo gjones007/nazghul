@@ -25,33 +25,30 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #define CLOCK_TICKS_PER_MINUTE TURNS_PER_MINUTE
-
 #define clock_alarm_save(clk,save) ((save)->write((save), "%d\n", (clk)))
-
 typedef unsigned int clock_alarm_t;
 
 struct clock {
-        int year;
-        int month;
-        int week;
-        int day_w;  // Day of week (0..6)
-        int day;    // Day of month (0..27)
-        int hour;
-        int min;
-        int baseTurn;
+	int year;
+	int month;
+	int week;
+	int day_w;		// Day of week (0..6)
+	int day;		// Day of month (0..27)
+	int hour;
+	int min;
+	int baseTurn;
 
-        unsigned int total_minutes;
-        int tick;
-        int tick_to_change_time;
-        int set : 1;
+	unsigned int total_minutes;
+	int tick;
+	int tick_to_change_time;
+	int set:1;
 };
 
 extern void clock_advance(int ticks);
-extern void clock_alarm_set(clock_alarm_t *alarm, unsigned int minutes);
-extern int clock_alarm_is_expired(clock_alarm_t *alarm);
-extern int clock_alarm_remaining(clock_alarm_t *alarm);
+extern void clock_alarm_set(clock_alarm_t * alarm, unsigned int minutes);
+extern int clock_alarm_is_expired(clock_alarm_t * alarm);
+extern int clock_alarm_remaining(clock_alarm_t * alarm);
 extern unsigned int clock_time_of_day(void);
 extern unsigned int clock_time(void);
 extern int is_noon(void);
@@ -64,14 +61,13 @@ extern int clock_hour(void);
 extern int clock_minute(void);
 extern int clock_tick(void);
 
-extern char * vague_time_as_string       (void);
-extern char * time_HHMM_as_string       (void);
-extern char * time_YYYY_MM_DD_as_string (void);
+extern char *vague_time_as_string(void);
+extern char *time_HHMM_as_string(void);
+extern char *time_YYYY_MM_DD_as_string(void);
 
-extern const char * month_name (void);
-extern const char * week_name  (void);
-extern const char * day_name   (void);
-
+extern const char *month_name(void);
+extern const char *week_name(void);
+extern const char *day_name(void);
 
 #ifdef INCLUDE_UNUSED_CLOCK_ROUTINES
 extern void clock_reset(struct clock *clock);
@@ -80,11 +76,10 @@ extern int clock_alarm_expired(struct clock *clock);
 #endif
 
 #ifdef OTHER_TIME_STRING_FUNCTIONS
-extern const char * time_YYYY_as_string (void);
-extern const char * time_MM_as_string   (void);
-extern const char * time_DD_as_string   (void);
-#endif // OTHER_TIME_STRING_FUNCTIONS
-        
-END_DECL
+extern const char *time_YYYY_as_string(void);
+extern const char *time_MM_as_string(void);
+extern const char *time_DD_as_string(void);
+#endif				// OTHER_TIME_STRING_FUNCTIONS
 
+END_DECL
 #endif

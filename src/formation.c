@@ -24,46 +24,46 @@
 #include "common.h"
 
 static struct formation_entry default_formation_entries[] = {
-        {0, 0},
-        {1, 1},
-        {-1, 1},
-        {2, 2},
-        {0, 2},
-        {-2, 2},
-        {3, 3},
-        {1, 3},
-        {-1, 3},
-        {-3, 3},
-        {4, 4},
-        {2, 4},
-        {0, 4},
-        {-2, 4},
-        {-4, 4},
-        {5, 5},
-        {3, 5},
-        {1, 5},
-        {-1, 5},
-        {-3, 5},
-        {-5, 5},
-        {6, 6},
-        {4, 6},
-        {2, 6},
-        {0, 6},
-        {-2, 6},
-        {-4, 6},
-        {-6, 6},                /* 28 */
+	{0, 0},
+	{1, 1},
+	{-1, 1},
+	{2, 2},
+	{0, 2},
+	{-2, 2},
+	{3, 3},
+	{1, 3},
+	{-1, 3},
+	{-3, 3},
+	{4, 4},
+	{2, 4},
+	{0, 4},
+	{-2, 4},
+	{-4, 4},
+	{5, 5},
+	{3, 5},
+	{1, 5},
+	{-1, 5},
+	{-3, 5},
+	{-5, 5},
+	{6, 6},
+	{4, 6},
+	{2, 6},
+	{0, 6},
+	{-2, 6},
+	{-4, 6},
+	{-6, 6},		/* 28 */
 };
 
 static struct formation default_formation;
 
 int formation_init(void)
 {
-        default_formation.n = array_sz(default_formation_entries);
-        default_formation.entry = default_formation_entries;
-        return 0;
+	default_formation.n = array_sz(default_formation_entries);
+	default_formation.entry = default_formation_entries;
+	return 0;
 }
 
 struct formation *formation_get_default(void)
 {
-        return &default_formation;
+	return &default_formation;
 }

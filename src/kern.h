@@ -25,6 +25,6 @@
 
 #include "scheme.h"
 
-scheme * kern_init(void);
+scheme *kern_init(void);
 
 #endif

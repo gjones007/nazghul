@@ -27,27 +27,27 @@
 
 /* Description of a material item needed by a skill */
 struct skill_material {
-        struct list list;  /* list of materials in skill */
-        void *objtype;     /* ObjectType consumed */
-        int quantity;      /* quantity consumed */
+	struct list list;	/* list of materials in skill */
+	void *objtype;		/* ObjectType consumed */
+	int quantity;		/* quantity consumed */
 };
 
 /* Description of a skill */
 struct skill {
-        struct list list;         /* list of all skills in the session */
-        char *name;               /* name shown in UI */
-        char *desc;               /* flavor text for UI; should also describe
-                                   * special requirements checked for in the
-                                   * can_yuse closure. */
-        int ap;                   /* action points consumed */
-        int mp;                   /* mana points consumed */
-        struct node tools;        /* ObjectTypes needed to y)use */
-        struct list materials;    /* skill_materials consumed with y)use */
-        struct closure *yuse;     /* proc that executes the y)use */
-        struct closure *can_yuse; /* check special requirements to y)use */
-        int refcount;             /* memory management */
-        char wilderness_ok : 1;   /* can y)use in wilderness */
-        char passive : 1;         /* y)use is n/a */
+	struct list list;	/* list of all skills in the session */
+	char *name;		/* name shown in UI */
+	char *desc;		/* flavor text for UI; should also describe
+				 * special requirements checked for in the
+				 * can_yuse closure. */
+	int ap;			/* action points consumed */
+	int mp;			/* mana points consumed */
+	struct node tools;	/* ObjectTypes needed to y)use */
+	struct list materials;	/* skill_materials consumed with y)use */
+	struct closure *yuse;	/* proc that executes the y)use */
+	struct closure *can_yuse;	/* check special requirements to y)use */
+	int refcount;		/* memory management */
+	char wilderness_ok:1;	/* can y)use in wilderness */
+	char passive:1;		/* y)use is n/a */
 };
 
 extern struct skill *skill_new();

@@ -27,6 +27,7 @@
 #include <SDL.h>
 
 extern int ascii_init(void);
-extern void ascii_paint_glyph(glyph_t glyph, int x, int y, SDL_Surface * surface);
+extern void ascii_paint_glyph(glyph_t glyph, int x, int y,
+			      SDL_Surface * surface);
 
 #endif

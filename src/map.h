@@ -26,15 +26,12 @@
 #include <SDL.h>
 
 BEGIN_DECL
-
 /* In general, this is valid for functions which take only a 'view' arg */
 #define ALL_VIEWS ((struct mview *)-1)
-
 /* Flags for mapRepaintView() */
 #define REPAINT_IF_DIRTY 1	/* repaint iff the view is dirty */
 #define REPAINT_NO_LOS   2	/* don't apply LOS */
-#define REPAINT_IF_OLD   4      /* repaint iff last repaint < tick ms ago */
-
+#define REPAINT_IF_OLD   4	/* repaint iff last repaint < tick ms ago */
 extern int map_use_circular_vision_radius;
 
 struct mview;
@@ -74,23 +71,22 @@ extern int mapTileIsWithinViewport(int x, int y);
 extern int mapTileIsVisible(int x, int y);
 extern unsigned char mapTileLightLevel(int x, int y);
 
-extern void mapBlackout(int val); // for sleeping in town
+extern void mapBlackout(int val);	// for sleeping in town
 
 // The destination (dx, dy) point is an in-out parm, upon return it
 // points to the location where the missile actually landed (in case it
 // was blocked in its path)
-extern void mapAnimateProjectile(int ox, int oy, int *dx, int *dy, 
-                                 struct sprite *sprite, 
-                                 struct place *place,
-                                 class Missile *missile,
-                                 float range);
+extern void mapAnimateProjectile(int ox, int oy, int *dx, int *dy,
+				 struct sprite *sprite,
+				 struct place *place,
+				 class Missile * missile, float range);
 
-extern void mapAttachCamera(class Object *subject);
-extern void mapDetachCamera(class Object *subject);
+extern void mapAttachCamera(class Object * subject);
+extern void mapDetachCamera(class Object * subject);
 extern void mapSetLosStyle(const char *los);
 extern void mapUpdateTile(struct place *place, int x, int y);
 extern void mapPaintDamage(int x, int y);
-extern void mapSetSelected(class Object *obj);
+extern void mapSetSelected(class Object * obj);
 extern void mapFlashSprite(int x, int y, struct sprite *sprite);
 
 extern int mapScreenToPlaceCoords(int *x, int *y);
@@ -102,7 +98,7 @@ extern int mapScreenToPlaceCoords(int *x, int *y);
  * @param image The image to show. If null, the map is erased instead (ie,
  * blacked-out).
  */
-extern void mapSetImage(SDL_Surface *image);
+extern void mapSetImage(SDL_Surface * image);
 
 /**
  * Turn off the image set via mapSetImage() and resume showing the current
@@ -119,7 +115,7 @@ extern void mapClearImage(void);
  * @param x is the pixel offset within the map window to blit it.
  * @param y is the pixel offset within the map window to blit it.
  */
-extern void mapBlitImage(SDL_Surface *image, Uint32 x, Uint32 y);
+extern void mapBlitImage(SDL_Surface * image, Uint32 x, Uint32 y);
 
 /**
  * Walk the path a missile will fly from (Ax, Ay) to (Bx, By), invoking
@@ -128,11 +124,11 @@ extern void mapBlitImage(SDL_Surface *image, Uint32 x, Uint32 y);
  * and By contain the final tile reached.
  */
 int map_walk_missile_path(int Ax, int Ay, int *Bx, int *By,
-                          struct place *place,
-			  class Missile *missile, float range, 
-			  int (*on_tile_entry)(struct place *place, int x, int y, class Missile *missile));
-
+			  struct place *place,
+			  class Missile * missile, float range,
+			  int (*on_tile_entry) (struct place * place, int x,
+						int y,
+						class Missile * missile));
 
 END_DECL
-
 #endif

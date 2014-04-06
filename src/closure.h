@@ -27,39 +27,38 @@
 
 #include <stdarg.h>
 
-BEGIN_DECL
-
-typedef struct closure {
-        scheme *sc;
-        pointer env;
-        pointer code;
-        int ref;
+BEGIN_DECL typedef struct closure {
+	scheme *sc;
+	pointer env;
+	pointer code;
+	int ref;
 } closure_t;
 
 #define closure_unref_safe(clx) if ((clx)) closure_unref(clx)
 
-extern closure_t *closure_new(scheme *interp, pointer code);
-extern closure_t *closure_new_ref(scheme *interp, pointer code);
-extern void closure_init(closure_t *closure, scheme *interp, pointer code);
-extern int closure_exec(closure_t *closure, const char *fmt, ...);
-extern pointer closure_execv(closure_t *closure, const char *fmt, va_list args);
-extern int closure_translate_result(scheme *sc, pointer result);
-extern  void closure_save(closure_t *closure, struct save *save);
-extern void closure_ref(closure_t *closure);
-extern void closure_unref(closure_t *closure);
+extern closure_t *closure_new(scheme * interp, pointer code);
+extern closure_t *closure_new_ref(scheme * interp, pointer code);
+extern void closure_init(closure_t * closure, scheme * interp, pointer code);
+extern int closure_exec(closure_t * closure, const char *fmt, ...);
+extern pointer closure_execv(closure_t * closure, const char *fmt,
+			     va_list args);
+extern int closure_translate_result(scheme * sc, pointer result);
+extern void closure_save(closure_t * closure, struct save *save);
+extern void closure_ref(closure_t * closure);
+extern void closure_unref(closure_t * closure);
 
 /* Special form of closure_exec() made for running Object.hooks. */
-int closure_execlpv(closure_t *closure, pointer gob, void *obj, 
-                     const char *fmt, va_list args);
+int closure_execlpv(closure_t * closure, pointer gob, void *obj,
+		    const char *fmt, va_list args);
 
 /* Special form of closure_exec() made for running Object.hooks where an effect
  * is attached to more than one hook. */
-int closure_execlpiv(closure_t *closure, pointer gob, void *obj, int hook_id,
-                     const char *fmt, va_list args);
+int closure_execlpiv(closure_t * closure, pointer gob, void *obj, int hook_id,
+		     const char *fmt, va_list args);
 
 /* Another special form - for session_run_hook */
-int closure_execvl(closure_t *closure, const char *fmt, va_list args, pointer cell);
+int closure_execvl(closure_t * closure, const char *fmt, va_list args,
+		   pointer cell);
 
 END_DECL
-
 #endif

@@ -42,7 +42,8 @@ extern int file_exists_in_save_dir(const char *fname);
  * to create the configured save dir if it doesn't exist yet, except on win32
  * platforms. */
 extern FILE *file_open(const char *fname, const char *mode);
-extern FILE *file_open_in_dir(const char *dirname, const char *fname, const char *mode);
+extern FILE *file_open_in_dir(const char *dirname, const char *fname,
+			      const char *mode);
 extern FILE *file_open_in_include_dir(const char *fname);
 extern FILE *file_open_in_save_dir(const char *fname, const char *mode);
 

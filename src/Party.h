@@ -30,80 +30,78 @@
 #include "pinfo.h"
 
 class Party:public Being {
-      public:
+ public:
 
 	Party();
-	virtual ~Party();
+	virtual ~ Party();
 
 	virtual bool isType(int classID);
 
 	virtual struct formation *get_formation();
-        virtual sound_t *get_movement_sound();
-        virtual int getMovementCost(int pclass);
+	virtual sound_t *get_movement_sound();
+	virtual int getMovementCost(int pclass);
 	virtual int getSize(void);
 	virtual int getSpeed();
-        virtual struct sprite *getSprite();
+	virtual struct sprite *getSprite();
 	virtual int getType();
 	virtual int getVisionRadius();
-        virtual bool addMember(class Character *);
-        virtual bool allDead();
-        virtual void burn();
-        virtual void damage(int amount);
-        virtual void describe();
-        virtual void examine();
-	virtual void destroy();        
+	virtual bool addMember(class Character *);
+	virtual bool allDead();
+	virtual void burn();
+	virtual void damage(int amount);
+	virtual void describe();
+	virtual void examine();
+	virtual void destroy();
 	virtual void disembark();
-        virtual void distributeMembers();
+	virtual void distributeMembers();
 	virtual void exec();
 	virtual bool joinPlayer(void);
-	virtual void forEachMember(bool (*fx) (class Character *, void *), 
-                                   void *);
-	virtual void forEachReverseMember(bool (*fx) (class Character *, void *), 
-                                   void *);
+	virtual void forEachMember(bool(*fx) (class Character *, void *),
+				   void *);
+	virtual void forEachReverseMember(bool(*fx) (class Character *, void *),
+					  void *);
 	virtual MoveResult move(int dx, int dy);
 	virtual void paint(int sx, int sy);
 	virtual void removeMember(class Character *);
-        virtual void save(struct save *save);
-        virtual void setPlace(struct place *place);
-        virtual void setX(int x);
-        virtual void setY(int y);
-        virtual void sleep();
-        virtual void start();
-        virtual void startTurn();
-        virtual void switchOrder(class Character *ch1, class Character *ch2);
+	virtual void save(struct save *save);
+	virtual void setPlace(struct place *place);
+	virtual void setX(int x);
+	virtual void setY(int y);
+	virtual void sleep();
+	virtual void start();
+	virtual void startTurn();
+	virtual void switchOrder(class Character * ch1, class Character * ch2);
 	virtual bool turn_vehicle();
-        virtual void applyEffect(closure_t *effect);
-        virtual Object *getSpeaker();
-        virtual bool isStationary();
-        virtual void setBaseFaction(int faction);
+	virtual void applyEffect(closure_t * effect);
+	virtual Object *getSpeaker();
+	virtual bool isStationary();
+	virtual void setBaseFaction(int faction);
 
-        // NOTE: dup of getMemberAtIndex in player.cpp
-        virtual class Character *getMemberByOrder(int order);
-        virtual class Container *getInventory();
+	// NOTE: dup of getMemberAtIndex in player.cpp
+	virtual class Character *getMemberByOrder(int order);
+	virtual class Container *getInventory();
 
-        void removeMembers();
+	void removeMembers();
 
 	bool attack_with_ordnance(int d);
 	bool gotoSpot(int x, int y);
-        void setVehicle(class Vehicle *vehicle);
-        bool attackPlayer(int dx, int dy);
+	void setVehicle(class Vehicle * vehicle);
+	bool attackPlayer(int dx, int dy);
 
+	class Vehicle *getVehicle();
 
-        class Vehicle *getVehicle();
-
-	struct node members; // Linked list of party members
+	struct node members;	// Linked list of party members
 
 	struct position_info pinfo;
 	void absorbMemberAPDebt();
-	
 
-      protected:
-	class Vehicle *vehicle;
+ protected:
+	 class Vehicle * vehicle;
 	int size;
 	bool loitering;
 	struct formation *formation;
-        bool wandering;
-        void (*ctrl)(class Party*);
+	bool wandering;
+	void (*ctrl) (class Party *);
 };
 
 #endif

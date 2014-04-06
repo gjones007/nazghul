@@ -28,56 +28,55 @@
 
 const int EFFECT_ID = 0xeffec1;
 
-struct effect *effect_new(char *tag, scheme *sc, pointer exec_proc,
-                          pointer apply_proc, pointer rm_proc,
-                          pointer restart,
-                          char *name)
+struct effect *effect_new(char *tag, scheme * sc, pointer exec_proc,
+			  pointer apply_proc, pointer rm_proc,
+			  pointer restart, char *name)
 {
-        struct effect *et;
+	struct effect *et;
 
-        et = (struct effect*)calloc(1, sizeof(*et));
-        assert(et);
+	et = (struct effect *)calloc(1, sizeof(*et));
+	assert(et);
 
-        et->ID = EFFECT_ID;
+	et->ID = EFFECT_ID;
 
-        if (exec_proc) {
-                et->exec = closure_new_ref(sc, exec_proc);
-        }
+	if (exec_proc) {
+		et->exec = closure_new_ref(sc, exec_proc);
+	}
 
-        if (apply_proc) {
-                et->apply = closure_new_ref(sc, apply_proc);
-        }
+	if (apply_proc) {
+		et->apply = closure_new_ref(sc, apply_proc);
+	}
 
-        if (rm_proc) {
-                et->rm = closure_new_ref(sc, rm_proc);
-        }
+	if (rm_proc) {
+		et->rm = closure_new_ref(sc, rm_proc);
+	}
 
-        if (restart) {
-                et->restart = closure_new_ref(sc, restart);
-        }
+	if (restart) {
+		et->restart = closure_new_ref(sc, restart);
+	}
 
-        et->tag = strdup(tag);
-        assert(et->tag);
+	et->tag = strdup(tag);
+	assert(et->tag);
 
-        /* Effects with no name should be considered invisible to the UI */
-        if (name) {
-                et->name = strdup(name);
-                assert(et->name);
-        }
+	/* Effects with no name should be considered invisible to the UI */
+	if (name) {
+		et->name = strdup(name);
+		assert(et->name);
+	}
 
-        return et;
+	return et;
 }
 
 extern void effect_del(struct effect *et)
 {
-        free(et->tag);
-        free(et->name);
-        closure_unref_safe(et->exec);
-        closure_unref_safe(et->apply);
-        closure_unref_safe(et->rm);
-        closure_unref_safe(et->restart);
-        /* Need to free sprite? Nope -- sprites are global resources
-         * managed by the session. When the session is torn down it frees all
-         * of the sprites created when it loaded. */
-        free(et);
+	free(et->tag);
+	free(et->name);
+	closure_unref_safe(et->exec);
+	closure_unref_safe(et->apply);
+	closure_unref_safe(et->rm);
+	closure_unref_safe(et->restart);
+	/* Need to free sprite? Nope -- sprites are global resources
+	 * managed by the session. When the session is torn down it frees all
+	 * of the sprites created when it loaded. */
+	free(et);
 }

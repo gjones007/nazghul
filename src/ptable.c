@@ -36,70 +36,69 @@
 
 struct ptable *ptable_new(int n_mmodes, int n_pclass)
 {
-        struct ptable *ptable;
+	struct ptable *ptable;
 
-        ptable = (struct ptable*)calloc(1, sizeof(*ptable));
-        assert(ptable);
+	ptable = (struct ptable *)calloc(1, sizeof(*ptable));
+	assert(ptable);
 
-        ptable->n_mmode = n_mmodes;
-        ptable->n_pclass = n_pclass;
-        ptable->table = (int*)calloc(n_mmodes * n_pclass, sizeof(int));
-        assert(ptable->table);
+	ptable->n_mmode = n_mmodes;
+	ptable->n_pclass = n_pclass;
+	ptable->table = (int *)calloc(n_mmodes * n_pclass, sizeof(int));
+	assert(ptable->table);
 
-        return ptable;
-        
+	return ptable;
+
 }
 
 static int ptable_check(struct ptable *ptable, int mmode, int pclass)
 {
-        if (! ptable_is_valid_mmode(ptable, mmode)) {
-                warn("ptable_check: invalid mmode=%d\n", mmode);
-                return -1;
-        }
+	if (!ptable_is_valid_mmode(ptable, mmode)) {
+		warn("ptable_check: invalid mmode=%d\n", mmode);
+		return -1;
+	}
 
-        if (! ptable_is_valid_pclass(ptable, pclass)) {
-                warn("ptable_check: invalid pclass=%d\n", pclass);
-                return -1;
-        }
+	if (!ptable_is_valid_pclass(ptable, pclass)) {
+		warn("ptable_check: invalid pclass=%d\n", pclass);
+		return -1;
+	}
 
-        return 0;
+	return 0;
 }
 
-void ptable_set(struct ptable *ptable, int mmode, int pclass, 
-                int cost)
+void ptable_set(struct ptable *ptable, int mmode, int pclass, int cost)
 {
-        int index;
+	int index;
 
-        if (ptable_check(ptable, mmode, pclass))
-                return;
+	if (ptable_check(ptable, mmode, pclass))
+		return;
 
-        if (cost < 0 || cost > PTABLE_IMPASSABLE) {
-                warn("ptable_set: invalid cost=%d\n", cost);
-                return;
-        }
+	if (cost < 0 || cost > PTABLE_IMPASSABLE) {
+		warn("ptable_set: invalid cost=%d\n", cost);
+		return;
+	}
 
-        index = ptable_index(ptable, mmode, pclass);
-        ptable->table[index] = cost;
+	index = ptable_index(ptable, mmode, pclass);
+	ptable->table[index] = cost;
 }
 
 int ptable_get(struct ptable *ptable, int mmode, int pclass)
 {
-        int index;
+	int index;
 
-        if (ptable_check(ptable, mmode, pclass)) {
-                warn("ptable_get: defaulting to impassable\n");
-                return PTABLE_IMPASSABLE;
-        }
+	if (ptable_check(ptable, mmode, pclass)) {
+		warn("ptable_get: defaulting to impassable\n");
+		return PTABLE_IMPASSABLE;
+	}
 
-        index = ptable_index(ptable, mmode, pclass);
-        return ptable->table[index];
+	index = ptable_index(ptable, mmode, pclass);
+	return ptable->table[index];
 }
 
 void ptable_del(struct ptable *ptable)
 {
-        assert(ptable);
+	assert(ptable);
 
-        if (ptable->table)
-                free(ptable->table);
-        free(ptable);
+	if (ptable->table)
+		free(ptable->table);
+	free(ptable);
 }

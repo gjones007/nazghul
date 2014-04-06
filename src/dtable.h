@@ -26,34 +26,28 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #define FACTION_NONE               0
 #define DTABLE_DEFAULT_LOWER_BOUND -2
 #define DTABLE_DEFAULT_UPPER_BOUND 2
 #define DTABLE_DEFAULT_HOSTILE     -2
 #define DTABLE_DEFAULT_ALLIES      2
-
 #define dtable_are_hostile(dtable,f1, f2) \
         (dtable_get((dtable),(f1),(f2)) <= dtable_hostile((dtable)))
-
 #define dtable_are_allies(dtable,f1, f2) \
         (dtable_get((dtable),(f1),(f2)) >= dtable_allies((dtable)))
-
 #define dtable_set_hostile(tab,lvl)     ((tab)->hostile     = (lvl))
 #define dtable_set_allies(tab,lvl)      ((tab)->allies      = (lvl))
 #define dtable_set_lower_bound(tab,lvl) ((tab)->lower_bound = (lvl))
 #define dtable_set_upper_bound(tab,lvl) ((tab)->upper_bound = (lvl))
-
 #define dtable_hostile(tab)             ((tab)->hostile)
 #define dtable_allies(tab)              ((tab)->allies)
-
-struct dtable {
-        int n_factions;
-        int hostile;
-        int allies;
-        int lower_bound;
-        int upper_bound;
-        int *table;
+    struct dtable {
+	int n_factions;
+	int hostile;
+	int allies;
+	int lower_bound;
+	int upper_bound;
+	int *table;
 };
 
 extern struct dtable *dtable_new(int n_factions);
@@ -66,5 +60,4 @@ extern void dtable_dec(struct dtable *dtable, int f1, int f2);
 extern const char *dtable_describe(struct dtable *dtable, int f1, int f2);
 
 END_DECL
-
 #endif

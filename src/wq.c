@@ -27,8 +27,7 @@ void wqAddJob(struct list *wq, struct wq_job *newJob)
 	struct list *list;
 	struct wq_job *aJob;
 
-        //dbg("wqAddJob: %08lx\n", newJob);
-
+	//dbg("wqAddJob: %08lx\n", newJob);
 
 	list_for_each(wq, list) {
 		aJob = outcast(list, struct wq_job, list);
@@ -37,7 +36,6 @@ void wqAddJob(struct list *wq, struct wq_job *newJob)
 	}
 
 	list_add_aux(list->prev, list, &newJob->list);
-
 
 }
 
@@ -57,8 +55,8 @@ void wqRunToTick(struct list *wq, int tick)
 
 		tmp = list->next;
 		list_remove(list);
-                //dbg("wqRunToTick: %08lx\n", aJob);
-                aJob->run(aJob, wq);
+		//dbg("wqRunToTick: %08lx\n", aJob);
+		aJob->run(aJob, wq);
 		list = tmp;
 
 	}
@@ -69,7 +67,7 @@ void wqCreateJob(struct list *wq, int tick, int period, void *data,
 {
 	struct wq_job *job;
 
-	job = (struct wq_job *) malloc(sizeof(struct wq_job));
+	job = (struct wq_job *)malloc(sizeof(struct wq_job));
 	if (!job) {
 		warn("Failed to allocate job");
 		return;
@@ -80,15 +78,15 @@ void wqCreateJob(struct list *wq, int tick, int period, void *data,
 	job->data = data;
 	job->run = run;
 
-        //dbg("wqCreateJob: %08lx\n", job);
+	//dbg("wqCreateJob: %08lx\n", job);
 
 	wqAddJob(wq, job);
 }
 
 void wq_job_del(struct wq_job *job)
 {
-        list_remove(&job->list);
-        free(job);
+	list_remove(&job->list);
+	free(job);
 }
 
 void wqReschedule(struct list *wq, struct wq_job *job)

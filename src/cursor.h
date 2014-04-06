@@ -25,37 +25,37 @@
 #include "Object.h"
 
 class Cursor:public Object {
-      public:
+ public:
 	Cursor();
 
 	virtual ~ Cursor();
 	virtual void init(class ObjectType * type);
 	virtual enum MoveResult move(int dx, int dy);
-        virtual void relocate(struct place *newplace, int newx, int newy, 
-                              bool noStep = true, 
-                              struct closure *place_switch_hook = NULL);
-        virtual void remove();
+	virtual void relocate(struct place *newplace, int newx, int newy,
+			      bool noStep = true,
+			      struct closure *place_switch_hook = NULL);
+	virtual void remove();
 
-        bool is_active(void);
-        void setViewportBounded(bool val);
-        int getRange();
-        void setRange(int val);
+	bool is_active(void);
+	void setViewportBounded(bool val);
+	int getRange();
+	void setRange(int val);
 	void setOrigin(int x, int y);
-        int getOriginX();
-        int getOriginY();
-        bool inRange(int x, int y);
-        void shadeRange(bool val);
-        bool isRangeShaded();
-        void setZone(struct templ *zone);
-        void reset();
+	int getOriginX();
+	int getOriginY();
+	bool inRange(int x, int y);
+	void shadeRange(bool val);
+	bool isRangeShaded();
+	void setZone(struct templ *zone);
+	void reset();
 
-      protected:
+ protected:
 	int range, bounded, originX, originY;
-        bool active;
-        bool shade;
-        bool useRange;
-        bool useZone;
-        struct templ *zone;
+	bool active;
+	bool shade;
+	bool useRange;
+	bool useZone;
+	struct templ *zone;
 };
 
-#endif // cursor_h
+#endif				// cursor_h

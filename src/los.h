@@ -108,8 +108,8 @@ extern "C" {
          * not).  Returns an los struct or null if one can't be created to meet
          * the request.
          */
-	extern struct los *los_create(const char *algorithm, int width, int height,
-				      int radius);
+	extern struct los *los_create(const char *algorithm, int width,
+				      int height, int radius);
 
 	/**
          * Free the resources used by an los object.

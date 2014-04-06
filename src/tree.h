@@ -29,32 +29,32 @@ extern "C" {
 #define tree_entry(ptr,type,field) \
         ((type*)((char*)(ptr)-(unsigned long)(&((type *)0)->field)))
 
-        enum tree_key_type {
-                tree_i_key, // integer key
-                tree_s_key  // string key
-        };
+	enum tree_key_type {
+		tree_i_key,	// integer key
+		tree_s_key	// string key
+	};
 
-        struct tree {
-                enum tree_key_type key_type;
-                union {
-                        int i_key;
-                        char *s_key;
-                } key;
-                struct tree *left;
-                struct tree *right;
-                struct tree *p;
-        };
+	struct tree {
+		enum tree_key_type key_type;
+		union {
+			int i_key;
+			char *s_key;
+		} key;
+		struct tree *left;
+		struct tree *right;
+		struct tree *p;
+	};
 
-        extern void tree_insert(struct tree **root, struct tree *node);
-        extern void tree_delete(struct tree **root, struct tree *node);
-        extern struct tree *tree_successor(struct tree *node);
-        extern struct tree *tree_minimum(struct tree *node);
-        extern void tree_replace(struct tree **root, struct tree *out, struct tree *in);
-        extern struct tree *tree_i_search(struct tree *root, int key);
-        extern struct tree *tree_s_search(struct tree *root, const char *key);
+	extern void tree_insert(struct tree **root, struct tree *node);
+	extern void tree_delete(struct tree **root, struct tree *node);
+	extern struct tree *tree_successor(struct tree *node);
+	extern struct tree *tree_minimum(struct tree *node);
+	extern void tree_replace(struct tree **root, struct tree *out,
+				 struct tree *in);
+	extern struct tree *tree_i_search(struct tree *root, int key);
+	extern struct tree *tree_s_search(struct tree *root, const char *key);
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif

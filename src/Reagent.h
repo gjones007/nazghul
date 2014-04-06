@@ -32,11 +32,11 @@
 
 class ReagentType:public ObjectType {
  public:
-        virtual bool isType(int classID);
-        virtual int getType();
-        ReagentType();
-        ReagentType(char *tag, char *name, struct sprite *sprite);
-        virtual ~ReagentType();
+	virtual bool isType(int classID);
+	virtual int getType();
+	 ReagentType();
+	 ReagentType(char *tag, char *name, struct sprite *sprite);
+	 virtual ~ ReagentType();
 };
 
 #endif

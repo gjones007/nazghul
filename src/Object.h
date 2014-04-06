@@ -31,7 +31,6 @@
 
 #include <assert.h>
 
-
 // Wrappers for session_add() and session_rm() that do the ref-counting.
 #define session_add_obj(session, obj, dtor, save, start)		\
 	do {								\
@@ -50,50 +49,50 @@
 #define obj_mmode(obj) ((obj)->getMovementMode())
 
 /* Hooks id's */
-#define OBJ_HOOK_START_OF_TURN 0  /* after ap assigned at start of turn	     */
-#define OBJ_HOOK_ADD_HOOK      1  /* whan a new effects is added	     */
-#define OBJ_HOOK_DAMAGE	       2  /* when the object takes damage	     */
-#define OBJ_HOOK_KEYSTROKE     3  /* when PC is given a command		     */
-#define OBJ_HOOK_NIL	       4  /* never (effect just exists)		     */
-#define OBJ_HOOK_ON_DEATH      5  /* character just died		     */
-#define OBJ_HOOK_READY_EQUIP   6  /* PC readies				     */
-#define OBJ_HOOK_UNREADY_EQUIP 7  /* PC unreadies			     */
-#define OBJ_HOOK_MOVE_DONE     8  /* character just moved		     */
-#define OBJ_HOOK_ATTACK_DONE   9  /* character just attacked		     */
-#define OBJ_HOOK_CAST_DONE     10 /* character just cast a spell	     */
-#define OBJ_HOOK_DROP_DONE     11 /* character just dropped something	     */
-#define OBJ_HOOK_YUSE_DONE     12 /* character just yused a skill	     */
-#define OBJ_HOOK_GET_DONE      13 /* character just got something	     */
-#define OBJ_HOOK_HANDLE_DONE   14 /* character just handled something	     */
-#define OBJ_HOOK_OPEN_DONE     15 /* character just opened something	     */
-#define OBJ_HOOK_READY_DONE    16 /* character finished equipping	     */
-#define OBJ_HOOK_TALK_DONE     17 /* character finished talking		     */
-#define OBJ_HOOK_USE_DONE      18 /* character finished using something	     */
-#define OBJ_HOOK_MIX_DONE      19 /* character finished using something	     */
-#define OBJ_HOOK_KAMP_START    20 /* character about to start camping	     */
-#define OBJ_NUM_HOOKS	       21 /* total number of object hooks	     */
+#define OBJ_HOOK_START_OF_TURN 0	/* after ap assigned at start of turn      */
+#define OBJ_HOOK_ADD_HOOK      1	/* whan a new effects is added             */
+#define OBJ_HOOK_DAMAGE	       2	/* when the object takes damage            */
+#define OBJ_HOOK_KEYSTROKE     3	/* when PC is given a command              */
+#define OBJ_HOOK_NIL	       4	/* never (effect just exists)              */
+#define OBJ_HOOK_ON_DEATH      5	/* character just died                     */
+#define OBJ_HOOK_READY_EQUIP   6	/* PC readies                              */
+#define OBJ_HOOK_UNREADY_EQUIP 7	/* PC unreadies                            */
+#define OBJ_HOOK_MOVE_DONE     8	/* character just moved                    */
+#define OBJ_HOOK_ATTACK_DONE   9	/* character just attacked                 */
+#define OBJ_HOOK_CAST_DONE     10	/* character just cast a spell             */
+#define OBJ_HOOK_DROP_DONE     11	/* character just dropped something        */
+#define OBJ_HOOK_YUSE_DONE     12	/* character just yused a skill            */
+#define OBJ_HOOK_GET_DONE      13	/* character just got something            */
+#define OBJ_HOOK_HANDLE_DONE   14	/* character just handled something        */
+#define OBJ_HOOK_OPEN_DONE     15	/* character just opened something         */
+#define OBJ_HOOK_READY_DONE    16	/* character finished equipping            */
+#define OBJ_HOOK_TALK_DONE     17	/* character finished talking              */
+#define OBJ_HOOK_USE_DONE      18	/* character finished using something      */
+#define OBJ_HOOK_MIX_DONE      19	/* character finished using something      */
+#define OBJ_HOOK_KAMP_START    20	/* character about to start camping        */
+#define OBJ_NUM_HOOKS	       21	/* total number of object hooks            */
 
 /* Relocation flags. Used to avoid triggers in special cases. */
-#define REL_NOSTEP    (1<<0)			 /* don't trigger "step"     */
-#define REL_NOSENSE   (1<<1)			 /* don't trigger "sense"    */
-#define REL_NOTRIG    (REL_NOSTEP|REL_NOSENSE)	 /* don't trigger anything   */
+#define REL_NOSTEP    (1<<0)	/* don't trigger "step"     */
+#define REL_NOSENSE   (1<<1)	/* don't trigger "sense"    */
+#define REL_NOTRIG    (REL_NOSTEP|REL_NOSENSE)	/* don't trigger anything   */
 
 // Note: if you change the layers you'll probably need to change the save
-//	 file
+//       file
 // Proper rendering depends on keeping these in order!
 enum layer {
-	null_layer	 = 0,
-	tfeat_layer	 = 1,
-	mech_layer	 = 2,
-	portal_layer	 = 3,
-	vehicle_layer	 = 4,
-	bed_layer	 = 5,
-	container_layer	 = 6,
-	item_layer	 = 7,
-	field_layer	 = 8,
-	being_layer	 = 9,
+	null_layer = 0,
+	tfeat_layer = 1,
+	mech_layer = 2,
+	portal_layer = 3,
+	vehicle_layer = 4,
+	bed_layer = 5,
+	container_layer = 6,
+	item_layer = 7,
+	field_layer = 8,
+	being_layer = 9,
 	projectile_layer = 10,
-	cursor_layer	 = 11
+	cursor_layer = 11
 };
 
 enum control_mode {
@@ -113,7 +112,7 @@ enum MoveResult {
 	SlowProgress,
 	SwitchedOccupants,
 	CouldNotSwitchOccupants,
-	OffMap, // and no parent
+	OffMap,			// and no parent
 	NotFollowMode,
 	CantRendezvous,
 	NotApplicable,
@@ -135,7 +134,7 @@ struct inv_entry {
 };
 
 struct filter {
-	bool (*fx)(struct inv_entry *ie, void *fdata);
+	bool(*fx) (struct inv_entry * ie, void *fdata);
 	void *fdata;
 };
 
@@ -145,20 +144,20 @@ typedef struct hook_entry {
 	struct gob *gob;
 	clock_alarm_t expiration;
 	int flags;
-	char started : 1; /* unsaved flag */
+	char started:1;		/* unsaved flag */
 } hook_entry_t;
 
 class ObjectType {
 
-public:
+ public:
 	virtual bool isType(int classID);
 	virtual int getType();
-	ObjectType();
-	ObjectType(const char *tag, const char *name, struct sprite *sprite, 
-		   enum layer layer);
-	virtual ~ObjectType();
-	virtual bool init(char *tag, char *name, enum layer layer, 
-			  struct sprite * sprite);
+	 ObjectType();
+	 ObjectType(const char *tag, const char *name, struct sprite *sprite,
+		    enum layer layer);
+	 virtual ~ ObjectType();
+	virtual bool init(char *tag, char *name, enum layer layer,
+			  struct sprite *sprite);
 	virtual void setSprite(struct sprite *sprite);
 	virtual const char *getTag();
 	virtual const char *getName();
@@ -166,12 +165,12 @@ public:
 	virtual enum layer getLayer();
 	virtual class Object *createInstance();
 	virtual bool isVisible();
-	virtual void describe(Object *obj);
+	virtual void describe(Object * obj);
 	virtual int getSpeed();
 	virtual int getMaxHp();
 	virtual void setMovementMode(struct mmode *mmode);
-	virtual struct mmode *getMovementMode(); 
-	
+	virtual struct mmode *getMovementMode();
+
 	// This might turn out to be too vague. We'll see.
 	virtual int getRequiredActionPoints();
 
@@ -179,11 +178,11 @@ public:
 	// inventory descriptions, where there are no object instances.
 	void describeType(int count);
 
-	bool isUsable();    // items, etc
-	bool isReadyable(); // arms
-	bool isMixable();   // reagents
-	bool isCastable();  // spells
-	bool canExec();	    // mechs, etc
+	bool isUsable();	// items, etc
+	bool isReadyable();	// arms
+	bool isMixable();	// reagents
+	bool isCastable();	// spells
+	bool canExec();		// mechs, etc
 	bool canGet();
 	bool canOpen();
 	bool canStep();
@@ -193,40 +192,40 @@ public:
 	bool canAttack();
 	bool canOnAttack();
 	bool canEnter();
-	bool canBump(); // attempted entry onto same tile
-	bool canHitLocation(); // weapon hitting a target location
-	bool canBuy(); // has a hook for 'buy'
-	bool canSearch(); // has a hook for 'search'
+	bool canBump();		// attempted entry onto same tile
+	bool canHitLocation();	// weapon hitting a target location
+	bool canBuy();		// has a hook for 'buy'
+	bool canSearch();	// has a hook for 'search'
 	bool isQuestItem();
 
 	// These return the result of closure_exec:
-	int use(Object *user);
-	int exec(Object *obj);
-	int get(Object *obj, Object *getter);
-	int open(Object *obj, Object *opener);
-	int step(Object *obj, Object *stepper);
-	int sense(Object *obj, Object *stepper);
-	int xamine(Object *obj, Object *xaminer);		
-	int handle(Object *obj, Object *handler);
-	int attack(Object *obj, Object *attacker);
-	int onAttack(Object *obj, Object *attacker);
-	int enter(Object *obj, Object *enterer);
-	int cast(Object *caster);
-	int bump(Object *obj, Object *bumper);
-	int hitLocation(Object *obj, Object *attacker, Object *target, struct place *place, int x, int y, int dam);
-	int buy(Object *buyer, int q);
-	int search(Object *obj, Object *searcher);
+	int use(Object * user);
+	int exec(Object * obj);
+	int get(Object * obj, Object * getter);
+	int open(Object * obj, Object * opener);
+	int step(Object * obj, Object * stepper);
+	int sense(Object * obj, Object * stepper);
+	int xamine(Object * obj, Object * xaminer);
+	int handle(Object * obj, Object * handler);
+	int attack(Object * obj, Object * attacker);
+	int onAttack(Object * obj, Object * attacker);
+	int enter(Object * obj, Object * enterer);
+	int cast(Object * caster);
+	int bump(Object * obj, Object * bumper);
+	int hitLocation(Object * obj, Object * attacker, Object * target,
+			struct place *place, int x, int y, int dam);
+	int buy(Object * buyer, int q);
+	int search(Object * obj, Object * searcher);
 
 	closure_t *getGifc();
-	void setGifc(closure_t *gifc, int cap);
+	void setGifc(closure_t * gifc, int cap);
 
 	void setPluralName(char *val);
 	void setGob(struct gob *gob);
-	struct gob * getGob();
+	struct gob *getGob();
 	void setQuestItemFlag(bool val);
 
-
-protected:
+ protected:
 	char *tag;
 	char *name;
 	struct sprite *sprite;
@@ -241,9 +240,9 @@ protected:
 	struct gob *gob;
 	struct mmode *movementMode;
 
-private:
-	bool hasDescribeHook();
-	void runDescribeHook(Object *obj);
+ private:
+	 bool hasDescribeHook();
+	void runDescribeHook(Object * obj);
 
 	char *pluralName;
 	char *getPluralName();
@@ -252,14 +251,14 @@ private:
 
 class Object {
 
-public:
+ public:
 	virtual bool isType(int classID);
 	virtual int getType();
 
-	Object(class ObjectType * type); // preferred constructor
+	 Object(class ObjectType * type);	// preferred constructor
 
-	Object();
-	virtual ~Object();
+	 Object();
+	 virtual ~ Object();
 	virtual void init(int x, int y, struct place *place,
 			  class ObjectType * type);
 	virtual void init(class ObjectType * type);
@@ -285,7 +284,7 @@ public:
 	virtual int getDx();
 	virtual int getDy();
 
-	virtual bool isCompanionOf(class Object *other);
+	virtual bool isCompanionOf(class Object * other);
 	virtual bool isDestroyed();
 	virtual bool isOnMap();
 	virtual bool isDead();
@@ -299,8 +298,8 @@ public:
 	virtual void addView();
 	virtual void rmView();
 	virtual void updateView();
-	virtual bool addToInventory(class Object *object);
-	virtual bool hasInInventory(class ObjectType *type);
+	virtual bool addToInventory(class Object * object);
+	virtual bool hasInInventory(class ObjectType * type);
 	virtual void attachCamera(bool val);
 	virtual void heal(int amount);
 	virtual void save(struct save *save);
@@ -314,7 +313,7 @@ public:
 	virtual void setPlace(struct place *place);
 	virtual void select(bool val);
 	virtual void destroy();
-	virtual void relocate(struct place *newplace, int newx, int newy, 
+	virtual void relocate(struct place *newplace, int newx, int newy,
 			      int flags = 0,
 			      struct closure *place_switch_hook = NULL);
 	virtual void remove();
@@ -328,10 +327,10 @@ public:
 	virtual void examine();
 	virtual void paint(int sx, int sy);
 	virtual class Object *clone();
-	virtual bool joinPlayer(void);	   
+	virtual bool joinPlayer(void);
 	virtual void synchronize();
 	virtual void exec();
-	virtual void applyEffect(closure_t *effect);
+	virtual void applyEffect(closure_t * effect);
 
 	virtual int getActionPoints();
 	virtual int getActionPointsPerTurn();
@@ -341,46 +340,44 @@ public:
 	virtual void burn();
 	virtual void sleep();
 	virtual void damage(int amount);
-	virtual void inflictDamage(int amount,class Character *attacker);
+	virtual void inflictDamage(int amount, class Character * attacker);
 	virtual void endTurn();
 	virtual void startTurn();
 	virtual void setControlMode(enum control_mode);
-	virtual bool putOnMap(struct place *place, int x, int y, int r, 
-			      int flags /* PFLAG_* (see place.h) */);
+	virtual bool putOnMap(struct place *place, int x, int y, int r,
+			      int flags /* PFLAG_* (see place.h) */ );
 	virtual void setView(struct mview *view);
 	virtual void changePlaceHook();
 	virtual MoveResult move(int dx, int dy);
 
 	// Hook/effect API.
-	virtual void hookForEach(int hook_id, 
-				 int (*cb)(struct hook_entry *entry, 
-					   void *data),
-				 void *data);
+	virtual void hookForEach(int hook_id,
+				 int (*cb) (struct hook_entry * entry,
+					    void *data), void *data);
 	virtual bool addEffect(struct effect *effect, struct gob *gob);
-	virtual void restoreEffect(struct effect *effect, struct gob *gob, 
+	virtual void restoreEffect(struct effect *effect, struct gob *gob,
 				   int flags, clock_alarm_t expiration);
 	virtual void runHook(int hook_id, const char *fmt, ...);
 	virtual void saveHooks(struct save *save);
 	virtual bool removeEffect(struct effect *effect);
-	
 
 	// Virtual container ops
 	virtual bool addFood(int quantity);
 	virtual bool addGold(int quantity);
-	virtual bool add(ObjectType *type, int amount);
-	virtual bool takeOut(ObjectType *type, int amount);	   
+	virtual bool add(ObjectType * type, int amount);
+	virtual bool takeOut(ObjectType * type, int amount);
 
 	// ghulscript-object (gob) access.
 	void setGob(struct gob *gob);
-	struct gob * getGob();
+	struct gob *getGob();
 
 	// State variables affected by script execution
 	virtual void setSprite(struct sprite *sprite);
-	virtual struct sprite *getSprite(); 
+	virtual struct sprite *getSprite();
 
 	virtual void setOpacity(bool opaque);
 	virtual bool isOpaque();
-	virtual bool tryToRelocateToNewPlace(struct place *place, 
+	virtual bool tryToRelocateToNewPlace(struct place *place,
 					     int x, int y,
 					     struct closure *cutscene);
 
@@ -388,11 +385,11 @@ public:
 	bool canEnter();
 	bool canStep();
 	bool canSense();
-	void step(Object *stepper);
-	void sense(Object *stepper);
-	void attack(Object *attacker);
-	void onAttack(Object *user);
-	void enter(Object *enterer);
+	void step(Object * stepper);
+	void sense(Object * stepper);
+	void attack(Object * attacker);
+	void onAttack(Object * user);
+	void enter(Object * enterer);
 
 	// Conversation interface
 	void setConversation(struct conv *conv);
@@ -412,13 +409,13 @@ public:
 
 	int getTTL(void);
 	// These two might destroy the object so make them class methods:
-	static void setTTL(class Object *obj, int val);
-	static void decrementTTL(class Object *obj);
+	static void setTTL(class Object * obj, int val);
+	static void decrementTTL(class Object * obj);
 
 	bool ignoresTimeStop();
 	void setIgnoreTimeStop(bool val);
-	
-	struct node *clink; // points back to node in container's list
+
+	struct node *clink;	// points back to node in container's list
 
 	char *tag;
 	struct list list;	// for the loader, not the place
@@ -439,10 +436,10 @@ public:
 	struct sprite *getPortrait();
 	void setPortrait(struct sprite *sprite);
 
-protected:
-	virtual void setup();
+ protected:
+	 virtual void setup();
 
-	class ObjectType * type;
+	class ObjectType *type;
 	int x;
 	int y;
 	int dx;
@@ -491,8 +488,8 @@ protected:
 	// it. Defaults to -1 (ie, infinite).
 	int ttl;
 
-private:
-	bool surreptitiouslyRemove();
+ private:
+	 bool surreptitiouslyRemove();
 	bool started;
 	void triggerSense(struct place *tilePlace, int tileX, int tileY);
 	void triggerStep(struct place *tilePlace, int tileX, int tileY);
@@ -515,12 +512,9 @@ private:
 };
 
 #include "macros.h"
-BEGIN_DECL
-
-extern void obj_inc_ref(Object *obj);
-extern void obj_dec_ref(Object *obj);
+BEGIN_DECL extern void obj_inc_ref(Object * obj);
+extern void obj_dec_ref(Object * obj);
 #define obj_dec_ref_safe(obj) do { if ((obj)) obj_dec_ref(obj); } while (0)
 
 END_DECL
-
 #endif				// object_h

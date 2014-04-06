@@ -30,7 +30,7 @@ struct hash *hash_create(int n)
 
 	CREATE(hash, struct hash, 0);
 	hash->n = n;
-	hash->buckets = (struct olist *) malloc(n * sizeof(struct olist));
+	hash->buckets = (struct olist *)malloc(n * sizeof(struct olist));
 	if (!hash->buckets) {
 		hash_destroy(hash);
 		return 0;

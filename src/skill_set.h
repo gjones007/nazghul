@@ -34,10 +34,10 @@
  * the ranger must be level 4.
  */
 struct skill_set {
-        struct list list;         /* list of all skill_sets in the session */
-        char *name;               /* name of the skill set, eg "Ranger" */
-        struct list skills;       /* list of skill_set_entry structs */
-        int refcount;             /* memory management */
+	struct list list;	/* list of all skill_sets in the session */
+	char *name;		/* name of the skill set, eg "Ranger" */
+	struct list skills;	/* list of skill_set_entry structs */
+	int refcount;		/* memory management */
 };
 
 extern struct skill_set *skill_set_new();
@@ -45,7 +45,6 @@ extern void skill_set_ref(struct skill_set *skset);
 extern void skill_set_unref(struct skill_set *skset);
 extern void skill_set_set_name(struct skill_set *skset, char *name);
 extern void skill_set_add_skill(struct skill_set *skset, struct skill *skill,
-                                int level);
-
+				int level);
 
 #endif

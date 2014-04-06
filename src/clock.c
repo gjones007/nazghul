@@ -37,87 +37,89 @@
 
 int clock_year(void)
 {
-        return Clock.year;
+	return Clock.year;
 }
 
 int clock_month(void)
 {
-        return Clock.month;
+	return Clock.month;
 }
 
 int clock_week(void)
 {
-        return Clock.week;
+	return Clock.week;
 }
 
 int clock_day(void)
 {
-        return Clock.day;
+	return Clock.day;
 }
 
 int clock_hour(void)
 {
-        return Clock.hour;
+	return Clock.hour;
 }
 
 int clock_minute(void)
 {
-        return Clock.min;
+	return Clock.min;
 }
 
 int clock_tick(void)
 {
-        return Clock.tick;
+	return Clock.tick;
 }
 
 unsigned int clock_time_of_day(void)
 {
-        return (Clock.hour * 60 + Clock.min);
+	return (Clock.hour * 60 + Clock.min);
 }
 
 unsigned int clock_time(void)
 {
-        return Clock.total_minutes;
+	return Clock.total_minutes;
 }
 
 void clock_advance(int ticks)
 {
-        assert(Clock.tick < Clock.tick_to_change_time);
+	assert(Clock.tick < Clock.tick_to_change_time);
 
-        while (ticks-- > 0) {
+	while (ticks-- > 0) {
 
-                Clock.tick++;
-                
-                if (Clock.tick == Clock.tick_to_change_time) {
-                        
-                        Clock.total_minutes++;
-                        Clock.tick = 0;
-                        Clock.tick_to_change_time = CLOCK_TICKS_PER_MINUTE;
-                        
-                        Clock.min++;
-                        if (Clock.min == MINUTES_PER_HOUR) {
-                                Clock.hour++;
-                                Clock.min = 0;
-                                if (Clock.hour == HOURS_PER_DAY) {
-                                        Clock.day++;
-                                        Clock.hour = 0;
-                                        if (Clock.day == DAYS_PER_WEEK) {
-                                                Clock.week++;
-                                                Clock.day = 0;
-                                                if (Clock.week == WEEKS_PER_MONTH) {
-                                                        Clock.month++;
-                                                        Clock.week = 0;
-                                                        if (Clock.month == MONTHS_PER_YEAR) {
-                                                                Clock.year++;
-                                                                Clock.month = 0;
-                                                        }
-                                                }
-                                        }
-                                }
-                        }
-                }
-        }
-                
+		Clock.tick++;
+
+		if (Clock.tick == Clock.tick_to_change_time) {
+
+			Clock.total_minutes++;
+			Clock.tick = 0;
+			Clock.tick_to_change_time = CLOCK_TICKS_PER_MINUTE;
+
+			Clock.min++;
+			if (Clock.min == MINUTES_PER_HOUR) {
+				Clock.hour++;
+				Clock.min = 0;
+				if (Clock.hour == HOURS_PER_DAY) {
+					Clock.day++;
+					Clock.hour = 0;
+					if (Clock.day == DAYS_PER_WEEK) {
+						Clock.week++;
+						Clock.day = 0;
+						if (Clock.week ==
+						    WEEKS_PER_MONTH) {
+							Clock.month++;
+							Clock.week = 0;
+							if (Clock.month ==
+							    MONTHS_PER_YEAR) {
+								Clock.year++;
+								Clock.month = 0;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 	mapRepaintClock();
 }
 
@@ -145,37 +147,22 @@ char *vague_time_as_string(void)
 	int hr = Clock.hour;
 	int n;
 
-	if (hr < 4)
-	{
+	if (hr < 4) {
 		n = snprintf(str, maxlen, "night");
-	}
-	else if (hr < 7)
-	{
-		n = snprintf(str, maxlen, "early morning");	
-	}
-	else if (hr < 11)
-	{
-		n = snprintf(str, maxlen, "morning");	
-	}
-	else if (hr < 13)
-	{
-		n = snprintf(str, maxlen, "noon");	
-	}
-	else if (hr < 15)
-	{
-		n = snprintf(str, maxlen, "afternoon");	
-	}
-	else if (hr < 18)
-	{
-		n = snprintf(str, maxlen, "late afternoon");	
-	}
-	else if (hr < 20)
-	{
-		n = snprintf(str, maxlen, "evening");	
-	}
-	else
-	{
-		n = snprintf(str, maxlen, "night");	
+	} else if (hr < 7) {
+		n = snprintf(str, maxlen, "early morning");
+	} else if (hr < 11) {
+		n = snprintf(str, maxlen, "morning");
+	} else if (hr < 13) {
+		n = snprintf(str, maxlen, "noon");
+	} else if (hr < 15) {
+		n = snprintf(str, maxlen, "afternoon");
+	} else if (hr < 18) {
+		n = snprintf(str, maxlen, "late afternoon");
+	} else if (hr < 20) {
+		n = snprintf(str, maxlen, "evening");
+	} else {
+		n = snprintf(str, maxlen, "night");
 	}
 	assert(n != -1);
 	return str;
@@ -299,93 +286,94 @@ const char *day_name(void)
 	}
 }				// day_name()
 
-void clock_alarm_set(clock_alarm_t *alarm, unsigned int minutes)
+void clock_alarm_set(clock_alarm_t * alarm, unsigned int minutes)
 {
-        *alarm = Clock.total_minutes + minutes;
+	*alarm = Clock.total_minutes + minutes;
 }
 
-int clock_alarm_is_expired(clock_alarm_t *alarm)
+int clock_alarm_is_expired(clock_alarm_t * alarm)
 {
-        return (Clock.total_minutes >= *alarm);
+	return (Clock.total_minutes >= *alarm);
 }
 
-int clock_alarm_remaining(clock_alarm_t *alarm)
+int clock_alarm_remaining(clock_alarm_t * alarm)
 {
-	if (Clock.total_minutes >= *alarm) return 0;
+	if (Clock.total_minutes >= *alarm)
+		return 0;
 	return (*alarm - Clock.total_minutes);
 }
 
 int is_noon(void)
 {
-        return (Clock.hour == 12 && Clock.min == 0);
+	return (Clock.hour == 12 && Clock.min == 0);
 }
 
 int is_midnight(void)
 {
-        return (Clock.hour == 0 && Clock.min == 0);
+	return (Clock.hour == 0 && Clock.min == 0);
 }
 
 #ifdef INCLUDE_UNUSED_CLOCK_ROUTINES
 void clock_reset(struct clock *clock)
 {
-        memset(clock, 0, sizeof(*clock));
+	memset(clock, 0, sizeof(*clock));
 }
 
 void clock_set_alarm(struct clock *clock, struct clock *offset)
 {
 
-        /* Copy the current time */
-        memcpy(clock, &Clock, sizeof(*clock));
+	/* Copy the current time */
+	memcpy(clock, &Clock, sizeof(*clock));
 
-        /* Set the alarm to the current time plus the offset */
-        clock->min += offset->min;
-        if (clock->min >= MINUTES_PER_HOUR) {
-                offset->hour += clock->min / MINUTES_PER_HOUR;
-                clock->min %= MINUTES_PER_HOUR;
-        }
+	/* Set the alarm to the current time plus the offset */
+	clock->min += offset->min;
+	if (clock->min >= MINUTES_PER_HOUR) {
+		offset->hour += clock->min / MINUTES_PER_HOUR;
+		clock->min %= MINUTES_PER_HOUR;
+	}
 
-        clock->hour += offset->hour;
-        if (clock->hour >= HOURS_PER_DAY) {
-                offset->day += clock->hour / HOURS_PER_DAY;
-                clock->hour %= HOURS_PER_DAY;
-        }
+	clock->hour += offset->hour;
+	if (clock->hour >= HOURS_PER_DAY) {
+		offset->day += clock->hour / HOURS_PER_DAY;
+		clock->hour %= HOURS_PER_DAY;
+	}
 
-        clock->day += offset->day;
-        if (clock->day >= DAYS_PER_WEEK) {
-                offset->week += clock->day / DAYS_PER_WEEK;
-                clock->day %= DAYS_PER_WEEK;
-        }
+	clock->day += offset->day;
+	if (clock->day >= DAYS_PER_WEEK) {
+		offset->week += clock->day / DAYS_PER_WEEK;
+		clock->day %= DAYS_PER_WEEK;
+	}
 
-        clock->week += offset->week;
-        if (clock->week >= WEEKS_PER_MONTH) {
-                offset->month += clock->week / WEEKS_PER_MONTH;
-                clock->week %= WEEKS_PER_MONTH;
-        }
+	clock->week += offset->week;
+	if (clock->week >= WEEKS_PER_MONTH) {
+		offset->month += clock->week / WEEKS_PER_MONTH;
+		clock->week %= WEEKS_PER_MONTH;
+	}
 
-        clock->month += offset->month;
-        if (clock->month >= MONTHS_PER_YEAR) {
-                offset->year += clock->month / MONTHS_PER_YEAR;
-                clock->month %= MONTHS_PER_YEAR;
-        }
-        
-        clock->year += offset->year;
+	clock->month += offset->month;
+	if (clock->month >= MONTHS_PER_YEAR) {
+		offset->year += clock->month / MONTHS_PER_YEAR;
+		clock->month %= MONTHS_PER_YEAR;
+	}
 
-        console_print("Set alarm for year %d, month %d, week %d, day %d, "
-                     "hour %d, min %d\n", clock->year, clock->month,
-                     clock->week, clock->day, clock->hour, clock->min);
+	clock->year += offset->year;
+
+	console_print("Set alarm for year %d, month %d, week %d, day %d, "
+		      "hour %d, min %d\n", clock->year, clock->month,
+		      clock->week, clock->day, clock->hour, clock->min);
 }
 
 int clock_alarm_expired(struct clock *clock)
 {
-        int total_minute;
+	int total_minute;
 
-        total_minute  = (clock->year  - Clock.year)  * MINUTES_PER_YEAR;
-        total_minute += (clock->month - Clock.month) * MINUTES_PER_MONTH;
-        total_minute += (clock->week  - Clock.week)  * MINUTES_PER_WEEK;
-        total_minute += (clock->day   - Clock.day)   * MINUTES_PER_DAY;
-        total_minute += (clock->hour  - Clock.hour)  * MINUTES_PER_HOUR;
-        total_minute += (clock->min   - Clock.min);
+	total_minute = (clock->year - Clock.year) * MINUTES_PER_YEAR;
+	total_minute += (clock->month - Clock.month) * MINUTES_PER_MONTH;
+	total_minute += (clock->week - Clock.week) * MINUTES_PER_WEEK;
+	total_minute += (clock->day - Clock.day) * MINUTES_PER_DAY;
+	total_minute += (clock->hour - Clock.hour) * MINUTES_PER_HOUR;
+	total_minute += (clock->min - Clock.min);
 
-        return (total_minute <= 0);
+	return (total_minute <= 0);
 }
-#endif // INCLUDE_UNUSED_CLOCK_ROUTINES
+#endif				// INCLUDE_UNUSED_CLOCK_ROUTINES

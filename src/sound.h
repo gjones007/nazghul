@@ -25,10 +25,8 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #define NULL_SOUND NULL
-
-struct sound;
+    struct sound;
 typedef struct sound sound_t;
 
 extern int SOUND_MAX_VOLUME;
@@ -36,9 +34,9 @@ extern int SOUND_MAX_VOLUME;
 extern int sound_init(void);
 extern void sound_exit(void);
 extern sound_t *sound_new(const char *tag, const char *file);
-extern void sound_del(sound_t *sound);
-extern void sound_play(sound_t *sound, int volume, bool ambient = false);
-extern const char *sound_get_tag(sound_t *sound);
+extern void sound_del(sound_t * sound);
+extern void sound_play(sound_t * sound, int volume, bool ambient = false);
+extern const char *sound_get_tag(sound_t * sound);
 extern void sound_flush_ambient();
 extern void sound_haltall();
 
@@ -65,6 +63,4 @@ extern bool music_need_track();
 extern void music_init(void);
 
 END_DECL
-
 #endif
-

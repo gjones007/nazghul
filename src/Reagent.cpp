@@ -35,8 +35,8 @@ int ReagentType::getType()
 	return REAGENT_TYPE_ID;
 }
 
-ReagentType::ReagentType(char *tag, char *name, struct sprite *sprite)
-        : ObjectType(tag, name, sprite, item_layer)
+ReagentType::ReagentType(char *tag, char *name, struct sprite * sprite)
+ : ObjectType(tag, name, sprite, item_layer)
 {
 }
 

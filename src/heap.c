@@ -28,7 +28,7 @@ struct heap *heap_create(unsigned int max_entries)
 {
 	struct heap *heap;
 
-	heap = (struct heap *) malloc(sizeof(struct heap));
+	heap = (struct heap *)malloc(sizeof(struct heap));
 	if (!heap)
 		return 0;
 	memset(heap, 0, sizeof(struct heap));
@@ -36,7 +36,7 @@ struct heap *heap_create(unsigned int max_entries)
 	heap->max_entries = max_entries;
 	heap->num_entries = 0;
 
-	heap->entries = (int **) malloc(sizeof(int *) * max_entries);
+	heap->entries = (int **)malloc(sizeof(int *) * max_entries);
 	if (!heap->entries) {
 		free(heap);
 		return 0;
@@ -84,8 +84,8 @@ int heap_expand(struct heap *heap)
 {
 	int **tmp;
 	tmp =
-	    (int **) realloc(heap->entries,
-			     heap->max_entries * 2 * sizeof(int *));
+	    (int **)realloc(heap->entries,
+			    heap->max_entries * 2 * sizeof(int *));
 	if (!tmp)
 		return -1;
 	heap->entries = tmp;

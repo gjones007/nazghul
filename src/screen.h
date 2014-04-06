@@ -26,12 +26,9 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #include <SDL.h>
-
 #define MAX_SHADE 0
 #define MIN_SHADE 255
-
 extern Uint32 Blue;
 extern Uint32 Black;
 extern Uint32 White;
@@ -70,7 +67,8 @@ extern int screen_height(void);
 extern SDL_PixelFormat *screen_format(void);
 extern void screen_flash(SDL_Rect * rect, int mdelay, Uint32 color);
 extern void screen_print(SDL_Rect * rect, int flags, const char *fmt, ...);
-extern void screen_print_glyph_buf(SDL_Rect *rect, int flags, glyph_buf_t *gbuf);
+extern void screen_print_glyph_buf(SDL_Rect * rect, int flags,
+				   glyph_buf_t * gbuf);
 
 // Added for missile animations
 extern SDL_Surface *screen_create_surface(int w, int h);
@@ -89,8 +87,7 @@ extern void screen_zoom_in(int factor);
 
 extern void screen_fade_surface(SDL_Surface * surf, int transparency);
 extern void screen_repaint_frame(void);
-extern void screen_capture(char *fname, SDL_Rect *rect);
+extern void screen_capture(char *fname, SDL_Rect * rect);
 
 END_DECL
-
 #endif

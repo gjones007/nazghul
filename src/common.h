@@ -57,7 +57,7 @@ extern "C" {
 #define DOWN      10
 #define NUM_DIRECTIONS 11
 #define NUM_PLANAR_DIRECTIONS 9
-#define NUM_WIND_DIRECTIONS 9 
+#define NUM_WIND_DIRECTIONS 9
 #define IS_LEGAL_DIRECTION(dir) ((dir)>=0 && (dir)<NUM_DIRECTIONS)
 
 #define CANCEL    SDLK_ESCAPE
@@ -101,7 +101,7 @@ extern "C" {
 #define MIDNIGHT_DEGREE_EARLY   (MIDNIGHT_HOUR_EARLY * DEGREES_PER_HOUR)
 
 /* Moons */
-#define NUM_MOONS                       0 /*2*/
+#define NUM_MOONS                       0	/*2 */
 #define MOON_WINDOW_DEGREES             (HOURS_OF_SUNLIGHT * DEGREES_PER_HOUR)
 #define MOON_WINDOW_PIXELS_PER_DEGREE   1	/* needs to be an integer */
 #define MOON_WINDOW_W     (MOON_WINDOW_PIXELS_PER_DEGREE *      \
@@ -160,7 +160,7 @@ extern "C" {
 
 /* The minimum amount of light the player generates. This is so that the user
 	* can at least see the player icon in total darkness. */
-#define MIN_PLAYER_LIGHT        8 /*128*/
+#define MIN_PLAYER_LIGHT        8	/*128 */
 
 // The sun sprite is SKY_SPRITE_W pixels wide, and it advances
 // MOON_WINDOW_PIXELS_PER_DEGREE every time it moves, and I want its luminence
@@ -213,7 +213,7 @@ extern "C" {
 #define MOONGATE_TYPE_ID        107
 #define REAGENT_TYPE_ID         108
 #define SPELL_TYPE_ID           109
-#define MISSILE_TYPE_ID         110 //repurposed from unused AMMO_TYPE_ID
+#define MISSILE_TYPE_ID         110	//repurposed from unused AMMO_TYPE_ID
 #define FIELD_TYPE_ID           111
 #define FOOD_TYPE_ID            112
 #define TRAP_TYPE_ID            113
@@ -267,8 +267,8 @@ extern "C" {
 #define COMBAT_VICTORY_XP 5
 
 /* Hard-coded drop probabilities */
-#define ITEM_DROP_PROB    25   /* 25% chance to drop readied items */
-#define CHEST_DROP_PROB   25   /* 25% chance to drop container     */
+#define ITEM_DROP_PROB    25	/* 25% chance to drop readied items */
+#define CHEST_DROP_PROB   25	/* 25% chance to drop container     */
 
 /* Macros ********************************************************************/
 
@@ -287,7 +287,6 @@ extern "C" {
   memset((ptr), 0, sizeof(type));
 #define distance(dx,dy) (((dx)>(dy)) ? ((dx)+((dy)>>1)) : ((dy)+ (dx)>>1)))
 
-
 // SAM: The below are used by palette_print(), terrain_map_print(), etc.
 #define INITIAL_INDENTATION   0
 #define INDENTATION_FACTOR    2
@@ -295,46 +294,46 @@ extern "C" {
 
 /* Enums *********************************************************************/
 
-typedef enum {
-        UI_SIZE_NORMAL = 0,
-        UI_SIZE_SMALL = 1
-} ui_size_t;
+	typedef enum {
+		UI_SIZE_NORMAL = 0,
+		UI_SIZE_SMALL = 1
+	} ui_size_t;
 
 /* Structures ****************************************************************/
 
 /* Global Functions **********************************************************/
 
-char * version_as_string(void);  // From nazghul.c
+	char *version_as_string(void);	// From nazghul.c
 
-extern int commonInit(void);
-extern const char *get_dir_str(int dx, int dy);
-extern void turnAdvance(int turns);
-extern int vector_to_dir(int dx, int dy);
-extern int vector_to_facing(int dx, int dy);
-extern int vector_to_rotation(int dx, int dy);
-extern int vector_to_8facing(int dx, int dy);
+	extern int commonInit(void);
+	extern const char *get_dir_str(int dx, int dy);
+	extern void turnAdvance(int turns);
+	extern int vector_to_dir(int dx, int dy);
+	extern int vector_to_facing(int dx, int dy);
+	extern int vector_to_rotation(int dx, int dy);
+	extern int vector_to_8facing(int dx, int dy);
 
-extern int stringToDirection(char *str);
-extern int keyToDirection(int key);
-extern int directionToDx(int dir);
-extern int directionToDy(int dir);
-extern const char *directionToString(int dir);
-extern int isvowel(char c);
-extern int point_in_rect(int x, int y, SDL_Rect *rect);
-extern int directionToOpposite(int dir);
+	extern int stringToDirection(char *str);
+	extern int keyToDirection(int key);
+	extern int directionToDx(int dir);
+	extern int directionToDy(int dir);
+	extern const char *directionToString(int dir);
+	extern int isvowel(char c);
+	extern int point_in_rect(int x, int y, SDL_Rect * rect);
+	extern int directionToOpposite(int dir);
 
 #define keyIsDirection(key) ((key) >= KEY_SOUTHWEST && (key) <= KEY_NORTHEAST)
 
 /* Global Variables **********************************************************/
 
-extern int Turn;
-extern int AnimationTicks;
-extern int Tick;
-extern int TickMilliseconds;
-extern int Quit;
-extern struct los *LosEngine;
-extern int ShowAllTerrain;
-extern int logBase2(int val);
+	extern int Turn;
+	extern int AnimationTicks;
+	extern int Tick;
+	extern int TickMilliseconds;
+	extern int Quit;
+	extern struct los *LosEngine;
+	extern int ShowAllTerrain;
+	extern int logBase2(int val);
 
 #ifdef __cplusplus
 }

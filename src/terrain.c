@@ -32,25 +32,23 @@
 
 //int TERRAIN_MAGIC = 0xc01dbee3;
 
-extern struct terrain *terrain_new(const char *tag, 
+extern struct terrain *terrain_new(const char *tag,
 				   const char *name,
 				   struct sprite *sprite,
-				   int pclass, 
-				   int alpha, 
-				   int light)
+				   int pclass, int alpha, int light)
 {
 	struct terrain *terrain;
 
-	terrain = (struct terrain*)calloc(1, sizeof(*terrain));
+	terrain = (struct terrain *)calloc(1, sizeof(*terrain));
 	assert(terrain);
 
-	terrain->magic	       = TERRAIN_MAGIC;
-	terrain->tag	       = strdup(tag);
-	terrain->name	       = strdup(name);
-	terrain->sprite	       = sprite;
-	terrain->pclass	       = pclass;
-	terrain->alpha	       = alpha;
-	terrain->light	       = light;
+	terrain->magic = TERRAIN_MAGIC;
+	terrain->tag = strdup(tag);
+	terrain->name = strdup(name);
+	terrain->sprite = sprite;
+	terrain->pclass = pclass;
+	terrain->alpha = alpha;
+	terrain->light = light;
 	return terrain;
 }
 
@@ -75,16 +73,17 @@ void palette_entry_print(FILE * fp, int indent,
 			 struct terrain_palette_entry *entry)
 {
 	static char glyph_str[BOGUS_MAX_SIZE + 1];
-	static char   tag_str[BOGUS_MAX_SIZE + 1];
+	static char tag_str[BOGUS_MAX_SIZE + 1];
 	assert(fp);
 	assert(entry);
 
 	snprintf(glyph_str, BOGUS_MAX_SIZE, "\"%s\"", entry->glyph);
-	snprintf(tag_str,   BOGUS_MAX_SIZE, "%s)",    entry->terrain->tag);
- 
+	snprintf(tag_str, BOGUS_MAX_SIZE, "%s)", entry->terrain->tag);
+
 	INDENT;
-	fprintf(fp, "(list  %-6s %-20s	;; \"%s\"\n", glyph_str, tag_str, entry->terrain->name);
-} // palette_entry_print()
+	fprintf(fp, "(list  %-6s %-20s	;; \"%s\"\n", glyph_str, tag_str,
+		entry->terrain->name);
+}				// palette_entry_print()
 
 struct terrain_palette *terrain_palette_new(const char *tag)
 {
@@ -101,8 +100,8 @@ struct terrain_palette *terrain_palette_new(const char *tag)
 	return palette;
 }
 
-struct terrain_palette_entry *
-terrain_palette_entry_new(char *glyph, struct terrain *terrain)
+struct terrain_palette_entry *terrain_palette_entry_new(char *glyph,
+							struct terrain *terrain)
 {
 	struct terrain_palette_entry *entry;
 	entry = (struct terrain_palette_entry *)malloc(sizeof(*entry));
@@ -140,7 +139,7 @@ void terrain_palette_del(struct terrain_palette *pal)
 	delete pal;
 }
 
-void terrain_palette_add(struct terrain_palette *pal, char *glyph, 
+void terrain_palette_add(struct terrain_palette *pal, char *glyph,
 			 struct terrain *ter)
 {
 	struct terrain_palette_entry *entry;
@@ -154,7 +153,8 @@ void terrain_palette_add(struct terrain_palette *pal, char *glyph,
 		pal->widest_glyph = n;
 }
 
-struct terrain_palette_entry *palette_entry(struct terrain_palette *palette, int n)
+struct terrain_palette_entry *palette_entry(struct terrain_palette *palette,
+					    int n)
 {
 	struct list *elem;
 
@@ -164,7 +164,7 @@ struct terrain_palette_entry *palette_entry(struct terrain_palette *palette, int
 		return 0;
 	}
 	if (n < 0 || n >= palette->num_entries) {
-		dbg("palette_terrain_for_glyph() called with out-of-bounds "\
+		dbg("palette_terrain_for_glyph() called with out-of-bounds "
 		    "arg n=%d\n", n);
 		return 0;
 	}
@@ -188,30 +188,30 @@ char *palette_glyph(struct terrain_palette *palette, int n)
 	return 0;
 }
 
-struct terrain_palette_entry *
-palette_entry_for_terrain(struct terrain_palette * pp, struct terrain * tt)
+struct terrain_palette_entry *palette_entry_for_terrain(struct terrain_palette
+							*pp, struct terrain *tt)
 {
 	struct list *elem;
 	struct terrain_palette_entry *entry;
 
 	list_for_each(&pp->lookup_head, elem) {
-		entry = outcast(elem, struct terrain_palette_entry, lookup_list);
+		entry =
+		    outcast(elem, struct terrain_palette_entry, lookup_list);
 		if (tt == entry->terrain)
 			return entry;
 	}
 
-	return 0;  // Did not find the terrain
+	return 0;		// Did not find the terrain
 }
 
-char * palette_glyph_for_terrain (struct terrain_palette * pp,
-				  struct terrain * tt)
+char *palette_glyph_for_terrain(struct terrain_palette *pp, struct terrain *tt)
 {
 	struct terrain_palette_entry *entry;
 
 	entry = palette_entry_for_terrain(pp, tt);
 	if (entry)
 		return entry->glyph;
-	return 0;  // Did not find the terrain
+	return 0;		// Did not find the terrain
 }
 
 struct terrain *palette_terrain(struct terrain_palette *palette, int n)
@@ -233,7 +233,7 @@ struct terrain *palette_terrain_for_glyph(struct terrain_palette *palette,
 	list_for_each(&palette->lookup_head, elem) {
 		entry = outcast(elem, struct terrain_palette_entry,
 				lookup_list);
-		if (! strcmp(glyph, entry->glyph)) {
+		if (!strcmp(glyph, entry->glyph)) {
 			/* Odds are good that we'll want this same terrain in
 			 * the near future, so move it to the front of the list
 			 * (if not already there) to improve performance during
@@ -246,11 +246,11 @@ struct terrain *palette_terrain_for_glyph(struct terrain_palette *palette,
 		}
 	}
 
-	return 0;  // Did not find the terrain
+	return 0;		// Did not find the terrain
 }				// palette_terrain_for_glyph()
 
-struct terrain_palette * palette_contains_terrain (struct terrain_palette *pp,
-						   struct terrain *tt)
+struct terrain_palette *palette_contains_terrain(struct terrain_palette *pp,
+						 struct terrain *tt)
 {
 	// The current user of this function is
 	// combat.c create_camping_map().
@@ -265,7 +265,7 @@ struct terrain_palette * palette_contains_terrain (struct terrain_palette *pp,
 	entry = palette_entry_for_terrain(pp, tt);
 	if (entry)
 		return pp;
-	return 0;  // Did not find the terrain
+	return 0;		// Did not find the terrain
 }
 
 void palette_print(FILE * fp, int indent, struct terrain_palette *palette)
@@ -275,13 +275,12 @@ void palette_print(FILE * fp, int indent, struct terrain_palette *palette)
 
 	// (kern-mk-palette 'pal_expanded
 	//     (list
-	//	   ;; There are 999 entries in this palette
-	//	   ;; The widest glyph is 4 characters
-	//	   (list "__" t_deep)
-	//	   (list ".." t_grass)
+	//         ;; There are 999 entries in this palette
+	//         ;; The widest glyph is 4 characters
+	//         (list "__" t_deep)
+	//         (list ".." t_grass)
 	//     )
 	// )
-
 
 	INDENT;
 	fprintf(fp, "(kern-mk-palette '%s\n", palette->tag);
@@ -313,4 +312,4 @@ void palette_print(FILE * fp, int indent, struct terrain_palette *palette)
 	INDENT;
 	fprintf(fp, ") ;; palette %s\n", palette->tag);
 	fprintf(fp, "\n");
-} // palette_print()
+}				// palette_print()

@@ -32,8 +32,8 @@ extern "C" {
 	extern void console_repaint(void);
 	extern int console_get_y(void);
 	extern int console_get_h(void);
-        extern void console_end(void);
-        extern int console_handle_key(int key, int keymod);
+	extern void console_end(void);
+	extern int console_handle_key(int key, int keymod);
 
 #ifdef __cplusplus
 }

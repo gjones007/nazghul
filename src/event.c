@@ -32,7 +32,7 @@
 #include <common.h>
 
 #ifndef DEBUG_KEYS
-# define DEBUG_KEYS 0
+#define DEBUG_KEYS 0
 #endif
 
 #define EVENT_NONBLOCK   (1 << 0)
@@ -43,8 +43,8 @@
 #define pushHandler(stack,handler) (list_add((stack), &(handler)->list))
 
 typedef struct {
-        struct list list;
-        SDL_Event event;
+	struct list list;
+	SDL_Event event;
 } sdl_event_list_t;
 
 static struct list KeyHandlers;
@@ -64,101 +64,99 @@ static void (*eventHook) (void);
 static int (*wait_event) (SDL_Event * event, int flags);
 static int qcount = 0;
 
-static struct list *popHandler(struct list *stack) 
+static struct list *popHandler(struct list *stack)
 {
-        if (list_empty(stack)) {
-                return NULL;
-        }
+	if (list_empty(stack)) {
+		return NULL;
+	}
 
-        struct list *lptr = stack->next;
-        list_remove(lptr);
-        return lptr;
+	struct list *lptr = stack->next;
+	list_remove(lptr);
+	return lptr;
 }
 
-static void backlog_enqueue(SDL_Event *event)
+static void backlog_enqueue(SDL_Event * event)
 {
-        sdl_event_list_t *elem = (sdl_event_list_t*)malloc(sizeof(*elem));
-        elem->event = *event;
-        list_add(&backlog, &elem->list);
-        qcount++;
+	sdl_event_list_t *elem = (sdl_event_list_t *) malloc(sizeof(*elem));
+	elem->event = *event;
+	list_add(&backlog, &elem->list);
+	qcount++;
 }
 
-static int backlog_dequeue(SDL_Event *event)
+static int backlog_dequeue(SDL_Event * event)
 {
-        sdl_event_list_t *elem;
-        struct list *ptr;
-        if (list_empty(&backlog))
-                return -1;
-        ptr = backlog.next;
-        elem = outcast(ptr, sdl_event_list_t, list);
-        list_remove(&elem->list);
-        *event = elem->event;
-        free(elem);
-        qcount--;
-        return 0;
+	sdl_event_list_t *elem;
+	struct list *ptr;
+	if (list_empty(&backlog))
+		return -1;
+	ptr = backlog.next;
+	elem = outcast(ptr, sdl_event_list_t, list);
+	list_remove(&elem->list);
+	*event = elem->event;
+	free(elem);
+	qcount--;
+	return 0;
 }
 
 static int mapKey(SDL_keysym * keysym)
 {
 	int key = keysym->sym;
-        
-        if (DEBUG_KEYS) {
-                printf("sym='%c'[%d] mod=%02x unicode=%04x\n", 
-                       keysym->sym,  
-                       keysym->sym,
-                       keysym->mod,
-                       keysym->unicode);
-        }
 
-        /* If the key has a UNICODE representation and its from the default
-         * Basic Latin code page then return it as an ASCII character. */
-        /* fixme: unicode is messing up ctrl+key sequences */
-        if (keysym->unicode) {
+	if (DEBUG_KEYS) {
+		printf("sym='%c'[%d] mod=%02x unicode=%04x\n",
+		       keysym->sym, keysym->sym, keysym->mod, keysym->unicode);
+	}
 
-                /* Map CR to LF (legacy code expects this) */
-                if (keysym->unicode == 0x000d)
-                        return '\n';
+	/* If the key has a UNICODE representation and its from the default
+	 * Basic Latin code page then return it as an ASCII character. */
+	/* fixme: unicode is messing up ctrl+key sequences */
+	if (keysym->unicode) {
 
-                /* Map all other Basic Latin codes to ASCII */
-                if (keysym->unicode < 0x7f)
-                        return keysym->unicode & 0x7f;
+		/* Map CR to LF (legacy code expects this) */
+		if (keysym->unicode == 0x000d)
+			return '\n';
 
-                /* Code page not supported... fall through */
-        }
+		/* Map all other Basic Latin codes to ASCII */
+		if (keysym->unicode < 0x7f)
+			return keysym->unicode & 0x7f;
 
-        /* Map arrow keys to equivalent numberpad entries */
-        if (key >= SDLK_UP && key <= SDLK_LEFT) {
-                static int map[] = { KEY_NORTH, KEY_SOUTH, KEY_EAST, 
-                                     KEY_WEST };
-                key = map[key - SDLK_UP];
-        }
+		/* Code page not supported... fall through */
+	}
 
-        /* Set the "shift" bit */
-        if (keysym->mod & KMOD_SHIFT) {
-                key |= KEY_SHIFT;
-        }
+	/* Map arrow keys to equivalent numberpad entries */
+	if (key >= SDLK_UP && key <= SDLK_LEFT) {
+		static int map[] = { KEY_NORTH, KEY_SOUTH, KEY_EAST,
+			KEY_WEST
+		};
+		key = map[key - SDLK_UP];
+	}
 
-        /* Unsupported? fallback to the SDL sym */
+	/* Set the "shift" bit */
+	if (keysym->mod & KMOD_SHIFT) {
+		key |= KEY_SHIFT;
+	}
+
+	/* Unsupported? fallback to the SDL sym */
 	return key;
 }
 
-static int event_get_next_event(SDL_Event *event, int flags)
+static int event_get_next_event(SDL_Event * event, int flags)
 {
-        /* if a key handler exists */
-        if (getHandler(&KeyHandlers, struct KeyHandler)) {
+	/* if a key handler exists */
+	if (getHandler(&KeyHandlers, struct KeyHandler)) {
 
-                /* if the backlog queue is not empty */
-                if (! backlog_dequeue(event)) {
+		/* if the backlog queue is not empty */
+		if (!backlog_dequeue(event)) {
 
-                        /* get the event from the backlog queue */
-                        return 1;
-                }
-        }
+			/* get the event from the backlog queue */
+			return 1;
+		}
+	}
 
-        if (flags & EVENT_NONBLOCK)
-                return SDL_PollEvent(event);
-        else
-                return SDL_WaitEvent(event);
+	if (flags & EVENT_NONBLOCK)
+		return SDL_PollEvent(event);
+	else
+		return SDL_WaitEvent(event);
 }
 
 static int playback_event(SDL_Event * event, int flags)
@@ -167,11 +165,10 @@ static int playback_event(SDL_Event * event, int flags)
 	// binary data straight to the file.
 	int n;
 	int len = sizeof(SDL_Event);
-	char *ptr = (char *) event;
+	char *ptr = (char *)event;
 
-        if (flags & EVENT_NOPLAYBACK)
-                return 0;
-
+	if (flags & EVENT_NOPLAYBACK)
+		return 0;
 
 	while (len) {
 		n = read(playback_fd, ptr, len);
@@ -194,7 +191,7 @@ static void record_event(SDL_Event * event)
 	// binary data straight to the file.
 	int n;
 	int len = sizeof(SDL_Event);
-	char *ptr = (char *) event;
+	char *ptr = (char *)event;
 	while (len) {
 		n = write(record_fd, ptr, len);
 		if (n == -1) {
@@ -209,16 +206,16 @@ static void record_event(SDL_Event * event)
 static void event_handle_aux(int flags)
 {
 	bool done = false;
-        bool use_hook = false;
+	bool use_hook = false;
 
 	while (!done) {
 
 		SDL_Event event;
-                if (!wait_event(&event, flags)) {
-                        return;
-                }
-                if (record_events)
-                        record_event(&event);
+		if (!wait_event(&event, flags)) {
+			return;
+		}
+		if (record_events)
+			record_event(&event);
 
 		switch (event.type) {
 
@@ -226,34 +223,34 @@ static void event_handle_aux(int flags)
 			{
 				struct TickHandler *tickh;
 				tickh = getHandler(&TickHandlers,
-                                                   struct TickHandler);
+						   struct TickHandler);
 				if (tickh) {
-                                        use_hook = true;
-                                        if (tickh->fx(tickh)) {
-                                                done = true;
-                                        }
-                                }
-                                
+					use_hook = true;
+					if (tickh->fx(tickh)) {
+						done = true;
+					}
+				}
+
 			}
 			break;
 
 		case SDL_KEYDOWN:
 			{
 				struct KeyHandler *keyh;
-				keyh = getHandler(&KeyHandlers, 
-                                                  struct KeyHandler);
+				keyh = getHandler(&KeyHandlers,
+						  struct KeyHandler);
 				if (keyh) {
-                                        int mapped_key = 
-                                                mapKey(&event.key.keysym);
-                                        use_hook = true;
-                                        if (keyh->fx(keyh, mapped_key, 
-                                                     event.key.keysym.mod)) {
-                                                done = true;
-                                        }
-                                } else {
-                                        /* enqueue this event */
-                                        backlog_enqueue(&event);
-                                }
+					int mapped_key =
+					    mapKey(&event.key.keysym);
+					use_hook = true;
+					if (keyh->fx(keyh, mapped_key,
+						     event.key.keysym.mod)) {
+						done = true;
+					}
+				} else {
+					/* enqueue this event */
+					backlog_enqueue(&event);
+				}
 			}
 			break;
 
@@ -273,10 +270,9 @@ static void event_handle_aux(int flags)
 				struct MouseButtonHandler *mouseh;
 				mouseh = getHandler(&MouseButtonHandlers,
 						    struct MouseButtonHandler);
-				if (mouseh &&
-				    mouseh->fx(mouseh, &event.button)) {
+				if (mouseh && mouseh->fx(mouseh, &event.button)) {
 					done = true;
-                                }
+				}
 			}
 			break;
 
@@ -285,10 +281,9 @@ static void event_handle_aux(int flags)
 				struct MouseMotionHandler *mouseh;
 				mouseh = getHandler(&MouseMotionHandlers,
 						    struct MouseMotionHandler);
-				if (mouseh &&
-				    mouseh->fx(mouseh, &event.motion)) {
+				if (mouseh && mouseh->fx(mouseh, &event.motion)) {
 					done = true;
-                                }
+				}
 			}
 			break;
 
@@ -305,18 +300,18 @@ static void event_handle_aux(int flags)
 
 int eventInit(void)
 {
-        char *record_fname = cfg_get("record-filename");
-        char *playback_fname = cfg_get("playback-filename");
+	char *record_fname = cfg_get("record-filename");
+	char *playback_fname = cfg_get("playback-filename");
 
 	list_init(&KeyHandlers);
 	list_init(&TickHandlers);
 	list_init(&QuitHandlers);
 	list_init(&MouseButtonHandlers);
 	list_init(&MouseMotionHandlers);
-        list_init(&backlog);
+	list_init(&backlog);
 	eventHook = NULL;
 	wait_event = event_get_next_event;
-        qcount=0;
+	qcount = 0;
 
 	if (record_fname != NULL) {
 		record_events = true;
@@ -328,7 +323,7 @@ int eventInit(void)
 	}
 
 	if (playback_fname != NULL) {
-                char *playback_spd_str = cfg_get("playback-speed");
+		char *playback_spd_str = cfg_get("playback-speed");
 		playback_events = true;
 		playback_fd = open(playback_fname, O_RDONLY, 00666);
 		if (playback_fd == -1) {
@@ -338,33 +333,32 @@ int eventInit(void)
 		// Override the normal wait_event routine
 		wait_event = playback_event;
 
-                /* Set the play back speed. */
-                if (playback_spd_str) {
-                        event_playback_speed = atoi(playback_spd_str);
-                }
+		/* Set the play back speed. */
+		if (playback_spd_str) {
+			event_playback_speed = atoi(playback_spd_str);
+		}
 	}
 
-        SDL_EnableUNICODE(1);
+	SDL_EnableUNICODE(1);
 
 	return 0;
 }
 
 void eventExit(void)
 {
-        /* cleanup the backlog queue */
-        SDL_Event event;
-        while (! backlog_dequeue(&event))
-                ;
+	/* cleanup the backlog queue */
+	SDL_Event event;
+	while (!backlog_dequeue(&event)) ;
 }
 
 void eventHandle(void)
 {
-        event_handle_aux(0);
+	event_handle_aux(0);
 }
 
 void eventHandlePending(void)
 {
-        event_handle_aux(EVENT_NONBLOCK|EVENT_NOPLAYBACK);
+	event_handle_aux(EVENT_NONBLOCK | EVENT_NOPLAYBACK);
 }
 
 void eventPushKeyHandler(struct KeyHandler *keyh)
@@ -372,9 +366,9 @@ void eventPushKeyHandler(struct KeyHandler *keyh)
 	pushHandler(&KeyHandlers, keyh);
 }
 
-struct KeyHandler * eventPopKeyHandler(void)
+struct KeyHandler *eventPopKeyHandler(void)
 {
-        return (struct KeyHandler*)popHandler(&KeyHandlers);
+	return (struct KeyHandler *)popHandler(&KeyHandlers);
 }
 
 void eventPushTickHandler(struct TickHandler *keyh)

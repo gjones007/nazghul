@@ -25,30 +25,27 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #include "list.h"
-
 #include <SDL.h>
-
-struct images {
-        char *tag;
-        char *fname;
-        int w;		/* in pixels of the images */
-        int h;		/* in pixels of the images */
-        int rows;	/* in the image file */
-        int cols;	/* in the image file */
-        int offx;	/* pixels separating images */
-        int offy;	/* pixels separating images */
-        SDL_Surface *images;
-        SDL_Surface *faded;	/* faded copy of image set for
-                                 * sem-transparent sprites */
+    struct images {
+	char *tag;
+	char *fname;
+	int w;			/* in pixels of the images */
+	int h;			/* in pixels of the images */
+	int rows;		/* in the image file */
+	int cols;		/* in the image file */
+	int offx;		/* pixels separating images */
+	int offy;		/* pixels separating images */
+	SDL_Surface *images;
+	SDL_Surface *faded;	/* faded copy of image set for
+				 * sem-transparent sprites */
 };
 
-extern struct images *images_new(const char *tag, int w, int h, int rows, int cols, 
-                                 int offx, int offy, const char *fname);
+extern struct images *images_new(const char *tag, int w, int h, int rows,
+				 int cols, int offx, int offy,
+				 const char *fname);
 extern int images_convert2display(struct images *images);
 extern int images_fade(struct images *images);
 
 END_DECL
-
 #endif

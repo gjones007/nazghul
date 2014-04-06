@@ -23,7 +23,7 @@
 #define cmd_h
 
 #include "macros.h"
-#include "event.h" /* for v_funcpointer_ii */
+#include "event.h"		/* for v_funcpointer_ii */
 
 #define MIN_XAMINE_LIGHT_LEVEL 32
 
@@ -37,31 +37,30 @@ BEGIN_DECL;
 // fit anywhere else right now, either.
 #include "status.h"
 struct ScrollerContext {
-        enum StatusSelection selector;
-        const void *selection;
-        bool abort;
-        bool done;
-        bool mixing; // for mix reagents
+	enum StatusSelection selector;
+	const void *selection;
+	bool abort;
+	bool done;
+	bool mixing;		// for mix reagents
 };
 
 /**
  * Request format for select_target_generic().
  */
-typedef struct ui_select_target_req 
-{
-        struct place *place;   /* place this is happening in       */
-        int x1, y1;            /* center of target zone            */
-        int x2, y2;            /* initial/final cursor position    */
-        struct templ *tiles;   /* template of tiles in target zone */
-        struct list suggest;   /* quick-target tiles               */
-        void *data;            /* caller context                   */
+typedef struct ui_select_target_req {
+	struct place *place;	/* place this is happening in       */
+	int x1, y1;		/* center of target zone            */
+	int x2, y2;		/* initial/final cursor position    */
+	struct templ *tiles;	/* template of tiles in target zone */
+	struct list suggest;	/* quick-target tiles               */
+	void *data;		/* caller context                   */
 
-        /* called when the cursor moves over a new tile */
-        void (*move)(struct place *, int, int, void *);
+	/* called when the cursor moves over a new tile */
+	void (*move) (struct place *, int, int, void *);
 
-        /* Called when user hits 'enter' or otherwise selects a tile. Returns
-         * non-zero to end the targeting session, zero otherwise. */
-        int (*select)(struct place *, int, int, void *);
+	/* Called when user hits 'enter' or otherwise selects a tile. Returns
+	 * non-zero to end the targeting session, zero otherwise. */
+	int (*select) (struct place *, int, int, void *);
 
 } ui_select_target_req_t;
 
@@ -75,74 +74,74 @@ extern int anykey(struct KeyHandler *kh, int key, int keymod);
 extern int scroller(struct KeyHandler *kh, int key, int keymod);
 extern int movecursor(struct KeyHandler *kh, int key, int keymod);
 extern int getnum(struct KeyHandler *kh, int key, int keymod);
-extern void getkey(void *data, int(*handler) (struct KeyHandler * kh,
-                                               int key, int keymod));
+extern void getkey(void *data, int (*handler) (struct KeyHandler * kh,
+					       int key, int keymod));
 #define CMD_SELECT_MEMBER (1 << 0)
 #define CMD_PRINT_MEMBER  (1 << 1)
-  
+
 extern void cmdAttack(void);
-extern int cmd_camp_in_town(class Character *camper);
-extern int cmd_camp_in_wilderness(class Party *camper);
+extern int cmd_camp_in_town(class Character * camper);
+extern int cmd_camp_in_wilderness(class Party * camper);
 extern void cmdFire(void);
 extern void cmdHelp(void);
-extern void cmdLoiter(class Being *subject);
-extern bool cmdMixReagents(class Character *mixer);
+extern void cmdLoiter(class Being * subject);
+extern bool cmdMixReagents(class Character * mixer);
 extern void cmdNewOrder(void);
 extern bool cmdSave(void);
 extern void cmdReload(void);
-extern bool cmdSearch(class Character *pc);
-extern void cmdTalk(Object *member);
+extern bool cmdSearch(class Character * pc);
+extern void cmdTalk(Object * member);
 extern void cmdZoomIn(void);
 extern bool cmdUse(class Character * pc, int flags);
 extern bool cmdHandle(class Character * pc);
 extern bool cmdReady(class Character * pc);
 extern bool cmdZtats(class Character * pc);
-extern bool cmdXamine (class Object *examiner);
+extern bool cmdXamine(class Object * examiner);
 extern bool cmdAT(class Character * pc);
-extern bool cmdGet(class Object *actor);
+extern bool cmdGet(class Object * actor);
 extern bool cmdOpen(class Character * pc);
 extern bool cmdCastSpell(class Character * pc);
 extern bool cmdQuit(void);
 extern bool cmdLook(int x, int y);
 extern bool cmd_terraform(struct place *place, int x, int y);
-extern bool cmd_save_current_place (struct place * place);
+extern bool cmd_save_current_place(struct place *place);
 extern bool cmdSaveTerrainMap(class Character * pc);
 extern bool cmdSetSoloMode(int party_member_index);
 extern bool cmdToggleFollowMode(void);
 extern void cmdSettings(void);
-extern void cmdDrop(class Character *pc);
-extern void cmdYuse(class Character *pc);
+extern void cmdDrop(class Character * pc);
+extern void cmdYuse(class Character * pc);
 extern void cmdDeveloperEval(struct session *);
-  
+
 extern class Character *select_party_member(void);
-    
+
 struct location_list {
-        struct list list;
-        int x;
-        int y;
+	struct list list;
+	int x;
+	int y;
 };
 
-extern int select_target(int ox, int oy, int *x, int *y, int range, 
-                         struct list *suggest);
+extern int select_target(int ox, int oy, int *x, int *y, int range,
+			 struct list *suggest);
 
-extern const char * name_of_context (void);
+extern const char *name_of_context(void);
 
 extern int ui_get_quantity(int max);
-  
+
 // the new ui api
 extern int ui_get_direction(void);
 extern int ui_get_yes_no(const char *asked_persons_name);
 extern int ui_getline(char *buf, int len);
 extern int ui_getline_plain(char *buf, int len);
-extern void ui_name_vehicle(class Vehicle *vehicle);
+extern void ui_name_vehicle(class Vehicle * vehicle);
 
 /**
  * The merchant information for a trading session.
  */
 struct merchant {
-        const char *name;                /* The merchant's name */
-        int n_trades;              /* Num entries in the array of items */
-        struct trade_info *trades; /* The array of trade items */
+	const char *name;	/* The merchant's name */
+	int n_trades;		/* Num entries in the array of items */
+	struct trade_info *trades;	/* The array of trade items */
 };
 
 /**
@@ -178,7 +177,7 @@ extern int ui_sell(struct merchant *merch);
  * @returns The actual number of characters stored. Note that if the player
  * hits ESC this will be zero as if no keys were pressed.
  */
-extern int ui_getline_filtered(char *buf, int len, int (*filter)(int key));
+extern int ui_getline_filtered(char *buf, int len, int (*filter) (int key));
 
 /**
  * More general version of select_target(). Prompts the player to select a tile
@@ -189,7 +188,7 @@ extern int ui_getline_filtered(char *buf, int len, int (*filter)(int key));
  * @returns zero iff the (x2, y2) fields of the req hold the player-selected
  * target location. The only time it won't is if the player aborts the prompt.
  */
-extern int ui_select_target_generic(ui_select_target_req_t *req);
+extern int ui_select_target_generic(ui_select_target_req_t * req);
 
 /**
  * Initialize a target request to safe defaults. Note that this is for a new
@@ -198,7 +197,7 @@ extern int ui_select_target_generic(ui_select_target_req_t *req);
  *
  * @parm req will be initialized.
  */
-extern void ui_select_target_req_init(ui_select_target_req_t *req);
+extern void ui_select_target_req_init(ui_select_target_req_t * req);
 
 /**
  * Prompt the player to select something from inventory. This assumes that the

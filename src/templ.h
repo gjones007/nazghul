@@ -25,10 +25,10 @@
 /* A templ is a grid of cells that are either on (1) or off (0). 'templ' is
  * short for 'template', which is a reserved word in c++. */
 struct templ {
-        int refcount;    /* reference count                      */
-        int ux, uy;      /* upper left corner                    */
-        int w, h;        /* width and height                     */
-        char *grid;      /* cells                                */
+	int refcount;		/* reference count                      */
+	int ux, uy;		/* upper left corner                    */
+	int w, h;		/* width and height                     */
+	char *grid;		/* cells                                */
 };
 
 #define templ_i(templ,x,y) ((y)*(templ)->w+(x))
@@ -42,8 +42,8 @@ extern void templ_unref(struct templ *grd);
 extern char templ_get(struct templ *grd, int x, int y);
 extern int templ_set(struct templ *grd, int x, int y, char val);
 extern void templ_set_origin(struct templ *grd, int x, int y);
-extern void templ_for_each(struct templ *grd, 
-                           int (*cb)(struct templ *tmple, int x, int y, void *data),
-                           void *data);
+extern void templ_for_each(struct templ *grd,
+			   int (*cb) (struct templ * tmple, int x, int y,
+				      void *data), void *data);
 
 #endif

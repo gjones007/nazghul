@@ -37,7 +37,7 @@
 #include "dice.h"
 #include "effect.h"
 #include "mmode.h"
-#include "combat.h"  // for combat_get_state()
+#include "combat.h"		// for combat_get_state()
 #include "log.h"
 
 #include <assert.h>
@@ -71,15 +71,16 @@
 
 ObjectType::ObjectType()
 {
-        assert(false);
+	assert(false);
 }
 
-ObjectType::ObjectType(const char *tag, const char *sname, struct sprite *sprite_, enum layer layer_)
-        : sprite(sprite_), layer(layer_), speed(0), required_action_points(0), 
-          max_hp(0), gifc(NULL), gifc_cap(0), gob(NULL), pluralName(NULL)
+ObjectType::ObjectType(const char *tag, const char *sname,
+		       struct sprite * sprite_, enum layer layer_)
+ : sprite(sprite_), layer(layer_), speed(0), required_action_points(0),
+max_hp(0), gifc(NULL), gifc_cap(0), gob(NULL), pluralName(NULL)
 {
-        this->tag = tag ? strdup(tag) : NULL;
-        this->name = sname ? strdup(sname) :  NULL;
+	this->tag = tag ? strdup(tag) : NULL;
+	this->name = sname ? strdup(sname) : NULL;
 }
 
 ObjectType::~ObjectType()
@@ -88,31 +89,31 @@ ObjectType::~ObjectType()
 		free(tag);
 	if (name)
 		free(name);
-        if (gifc)
-                closure_unref(gifc);
-        if (pluralName)
-                free(pluralName);
-        if (gob)
-                gob_unref(gob);
+	if (gifc)
+		closure_unref(gifc);
+	if (pluralName)
+		free(pluralName);
+	if (gob)
+		gob_unref(gob);
 }
 
 void ObjectType::setPluralName(char *val)
 {
-        if (pluralName)
-                free(pluralName);
-        if (val)
-                pluralName=strdup(val);
-        else
-                pluralName=NULL;
+	if (pluralName)
+		free(pluralName);
+	if (val)
+		pluralName = strdup(val);
+	else
+		pluralName = NULL;
 }
 
 char *ObjectType::getPluralName()
 {
-        return pluralName;
+	return pluralName;
 }
 
 bool ObjectType::init(char *tag, char *name, enum layer layer,
-		      struct sprite *sprite)
+		      struct sprite * sprite)
 {
 	this->tag = tag ? strdup(tag) : NULL;
 	this->name = name ? strdup(name) : NULL;
@@ -128,23 +129,23 @@ class Object *ObjectType::createInstance()
 
 void ObjectType::setSprite(struct sprite *sprite)
 {
-	this->sprite = sprite;        
+	this->sprite = sprite;
 }
 
 static int endsWith(const char *word, const char *end)
 {
-        int wlen=strlen(word)-1;
-        int elen=strlen(end)-1;
+	int wlen = strlen(word) - 1;
+	int elen = strlen(end) - 1;
 
-        if (wlen<elen)
-                return 0;
-        
-        while (elen>=0) {
-                if (word[wlen--]!=end[elen--])
-                        return 0;
-        }
+	if (wlen < elen)
+		return 0;
 
-        return 1;
+	while (elen >= 0) {
+		if (word[wlen--] != end[elen--])
+			return 0;
+	}
+
+	return 1;
 }
 
 void ObjectType::describeType(int count)
@@ -156,74 +157,74 @@ void ObjectType::describeType(int count)
 			log_continue("a ");
 		log_continue("%s", getName());
 	} else if (getPluralName()) {
-                log_continue("some %s (%d)", getPluralName(), count);
-        } else {
-                if (endsWith(name, "s")
-                    || endsWith(name, "sh"))
-                        log_continue("some %ses (%d)", getName(), count);
-                else
-                        log_continue("some %ss (%d)", getName(), count);
+		log_continue("some %s (%d)", getPluralName(), count);
+	} else {
+		if (endsWith(name, "s")
+		    || endsWith(name, "sh"))
+			log_continue("some %ses (%d)", getName(), count);
+		else
+			log_continue("some %ss (%d)", getName(), count);
 	}
 }
 
-void ObjectType::describe(Object *obj)
+void ObjectType::describe(Object * obj)
 {
-        if (hasDescribeHook()) {
-                runDescribeHook(obj);
-                return;
-        }
+	if (hasDescribeHook()) {
+		runDescribeHook(obj);
+		return;
+	}
 
-        describeType(obj->getCount());
+	describeType(obj->getCount());
 }
 
-bool ObjectType::isType(int classID) 
+bool ObjectType::isType(int classID)
 {
-        return (classID == OBJECT_TYPE_ID);
+	return (classID == OBJECT_TYPE_ID);
 }
 
 int ObjectType::getType()
 {
-        return OBJECT_TYPE_ID;
+	return OBJECT_TYPE_ID;
 }
 
 const char *ObjectType::getTag()
 {
-        return tag;
+	return tag;
 }
 
 const char *ObjectType::getName()
 {
-        return name;
+	return name;
 }
 
 struct sprite *ObjectType::getSprite()
 {
-        return sprite;
+	return sprite;
 }
 
 enum layer ObjectType::getLayer()
 {
-        return layer;
+	return layer;
 }
 
 bool ObjectType::isVisible()
 {
-        return true;
+	return true;
 }
 
 int ObjectType::getSpeed()
 {
-        return speed;
+	return speed;
 }
 
 int ObjectType::getRequiredActionPoints()
 {
-        return required_action_points;
+	return required_action_points;
 }
 
 int ObjectType::getMaxHp()
 {
-        return max_hp;
+	return max_hp;
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -260,54 +261,53 @@ int ObjectType::getMaxHp()
 #define hook_entry_started(he) ((he)->started)
 #define hook_entry_set_started(he) ((he)->started=1)
 
-hook_entry_t *hook_entry_new(struct effect *effect, struct gob *gob)
+hook_entry_t *hook_entry_new(struct effect * effect, struct gob * gob)
 {
-        hook_entry_t *entry;
+	hook_entry_t *entry;
 
-        entry = (hook_entry_t*)calloc(1, sizeof(*entry));
-        assert(entry);
-        list_init(&entry->list);
-        entry->effect = effect;
-        entry->gob = gob;
-        gob_ref(gob);
-        
-        if (effect_will_expire(effect)) {
-                clock_alarm_set(&entry->expiration, effect->duration);
-        }
+	entry = (hook_entry_t *) calloc(1, sizeof(*entry));
+	assert(entry);
+	list_init(&entry->list);
+	entry->effect = effect;
+	entry->gob = gob;
+	gob_ref(gob);
 
-        //dbg("hook_entry_new: %p\n", entry);
-        return entry;
+	if (effect_will_expire(effect)) {
+		clock_alarm_set(&entry->expiration, effect->duration);
+	}
+	//dbg("hook_entry_new: %p\n", entry);
+	return entry;
 }
 
-void hook_entry_del(hook_entry_t *entry)
+void hook_entry_del(hook_entry_t * entry)
 {
-        //dbg("hook_entry_del: %p\n", entry);
-        if (entry->gob)
-                gob_unref(entry->gob);
-        free(entry);
+	//dbg("hook_entry_del: %p\n", entry);
+	if (entry->gob)
+		gob_unref(entry->gob);
+	free(entry);
 }
 
-void hook_entry_save(hook_entry_t *entry, struct save *save)
+void hook_entry_save(hook_entry_t * entry, struct save *save)
 {
-        // Note: saved effects are loaded in kern.c:kern_mk_char() & attached
-        // via restoreEffect().
+	// Note: saved effects are loaded in kern.c:kern_mk_char() & attached
+	// via restoreEffect().
 
-        save->enter(save, "(list\n");
-        save->write(save, "%s\n", entry->effect->tag);
-        if (entry->gob)
-                gob_save(entry->gob, save);
-        else
-                save->write(save, "nil\n");
-        save->write(save, "%d\n", entry->flags);
-        clock_alarm_save(entry->expiration, save);
-        save->exit(save, ")\n");
+	save->enter(save, "(list\n");
+	save->write(save, "%s\n", entry->effect->tag);
+	if (entry->gob)
+		gob_save(entry->gob, save);
+	else
+		save->write(save, "nil\n");
+	save->write(save, "%d\n", entry->flags);
+	clock_alarm_save(entry->expiration, save);
+	save->exit(save, ")\n");
 }
 
-static inline int hook_entry_is_invalid(hook_entry_t *entry)
+static inline int hook_entry_is_invalid(hook_entry_t * entry)
 {
-        return ((entry->flags & HEF_INVALID) ||
-                (effect_will_expire(entry->effect) &&
-                 clock_alarm_is_expired(&entry->expiration)));
+	return ((entry->flags & HEF_INVALID) ||
+		(effect_will_expire(entry->effect) &&
+		 clock_alarm_is_expired(&entry->expiration)));
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -318,7 +318,7 @@ static inline int hook_entry_is_invalid(hook_entry_t *entry)
 
 void Object::init(int x, int y, struct place *place, class ObjectType * type)
 {
-        // fixme: obsolete?
+	// fixme: obsolete?
 	this->type = type;
 	setX(x);
 	setY(y);
@@ -330,27 +330,27 @@ void Object::init(class ObjectType * type)
 	this->type = type;
 }
 
-bool Object::tryToRelocateToNewPlace(struct place *newplace, 
-                                     int newx, int newy,
-                                     struct closure *cutscene)
+bool Object::tryToRelocateToNewPlace(struct place *newplace,
+				     int newx, int newy,
+				     struct closure *cutscene)
 {
-        obj_inc_ref(this);
-        place_remove_object(getPlace(), this);
+	obj_inc_ref(this);
+	place_remove_object(getPlace(), this);
 
-        if (cutscene) {
-                
-                mapUpdate(0);
-                closure_exec(cutscene, NULL);
-                
-        }
+	if (cutscene) {
 
-        setPlace(newplace);
-        setX(newx);
-        setY(newy);
-        place_add_object(getPlace(), this);
-        obj_dec_ref(this);
-        changePlaceHook();
-        return true;
+		mapUpdate(0);
+		closure_exec(cutscene, NULL);
+
+	}
+
+	setPlace(newplace);
+	setX(newx);
+	setY(newy);
+	place_add_object(getPlace(), this);
+	obj_dec_ref(this);
+	changePlaceHook();
+	return true;
 }
 
 ////
@@ -362,12 +362,10 @@ bool Object::tryToRelocateToNewPlace(struct place *newplace,
 //
 void Object::triggerSense(struct place *tilePlace, int tileX, int tileY)
 {
-        Object *mech = place_get_object(tilePlace, tileX, tileY, mech_layer);
-        if (mech 
-            && mech != this 
-            && mech->getObjectType()->canSense()) {
-                mech->getObjectType()->sense(mech, this);
-        }
+	Object *mech = place_get_object(tilePlace, tileX, tileY, mech_layer);
+	if (mech && mech != this && mech->getObjectType()->canSense()) {
+		mech->getObjectType()->sense(mech, this);
+	}
 }
 
 ////
@@ -379,12 +377,10 @@ void Object::triggerSense(struct place *tilePlace, int tileX, int tileY)
 //
 void Object::triggerStep(struct place *tilePlace, int tileX, int tileY)
 {
-        Object *mech = place_get_object(tilePlace, tileX, tileY, mech_layer);
-        if (mech 
-            && mech != this 
-            && mech->getObjectType()->canStep()) {
-                mech->getObjectType()->step(mech, this);
-        }
+	Object *mech = place_get_object(tilePlace, tileX, tileY, mech_layer);
+	if (mech && mech != this && mech->getObjectType()->canStep()) {
+		mech->getObjectType()->step(mech, this);
+	}
 }
 
 ////
@@ -397,18 +393,18 @@ void Object::triggerStep(struct place *tilePlace, int tileX, int tileY)
 // @param flags relocation flags which specify what types of triggers to avoid
 //
 void Object::triggerOnTileEntry(struct place *tilePlace, int tileX, int tileY,
-                                int flags)
+				int flags)
 {
-        bool sense = !(flags & REL_NOSENSE);
-        bool step = !(flags & REL_NOSTEP);
+	bool sense = !(flags & REL_NOSENSE);
+	bool step = !(flags & REL_NOSTEP);
 
-        if (sense) {
-                triggerSense(tilePlace, tileX, tileY);
-        }
+	if (sense) {
+		triggerSense(tilePlace, tileX, tileY);
+	}
 
-        if (step) {
-                triggerStep(tilePlace, tileX, tileY);
-        }
+	if (step) {
+		triggerStep(tilePlace, tileX, tileY);
+	}
 }
 
 ////
@@ -421,138 +417,137 @@ void Object::triggerOnTileEntry(struct place *tilePlace, int tileX, int tileY,
 // @param flags relocation flags which specify what types of triggers to avoid
 //
 void Object::triggerOnTileExit(struct place *tilePlace, int tileX, int tileY,
-                               int flags)
+			       int flags)
 {
-        bool sense = ! (flags & REL_NOSENSE);
+	bool sense = !(flags & REL_NOSENSE);
 
-        if (sense) {
-                triggerSense(tilePlace, tileX, tileY);
-        }
+	if (sense) {
+		triggerSense(tilePlace, tileX, tileY);
+	}
 }
 
 void Object::relocate(struct place *newplace, int newx, int newy, int flags,
-                      struct closure *place_switch_hook)
+		      struct closure *place_switch_hook)
 {
-        int volume;
-        int distance;
-        struct place *foc_place;
-        int foc_x, foc_y;
-        struct place *oldPlace = getPlace(); // remember for tile exit
-        int oldX = getX(); // remember for tile exit
-        int oldY = getY(); // remember for tile exit
+	int volume;
+	int distance;
+	struct place *foc_place;
+	int foc_x, foc_y;
+	struct place *oldPlace = getPlace();	// remember for tile exit
+	int oldX = getX();	// remember for tile exit
+	int oldY = getY();	// remember for tile exit
 
-        assert(newplace);
+	assert(newplace);
 
-        if (isOnMap()) {
+	if (isOnMap()) {
 
-                assert(getPlace());
+		assert(getPlace());
 
-                if (newplace == getPlace()) {
+		if (newplace == getPlace()) {
 
-                        // Moving from one tile to another in the same place.
-                        if (place_switch_hook) {
+			// Moving from one tile to another in the same place.
+			if (place_switch_hook) {
 
-                                // A cut scene was specified (this happens for
-                                // moongate entry, for example). Remove the
-                                // object, play the cut scene, and put the
-                                // object back down at the new location.
-                                mapUpdate(0);
-                                setOnMap(false);
-                                rmView();
-                                obj_inc_ref(this);
-                                place_remove_object(getPlace(), this);
+				// A cut scene was specified (this happens for
+				// moongate entry, for example). Remove the
+				// object, play the cut scene, and put the
+				// object back down at the new location.
+				mapUpdate(0);
+				setOnMap(false);
+				rmView();
+				obj_inc_ref(this);
+				place_remove_object(getPlace(), this);
 
-                                closure_exec(place_switch_hook, NULL);
+				closure_exec(place_switch_hook, NULL);
 
-                                setPlace(newplace);
-                                setX(newx);
-                                setY(newy);
-                                place_add_object(newplace, this);
-                                obj_dec_ref(this);
-                                setOnMap(true);
-                                addView();
+				setPlace(newplace);
+				setX(newx);
+				setY(newy);
+				place_add_object(newplace, this);
+				obj_dec_ref(this);
+				setOnMap(true);
+				addView();
 
-                        } else {
+			} else {
 
-                                place_move_object(newplace, this, newx, newy);
-                                setX(newx);
-                                setY(newy);
-                        }
+				place_move_object(newplace, this, newx, newy);
+				setX(newx);
+				setY(newy);
+			}
 
-                } else {
+		} else {
 
-                        // Place-to-place movement, where the object is on the
-                        // map. This is a special case for character objects so
-                        // use an overloadable method to implement it.
-                        if (! tryToRelocateToNewPlace(newplace, newx, newy,
-                                                      place_switch_hook)) {
-                                return;
-                        }
+			// Place-to-place movement, where the object is on the
+			// map. This is a special case for character objects so
+			// use an overloadable method to implement it.
+			if (!tryToRelocateToNewPlace(newplace, newx, newy,
+						     place_switch_hook)) {
+				return;
+			}
+			// This object may no longer be on a map as a result of
+			// the above call. If so then finish processing.
+			if (!isOnMap()) {
 
-                        // This object may no longer be on a map as a result of
-                        // the above call. If so then finish processing.
-                        if (! isOnMap()) {
+				// Run the exit triggers before returning
+				if (oldPlace) {
+					triggerOnTileExit(oldPlace, oldX, oldY,
+							  flags);
+				}
 
-                                // Run the exit triggers before returning
-                                if (oldPlace) {
-                                        triggerOnTileExit(oldPlace, oldX, oldY, flags);
-                                }
+				return;
+			}
+		}
 
-                                return;
-                        }
-                }
+	} else {
 
-        } else {
+		// Place-to-place movement, where the object is off-map in the
+		// old place. I assume by default it will be on-map in the new
+		// place and let changePlaceHook() fix things up if necessary.
+		setPlace(newplace);
+		setX(place_wrap_x(newplace, newx));
+		setY(place_wrap_y(newplace, newy));
+		place_add_object(getPlace(), this);
+		setOnMap(true);
+		addView();
+		changePlaceHook();
 
-                // Place-to-place movement, where the object is off-map in the
-                // old place. I assume by default it will be on-map in the new
-                // place and let changePlaceHook() fix things up if necessary.
-                setPlace(newplace);
-                setX(place_wrap_x(newplace, newx));
-                setY(place_wrap_y(newplace, newy));
-                place_add_object(getPlace(), this);
-                setOnMap(true);
-                addView();
-                changePlaceHook();
+	}
 
-        }
+	// Run the exit triggers.
+	if (oldPlace) {
+		triggerOnTileExit(oldPlace, oldX, oldY, flags);
+	}
 
-        // Run the exit triggers.
-        if (oldPlace) {
-                triggerOnTileExit(oldPlace, oldX, oldY, flags);
-        }
-        
-        mapSetDirty();
+	mapSetDirty();
 
-        // It's possible that changePlaceHook() removed this object from the
-        // map. This certainly happens when the player party moves from town to
-        // wilderness, for example. In this case I probably want to skip all of
-        // what follows. I ABSOLUTELY want to skip the call to updateView() at
-        // the end, and in fact I changed updateView() to assert if this object
-        // is not on the map.
-        if (! isOnMap())
-                return;
+	// It's possible that changePlaceHook() removed this object from the
+	// map. This certainly happens when the player party moves from town to
+	// wilderness, for example. In this case I probably want to skip all of
+	// what follows. I ABSOLUTELY want to skip the call to updateView() at
+	// the end, and in fact I changed updateView() to assert if this object
+	// is not on the map.
+	if (!isOnMap())
+		return;
 
-        // Attenuate movement sound based on distance from the camera's focal
-        // point.
-        volume = SOUND_MAX_VOLUME;
-        mapGetCameraFocus(&foc_place, &foc_x, &foc_y);
-        if (foc_place == getPlace()) {
-                distance = place_flying_distance(foc_place, foc_x, foc_y, 
-                                                 getX(), getY());
-                if (distance > 1)
-                        volume = (volume * (20 - distance))/20;
-                if (volume > 0)
-                	sound_play(get_movement_sound(), volume);
-        }
+	// Attenuate movement sound based on distance from the camera's focal
+	// point.
+	volume = SOUND_MAX_VOLUME;
+	mapGetCameraFocus(&foc_place, &foc_x, &foc_y);
+	if (foc_place == getPlace()) {
+		distance = place_flying_distance(foc_place, foc_x, foc_y,
+						 getX(), getY());
+		if (distance > 1)
+			volume = (volume * (20 - distance)) / 20;
+		if (volume > 0)
+			sound_play(get_movement_sound(), volume);
+	}
+	// If the camera is attached to this object then update it to focus on
+	// the object's new location.
+	if (isCameraAttached()) {
+		mapCenterCamera(getX(), getY());
+	}
 
-        // If the camera is attached to this object then update it to focus on
-        // the object's new location.
-        if (isCameraAttached()) {
-                mapCenterCamera(getX(), getY());
-        }
-        
-        updateView();
+	updateView();
 
 	// Run the entry triggers.
 	triggerOnTileEntry(getPlace(), getX(), getY(), flags);
@@ -560,32 +555,29 @@ void Object::relocate(struct place *newplace, int newx, int newy, int flags,
 
 void Object::setOnMap(bool val)
 {
-        is_on_map = val;
+	is_on_map = val;
 }
 
 void Object::remove()
 {
 	obj_inc_ref(this);
-	if (isOnMap())
-	{
-		struct place *oldPlace = getPlace(); // remember for tile exit
-		int oldX = getX(); // remember for tile exit
-		int oldY = getY(); // remember for tile exit
+	if (isOnMap()) {
+		struct place *oldPlace = getPlace();	// remember for tile exit
+		int oldX = getX();	// remember for tile exit
+		int oldY = getY();	// remember for tile exit
 		setOnMap(false);
 		rmView();
-		
+
 		place_remove_object(getPlace(), this);
-		
+
 		// Run the exit triggers.
-		if (oldPlace)
-		{
+		if (oldPlace) {
 			triggerOnTileExit(oldPlace, oldX, oldY, 0);
 		}
-		
-                if (isOpaque()) {
-                        vmask_flush_all();
-                }
 
+		if (isOpaque()) {
+			vmask_flush_all();
+		}
 		// Note: do NOT call setPlace(NULL) here. When the player party
 		// object is removed from the map it still needs to "know" what
 		// place the members are in.
@@ -599,329 +591,326 @@ void Object::paint(int sx, int sy)
 {
 	struct sprite *sprite = getSprite();
 	if (sprite) {
-                int origFacing = sprite_get_facing(sprite);
-                sprite_set_facing(sprite, facing);
-                if (TimeStop
-                    && isPlayerControlled()) {
-                        sprite_paint(sprite, 
-                                     sprite_frame + Session->time_stop_ticks, 
-                                     sx, sy);
-                } else {
-                        sprite_paint(sprite, sprite_frame, sx, sy);
-                }
-                sprite_set_facing(sprite, origFacing);
-        }
+		int origFacing = sprite_get_facing(sprite);
+		sprite_set_facing(sprite, facing);
+		if (TimeStop && isPlayerControlled()) {
+			sprite_paint(sprite,
+				     sprite_frame + Session->time_stop_ticks,
+				     sx, sy);
+		} else {
+			sprite_paint(sprite, sprite_frame, sx, sy);
+		}
+		sprite_set_facing(sprite, origFacing);
+	}
 }
 
 void Object::describe()
 {
-        assert(getObjectType()); // else implement this method in subclass
-        getObjectType()->describe(this);
-        if (!isVisible()) {
-                log_continue(" (invisible)");
-        }
-        if (isSubmerged()) {
-                log_continue(" (submerged)");
-        }
+	assert(getObjectType());	// else implement this method in subclass
+	getObjectType()->describe(this);
+	if (!isVisible()) {
+		log_continue(" (invisible)");
+	}
+	if (isSubmerged()) {
+		log_continue(" (submerged)");
+	}
 }
 
 void Object::examine()
 {
-        assert(getObjectType()); // else implement this method in subclass
-        describe();
+	assert(getObjectType());	// else implement this method in subclass
+	describe();
 
-        //todo: dont have examiner to pass in to ifc
-        if (getObjectType()->canXamine()) {
-                log_end(":");
-                getObjectType()->xamine(this, this);
-                log_begin("");
-        }
+	//todo: dont have examiner to pass in to ifc
+	if (getObjectType()->canXamine()) {
+		log_end(":");
+		getObjectType()->xamine(this, this);
+		log_begin("");
+	}
 }
 
 sound_t *Object::get_movement_sound()
 {
-        return NULL_SOUND;
+	return NULL_SOUND;
 }
 
 class Object *Object::clone()
 {
-        // gmcnutt: added support for an optional quantity field for placed
-        // objects.
+	// gmcnutt: added support for an optional quantity field for placed
+	// objects.
 
-        class Object *obj;
+	class Object *obj;
 
-        obj = getObjectType()->createInstance();
-        obj->setPlace(getPlace());
-        obj->setX(getX());
-        obj->setY(getY());
+	obj = getObjectType()->createInstance();
+	obj->setPlace(getPlace());
+	obj->setX(getX());
+	obj->setY(getY());
 
-        // FIXME: should assign the new object a unique script tag
+	// FIXME: should assign the new object a unique script tag
 
-        return obj;
+	return obj;
 }
 
 //////////////////////////////////////////////////
 
-bool Object::isType(int classID) 
+bool Object::isType(int classID)
 {
-        return (classID == OBJECT_ID);
+	return (classID == OBJECT_ID);
 }
-int Object::getType() 
+
+int Object::getType()
 {
-        return OBJECT_ID;
+	return OBJECT_ID;
 }
 
 Object::Object()
 {
-        type = NULL;
-        setup();
+	type = NULL;
+	setup();
 }
 
-Object::Object(class ObjectType * type) 
+Object::Object(class ObjectType * type)
 {
-        this->type = type;
-        setup();
+	this->type = type;
+	setup();
 }
 
 void Object::setup()
 {
-        int i;
+	int i;
 
-        clink     = NULL;
-        for (i = 0; i < OBJ_NUM_HOOKS; i++) {
-                hook_list_init(&hooks[i]);
-        }
-        x               = -1;
-        y               = -1;
-        place           = NULL;
-        selected        = false;
-        destroyed       = false;
-        tag             = 0;
-        action_points   = 0; /* FIXME: assumes no debt */
-        control_mode    = CONTROL_MODE_AUTO;
-        camera_attached = false;
-        hp              = 0;
-        is_on_map       = false;
-        conv            = NULL;
-        view            = NULL;
-        saved           = 0;
-        handle          = 0;
-        refcount        = 0;
-        count           = 1;
-        gob             = NULL;
-        current_sprite  = NULL;
-        opacity         = false;
-        light           = 0;
-        temporary       = false;
-        forceEffect     = false;
-        pclass          = PCLASS_NONE;
-        ttl             = -1; // everlasting by default
-        started         = false;
-        facing          = SPRITE_DEF_FACING;
-        ignoreTimeStop  = false;
-        submerged       = false;
-        portrait        = NULL;
+	clink = NULL;
+	for (i = 0; i < OBJ_NUM_HOOKS; i++) {
+		hook_list_init(&hooks[i]);
+	}
+	x = -1;
+	y = -1;
+	place = NULL;
+	selected = false;
+	destroyed = false;
+	tag = 0;
+	action_points = 0;	/* FIXME: assumes no debt */
+	control_mode = CONTROL_MODE_AUTO;
+	camera_attached = false;
+	hp = 0;
+	is_on_map = false;
+	conv = NULL;
+	view = NULL;
+	saved = 0;
+	handle = 0;
+	refcount = 0;
+	count = 1;
+	gob = NULL;
+	current_sprite = NULL;
+	opacity = false;
+	light = 0;
+	temporary = false;
+	forceEffect = false;
+	pclass = PCLASS_NONE;
+	ttl = -1;		// everlasting by default
+	started = false;
+	facing = SPRITE_DEF_FACING;
+	ignoreTimeStop = false;
+	submerged = false;
+	portrait = NULL;
 
-        if (getObjectType() && ! getObjectType()->isVisible())
-                visible = 0;
-        else
-                visible = 1;
+	if (getObjectType() && !getObjectType()->isVisible())
+		visible = 0;
+	else
+		visible = 1;
 
-        // Four is the typical max number of frames, so using more will not
-        // help (it won't hurt either, sprites.c will ensure the frame is
-        // within what the sprite will actually support).
-        sprite_frame = rand() % 4;
+	// Four is the typical max number of frames, so using more will not
+	// help (it won't hurt either, sprites.c will ensure the frame is
+	// within what the sprite will actually support).
+	sprite_frame = rand() % 4;
 }
 
 Object::~Object()
 {
-        int i;
+	int i;
 
-        if (refcount) {
-                dbg("refcount=%d\n", refcount);
-                assert(! refcount);
-        }
+	if (refcount) {
+		dbg("refcount=%d\n", refcount);
+		assert(!refcount);
+	}
+	//dbg("destroying %d %08lx %s\n", refcount, this, getName());
 
-        //dbg("destroying %d %08lx %s\n", refcount, this, getName());
+	if (handle) {
+		session_rm(Session, handle);
+		handle = 0;
+	}
+	if (tag) {
+		free(tag);
+		tag = 0;
+	}
 
-        if (handle) {
-                session_rm(Session, handle);
-                handle = 0;
-        }
-        if (tag) {
-                free(tag);
-                tag = 0;
-        }
+	if (gob)
+		gob_del(gob);
 
-        if (gob)
-                gob_del(gob);
+	if (getView()) {
+		rmView();
+		mapDestroyView(getView());
+		setView(NULL);
+	}
 
-        if (getView()) {
-                rmView();
-                mapDestroyView(getView());
-                setView(NULL);                
-        }                
+	if (conv) {
+		conv_unref(conv);
+	}
+	// For each type of hook...
+	for (i = 0; i < OBJ_NUM_HOOKS; i++) {
 
-        if (conv) {
-                conv_unref(conv);
-        }
+		// Shouldn't be destroying the object while one of its hook
+		// lists is locked.
+		assert(!hook_list_locked(&hooks[i]));
 
-        // For each type of hook...
-        for (i = 0; i < OBJ_NUM_HOOKS; i++) {
-
-                // Shouldn't be destroying the object while one of its hook
-                // lists is locked.
-                assert(! hook_list_locked(&hooks[i]));
-
-                // This is a hack to workaround a bug due to a design flaw. A
-                // request has been logged to fix the design flaw [SF
-                // 1568398]. It will be a "deep" fix, and I expect it to add
-                // lots of new bugs, so I'm going to see if this relatively
-                // easy change will get us by a bit longer.
-                //
-                // The bug is this: we land here in the process of a
-                // session_del() call. Some of our effects have already been
-                // destroyed. In hookForEach() it will inspect some of these
-                // effects, not knowing that they are destroyed, and cause a
-                // crash. So instead of using hookForEach() I'm going to
-                // destroy the lists by hand right here without calling any
-                // hook removal closures or anything like that.
-                struct list *lptr;
-                struct hook_list *hl;
-                hl = &hooks[i];
-                lptr = hook_list_first(hl);
-                while (lptr != hook_list_end(hl)) {
-                        hook_entry_t *he = outcast(lptr, hook_entry_t, list);
-                        lptr = lptr->next;
-                        list_remove(&he->list);
-                        hook_entry_del(he);
-                }
-        }
+		// This is a hack to workaround a bug due to a design flaw. A
+		// request has been logged to fix the design flaw [SF
+		// 1568398]. It will be a "deep" fix, and I expect it to add
+		// lots of new bugs, so I'm going to see if this relatively
+		// easy change will get us by a bit longer.
+		//
+		// The bug is this: we land here in the process of a
+		// session_del() call. Some of our effects have already been
+		// destroyed. In hookForEach() it will inspect some of these
+		// effects, not knowing that they are destroyed, and cause a
+		// crash. So instead of using hookForEach() I'm going to
+		// destroy the lists by hand right here without calling any
+		// hook removal closures or anything like that.
+		struct list *lptr;
+		struct hook_list *hl;
+		hl = &hooks[i];
+		lptr = hook_list_first(hl);
+		while (lptr != hook_list_end(hl)) {
+			hook_entry_t *he = outcast(lptr, hook_entry_t, list);
+			lptr = lptr->next;
+			list_remove(&he->list);
+			hook_entry_del(he);
+		}
+	}
 }
 
 int Object::getX()
 {
-        return x;
+	return x;
 }
 
 int Object::getY()
 {
-        return y;
+	return y;
 }
 
 struct place *Object::getPlace()
 {
-        return place;
+	return place;
 }
 
 struct sprite *Object::getSprite()
 {
-        if (current_sprite)
-                return current_sprite;
-        if (type)
-                return type->getSprite();
-        return NULL;
+	if (current_sprite)
+		return current_sprite;
+	if (type)
+		return type->getSprite();
+	return NULL;
 }
 
 bool Object::isSelected()
 {
-        return selected;
+	return selected;
 }
 
 enum layer Object::getLayer(void)
 {
-        // subtle: ~Being runs, calls ~Object, calls hookForEach to delete all
-        // the hooks, but there's an invalid hook which gets it's rm closure
-        // invoked. In that closure it calls kern-obj-is-being, which lands us
-        // here instead of Being::getLayer() because of where we are in the
-        // destructor chain, and Being's have no object type... hopefully since
-        // the object is being destroyed it doesn't really matter what the
-        // layer is.
-        if (getObjectType())
-                return getObjectType()->getLayer();
-        else
-                return null_layer;
+	// subtle: ~Being runs, calls ~Object, calls hookForEach to delete all
+	// the hooks, but there's an invalid hook which gets it's rm closure
+	// invoked. In that closure it calls kern-obj-is-being, which lands us
+	// here instead of Being::getLayer() because of where we are in the
+	// destructor chain, and Being's have no object type... hopefully since
+	// the object is being destroyed it doesn't really matter what the
+	// layer is.
+	if (getObjectType())
+		return getObjectType()->getLayer();
+	else
+		return null_layer;
 }
 
 const char *Object::getName(void)
 {
-        if (type)
-                return type->getName();
-        return "<no type>";
+	if (type)
+		return type->getName();
+	return "<no type>";
 }
 
 class ObjectType *Object::getObjectType()
 {
-        return type;
+	return type;
 }
 
 bool Object::isDestroyed()
 {
-        return destroyed;
+	return destroyed;
 }
-
 
 void Object::setX(int x)
 {
-        this->x = x;
+	this->x = x;
 }
 
 void Object::setY(int y)
 {
-        this->y = y;
+	this->y = y;
 }
 
 void Object::changeX(int dx)
 {
-        this->x += dx;
+	this->x += dx;
 }
 
 void Object::changeY(int dy)
 {
-        this->y += dy;
+	this->y += dy;
 }
 
 void Object::setPlace(struct place *place)
 {
-        this->place = place;
+	this->place = place;
 }
 
 void Object::select(bool val)
 {
-        if (val == isSelected())
-                return;
+	if (val == isSelected())
+		return;
 
-        if (val) {
-                mapSetSelected(this);
-        } else if (isSelected()) {
-                mapSetSelected(NULL);
-        }
+	if (val) {
+		mapSetSelected(this);
+	} else if (isSelected()) {
+		mapSetSelected(NULL);
+	}
 
-        selected = val;
-        mapUpdateTile(getPlace(), getX(), getY());        
-        //mapUpdate(0);
+	selected = val;
+	mapUpdateTile(getPlace(), getX(), getY());
+	//mapUpdate(0);
 }
 
 void Object::destroy()
 {
-        destroyed = true;
-        if (isSelected())
-                select(false);
-        remove();
+	destroyed = true;
+	if (isSelected())
+		select(false);
+	remove();
 }
 
 int Object::getLight()
 {
-        return light;
+	return light;
 }
 
 void Object::exec()
 {
-        startTurn();
-        if (getObjectType()->canExec())
-                getObjectType()->exec(this);
-        endTurn(); // warn: might destroy this!
-        Object::decrementTTL(this); // might destroy the object!
+	startTurn();
+	if (getObjectType()->canExec())
+		getObjectType()->exec(this);
+	endTurn();		// warn: might destroy this!
+	Object::decrementTTL(this);	// might destroy the object!
 }
 
 void Object::synchronize()
@@ -930,8 +919,8 @@ void Object::synchronize()
 
 bool Object::isVisible()
 {
-        //return getObjectType()->isVisible();
-        return visible > 0;
+	//return getObjectType()->isVisible();
+	return visible > 0;
 }
 
 void Object::setVisible(bool val)
@@ -940,73 +929,73 @@ void Object::setVisible(bool val)
 		visible++;
 	else {
 		visible--;
-                if (visible < 0 && getName()) {
-                        printf("%s: %d\n", getName(), visible);
-                }
-        }
+		if (visible < 0 && getName()) {
+			printf("%s: %d\n", getName(), visible);
+		}
+	}
 }
 
 bool Object::isSubmerged()
 {
-        return submerged;
+	return submerged;
 }
 
 void Object::setSubmerged(bool val)
 {
-        submerged = val;
+	submerged = val;
 }
 
 bool Object::isShaded()
 {
-        return isSubmerged();
+	return isSubmerged();
 }
 
 void Object::setOpacity(bool val)
 {
-        // If the opacity is changing then invalidate the view mask cache in
-        // the surrounding area.
-        if (val != opacity && isOnMap())
-                vmask_invalidate(getPlace(), getX(), getY(), 1, 1);                
+	// If the opacity is changing then invalidate the view mask cache in
+	// the surrounding area.
+	if (val != opacity && isOnMap())
+		vmask_invalidate(getPlace(), getX(), getY(), 1, 1);
 
-        opacity = val;
+	opacity = val;
 }
 
 bool Object::isOpaque()
 {
-        return opacity;
+	return opacity;
 }
 
 bool Object::joinPlayer()
 {
-        return false;
+	return false;
 }
 
 int Object::getActivity()
 {
-        return 0;
+	return 0;
 }
 
 int Object::getActionPointsPerTurn()
 {
-        int baseAP = (int)(getSpeed() * session_get_time_accel());
+	int baseAP = (int)(getSpeed() * session_get_time_accel());
 
-        // If 'Quicken' is in effect then give player-controlled objects bonus
-        // action points per turn.
-        if (Quicken > 0 && isPlayerControlled()) {
-                return baseAP * 2;
-        }
+	// If 'Quicken' is in effect then give player-controlled objects bonus
+	// action points per turn.
+	if (Quicken > 0 && isPlayerControlled()) {
+		return baseAP * 2;
+	}
+	// If 'TimeStop' is in effect then give action points ONLY to
+	// player-controlled objects.
+	if (TimeStop && !isPlayerControlled()) {
+		return 0;
+	}
 
-        // If 'TimeStop' is in effect then give action points ONLY to
-        // player-controlled objects.
-        if (TimeStop && ! isPlayerControlled()) {
-                return 0;
-        }
-
-        return baseAP;
+	return baseAP;
 }
-void Object::applyEffect(closure_t *effect)
+
+void Object::applyEffect(closure_t * effect)
 {
-        closure_exec(effect, "p", this);
+	closure_exec(effect, "p", this);
 }
 
 void Object::burn()
@@ -1019,42 +1008,41 @@ void Object::sleep()
 
 sound_t *Object::getDamageSound()
 {
-        return NULL_SOUND;
+	return NULL_SOUND;
 }
 
 void Object::damage(int amount)
 {
-        // Paint the red "*" damage symbol over the character's icon on the map
-        if (isOnMap()) {
-                mapPaintDamage(getX(), getY());        
-                sound_play(getDamageSound(), SOUND_MAX_VOLUME);
-        }
+	// Paint the red "*" damage symbol over the character's icon on the map
+	if (isOnMap()) {
+		mapPaintDamage(getX(), getY());
+		sound_play(getDamageSound(), SOUND_MAX_VOLUME);
+	}
 
-        runHook(OBJ_HOOK_DAMAGE, 0);
+	runHook(OBJ_HOOK_DAMAGE, 0);
 }
 
-void Object::inflictDamage(int amount, class Character *attacker)
+void Object::inflictDamage(int amount, class Character * attacker)
 {
-    damage(amount);
+	damage(amount);
 }
 
 int Object::getActionPoints()
 {
-        return action_points;
+	return action_points;
 }
-
 
 void Object::setActionPoints(int amount)
 {
-        action_points = amount;
-        if (isPlayerControlled()) {
-                statusRepaint();
-        }
+	action_points = amount;
+	if (isPlayerControlled()) {
+		statusRepaint();
+	}
 }
 
 void Object::decrementActionPoints(int points)
 {
-        setActionPoints(action_points - points);
+	setActionPoints(action_points - points);
 }
 
 void Object::endTurn()
@@ -1066,400 +1054,398 @@ void Object::endTurn()
 
 void Object::startTurn()
 {
-        setActionPoints(action_points + getActionPointsPerTurn());
-        runHook(OBJ_HOOK_START_OF_TURN, 0);
+	setActionPoints(action_points + getActionPointsPerTurn());
+	runHook(OBJ_HOOK_START_OF_TURN, 0);
 }
 
 int Object::getSpeed()
 {
-        return getObjectType()->getSpeed();
+	return getObjectType()->getSpeed();
 }
 
 int Object::getRequiredActionPoints()
 {
-        return getObjectType()->getRequiredActionPoints();
+	return getObjectType()->getRequiredActionPoints();
 }
 
 bool Object::isOnMap()
 {
-        return is_on_map;
+	return is_on_map;
 }
 
 bool Object::isDead()
 {
-        return false;
+	return false;
 }
 
 enum control_mode Object::getControlMode()
 {
-        return control_mode;
+	return control_mode;
 }
 
 void Object::setControlMode(enum control_mode mode)
 {
-    control_mode = mode;
+	control_mode = mode;
 }
 
 void Object::attachCamera(bool val)
 {
-        if (camera_attached == val)
-                return;
+	if (camera_attached == val)
+		return;
 
-        camera_attached = val;
+	camera_attached = val;
 
-        if (val)
-                mapAttachCamera(this);
-        else
-                mapDetachCamera(this);
+	if (val)
+		mapAttachCamera(this);
+	else
+		mapDetachCamera(this);
 }
 
 bool Object::isCameraAttached()
 {
-        return camera_attached;
+	return camera_attached;
 }
 
 bool Object::isTurnEnded()
 {
-        return (getActionPoints() <= 0 || isDead() || Quit);
+	return (getActionPoints() <= 0 || isDead() || Quit);
 }
 
 bool Object::isPlayerPartyMember()
 {
-        return false;
+	return false;
 }
 
-bool Object::addToInventory(class Object *object)
+bool Object::addToInventory(class Object * object)
 {
-        return false;
+	return false;
 }
 
-bool Object::hasInInventory(class ObjectType *object)
+bool Object::hasInInventory(class ObjectType * object)
 {
-        return false;
+	return false;
 }
 
 void Object::heal(int amount)
 {
-        amount = min(amount, getMaxHp() - hp);
-        hp += amount;
+	amount = min(amount, getMaxHp() - hp);
+	hp += amount;
 }
 
 bool Object::isPlayerControlled()
 {
-        return false;
+	return false;
 }
 
 int Object::getMaxHp()
 {
-        return getObjectType()->getMaxHp();
+	return getObjectType()->getMaxHp();
 }
 
 int Object::getHp()
 {
-        return hp;
+	return hp;
 }
 
-bool Object::isCompanionOf(class Object *other)
+bool Object::isCompanionOf(class Object * other)
 {
-        return false;
+	return false;
 }
 
 int Object::getPclass()
 {
-        return pclass;
+	return pclass;
 }
 
 void Object::setPclass(int val)
 {
-        pclass = val;
+	pclass = val;
 }
 
 int Object::getMovementCost(int pclass)
-{        
-        if (pclass == PCLASS_NONE)
-                return 0;
+{
+	if (pclass == PCLASS_NONE)
+		return 0;
 
-        struct mmode *mmode = getMovementMode();
-        if (! mmode)
-                return PTABLE_IMPASSABLE;
+	struct mmode *mmode = getMovementMode();
+	if (!mmode)
+		return PTABLE_IMPASSABLE;
 
-        return ptable_get(session_ptable(), mmode->index, pclass);
+	return ptable_get(session_ptable(), mmode->index, pclass);
 }
 
 bool Object::isPassable(int pclass)
 {
-        return (getMovementCost(pclass) != PTABLE_IMPASSABLE);
+	return (getMovementCost(pclass) != PTABLE_IMPASSABLE);
 }
 
-bool Object::putOnMap(struct place *new_place, int new_x, int new_y, int r,
-                      int flags)
+bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
+		      int flags)
 {
-        // --------------------------------------------------------------------
-        // Put an object on a map. If possible, put it at (new_x, new_y). If
-        // that's not possible then put it at some other (x, y) such that:
-        // 
-        // o (x, y) is with radius r of (new_x, new_y)
-        //
-        // o The object can find a path from (x, y) to (new_x, new_y)
-        //
-        // If no such (x, y) exists then return false without placing the
-        // object.
-        // --------------------------------------------------------------------
+	// --------------------------------------------------------------------
+	// Put an object on a map. If possible, put it at (new_x, new_y). If
+	// that's not possible then put it at some other (x, y) such that:
+	// 
+	// o (x, y) is with radius r of (new_x, new_y)
+	//
+	// o The object can find a path from (x, y) to (new_x, new_y)
+	//
+	// If no such (x, y) exists then return false without placing the
+	// object.
+	// --------------------------------------------------------------------
 
-        char *visited;
-        char *queued;
-        bool ret = false;
-        int i;
-        int rx;
-        int ry;
-        int *q_x;
-        int *q_y;
-        int index;
-        int q_head;
-        int q_tail;
-        int q_size;
-        int x_offsets[] = { -1, 1, 0, 0 };
-        int y_offsets[] = { 0, 0, -1, 1 };
-        
-        printf("Putting %s near (%d %d)\n", getName(), new_x, new_y);
+	char *visited;
+	char *queued;
+	bool ret = false;
+	int i;
+	int rx;
+	int ry;
+	int *q_x;
+	int *q_y;
+	int index;
+	int q_head;
+	int q_tail;
+	int q_size;
+	int x_offsets[] = { -1, 1, 0, 0 };
+	int y_offsets[] = { 0, 0, -1, 1 };
 
-        // --------------------------------------------------------------------
-        // Although the caller specified a radius, internally I use a bounding
-        // box. Assign the upper left corner in place coordinates. I don't
-        // *think* I have to worry about wrapping coordinates because all the
-        // place_* methods should do that internally.
-        // --------------------------------------------------------------------
+	printf("Putting %s near (%d %d)\n", getName(), new_x, new_y);
 
-        rx = new_x - (r / 2);
-        ry = new_y - (r / 2);
+	// --------------------------------------------------------------------
+	// Although the caller specified a radius, internally I use a bounding
+	// box. Assign the upper left corner in place coordinates. I don't
+	// *think* I have to worry about wrapping coordinates because all the
+	// place_* methods should do that internally.
+	// --------------------------------------------------------------------
 
-        // --------------------------------------------------------------------
-        // Initialize the 'visited' table and the coordinate search queues. The
-        // queues must be large enough to hold all the tiles in the bounding
-        // box, plus an extra ring around it. The extra ring is for the case
-        // where we enqueue the neighbors of tiles that are right on the edge
-        // of the bounding box. We won't know the neighbors are bad until we
-        // pop them off the queue and check them.
-        // --------------------------------------------------------------------
+	rx = new_x - (r / 2);
+	ry = new_y - (r / 2);
 
-        q_size = r * r;
+	// --------------------------------------------------------------------
+	// Initialize the 'visited' table and the coordinate search queues. The
+	// queues must be large enough to hold all the tiles in the bounding
+	// box, plus an extra ring around it. The extra ring is for the case
+	// where we enqueue the neighbors of tiles that are right on the edge
+	// of the bounding box. We won't know the neighbors are bad until we
+	// pop them off the queue and check them.
+	// --------------------------------------------------------------------
 
-        visited = (char*)calloc(sizeof(char), q_size);
-        if (NULL == visited)
-                return false;
-                
-        q_x = (int*)calloc(sizeof(int), q_size);
-        if (NULL == q_x) {
-                goto free_visited;
-        }
+	q_size = r * r;
 
-        q_y = (int*)calloc(sizeof(int), q_size);
-        if (NULL == q_y) {
-                goto free_q_x;
-        }
+	visited = (char *)calloc(sizeof(char), q_size);
+	if (NULL == visited)
+		return false;
 
-        queued = (char*)calloc(sizeof(char), q_size);
-        if (NULL == queued)
-                goto free_q_y;
+	q_x = (int *)calloc(sizeof(int), q_size);
+	if (NULL == q_x) {
+		goto free_visited;
+	}
 
-        // --------------------------------------------------------------------
-        // Enqueue the preferred location to start the search.
-        // --------------------------------------------------------------------
+	q_y = (int *)calloc(sizeof(int), q_size);
+	if (NULL == q_y) {
+		goto free_q_x;
+	}
+
+	queued = (char *)calloc(sizeof(char), q_size);
+	if (NULL == queued)
+		goto free_q_y;
+
+	// --------------------------------------------------------------------
+	// Enqueue the preferred location to start the search.
+	// --------------------------------------------------------------------
 
 #define INDEX(x,y) (((y)-ry) * r + ((x)-rx))
 
-        q_head        = 0;
-        q_tail        = 0;
-        q_x[q_tail]   = new_x;
-        q_y[q_tail]   = new_y;
-        index         = INDEX(new_x, new_y);
-        assert(index >= 0);
-        assert(index < q_size);
-        queued[index] = 1;
-        q_tail++;
+	q_head = 0;
+	q_tail = 0;
+	q_x[q_tail] = new_x;
+	q_y[q_tail] = new_y;
+	index = INDEX(new_x, new_y);
+	assert(index >= 0);
+	assert(index < q_size);
+	queued[index] = 1;
+	q_tail++;
 
-        // --------------------------------------------------------------------
-        // Run through the search queue until it is exhausted or a safe
-        // position has been found.
-        // --------------------------------------------------------------------
+	// --------------------------------------------------------------------
+	// Run through the search queue until it is exhausted or a safe
+	// position has been found.
+	// --------------------------------------------------------------------
 
-        while (q_head != q_tail) {
+	while (q_head != q_tail) {
 
-                // ------------------------------------------------------------
-                // Dequeue the next location to check.
-                // ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// Dequeue the next location to check.
+		// ------------------------------------------------------------
 
-                new_x = q_x[q_head];
-                new_y = q_y[q_head];
-                q_head++;
+		new_x = q_x[q_head];
+		new_y = q_y[q_head];
+		q_head++;
 
-                printf("Checking (%d,%d)...", new_x, new_y);
+		printf("Checking (%d,%d)...", new_x, new_y);
 
-                // ------------------------------------------------------------
-                // Has the location already been visited? (If not then mark it
-                // as visited now).
-                // ------------------------------------------------------------
-                
-                index = INDEX(new_x, new_y);
-                assert(index >= 0);
-                assert(index < q_size);
+		// ------------------------------------------------------------
+		// Has the location already been visited? (If not then mark it
+		// as visited now).
+		// ------------------------------------------------------------
 
-                if (0 != visited[index]) {
-                        printf("already checked\n");
-                        continue;
-                }
-                visited[index] = 1;
+		index = INDEX(new_x, new_y);
+		assert(index >= 0);
+		assert(index < q_size);
 
-                // ------------------------------------------------------------
-                // Is the location off the map or impassable?
-                // ------------------------------------------------------------
-                
-                if (place_off_map(new_place, new_x, new_y) ||
-                    ! place_is_passable(new_place, new_x, new_y, this, flags)){
-                        continue;
-                }
+		if (0 != visited[index]) {
+			printf("already checked\n");
+			continue;
+		}
+		visited[index] = 1;
 
-                // ------------------------------------------------------------
-                // Is the location occupied or hazardous?
-                // ------------------------------------------------------------
+		// ------------------------------------------------------------
+		// Is the location off the map or impassable?
+		// ------------------------------------------------------------
 
-                if ((! (flags & PFLAG_IGNOREBEINGS) &&
-                     place_is_occupied(new_place, new_x, new_y)) ||
-                    (! (flags & PFLAG_IGNOREHAZARDS) &&
-                     place_is_hazardous(new_place, new_x, new_y))) {
+		if (place_off_map(new_place, new_x, new_y) ||
+		    !place_is_passable(new_place, new_x, new_y, this, flags)) {
+			continue;
+		}
+		// ------------------------------------------------------------
+		// Is the location occupied or hazardous?
+		// ------------------------------------------------------------
 
-                        printf("occupied or hazardous\n");
+		if ((!(flags & PFLAG_IGNOREBEINGS) &&
+		     place_is_occupied(new_place, new_x, new_y)) ||
+		    (!(flags & PFLAG_IGNOREHAZARDS) &&
+		     place_is_hazardous(new_place, new_x, new_y))) {
 
-                        // ----------------------------------------------------
-                        // This place is not suitable, but its neighbors might
-                        // be. Put them on the queue.
-                        // ----------------------------------------------------
+			printf("occupied or hazardous\n");
 
-                        for (i = 0; i < array_sz(x_offsets); i++) {
+			// ----------------------------------------------------
+			// This place is not suitable, but its neighbors might
+			// be. Put them on the queue.
+			// ----------------------------------------------------
 
-                                int neighbor_x;
-                                int neighbor_y;
-                                int neighbor_index;
+			for (i = 0; i < array_sz(x_offsets); i++) {
 
-                                neighbor_x = new_x + x_offsets[i];
-                                neighbor_y = new_y + y_offsets[i];
+				int neighbor_x;
+				int neighbor_y;
+				int neighbor_index;
 
-                                // --------------------------------------------
-                                // Is the neighbor outside the search radius?
-                                // --------------------------------------------
+				neighbor_x = new_x + x_offsets[i];
+				neighbor_y = new_y + y_offsets[i];
 
-                                if (neighbor_x < rx        ||
-                                    neighbor_y < ry        ||
-                                    neighbor_x >= (rx + r) ||
-                                    neighbor_y >= (ry + r)) {
-                                        continue;
-                                }
-                                
-                                // --------------------------------------------
-                                // Has the neighbor already been queued?
-                                // --------------------------------------------
+				// --------------------------------------------
+				// Is the neighbor outside the search radius?
+				// --------------------------------------------
 
-                                neighbor_index = INDEX(neighbor_x, neighbor_y);
-                                assert(neighbor_index >= 0);
-                                assert(neighbor_index < (q_size));
+				if (neighbor_x < rx ||
+				    neighbor_y < ry ||
+				    neighbor_x >= (rx + r) ||
+				    neighbor_y >= (ry + r)) {
+					continue;
+				}
+				// --------------------------------------------
+				// Has the neighbor already been queued?
+				// --------------------------------------------
 
-                                if (queued[neighbor_index])
-                                        continue;
+				neighbor_index = INDEX(neighbor_x, neighbor_y);
+				assert(neighbor_index >= 0);
+				assert(neighbor_index < (q_size));
 
-                                // --------------------------------------------
-                                // Enqueue the neighbor
-                                // --------------------------------------------
+				if (queued[neighbor_index])
+					continue;
 
-                                assert(q_tail < (q_size));
+				// --------------------------------------------
+				// Enqueue the neighbor
+				// --------------------------------------------
 
-                                q_x[q_tail] = neighbor_x;
-                                q_y[q_tail] = neighbor_y;
-                                q_tail++;
-                                queued[neighbor_index] = 1;
-                        }
-                        
-                        continue;
-                }
+				assert(q_tail < (q_size));
 
-                // ------------------------------------------------------------
-                // I've found a good spot, and I know that I can pathfind back
-                // to the preferred location from here because of the manner in
-                // which I found it.
-                //
-                // Note: we don't want to activate step triggers while doing
-                // this. One example of why this is bad is if we get here by
-                // coming through a moongate on a town map. If the moongate is
-                // in a state where it leads to itself we could end up
-                // re-entering it with the relocate call below if we allowed
-                // stepping.
-                // ------------------------------------------------------------
+				q_x[q_tail] = neighbor_x;
+				q_y[q_tail] = neighbor_y;
+				q_tail++;
+				queued[neighbor_index] = 1;
+			}
 
-                printf("OK!\n");
-                relocate(new_place, new_x, new_y, REL_NOSTEP, NULL);
-                ret = true;
+			continue;
+		}
+		// ------------------------------------------------------------
+		// I've found a good spot, and I know that I can pathfind back
+		// to the preferred location from here because of the manner in
+		// which I found it.
+		//
+		// Note: we don't want to activate step triggers while doing
+		// this. One example of why this is bad is if we get here by
+		// coming through a moongate on a town map. If the moongate is
+		// in a state where it leads to itself we could end up
+		// re-entering it with the relocate call below if we allowed
+		// stepping.
+		// ------------------------------------------------------------
 
-                goto done;
-        }
+		printf("OK!\n");
+		relocate(new_place, new_x, new_y, REL_NOSTEP, NULL);
+		ret = true;
 
-        // --------------------------------------------------------------------
-        // Didn't find anyplace suitable. Return false. If the caller wants to
-        // force placement I'll leave it to their discretion.
-        // --------------------------------------------------------------------
+		goto done;
+	}
 
-        printf("NO PLACE FOUND!\n");
+	// --------------------------------------------------------------------
+	// Didn't find anyplace suitable. Return false. If the caller wants to
+	// force placement I'll leave it to their discretion.
+	// --------------------------------------------------------------------
+
+	printf("NO PLACE FOUND!\n");
 
  done:
-        free(queued);
+	free(queued);
  free_q_y:
-        free(q_y);
+	free(q_y);
  free_q_x:
-        free(q_x);
+	free(q_x);
  free_visited:
-        free(visited);
+	free(visited);
 
-        return ret;
+	return ret;
 
 }
 
 struct mview *Object::getView()
 {
-        return view;
+	return view;
 }
 
 int Object::getVisionRadius()
 {
-        return 0;
+	return 0;
 }
 
 void Object::addView()
 {
-        if (NULL != getView()) {
-                mapAddView(getView());
-                updateView();
-        }
+	if (NULL != getView()) {
+		mapAddView(getView());
+		updateView();
+	}
 }
 
 void Object::rmView()
 {
-        if (NULL != getView()) {
-                mapRmView(getView());
-        }
+	if (NULL != getView()) {
+		mapRmView(getView());
+	}
 }
 
 void Object::updateView()
 {
-        assert(isOnMap());
+	assert(isOnMap());
 
-        if (NULL != getView()) {
-                mapCenterView(getView(), getX(), getY());
-                mapSetRadius(getView(), min(getVisionRadius(), MAX_VISION_RADIUS));
-                mapSetDirty();
-        }
+	if (NULL != getView()) {
+		mapCenterView(getView(), getX(), getY());
+		mapSetRadius(getView(),
+			     min(getVisionRadius(), MAX_VISION_RADIUS));
+		mapSetDirty();
+	}
 }
 
 void Object::setView(struct mview *new_view)
 {
-        view = new_view;
+	view = new_view;
 }
 
 void Object::changePlaceHook()
@@ -1468,628 +1454,612 @@ void Object::changePlaceHook()
 
 int Object::getDx()
 {
-        return dx;
+	return dx;
 }
 
 int Object::getDy()
 {
-        return dy;
+	return dy;
 }
+
 bool Object::canWanderTo(int newx, int newy)
 {
-        return true;
+	return true;
 }
+
 enum MoveResult Object::move(int dx, int dy)
 {
-        return NotApplicable;
+	return NotApplicable;
 }
 
 void Object::save(struct save *save)
 {
-        // Create the object within a 'let' block
-        save->enter(save, "(let ((kobj (kern-mk-obj %s %d\n", 
-                    getObjectType()->getTag(), 
-                    getCount());
-        saveHooks(save);
-        save->write(save, ")))\n");
+	// Create the object within a 'let' block
+	save->enter(save, "(let ((kobj (kern-mk-obj %s %d\n",
+		    getObjectType()->getTag(), getCount());
+	saveHooks(save);
+	save->write(save, ")))\n");
 
-        // Assign the tag.
-        if (tag) {
-                save->write(save, "(kern-tag '%s kobj)\n", tag);
-        }
-
-        // Save the gob binding.
-        if (getGob()) {
-                save->enter(save, "(bind kobj\n");
-                gob_save(getGob(), save);
-                save->exit(save, ")\n");
-        }
-
-        // Save time-to-live.
-        if (getTTL() != -1) {
-                save->write(save, "(kern-obj-set-ttl kobj %d)\n",
-                            getTTL());
-        }
-
-        // Set the custom sprite.
-        if (current_sprite) {
-                save->enter(save, "(kern-obj-set-sprite kobj\n");
-                sprite_save(current_sprite, save);
-                save->exit(save, ")\n");
-        }
-
-        // Set the facing
-        if (SPRITE_DEF_FACING != facing) {
-                save->write(save, "(kern-obj-set-facing kobj %d)\n", facing);
-        }
-
-        // Set the ignore-time-stop flag
-        if (ignoreTimeStop) {
-                save->write(save, "(kern-obj-set-ignore-time-stop kobj #t)\n");
-        }
-
-        // Set the submerged flag
-        if (submerged) {
-                save->write(save, "(kern-obj-set-submerged kobj #t)\n");
-        }
-
+	// Assign the tag.
+	if (tag) {
+		save->write(save, "(kern-tag '%s kobj)\n", tag);
+	}
+	// Save the gob binding.
+	if (getGob()) {
+		save->enter(save, "(bind kobj\n");
+		gob_save(getGob(), save);
+		save->exit(save, ")\n");
+	}
+	// Save time-to-live.
+	if (getTTL() != -1) {
+		save->write(save, "(kern-obj-set-ttl kobj %d)\n", getTTL());
+	}
+	// Set the custom sprite.
+	if (current_sprite) {
+		save->enter(save, "(kern-obj-set-sprite kobj\n");
+		sprite_save(current_sprite, save);
+		save->exit(save, ")\n");
+	}
+	// Set the facing
+	if (SPRITE_DEF_FACING != facing) {
+		save->write(save, "(kern-obj-set-facing kobj %d)\n", facing);
+	}
+	// Set the ignore-time-stop flag
+	if (ignoreTimeStop) {
+		save->write(save, "(kern-obj-set-ignore-time-stop kobj #t)\n");
+	}
+	// Set the submerged flag
+	if (submerged) {
+		save->write(save, "(kern-obj-set-submerged kobj #t)\n");
+	}
 	// Save the action point debt
 	save->write(save, "(kern-obj-set-ap kobj %d)\n", action_points);
 
-        // Close the 'let' block, returning kobj as the last thing evaluated.
-        save->exit(save, "kobj)\n");
+	// Close the 'let' block, returning kobj as the last thing evaluated.
+	save->exit(save, "kobj)\n");
 
 }
 
-
 #define VALID_HOOK_ID(id) ((id) >= 0 && (id) < OBJ_NUM_HOOKS)
 
-void Object::hookForEach(int hook_id, 
-                         int (*cb)(struct hook_entry *entry, void *data),
-                         void *data)
+void Object::hookForEach(int hook_id,
+			 int (*cb) (struct hook_entry * entry, void *data),
+			 void *data)
 {
-        struct list *elem;
-        struct hook_list *hl;
-        int locked;
+	struct list *elem;
+	struct hook_list *hl;
+	int locked;
 
-        //dbg("hookForEach entry\n");
+	//dbg("hookForEach entry\n");
 
-        assert(VALID_HOOK_ID(hook_id));
-        hl = &hooks[hook_id];
+	assert(VALID_HOOK_ID(hook_id));
+	hl = &hooks[hook_id];
 
-        // Lock the hook list to prevent any removals or entry deletions while
-        // we're running it.
-        locked = hook_list_trylock(hl);
+	// Lock the hook list to prevent any removals or entry deletions while
+	// we're running it.
+	locked = hook_list_trylock(hl);
 
-        elem = hook_list_first(hl);
-        while (elem != hook_list_end(hl)) {
-        
-                hook_entry_t *entry;
+	elem = hook_list_first(hl);
+	while (elem != hook_list_end(hl)) {
 
-                entry = outcast(elem, hook_entry_t, list);
-                elem = elem->next;
+		hook_entry_t *entry;
 
-                // Check if the entry is invalid. Invalid entries are entries
-                // that somebody tried to remove while we had the hook list
-                // locked. Since we have the lock, we can remove/delete them
-                // now.
-                if (hook_entry_is_invalid(entry)) {
-                        if (locked) {
-                                //dbg("hookForEach: delete %p\n", entry);
-                                if (entry->effect->rm)
-                                        closure_exec(entry->effect->rm, "lp", 
-                                                     hook_entry_gob(entry), 
-                                                     this);
-                                list_remove(&entry->list);
-                                hook_entry_del(entry);
-                        }
-                        continue;
-                }
+		entry = outcast(elem, hook_entry_t, list);
+		elem = elem->next;
 
-                // Invoke the callback on the hook entry... this is the part
-                // that does anything interesting. If it returns non-zero then
-                // we skip running the rest of the hooks.
-                if (cb(entry, data))
-                        break;
-                        
-                if (isDestroyed())
-                        break;
-        }
+		// Check if the entry is invalid. Invalid entries are entries
+		// that somebody tried to remove while we had the hook list
+		// locked. Since we have the lock, we can remove/delete them
+		// now.
+		if (hook_entry_is_invalid(entry)) {
+			if (locked) {
+				//dbg("hookForEach: delete %p\n", entry);
+				if (entry->effect->rm)
+					closure_exec(entry->effect->rm, "lp",
+						     hook_entry_gob(entry),
+						     this);
+				list_remove(&entry->list);
+				hook_entry_del(entry);
+			}
+			continue;
+		}
+		// Invoke the callback on the hook entry... this is the part
+		// that does anything interesting. If it returns non-zero then
+		// we skip running the rest of the hooks.
+		if (cb(entry, data))
+			break;
 
-        hook_list_tryunlock(hl, locked);
-        //dbg("hookForEach exit\n");
+		if (isDestroyed())
+			break;
+	}
+
+	hook_list_tryunlock(hl, locked);
+	//dbg("hookForEach exit\n");
 
 }
 
 static int object_start_effect(struct hook_entry *entry, void *data)
 {
-        if (entry->effect->restart
-            && ! hook_entry_started(entry)) {
-                hook_entry_set_started(entry);
-                closure_exec(entry->effect->restart, "lp", hook_entry_gob(entry),
-                             data);
-        }
-        return 0;
+	if (entry->effect->restart && !hook_entry_started(entry)) {
+		hook_entry_set_started(entry);
+		closure_exec(entry->effect->restart, "lp",
+			     hook_entry_gob(entry), data);
+	}
+	return 0;
 }
 
 void Object::start(void)
 {
-        int i;
+	int i;
 
-        // Don't start effects multiple times.
-        if (started) {
-                return;
-        }
-        started = true;
+	// Don't start effects multiple times.
+	if (started) {
+		return;
+	}
+	started = true;
 
-        forceEffect = true;
-        for (i = 0; i < OBJ_NUM_HOOKS; i++) {
-                hookForEach(i, object_start_effect, this);
-        }
-        forceEffect = false;
+	forceEffect = true;
+	for (i = 0; i < OBJ_NUM_HOOKS; i++) {
+		hookForEach(i, object_start_effect, this);
+	}
+	forceEffect = false;
 }
 
 struct add_hook_hook_data {
-        struct effect *effect;
-        char reject : 1;
+	struct effect *effect;
+	char reject:1;
 };
 
-int object_run_add_hook_hook(hook_entry_t *entry, void *data)
+int object_run_add_hook_hook(hook_entry_t * entry, void *data)
 {
-        struct add_hook_hook_data *context;
-        context = (struct add_hook_hook_data *)data;
-        if (entry->effect->exec &&
-            closure_exec(entry->effect->exec, "lp", hook_entry_gob(entry),
-                         context->effect))
-                context->reject = 1;
-        return context->reject;
+	struct add_hook_hook_data *context;
+	context = (struct add_hook_hook_data *)data;
+	if (entry->effect->exec &&
+	    closure_exec(entry->effect->exec, "lp", hook_entry_gob(entry),
+			 context->effect))
+		context->reject = 1;
+	return context->reject;
 }
 
-int object_find_effect(hook_entry_t *entry, void *data)
+int object_find_effect(hook_entry_t * entry, void *data)
 {
-        struct add_hook_hook_data *context;
-        context = (struct add_hook_hook_data *)data;
-        if (entry->effect == context->effect)
-                context->reject = 1;
-        return context->reject;
+	struct add_hook_hook_data *context;
+	context = (struct add_hook_hook_data *)data;
+	if (entry->effect == context->effect)
+		context->reject = 1;
+	return context->reject;
 }
 
-bool Object::addEffect(struct effect *effect, struct gob *gob)
+bool Object::addEffect(struct effect * effect, struct gob * gob)
 {
-        hook_entry_t *entry;
-        struct add_hook_hook_data data;
-        int hook_id = effect->hook_id;
-        
-        assert(VALID_HOOK_ID(effect->hook_id));
+	hook_entry_t *entry;
+	struct add_hook_hook_data data;
+	int hook_id = effect->hook_id;
 
-        // Hack: NPC's don't go through a keystroke handler. For these,
-        // substitute the start-of-turn-hook for the keystroke-hook.
-        if (effect->hook_id == OBJ_HOOK_KEYSTROKE &&
-            ! isPlayerControlled())
-                hook_id = OBJ_HOOK_START_OF_TURN;
+	assert(VALID_HOOK_ID(effect->hook_id));
 
-        // Use the same data structure to search for the effect and to check
-        // for countereffects.
-        data.effect = effect;
-        data.reject = 0;
+	// Hack: NPC's don't go through a keystroke handler. For these,
+	// substitute the start-of-turn-hook for the keystroke-hook.
+	if (effect->hook_id == OBJ_HOOK_KEYSTROKE && !isPlayerControlled())
+		hook_id = OBJ_HOOK_START_OF_TURN;
 
-        // For non-cumulative effects Check if the effect is already applied.
-        if (! effect->cumulative) {
-                hookForEach(hook_id, object_find_effect, &data);
-                if (data.reject)
-                        return false;
-        }
+	// Use the same data structure to search for the effect and to check
+	// for countereffects.
+	data.effect = effect;
+	data.reject = 0;
 
-        // If we're starting up the object then "force" effects to be applied,
-        // without checking for immunities. This works around the
-        // script-kernel-script recursion that will otherwise occur, and which
-        // will make summoning creatures with native effects not work from the
-        // script.
-        if (! forceEffect) {
+	// For non-cumulative effects Check if the effect is already applied.
+	if (!effect->cumulative) {
+		hookForEach(hook_id, object_find_effect, &data);
+		if (data.reject)
+			return false;
+	}
+	// If we're starting up the object then "force" effects to be applied,
+	// without checking for immunities. This works around the
+	// script-kernel-script recursion that will otherwise occur, and which
+	// will make summoning creatures with native effects not work from the
+	// script.
+	if (!forceEffect) {
 
-                // Run the add-hook entries to see if any of these will block
-                // this new entry from being added. This is how immunities are
-                // implemented, BTW.
-                hookForEach(OBJ_HOOK_ADD_HOOK, object_run_add_hook_hook, 
-                            &data);
+		// Run the add-hook entries to see if any of these will block
+		// this new entry from being added. This is how immunities are
+		// implemented, BTW.
+		hookForEach(OBJ_HOOK_ADD_HOOK, object_run_add_hook_hook, &data);
 
-                if (data.reject) {
-                        return false;
-                }
-        }
+		if (data.reject) {
+			return false;
+		}
+	}
+	// Run the "apply" procedure of the effect if it has one.
+	if (effect->apply) {
+		closure_exec(effect->apply, "lp", gob ? gob->p : NULL, this);
+	}
 
-        // Run the "apply" procedure of the effect if it has one.
-        if (effect->apply) {
-                closure_exec(effect->apply, "lp", gob? gob->p : NULL, this);
-        }
+	entry = hook_entry_new(effect, gob);
+	hook_entry_set_started(entry);
 
-        entry = hook_entry_new(effect, gob);
-        hook_entry_set_started(entry);
+	// Roll to see if the character detects the effect (it won't show up in
+	// stats if not)
+	if (dice_roll("1d20") > effect->detect_dc) {
+		hook_entry_detect(entry);
+	}
 
-        // Roll to see if the character detects the effect (it won't show up in
-        // stats if not)
-        if (dice_roll("1d20") > effect->detect_dc) {
-                hook_entry_detect(entry);
-        }
+	hook_list_add(&hooks[hook_id], &entry->list);
 
-        hook_list_add(&hooks[hook_id], &entry->list);
+	// gmcnutt: I saw a crash on reload because we ran through this code
+	// before the player party was created in the new session, and the
+	// status window tried to access it because of this next call. I don't
+	// think we need to be updating status for every object, anyway, only
+	// party members.
+	if (isPlayerControlled()) {
+		statusRepaint();
+	}
 
-        // gmcnutt: I saw a crash on reload because we ran through this code
-        // before the player party was created in the new session, and the
-        // status window tried to access it because of this next call. I don't
-        // think we need to be updating status for every object, anyway, only
-        // party members.
-        if (isPlayerControlled()) {
-                statusRepaint();
-        }
-
-        return true;
+	return true;
 }
 
-void Object::restoreEffect(struct effect *effect, struct gob *gob, int flags, 
-                           clock_alarm_t expiration)
+void Object::restoreEffect(struct effect *effect, struct gob *gob, int flags,
+			   clock_alarm_t expiration)
 {
-        hook_entry_t *entry;
+	hook_entry_t *entry;
 
-        assert(VALID_HOOK_ID(effect->hook_id));
+	assert(VALID_HOOK_ID(effect->hook_id));
 
-        // Note: do NOT run the "apply" procedure of the effect here (already
-        // tried this - causes script recursion while loading which as we know
-        // aborts the load prematurely). Instead the "restart" procedure will
-        // be run as part of our start() method, called on all objects near the
-        // end of session_load().
+	// Note: do NOT run the "apply" procedure of the effect here (already
+	// tried this - causes script recursion while loading which as we know
+	// aborts the load prematurely). Instead the "restart" procedure will
+	// be run as part of our start() method, called on all objects near the
+	// end of session_load().
 
-        entry = hook_entry_new(effect, gob);
-        entry->flags = flags;
-        entry->expiration = expiration;
-        hook_list_add(&hooks[effect->hook_id], &entry->list);
+	entry = hook_entry_new(effect, gob);
+	entry->flags = flags;
+	entry->expiration = expiration;
+	hook_list_add(&hooks[effect->hook_id], &entry->list);
 
 }
 
 struct object_run_hook_entry_data {
-        Object *obj;
-        const char *fmt;
-        va_list args;
+	Object *obj;
+	const char *fmt;
+	va_list args;
 };
 
 static int object_run_hook_entry(struct hook_entry *entry, void *data)
 {
-        struct object_run_hook_entry_data *info;
-        info = (struct object_run_hook_entry_data *)data;
+	struct object_run_hook_entry_data *info;
+	info = (struct object_run_hook_entry_data *)data;
 
-        if (entry->effect->exec)
-                return closure_execlpv(entry->effect->exec, 
-                                       hook_entry_gob(entry),
-                                       info->obj,
-                                       info->fmt, 
-                                       info->args);
-        return 0;
+	if (entry->effect->exec)
+		return closure_execlpv(entry->effect->exec,
+				       hook_entry_gob(entry),
+				       info->obj, info->fmt, info->args);
+	return 0;
 }
 
 void Object::runHook(int hook_id, const char *fmt, ...)
 {
-        struct object_run_hook_entry_data data;
+	struct object_run_hook_entry_data data;
 
-        data.obj = this;
-        data.fmt = fmt;
-        va_start(data.args, fmt);
-        hookForEach(hook_id, object_run_hook_entry, &data);
-        va_end(data.args);
+	data.obj = this;
+	data.fmt = fmt;
+	va_start(data.args, fmt);
+	hookForEach(hook_id, object_run_hook_entry, &data);
+	va_end(data.args);
 }
 
 void Object::saveHooks(struct save *save)
 {
-        int i;
+	int i;
 
-        save->write(save, ";; hooks\n");
-        save->enter(save, "(list\n");
-        for (i = 0; i < OBJ_NUM_HOOKS; i++) {
-                struct list *elem;
-                hook_list_for_each(&hooks[i], elem) {
-                        hook_entry_t *entry;
-                        entry = outcast(elem, hook_entry_t, list);
-                        hook_entry_save(entry, save);
-                }
-        }
-        save->exit(save, ")\n");
+	save->write(save, ";; hooks\n");
+	save->enter(save, "(list\n");
+	for (i = 0; i < OBJ_NUM_HOOKS; i++) {
+		struct list *elem;
+		hook_list_for_each(&hooks[i], elem) {
+			hook_entry_t *entry;
+			entry = outcast(elem, hook_entry_t, list);
+			hook_entry_save(entry, save);
+		}
+	}
+	save->exit(save, ")\n");
 }
 
 bool Object::removeEffect(struct effect *effect)
 {
-        struct list *elem;
-        struct hook_list *hl;
-        int hook_id = effect->hook_id;
+	struct list *elem;
+	struct hook_list *hl;
+	int hook_id = effect->hook_id;
 
-        assert(VALID_HOOK_ID(effect->hook_id));
-        
-        // Hack: NPC's don't go through a keystroke handler. For these,
-        // substitute the start-of-turn-hook for the keystroke-hook.
-        if (effect->hook_id == OBJ_HOOK_KEYSTROKE &&
-            ! isPlayerControlled())
-                hook_id = OBJ_HOOK_START_OF_TURN;
+	assert(VALID_HOOK_ID(effect->hook_id));
 
-        hl = &hooks[hook_id];
+	// Hack: NPC's don't go through a keystroke handler. For these,
+	// substitute the start-of-turn-hook for the keystroke-hook.
+	if (effect->hook_id == OBJ_HOOK_KEYSTROKE && !isPlayerControlled())
+		hook_id = OBJ_HOOK_START_OF_TURN;
 
-        elem = hook_list_first(hl);
-        while (elem != hook_list_end(hl)) {
-                hook_entry_t *entry;
+	hl = &hooks[hook_id];
 
-                entry = outcast(elem, hook_entry_t, list);
-                elem = elem->next;
+	elem = hook_list_first(hl);
+	while (elem != hook_list_end(hl)) {
+		hook_entry_t *entry;
 
-                if (hook_entry_is_invalid(entry))
-                        // Already pending removal.
-                        continue;
+		entry = outcast(elem, hook_entry_t, list);
+		elem = elem->next;
 
-                if (effect == entry->effect) {
+		if (hook_entry_is_invalid(entry))
+			// Already pending removal.
+			continue;
 
-                        // If the hook list is locked we can't remove/delete
-                        // the entry, but if we mark it invalid then the
-                        // runHooks() method will eventually clean it up.
-                        if (hook_list_locked(hl)) {
-                                hook_entry_invalidate(entry);
-                        } else {
-                                if (entry->effect->rm)
-                                        closure_exec(entry->effect->rm, "lp", 
-                                                     hook_entry_gob(entry), 
-                                                     this);
-                                list_remove(&entry->list);
-                                hook_entry_del(entry);
-                        }
+		if (effect == entry->effect) {
 
-                        statusRepaint();
+			// If the hook list is locked we can't remove/delete
+			// the entry, but if we mark it invalid then the
+			// runHooks() method will eventually clean it up.
+			if (hook_list_locked(hl)) {
+				hook_entry_invalidate(entry);
+			} else {
+				if (entry->effect->rm)
+					closure_exec(entry->effect->rm, "lp",
+						     hook_entry_gob(entry),
+						     this);
+				list_remove(&entry->list);
+				hook_entry_del(entry);
+			}
 
-                        return true;
-                }
-        }
+			statusRepaint();
 
-        return false;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 int Object::getCount()
 {
-        return count;
+	return count;
 }
 
 void Object::setCount(int c)
 {
-        count = c;
+	count = c;
 }
 
 bool ObjectType::isUsable()
 {
-        return (gifc_cap & GIFC_CAN_USE);
+	return (gifc_cap & GIFC_CAN_USE);
 }
 
 bool ObjectType::isReadyable()
 {
-        return isType(ARMS_TYPE_ID);
+	return isType(ARMS_TYPE_ID);
 }
 
 bool ObjectType::isMixable()
 {
-        return (gifc_cap & GIFC_CAN_MIX);
+	return (gifc_cap & GIFC_CAN_MIX);
 }
 
 bool ObjectType::isCastable()
 {
-        return (gifc_cap & GIFC_CAN_CAST);
+	return (gifc_cap & GIFC_CAN_CAST);
 }
 
 bool ObjectType::canExec()
 {
-        return (gifc_cap & GIFC_CAN_EXEC);
+	return (gifc_cap & GIFC_CAN_EXEC);
 }
 
 bool ObjectType::canStep()
 {
-        return (gifc_cap & GIFC_CAN_STEP);
+	return (gifc_cap & GIFC_CAN_STEP);
 }
 
 bool ObjectType::canSense()
 {
-        return (gifc_cap & GIFC_CAN_SENSE);
+	return (gifc_cap & GIFC_CAN_SENSE);
 }
 
 bool ObjectType::canXamine()
 {
-        return (gifc_cap & GIFC_CAN_XAMINE);
+	return (gifc_cap & GIFC_CAN_XAMINE);
 }
 
 bool ObjectType::canAttack()
 {
-        return (gifc_cap & GIFC_CAN_ATTACK);
+	return (gifc_cap & GIFC_CAN_ATTACK);
 }
 
 bool ObjectType::canEnter()
 {
-        return (gifc_cap & GIFC_CAN_ENTER);
+	return (gifc_cap & GIFC_CAN_ENTER);
 }
 
 bool ObjectType::canGet()
 {
-        // Hack: arms types not converted over to use gifc's yet
-        return (gifc_cap & GIFC_CAN_GET);
+	// Hack: arms types not converted over to use gifc's yet
+	return (gifc_cap & GIFC_CAN_GET);
 }
 
 bool ObjectType::canBuy()
 {
-        return (gifc_cap & GIFC_CAN_BUY);
+	return (gifc_cap & GIFC_CAN_BUY);
 }
 
 bool ObjectType::canSearch()
 {
-        return (gifc_cap & GIFC_CAN_SEARCH);
+	return (gifc_cap & GIFC_CAN_SEARCH);
 }
 
 bool ObjectType::canOpen()
 {
-        return (gifc_cap & GIFC_CAN_OPEN);
+	return (gifc_cap & GIFC_CAN_OPEN);
 }
 
 bool ObjectType::canBump()
 {
-        return (gifc_cap & GIFC_CAN_BUMP);
+	return (gifc_cap & GIFC_CAN_BUMP);
 }
 
-int ObjectType::open(Object *obj, Object *opener)
+int ObjectType::open(Object * obj, Object * opener)
 {
-        return closure_exec(gifc, "ypp", "open", obj, opener);
+	return closure_exec(gifc, "ypp", "open", obj, opener);
 }
 
-int ObjectType::bump(Object *obj, Object *bumper)
+int ObjectType::bump(Object * obj, Object * bumper)
 {
-        return closure_exec(gifc, "ypp", "bump", obj, bumper);
+	return closure_exec(gifc, "ypp", "bump", obj, bumper);
 }
 
 bool ObjectType::canHandle()
 {
-        return (gifc_cap & GIFC_CAN_HANDLE);
+	return (gifc_cap & GIFC_CAN_HANDLE);
 }
 
-int ObjectType::handle(Object *obj, Object *handler)
+int ObjectType::handle(Object * obj, Object * handler)
 {
-        return closure_exec(gifc, "ypp", "handle", obj, handler);
+	return closure_exec(gifc, "ypp", "handle", obj, handler);
 }
 
 bool ObjectType::canHitLocation()
 {
-        return (gifc_cap & GIFC_CAN_HIT_LOCATION);
+	return (gifc_cap & GIFC_CAN_HIT_LOCATION);
 }
 
-int ObjectType::hitLocation(Object *obj, Object *attacker, Object *target, struct place *place, int x, int y, int dam)
+int ObjectType::hitLocation(Object * obj, Object * attacker, Object * target,
+			    struct place *place, int x, int y, int dam)
 {
-        return closure_exec(gifc, "yppppddd", "hit-loc", obj, attacker, target, place, x, y, dam);
+	return closure_exec(gifc, "yppppddd", "hit-loc", obj, attacker, target,
+			    place, x, y, dam);
 }
 
-int ObjectType::step(Object *obj, Object *stepper)
+int ObjectType::step(Object * obj, Object * stepper)
 {
-        return closure_exec(gifc, "ypp", "step", obj, stepper);
+	return closure_exec(gifc, "ypp", "step", obj, stepper);
 }
 
-int ObjectType::sense(Object *obj, Object *stepper)
+int ObjectType::sense(Object * obj, Object * stepper)
 {
-        return closure_exec(gifc, "ypp", "sense", obj, stepper);
+	return closure_exec(gifc, "ypp", "sense", obj, stepper);
 }
 
-int ObjectType::xamine(Object *obj, Object *xaminer)
+int ObjectType::xamine(Object * obj, Object * xaminer)
 {
-        return closure_exec(gifc, "ypp", "xamine", obj, xaminer);
+	return closure_exec(gifc, "ypp", "xamine", obj, xaminer);
 }
 
-int ObjectType::attack(Object *obj, Object *stepper)
+int ObjectType::attack(Object * obj, Object * stepper)
 {
-        return closure_exec(gifc, "ypp", "attack", obj, stepper);
+	return closure_exec(gifc, "ypp", "attack", obj, stepper);
 }
 
 bool ObjectType::canOnAttack()
 {
-        return (gifc_cap & GIFC_CAN_ON_ATTACK);
+	return (gifc_cap & GIFC_CAN_ON_ATTACK);
 }
 
-int ObjectType::onAttack(Object *obj, Object *stepper)
+int ObjectType::onAttack(Object * obj, Object * stepper)
 {
-        return closure_exec(gifc, "yp", "on-attack", stepper);
+	return closure_exec(gifc, "yp", "on-attack", stepper);
 }
 
-int ObjectType::enter(Object *obj, Object *stepper)
+int ObjectType::enter(Object * obj, Object * stepper)
 {
-        return closure_exec(gifc, "ypp", "enter", obj, stepper);
+	return closure_exec(gifc, "ypp", "enter", obj, stepper);
 }
 
-int ObjectType::exec(Object *obj)
+int ObjectType::exec(Object * obj)
 {
-        return closure_exec(gifc, "yp", "exec", obj);
+	return closure_exec(gifc, "yp", "exec", obj);
 }
 
-int ObjectType::use(Object *user)
+int ObjectType::use(Object * user)
 {
-        return closure_exec(gifc, "ypp", "use", this, user);
+	return closure_exec(gifc, "ypp", "use", this, user);
 }
 
-int ObjectType::cast(Object *caster)
+int ObjectType::cast(Object * caster)
 {
-        return closure_exec(gifc, "yp", "cast", caster);
+	return closure_exec(gifc, "yp", "cast", caster);
 }
 
-int ObjectType::get(Object *obj, Object *getter)
+int ObjectType::get(Object * obj, Object * getter)
 {
-        return closure_exec(gifc, "ypp", "get", obj, getter);
+	return closure_exec(gifc, "ypp", "get", obj, getter);
 }
 
-int ObjectType::buy(Object *buyer, int q)
+int ObjectType::buy(Object * buyer, int q)
 {
-        return closure_exec(gifc, "ypd", "buy", buyer, q);
+	return closure_exec(gifc, "ypd", "buy", buyer, q);
 }
 
-int ObjectType::search(Object *obj, Object *searcher)
+int ObjectType::search(Object * obj, Object * searcher)
 {
-        return closure_exec(gifc, "ypp", "search", obj, searcher);
+	return closure_exec(gifc, "ypp", "search", obj, searcher);
 }
 
 closure_t *ObjectType::getGifc()
 {
-        return gifc;
+	return gifc;
 }
 
-void ObjectType::setGifc(closure_t *g, int cap)
+void ObjectType::setGifc(closure_t * g, int cap)
 {
-        // out with the old
-        if (gifc) {
-                closure_unref(gifc);
-                gifc = NULL;
-                gifc_cap = 0;
-        }
-
-        // in with the new
-        if (g) {
-                closure_ref(g);
-                gifc = g;
-                gifc_cap = cap;
-        }
+	// out with the old
+	if (gifc) {
+		closure_unref(gifc);
+		gifc = NULL;
+		gifc_cap = 0;
+	}
+	// in with the new
+	if (g) {
+		closure_ref(g);
+		gifc = g;
+		gifc_cap = cap;
+	}
 }
 
 void ObjectType::setGob(struct gob *g)
 {
-        if (gob) {
-                gob_unref(gob);
-                gob = 0;
-        }
+	if (gob) {
+		gob_unref(gob);
+		gob = 0;
+	}
 
-        if (g) {
-                gob = g;
-                gob_ref(g);
-        }
+	if (g) {
+		gob = g;
+		gob_ref(g);
+	}
 }
 
-struct gob * ObjectType::getGob()
+struct gob *ObjectType::getGob()
 {
-        return gob;
+	return gob;
 }
 
 bool ObjectType::hasDescribeHook()
 {
-        return (gifc_cap & GIFC_CAN_DESCRIBE);
+	return (gifc_cap & GIFC_CAN_DESCRIBE);
 }
 
-void ObjectType::runDescribeHook(Object *obj)
+void ObjectType::runDescribeHook(Object * obj)
 {
-        closure_exec(gifc, "ypd", "describe", obj, obj->getCount());
+	closure_exec(gifc, "ypd", "describe", obj, obj->getCount());
 }
 
 bool ObjectType::isQuestItem()
 {
-        return questItemFlag;
+	return questItemFlag;
 }
 
 void ObjectType::setQuestItemFlag(bool val)
 {
-        questItemFlag = val;
+	questItemFlag = val;
 }
 
 struct mmode *ObjectType::getMovementMode()
 {
-   return movementMode;
+	return movementMode;
 }
 
 void ObjectType::setMovementMode(struct mmode *mmode)
@@ -2100,233 +2070,225 @@ void ObjectType::setMovementMode(struct mmode *mmode)
 /////////////////////////////////////////////////////////////////////////////////////////////
 // Object
 
-bool Object::add(ObjectType *type, int amount)
+bool Object::add(ObjectType * type, int amount)
 {
-        return false; // subclasses will overload
+	return false;		// subclasses will overload
 }
 
-bool Object::takeOut(ObjectType *type, int amount)
+bool Object::takeOut(ObjectType * type, int amount)
 {
-        return false; // subclasses will overload
+	return false;		// subclasses will overload
 }
 
 bool Object::addFood(int amount)
 {
-        return false; // subclasses will overload
+	return false;		// subclasses will overload
 }
 
 bool Object::addGold(int amount)
 {
-        return false; // subclasses will overload
+	return false;		// subclasses will overload
 }
 
 void Object::setGob(struct gob *g)
 {
-        gob = g;
+	gob = g;
 }
 
-struct gob * Object::getGob()
+struct gob *Object::getGob()
 {
-        return gob;
+	return gob;
 }
 
 void Object::setSprite(struct sprite *sprite)
 {
-        current_sprite = sprite;
+	current_sprite = sprite;
 }
 
-void Object::step(Object *stepper)
-{        
-        if (! getObjectType() ||
-            ! getObjectType()->canStep())
-                return;
+void Object::step(Object * stepper)
+{
+	if (!getObjectType() || !getObjectType()->canStep())
+		return;
 
-        getObjectType()->step(this, stepper);
+	getObjectType()->step(this, stepper);
 }
 
-void Object::sense(Object *stepper)
-{        
-        if (! getObjectType() ||
-            ! getObjectType()->canSense())
-                return;
+void Object::sense(Object * stepper)
+{
+	if (!getObjectType() || !getObjectType()->canSense())
+		return;
 
-        getObjectType()->sense(this, stepper);
+	getObjectType()->sense(this, stepper);
 }
 
-void Object::attack(Object *stepper)
-{        
-        if (! getObjectType() ||
-            ! getObjectType()->canAttack())
-                return;
+void Object::attack(Object * stepper)
+{
+	if (!getObjectType() || !getObjectType()->canAttack())
+		return;
 
-        getObjectType()->attack(this, stepper);
+	getObjectType()->attack(this, stepper);
 }
 
-void Object::onAttack(Object *user)
-{        
-        if (! getObjectType() ||
-            ! getObjectType()->canOnAttack())
-                return;
+void Object::onAttack(Object * user)
+{
+	if (!getObjectType() || !getObjectType()->canOnAttack())
+		return;
 
-        getObjectType()->onAttack(this, user);
+	getObjectType()->onAttack(this, user);
 }
 
 struct conv *Object::getConversation()
 {
-        return conv;
+	return conv;
 }
 
 void Object::setConversation(struct conv *val)
 {
-        // out with the old
-        if (conv) {
-                conv_unref(conv);
-                conv = NULL;
-        }
-
-        // in with the new
-        if (val) {
-                conv_ref(val);
-                conv = val;
-        }
+	// out with the old
+	if (conv) {
+		conv_unref(conv);
+		conv = NULL;
+	}
+	// in with the new
+	if (val) {
+		conv_ref(val);
+		conv = val;
+	}
 }
 
 bool Object::canEnter()
 {
-        return (getObjectType() && getObjectType()->canEnter());
+	return (getObjectType() && getObjectType()->canEnter());
 }
 
-void Object::enter(Object *enterer)
+void Object::enter(Object * enterer)
 {
-        getObjectType()->enter(this, enterer);
+	getObjectType()->enter(this, enterer);
 }
 
 bool Object::canStep()
 {
-        return (getObjectType() && getObjectType()->canStep());
+	return (getObjectType() && getObjectType()->canStep());
 }
 
 bool Object::canSense()
 {
-        return (getObjectType() && getObjectType()->canSense());
+	return (getObjectType() && getObjectType()->canSense());
 }
 
 void Object::setLight(int val)
 {
-        light = val;
-        if (light < 0)
-                light = 0;
+	light = val;
+	if (light < 0)
+		light = 0;
 }
 
 bool Object::isTemporary()
 {
-        return temporary;
+	return temporary;
 }
 
 void Object::setTemporary(bool val)
 {
-        temporary = val;
+	temporary = val;
 }
 
 struct mmode *Object::getMovementMode()
 {
-        return getObjectType()->getMovementMode();
+	return getObjectType()->getMovementMode();
 }
 
 void Object::setMovementMode(struct mmode *mmode)
 {
-        // nop
+	// nop
 }
 
 Object *Object::getSpeaker()
 {
-        return this;
+	return this;
 }
 
-void obj_inc_ref(Object *obj)
+void obj_inc_ref(Object * obj)
 {
-        obj->refcount++;
+	obj->refcount++;
 #if 0
-        if (obj->getName() && ! strcmp(obj->getName(), "player party"
-                                       /*"The Wanderer"*/)) {
-                printf("obj_inc_ref: %d\n", obj->refcount);
-        }
+	if (obj->getName() && !strcmp(obj->getName(), "player party"
+				      /*"The Wanderer" */ )) {
+		printf("obj_inc_ref: %d\n", obj->refcount);
+	}
 #endif
 }
 
-void obj_dec_ref(Object *obj)
+void obj_dec_ref(Object * obj)
 {
-        assert((obj)->refcount >= 0);
-        (obj)->refcount--;
+	assert((obj)->refcount >= 0);
+	(obj)->refcount--;
 #if 0
-        if (obj->getName() && ! strcmp(obj->getName(), "player party"
-                                       /*"The Wanderer"*/)) {
-                printf("obj_dec_ref: %d\n", obj->refcount);
-        }
+	if (obj->getName() && !strcmp(obj->getName(), "player party"
+				      /*"The Wanderer" */ )) {
+		printf("obj_dec_ref: %d\n", obj->refcount);
+	}
 #endif
-        if (! obj->refcount)
-                delete obj;
+	if (!obj->refcount)
+		delete obj;
 }
 
-int Object::getTTL(void) { return ttl; }
+int Object::getTTL(void)
+{
+	return ttl;
+}
 
 bool Object::surreptitiouslyRemove()
 {
-        // crasher fix: check for player party; this may be called on boot if
-        // the load file has (kern-obj-set-ttl kobj 0). That scenario happens
-        // when an object's ttl is expired but the player is still in LOS, and
-        // then the player saves the game.
+	// crasher fix: check for player party; this may be called on boot if
+	// the load file has (kern-obj-set-ttl kobj 0). That scenario happens
+	// when an object's ttl is expired but the player is still in LOS, and
+	// then the player saves the game.
 
-        if (!isOnMap()) {
-                return false;
-        }
+	if (!isOnMap()) {
+		return false;
+	}
 
-        if (player_party
-            && getPlace()==player_party->getPlace()
-            && (place_flying_distance(player_party->getPlace(),
-                                      player_party->getX(),
-                                      player_party->getY(),
-                                      getX(),
-                                      getY())
-                < player_party->getVisionRadius())
-            && place_in_los(player_party->getPlace(),
-                            player_party->getX(),
-                            player_party->getY(),
-                            getPlace(),
-                            getX(),
-                            getY())) {
-                return false;
-        }
+	if (player_party && getPlace() == player_party->getPlace()
+	    && (place_flying_distance(player_party->getPlace(),
+				      player_party->getX(),
+				      player_party->getY(), getX(), getY())
+		< player_party->getVisionRadius())
+	    && place_in_los(player_party->getPlace(),
+			    player_party->getX(),
+			    player_party->getY(), getPlace(), getX(), getY())) {
+		return false;
+	}
 
-        remove();
-        return true;
+	remove();
+	return true;
 }
 
-void Object::setTTL(class Object *obj, int val)
+void Object::setTTL(class Object * obj, int val)
 {
-        obj->ttl = val;
-        if (!obj->ttl) {
-                obj->surreptitiouslyRemove(); // may destroy obj!
-        }
+	obj->ttl = val;
+	if (!obj->ttl) {
+		obj->surreptitiouslyRemove();	// may destroy obj!
+	}
 }
 
-void Object::decrementTTL(class Object *obj)
+void Object::decrementTTL(class Object * obj)
 {
-        // don't decrement if everlasting
-        if (-1==obj->getTTL())
-                return;
+	// don't decrement if everlasting
+	if (-1 == obj->getTTL())
+		return;
 
-        if (0==obj->getTTL()) {
-                obj->surreptitiouslyRemove(); // may destroy obj!
-                return;
-        }
+	if (0 == obj->getTTL()) {
+		obj->surreptitiouslyRemove();	// may destroy obj!
+		return;
+	}
 
-        obj->setTTL(obj, obj->getTTL() - 1); // may destroy obj!
+	obj->setTTL(obj, obj->getTTL() - 1);	// may destroy obj!
 }
 
 bool Object::isStationary()
 {
-        return false;
+	return false;
 }
 
 bool Object::setFacing(int val)
@@ -2344,20 +2306,20 @@ int Object::getFacing()
 
 bool Object::ignoresTimeStop()
 {
-        return ignoreTimeStop;
+	return ignoreTimeStop;
 }
 
 void Object::setIgnoreTimeStop(bool val)
 {
-        ignoreTimeStop = val;
+	ignoreTimeStop = val;
 }
 
 struct sprite *Object::getPortrait()
-{ 
-        return portrait; 
+{
+	return portrait;
 }
 
-void Object::setPortrait(struct sprite *sprite) 
-{ 
-        portrait = sprite; 
+void Object::setPortrait(struct sprite *sprite)
+{
+	portrait = sprite;
 }

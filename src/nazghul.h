@@ -30,5 +30,4 @@ extern int ExitProgram;
  */
 void nazghul_splash(void);
 
-
 #endif

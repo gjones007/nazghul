@@ -28,36 +28,36 @@
 
 class Being:public Object {
 
-      public:
+ public:
 
 	Being();
-        Being(class ObjectType *type);
+	Being(class ObjectType * type);
 
-	virtual ~Being();
-        virtual int getCurrentFaction();
+	virtual ~ Being();
+	virtual int getCurrentFaction();
 	virtual enum layer getLayer();
 	virtual const char *getName();
-        virtual void setCurrentFaction(int faction);
-        virtual void setBaseFaction(int faction);
+	virtual void setCurrentFaction(int faction);
+	virtual void setBaseFaction(int faction);
 
-        int getBaseFaction();
-        bool pathfindTo(struct place *place, int x, int y, int flags = 0);
+	int getBaseFaction();
+	bool pathfindTo(struct place *place, int x, int y, int flags = 0);
 	void setName(const char *name);
 
-        // These are public because player_party::rendezvous makes heavy use of
-        // them...
-        struct astar_node *cachedPath; // for pathfinding
-        struct place *cachedPathPlace; // for pathfinding
+	// These are public because player_party::rendezvous makes heavy use of
+	// them...
+	struct astar_node *cachedPath;	// for pathfinding
+	struct place *cachedPathPlace;	// for pathfinding
 
-      protected:
-        void setDefaults();
-        virtual void switchPlaces(class Being *);
+ protected:
+	void setDefaults();
+	virtual void switchPlaces(class Being *);
 
  private:
-        char *name;
-        int baseFaction;
-        int currentFaction;
-        void clearCachedPath();
+	char *name;
+	int baseFaction;
+	int currentFaction;
+	void clearCachedPath();
 };
 
 #endif

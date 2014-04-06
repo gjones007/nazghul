@@ -46,12 +46,12 @@ static struct tree *found;	/* Nodes with a known path, ordered by location
 /* Internal ******************************************************************/
 
 #ifdef ASTAR_DBG
-#  define dump_node(n) \
+#define dump_node(n) \
          dbg("%p={x=%d, y=%d, next=%p, len=%d, cost=%d, "\
          "goodness=%d, order.key=%d}", (n), (n)->x, (n)->y, (n)->next, \
          (n)->len, (n)->cost, (n)->goodness, (n)->order.key)
 #else
-#  define dump_node(n)
+#define dump_node(n)
 #endif
 
 static inline void astar_search_init(void)
@@ -59,11 +59,14 @@ static inline void astar_search_init(void)
 	heap_clean(schedule);
 }
 
-static inline struct astar_node *astar_node_create(int x, int y, int cost, int goodness, struct astar_node *next, int location)
+static inline struct astar_node *astar_node_create(int x, int y, int cost,
+						   int goodness,
+						   struct astar_node *next,
+						   int location)
 {
 	struct astar_node *node;
 
-	node = (struct astar_node *) malloc(sizeof(struct astar_node));
+	node = (struct astar_node *)malloc(sizeof(struct astar_node));
 	if (!node)
 		return 0;
 	memset(node, 0, sizeof(struct astar_node));
@@ -88,7 +91,8 @@ void astar_node_destroy(struct astar_node *node)
 	free(node);
 }
 
-static struct astar_node *astar_path_reverse_aux(struct astar_node *node, struct astar_node *prev)
+static struct astar_node *astar_path_reverse_aux(struct astar_node *node,
+						 struct astar_node *prev)
 {
 	struct astar_node *ret;
 
@@ -186,7 +190,9 @@ static inline struct astar_node *astar_old_route(int location)
 	return 0;
 }
 
-static inline void astar_replace_route(struct astar_node *node, int x, int y, int cost, int goodness, struct astar_node *next, int location)
+static inline void astar_replace_route(struct astar_node *node, int x, int y,
+				       int cost, int goodness,
+				       struct astar_node *next, int location)
 {
 	/* Replace the old route values with the new ones. */
 	node->x = x;
@@ -208,7 +214,8 @@ static inline void astar_replace_route(struct astar_node *node, int x, int y, in
 	node->scheduled = 1;
 }
 
-static inline void astar_schedule_neighbor(struct astar_node *node, struct astar_search_info *info)
+static inline void astar_schedule_neighbor(struct astar_node *node,
+					   struct astar_search_info *info)
 {
 	struct astar_node *ptr;
 	int location;
@@ -243,12 +250,15 @@ static inline void astar_schedule_neighbor(struct astar_node *node, struct astar
 
 		/* If the new route is better than replace the old with the new
 		 * and reschedule. */
-		astar_replace_route(ptr, info->x0, info->y0, cost, goodness, node, location);
+		astar_replace_route(ptr, info->x0, info->y0, cost, goodness,
+				    node, location);
 		return;
 	}
 
 	/* This is a new route. */
-	ptr = astar_node_create(info->x0, info->y0, cost, goodness, node, location);
+	ptr =
+	    astar_node_create(info->x0, info->y0, cost, goodness, node,
+			      location);
 	if (!ptr) {
 		err("Allocation failed");
 		return;
@@ -282,7 +292,9 @@ struct astar_node *astar_search(struct astar_search_info *info)
 	astar_search_init();
 
 	info->heuristic(info, &goodness, &cost, info->x0, info->y0);
-	node = astar_node_create(info->x0, info->y0, cost, goodness, NULL, COORD_TO_INDEX(info->x0, info->y0, info->width));
+	node =
+	    astar_node_create(info->x0, info->y0, cost, goodness, NULL,
+			      COORD_TO_INDEX(info->x0, info->y0, info->width));
 
 	astar_schedule(node);
 
@@ -292,7 +304,8 @@ struct astar_node *astar_search(struct astar_search_info *info)
 		node = astar_schedule_extract();
 
 		/* Check if this node is the target location */
-		if ((info->flags & ASTAR_HORZ || node->x == info->x1) && (info->flags & ASTAR_VERT || node->y == info->y1)) {
+		if ((info->flags & ASTAR_HORZ || node->x == info->x1)
+		    && (info->flags & ASTAR_VERT || node->y == info->y1)) {
 
 			/* Reverse the path to get a pointer to the start */
 			node = astar_path_reverse(node);
@@ -305,18 +318,22 @@ struct astar_node *astar_search(struct astar_search_info *info)
 		}
 
 		/* Check if this node is at max depth */
-		if (node->depth == MAX_DEPTH || (info->limit_depth && node->depth == info->max_depth)) {
+		if (node->depth == MAX_DEPTH
+		    || (info->limit_depth && node->depth == info->max_depth)) {
 			continue;
 		}
 
 		/* Check the four non-diagonal neighbors of this node */
-		for (row = 0, info->y0 = node->y - 1; row < 3; row++, info->y0++) {
+		for (row = 0, info->y0 = node->y - 1; row < 3;
+		     row++, info->y0++) {
 
 			/* Wrap y-coord if applicable */
 			if (info->wraps)
-				info->y0 = ((info->y0 + info->height) % info->height);
+				info->y0 =
+				    ((info->y0 + info->height) % info->height);
 
-			for (col = 0, info->x0 = node->x - 1; col < 3; col++, info->x0++) {
+			for (col = 0, info->x0 = node->x - 1; col < 3;
+			     col++, info->x0++) {
 
 #if (CONFIG_NEIGHBORS==4)
 				/* skip diagonals and center */
@@ -329,16 +346,21 @@ struct astar_node *astar_search(struct astar_search_info *info)
 					continue;
 				}
 #else
-#  error CONFIG_NEIGHBORS undefined or has bad value
+#error CONFIG_NEIGHBORS undefined or has bad value
 #endif
 
 				/* Wrap x-coord if applicable */
 				if (info->wraps)
-					info->x0 = ((info->x0 + info->width) % info->width);
+					info->x0 =
+					    ((info->x0 +
+					      info->width) % info->width);
 
 				/* Skip this neighbor if it's not a valid
 				 * location (impassable, off-map, etc) */
-				if (!info->is_valid_location(info->context, node->x, node->y, info->x0, info->y0))
+				if (!info->
+				    is_valid_location(info->context, node->x,
+						      node->y, info->x0,
+						      info->y0))
 					continue;
 
 				astar_schedule_neighbor(node, info);
@@ -349,7 +371,7 @@ struct astar_node *astar_search(struct astar_search_info *info)
 	}
 
 	node = 0;
-      done:
+ done:
 	astar_cleanup();
 	return node;
 

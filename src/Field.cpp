@@ -24,120 +24,121 @@
 #include "common.h"
 #include "session.h"
 
-bool FieldType::isType(int classID) 
+bool FieldType::isType(int classID)
 {
-        if (classID == FIELD_TYPE_ID)
-                return true;
-        return ObjectType::isType(classID);
+	if (classID == FIELD_TYPE_ID)
+		return true;
+	return ObjectType::isType(classID);
 }
 
 int FieldType::getType()
 {
-        return FIELD_TYPE_ID;
+	return FIELD_TYPE_ID;
 }
 
-FieldType::FieldType(const char *tag, const char *name, struct sprite *sprite, 
-                     int light_, int duration_, int pclass_, closure_t *clx)
-        : ObjectType(tag, name, sprite, field_layer), 
-          pclass(pclass_), light(light_), duration(duration_)
+FieldType::FieldType(const char *tag, const char *name, struct sprite * sprite,
+		     int light_, int duration_, int pclass_, closure_t * clx)
+ : 
+ObjectType(tag, name, sprite, field_layer),
+pclass(pclass_), light(light_), duration(duration_)
 {
-        if (clx) {
-                closure_ref(clx);
-                effect = clx;
-        } else {
-                effect = NULL;
-        }
+	if (clx) {
+		closure_ref(clx);
+		effect = clx;
+	} else {
+		effect = NULL;
+	}
 }
 
 FieldType::~FieldType()
 {
-        closure_unref_safe(effect);
+	closure_unref_safe(effect);
 }
 
-int  FieldType::getLight()
+int FieldType::getLight()
 {
-        return light;
+	return light;
 }
 
-void  FieldType::setLight(int val)
+void FieldType::setLight(int val)
 {
-        light = val;
+	light = val;
 }
 
-void  FieldType::setDuration(int val)
+void FieldType::setDuration(int val)
 {
-        duration = val;
+	duration = val;
 }
 
-int  FieldType::getDuration()
+int FieldType::getDuration()
 {
-        return duration;
+	return duration;
 }
 
 class Object *FieldType::createInstance()
 {
-        return new Field(this);
+	return new Field(this);
 }
 
-class FieldType * Field::getObjectType()
+class FieldType *Field::getObjectType()
 {
-        return (class FieldType *) Object::getObjectType();
+	return (class FieldType *) Object::getObjectType();
 }
 
 bool FieldType::isPermanent()
 {
-        return (duration < 0);
+	return (duration < 0);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-Field::Field(FieldType *type)
-        : Object(type)
+Field::Field(FieldType * type)
+ : Object(type)
 {
-        duration = type->getDuration();
+	duration = type->getDuration();
 }
 
-Field::Field(FieldType *type, int dur)
-        : Object(type)
+Field::Field(FieldType * type, int dur)
+ : Object(type)
 {
-        duration = dur;
+	duration = dur;
 }
 
-Field::Field() : duration(0)
-{        
+ Field::Field():duration(0)
+{
 }
 
-Field::~ Field()
+Field::~Field()
 {
 }
 
 int Field::getLight()
 {
-        return getObjectType()->getLight();
+	return getObjectType()->getLight();
 }
 
 void Field::exec()
 {
-        startTurn();
-        if (isDestroyed())
-                return;
-        
-        if (getObjectType()->isPermanent())
-                return;
+	startTurn();
+	if (isDestroyed())
+		return;
 
-        duration--;
-        assert(duration >= 0);
-        if (duration == 0)
-                destroy();
+	if (getObjectType()->isPermanent())
+		return;
+
+	duration--;
+	assert(duration >= 0);
+	if (duration == 0)
+		destroy();
 }
 
 void Field::save(struct save *save)
 {
-        save->write(save, "(kern-mk-field %s %d)", getObjectType()->getTag(), 
-                    duration);
+	save->write(save, "(kern-mk-field %s %d)", getObjectType()->getTag(),
+		    duration);
 }
 
 int Field::getPclass()
 {
-        return getObjectType()->pclass;
+	return getObjectType()->pclass;
 }

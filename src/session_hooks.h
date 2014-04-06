@@ -33,13 +33,16 @@
  * twice via session.h.
  */
 
-SESSION_DECL_HOOK(session_start_hook), /* player party */
-SESSION_DECL_HOOK(new_game_start_hook), /* player party */
-SESSION_DECL_HOOK(camping_turn_start_hook), /* player party */
-SESSION_DECL_HOOK(conv_start_hook), /* pc, npc */
-SESSION_DECL_HOOK(conv_end_hook), /* pc, npc */
-SESSION_DECL_HOOK(music_change_hook), /* player party */
-SESSION_DECL_HOOK(combat_change_hook), /* player party */
-SESSION_DECL_HOOK(post_attack_hook), /* pc, npc */
-SESSION_DECL_HOOK(turn_start_hook), /* player party */
-SESSION_DECL_HOOK(turn_end_hook), /* player party */
+SESSION_DECL_HOOK(session_start_hook),	/* player party */
+    SESSION_DECL_HOOK(new_game_start_hook),
+					/* player party */
+    SESSION_DECL_HOOK(camping_turn_start_hook),	/* player party */
+    SESSION_DECL_HOOK(conv_start_hook),	/* pc, npc */
+    SESSION_DECL_HOOK(conv_end_hook),	/* pc, npc */
+    SESSION_DECL_HOOK(music_change_hook),
+					/* player party */
+    SESSION_DECL_HOOK(combat_change_hook),
+					/* player party */
+    SESSION_DECL_HOOK(post_attack_hook),/* pc, npc */
+    SESSION_DECL_HOOK(turn_start_hook),	/* player party */
+    SESSION_DECL_HOOK(turn_end_hook),	/* player party */

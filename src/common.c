@@ -40,21 +40,20 @@ int ShowAllTerrain = 0;
 
 struct los *LosEngine;
 
-
 int commonInit(void)
 {
 	Turn = 0;
 	Tick = 0;
 	srand(0);
-        return 0;
+	return 0;
 }
 
 // fixme -- obsolete, use the next one
 static const char *dir_str[] = {
 	"Northwest", "North", "Northeast",
 	"West", "Here", "East",
-	"Southwest", "South", "Southeast", 
-        "Up", "Down"
+	"Southwest", "South", "Southeast",
+	"Up", "Down"
 };
 
 static unsigned char dir_facing[] = {
@@ -97,8 +96,8 @@ static int keyToDirectionTable[] = {
 
 const char *directionToString(int dir)
 {
-        if (dir < 0 || dir >= array_sz(dir_str))
-                return "*** invalid direction ***";
+	if (dir < 0 || dir >= array_sz(dir_str))
+		return "*** invalid direction ***";
 	return dir_str[dir];
 }
 
@@ -114,24 +113,24 @@ int stringToDirection(char *str)
 
 int directionToOpposite(int dir)
 {
-        static int tbl[] = {
-                SOUTHEAST,
-                SOUTH,
-                SOUTHWEST,
-                EAST,
-                HERE,
-                WEST,
-                NORTHEAST,
-                NORTH,
-                NORTHWEST,
-                DOWN,
-                UP
-        };
+	static int tbl[] = {
+		SOUTHEAST,
+		SOUTH,
+		SOUTHWEST,
+		EAST,
+		HERE,
+		WEST,
+		NORTHEAST,
+		NORTH,
+		NORTHWEST,
+		DOWN,
+		UP
+	};
 
-        if (dir < 0 || dir >= array_sz(tbl))
-                return DIRECTION_NONE;
+	if (dir < 0 || dir >= array_sz(tbl))
+		return DIRECTION_NONE;
 
-        return tbl[dir];
+	return tbl[dir];
 }
 
 int keyToDirection(int key)
@@ -165,13 +164,10 @@ int vector_to_facing(int dx, int dy)
 
 int vector_to_8facing(int dx, int dy)
 {
-	if (abs(dx) > 2* (abs(dy)))
-	{
-		dy = 0;	
-	}
-	else if (abs(dy) > 2* (abs(dx)))
-	{
-		dx = 0;	
+	if (abs(dx) > 2 * (abs(dy))) {
+		dy = 0;
+	} else if (abs(dy) > 2 * (abs(dx))) {
+		dx = 0;
 	}
 	clamp(dx, -1, 1);
 	clamp(dy, -1, 1);
@@ -214,29 +210,26 @@ int isvowel(char c)
 		c == 'u' || c == 'U' || c == 'y' || c == 'Y');
 }
 
-int point_in_rect(int x, int y, SDL_Rect *rect)
+int point_in_rect(int x, int y, SDL_Rect * rect)
 {
-        return (x >= rect->x && 
-                y >= rect->y &&
-                x < (rect->x + rect->w) &&
-                y < (rect->y + rect->h));
+	return (x >= rect->x &&
+		y >= rect->y &&
+		x < (rect->x + rect->w) && y < (rect->y + rect->h));
 }
 
 int logBase2(int val)
 {
-        int ret = 0;
+	int ret = 0;
 
-        if (val<=0)
-                return 0; /* incorrect but safe */
+	if (val <= 0)
+		return 0;	/* incorrect but safe */
 
-        val -= 1;
+	val -= 1;
 
-        while (val) {
-                val>>=1;
-                ret++;
-        }
+	while (val) {
+		val >>= 1;
+		ret++;
+	}
 
-        return ret;
+	return ret;
 }
-
-

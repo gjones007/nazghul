@@ -24,10 +24,7 @@
 
 #include "macros.h"
 
-BEGIN_DECL
-
-extern int playRun(char *game_fname);
+BEGIN_DECL extern int playRun(char *game_fname);
 
 END_DECL
-
 #endif

@@ -39,14 +39,15 @@ MissileType::MissileType()
 	// Don't ever expect to call this. Defining it to override the default
 	// one c++ automatically creates.
 	assert(false);
-	
+
 	beam = false;
 }
 
-MissileType::MissileType(const char *tag, const char *name, struct sprite *sprite, bool isBeam, bool isFixedRange, struct mmode *mmode)
-	: ObjectType(tag, name, sprite, item_layer),
-		beam(isBeam),
-		fixedrange(isFixedRange)
+MissileType::MissileType(const char *tag, const char *name,
+			 struct sprite * sprite, bool isBeam, bool isFixedRange,
+			 struct mmode * mmode)
+ : ObjectType(tag, name, sprite, item_layer), beam(isBeam),
+fixedrange(isFixedRange)
 {
 	setMovementMode(mmode);
 }
@@ -65,7 +66,7 @@ bool MissileType::isType(int classID)
 
 int MissileType::getType()
 {
-        return MISSILE_TYPE_ID;
+	return MISSILE_TYPE_ID;
 }
 
 bool MissileType::isBeam()
@@ -80,26 +81,25 @@ bool MissileType::isFixedRange()
 	return fixedrange;
 }
 
-void MissileType::fireHitLoc(Object *attacker, Object *target, struct place *place, int x, int y, int dam)
+void MissileType::fireHitLoc(Object * attacker, Object * target,
+			     struct place *place, int x, int y, int dam)
 {
 	if (canHitLocation())
-		hitLocation(NULL, attacker, target, place, x, y, dam);	
+		hitLocation(NULL, attacker, target, place, x, y, dam);
 }
 
-bool MissileType::fireEnterTile(Missile *missile, struct place *place, int x, int y)
+bool MissileType::fireEnterTile(Missile * missile, struct place *place, int x,
+				int y)
 {
-	if (closure_exec(gifc, "yppdd", "enter", missile, place, x, y))
-	{
-		return true;	
-	}
-	else
-	{
-		return false;	
+	if (closure_exec(gifc, "yppdd", "enter", missile, place, x, y)) {
+		return true;
+	} else {
+		return false;
 	}
 }
 
-Missile::Missile(MissileType* type)
-        : Object(type)
+Missile::Missile(MissileType * type)
+ : Object(type)
 {
 
 }
@@ -108,82 +108,85 @@ Missile::~Missile()
 {
 }
 
-class MissileType *Missile::getObjectType() 
+class MissileType *Missile::getObjectType()
 {
-        return (class MissileType *) Object::getObjectType();
+	return (class MissileType *) Object::getObjectType();
 }
 
-bool Missile::obstructed(struct place *place, int x, int y)
+bool Missile::obstructed(struct place * place, int x, int y)
 {
-	int obstruction = place_get_movement_cost(place, x, y, this,0);
+	int obstruction = place_get_movement_cost(place, x, y, this, 0);
 	// XXX: why 20?
-	return ((obstruction == 20) || (dice_roll_numeric(1,100,0)<=obstruction));
+	return ((obstruction == 20)
+		|| (dice_roll_numeric(1, 100, 0) <= obstruction));
 }
 
 /* set hit=true if a party or Object.has been struck
 return true if the missile has not been interupted */
-bool Missile::enterTile(struct place *place, int x, int y)
+bool Missile::enterTile(struct place * place, int x, int y)
 {
-        if (! (flags & MISSILE_IGNORE_LOS)) {
-		return ! obstructed(place, x, y);
-	}	
-			
-        if (! (flags & MISSILE_HIT_PARTY))
-                return true;
+	if (!(flags & MISSILE_IGNORE_LOS)) {
+		return !obstructed(place, x, y);
+	}
 
-        struck = place_get_Party(place, x, y);
+	if (!(flags & MISSILE_HIT_PARTY))
+		return true;
 
-        if (struck != NULL) {
-                hit = true;
-                return false;
-        }
+	struck = place_get_Party(place, x, y);
 
-        // fugly hack...
-        if (player_party->getPlace() == place &&
-            player_party->getX() == x &&
-            player_party->getY() == y) {
-                struck = player_party;
-                hit = true;
-                return false;
-        }
+	if (struck != NULL) {
+		hit = true;
+		return false;
+	}
+	// fugly hack...
+	if (player_party->getPlace() == place &&
+	    player_party->getX() == x && player_party->getY() == y) {
+		struck = player_party;
+		hit = true;
+		return false;
+	}
 
-        /* Allow wilderness-scale weapons to destroy empty vehicles. */
-        struck = place_get_vehicle(place, x, y);
-        if (struck != NULL) {
-                hit = true;
-                return false;
-        }
+	/* Allow wilderness-scale weapons to destroy empty vehicles. */
+	struck = place_get_vehicle(place, x, y);
+	if (struck != NULL) {
+		hit = true;
+		return false;
+	}
 
-        return true;
+	return true;
 }
 
 /*
 	triggers a hit-loc ifc event if appropriate
 */
-void Missile::fireHitLoc(Object *attacker, Object *target, struct place *place, int x, int y, int dam)
+void Missile::fireHitLoc(Object * attacker, Object * target,
+			 struct place *place, int x, int y, int dam)
 {
 	if (getObjectType()->canHitLocation())
-		getObjectType()->hitLocation(this, attacker, target, place, x, y, dam);	
+		getObjectType()->hitLocation(this, attacker, target, place, x,
+					     y, dam);
 }
 
 /*
 	Calculates & animates trajectory, returns true if the missile reached the target location
 	alters Bx, By to be where it reached (so you can tell where it wound up if blocked)
 */
-void Missile::animate(int Ax, int Ay, int *Bx, int *By, int _flags, float fixedrange)
+void Missile::animate(int Ax, int Ay, int *Bx, int *By, int _flags,
+		      float fixedrange)
 {
-        int origBx = *Bx;
-        int origBy = *By;
-        
-        hit = false;
-        struck = NULL;
-        flags = _flags;
+	int origBx = *Bx;
+	int origBy = *By;
 
-        struct sprite *tmpSprite = sprite_clone(getSprite(), 0);
-        mapAnimateProjectile(Ax, Ay, Bx, By, tmpSprite, getPlace(), this, fixedrange);
-        sprite_del(tmpSprite);
+	hit = false;
+	struck = NULL;
+	flags = _flags;
 
-        hit = (hit || (origBx == *Bx && origBy == *By));
+	struct sprite *tmpSprite = sprite_clone(getSprite(), 0);
+	mapAnimateProjectile(Ax, Ay, Bx, By, tmpSprite, getPlace(), this,
+			     fixedrange);
+	sprite_del(tmpSprite);
+
+	hit = (hit || (origBx == *Bx && origBy == *By));
 }
 
 bool Missile::hitTarget()
@@ -191,8 +194,7 @@ bool Missile::hitTarget()
 	return hit;
 }
 
-class Object * Missile::getStruck()
+class Object *Missile::getStruck()
 {
-        return struck;
+	return struck;
 }
-

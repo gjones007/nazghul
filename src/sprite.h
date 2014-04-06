@@ -25,15 +25,10 @@
 #include "macros.h"
 
 BEGIN_DECL
-
 #include "list.h"
-
-#include <SDL.h> /* for Uint32 */
-
-
+#include <SDL.h>		/* for Uint32 */
 #define SPRITE_DEF_FACING -1
-
-struct images;
+    struct images;
 struct sprite;
 struct save;
 
@@ -49,14 +44,14 @@ extern void sprite_unfade(struct sprite *sprite);
 extern void sprite_zoom_out(int factor);
 extern void sprite_zoom_in(int factor);
 extern void sprite_advance_ticks(int ticks);
-extern void sprite_append_decoration(struct sprite *sprite, 
-                                     struct sprite *decor);
+extern void sprite_append_decoration(struct sprite *sprite,
+				     struct sprite *decor);
 
 /* sprite_clone - clone an existing sprite and give it a new tag. */
 extern struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
 
-extern struct sprite * sprite_new(const char *tag, int frames, int index, int wave, 
-                                  int facings, struct images *image);
+extern struct sprite *sprite_new(const char *tag, int frames, int index,
+				 int wave, int facings, struct images *image);
 extern void sprite_del(struct sprite *sprite);
 extern char *sprite_get_tag(struct sprite *sprite);
 extern int sprite_is_faded(struct sprite *sprite);
@@ -87,14 +82,13 @@ extern void sprite_strip_decorations(struct sprite *sprite);
  * modified.
  *
  */
-extern void sprite_blit_over(struct sprite *dest, 
-                             struct sprite *src);
-                             
+extern void sprite_blit_over(struct sprite *dest, struct sprite *src);
+
 extern int sprite_num_frames(struct sprite *sprite);
 extern int sprite_facings_list(struct sprite *sprite);
 
-extern void sprite_paint_direct(struct sprite *sprite, int frame, SDL_Rect *dest);
+extern void sprite_paint_direct(struct sprite *sprite, int frame,
+				SDL_Rect * dest);
 
 END_DECL
-
 #endif

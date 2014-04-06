@@ -34,57 +34,57 @@
 /* rsurf - wraps a surface with a reference count so sprites can share them
  * without fear of premature calls to SDL_FreeSurface(). */
 struct rsurf {
-        int ref;              /* reference count                     */
-        SDL_Surface *surf;    /* underlying surface                  */
-        char custom : 1;      /* NOT referenced by any struct images */
+	int ref;		/* reference count                     */
+	SDL_Surface *surf;	/* underlying surface                  */
+	char custom:1;		/* NOT referenced by any struct images */
 };
 
 /* sprite - animation sequence with different facings */
 struct sprite {
-        char *tag;              /* Script variable name for the sprite.    */
-        int n_frames;           /* per sequence                            */
-        int n_total_frames;     /* n_frames x # facings                    */
-        SDL_Rect *frames;       /* all frames (sequences must be in order) */
-        struct rsurf *rsurf;    /* source of image                         */
-        int facing;             /* current facing sequence                 */
-        int facings;            /* bitmap of supported facing sequences    */
-        int sequence;           /* current animation sequence              */
-        struct sprite *decor;   /* decoration sprites                      */
-        int w_pix, h_pix;       /* frame dimensions (in pixels)            */
-        int faded  : 1;	        /* render sprite sem-transparent           */
-        int wave   : 1;         /* vertical roll                           */
+	char *tag;		/* Script variable name for the sprite.    */
+	int n_frames;		/* per sequence                            */
+	int n_total_frames;	/* n_frames x # facings                    */
+	SDL_Rect *frames;	/* all frames (sequences must be in order) */
+	struct rsurf *rsurf;	/* source of image                         */
+	int facing;		/* current facing sequence                 */
+	int facings;		/* bitmap of supported facing sequences    */
+	int sequence;		/* current animation sequence              */
+	struct sprite *decor;	/* decoration sprites                      */
+	int w_pix, h_pix;	/* frame dimensions (in pixels)            */
+	int faded:1;		/* render sprite sem-transparent           */
+	int wave:1;		/* vertical roll                           */
 };
 
 static struct {
-        int ticks_to_next_animation;
+	int ticks_to_next_animation;
 } Sprite;
 
 static int sprite_zoom_factor = 1;
 static unsigned int sprite_ticks = 0;
 
-static struct rsurf *rsurf_new(SDL_Surface *surf)
+static struct rsurf *rsurf_new(SDL_Surface * surf)
 {
-        struct  rsurf *rsurf;
+	struct rsurf *rsurf;
 
-        rsurf = (struct rsurf*)calloc(1, sizeof(*rsurf));
-        if (!rsurf) {
-                return 0;
-        }
-        rsurf->ref = 1;
-        rsurf->surf = surf;
-        return rsurf;
+	rsurf = (struct rsurf *)calloc(1, sizeof(*rsurf));
+	if (!rsurf) {
+		return 0;
+	}
+	rsurf->ref = 1;
+	rsurf->surf = surf;
+	return rsurf;
 }
 
 static void rsurf_unref(struct rsurf *rsurf)
 {
-        assert(rsurf->ref > 0);
-        rsurf->ref--;
-        if (!rsurf->ref) {
-                if (rsurf->surf && rsurf->custom) {
-                        SDL_FreeSurface(rsurf->surf);
-                }
-                free(rsurf);
-        }
+	assert(rsurf->ref > 0);
+	rsurf->ref--;
+	if (!rsurf->ref) {
+		if (rsurf->surf && rsurf->custom) {
+			SDL_FreeSurface(rsurf->surf);
+		}
+		free(rsurf);
+	}
 }
 
 /**
@@ -98,51 +98,62 @@ static void rsurf_unref(struct rsurf *rsurf)
  * @param dest The surface to blit to.
  * @param to The area of the destination to blit to.
  */
-static void sprite_custom_blit(SDL_Surface *source, SDL_Rect *from,
-                               SDL_Surface *dest, SDL_Rect *to)
+static void sprite_custom_blit(SDL_Surface * source, SDL_Rect * from,
+			       SDL_Surface * dest, SDL_Rect * to)
 {
-        Uint8 *dpix, *spix, pix = 0;
-        int dx, dy, pix_bytes;
-        Uint8 in_alpha;
+	Uint8 *dpix, *spix, pix = 0;
+	int dx, dy, pix_bytes;
+	Uint8 in_alpha;
 
-        spix = (Uint8*)(source->pixels);
-        dpix = (Uint8*)(dest->pixels);
+	spix = (Uint8 *) (source->pixels);
+	dpix = (Uint8 *) (dest->pixels);
 
 	pix_bytes = source->format->BytesPerPixel;
 	assert(pix_bytes == 1 || pix_bytes == 2 || pix_bytes == 4);
 	assert(dest->format->BytesPerPixel == pix_bytes);
-	
-        for (dy = 0; dy < from->h; dy++) {
-                for (dx = 0; dx < from->w; dx++) {
 
-			switch(pix_bytes) {
-			case 4:	pix = *(Uint32*)spix; break;
-			case 2: pix = *(Uint16*)spix; break;
-			case 1:	pix = *(Uint8 *)spix; break;
+	for (dy = 0; dy < from->h; dy++) {
+		for (dx = 0; dx < from->w; dx++) {
+
+			switch (pix_bytes) {
+			case 4:
+				pix = *(Uint32 *) spix;
+				break;
+			case 2:
+				pix = *(Uint16 *) spix;
+				break;
+			case 1:
+				pix = *(Uint8 *) spix;
+				break;
 			}
-                        /* Extract the alpha component of the source pixel. */
-                        in_alpha = ((pix & source->format->Amask) 
-                                     >> source->format->Ashift);
+			/* Extract the alpha component of the source pixel. */
+			in_alpha = ((pix & source->format->Amask)
+				    >> source->format->Ashift);
 
-                        /* Skip transparent source pixels, leaving destination
-                         * intact. */
-                        if (SDL_ALPHA_TRANSPARENT == in_alpha) {
-                                continue;
-                        }
-
-                        /* Do a direct copy of everything else. Note that this
-                         * is only correct if the source alpha is opaque. We
-                         * really should blend semi-transparent source
-                         * pixels. */
-			switch(pix_bytes) {
-			case 4:	*(Uint32*)dpix = pix; break;
-			case 2: *(Uint16*)dpix = pix; break;
-			case 1:	*(Uint8 *)dpix = pix; break;
+			/* Skip transparent source pixels, leaving destination
+			 * intact. */
+			if (SDL_ALPHA_TRANSPARENT == in_alpha) {
+				continue;
 			}
-                }
-        }
+
+			/* Do a direct copy of everything else. Note that this
+			 * is only correct if the source alpha is opaque. We
+			 * really should blend semi-transparent source
+			 * pixels. */
+			switch (pix_bytes) {
+			case 4:
+				*(Uint32 *) dpix = pix;
+				break;
+			case 2:
+				*(Uint16 *) dpix = pix;
+				break;
+			case 1:
+				*(Uint8 *) dpix = pix;
+				break;
+			}
+		}
+	}
 }
-
 
 /**
  * Replace the sprite's current image surface with a reference-counted copy.
@@ -153,62 +164,61 @@ static void sprite_custom_blit(SDL_Surface *source, SDL_Rect *from,
  */
 static int sprite_clone_and_replace_rsurf(struct sprite *sprite)
 {
-        SDL_Surface *dest = 0;
-        SDL_Surface *source = sprite->rsurf->surf;
-        SDL_Rect to;
-        int i;
+	SDL_Surface *dest = 0;
+	SDL_Surface *source = sprite->rsurf->surf;
+	SDL_Rect to;
+	int i;
 
-        /* Create a new surface so that the original (which may be shared with
-         * other sprites) is not altered. */
+	/* Create a new surface so that the original (which may be shared with
+	 * other sprites) is not altered. */
 	dest = SDL_CreateRGBSurface(source->flags,
-                                    sprite->w_pix * sprite->n_total_frames,
-                                    sprite->h_pix,
-                                    source->format->BitsPerPixel,
-                                    source->format->Rmask,
-                                    source->format->Gmask,
-                                    source->format->Bmask,
-                                    source->format->Amask);
-        if (!dest) {
+				    sprite->w_pix * sprite->n_total_frames,
+				    sprite->h_pix,
+				    source->format->BitsPerPixel,
+				    source->format->Rmask,
+				    source->format->Gmask,
+				    source->format->Bmask,
+				    source->format->Amask);
+	if (!dest) {
 		perror_sdl("SDL_CreateRGBSurface");
 		return -1;
-        }
+	}
 
-        /* Copy each frame of the sprite to the new surface. */
-        to.x = 0;
-        to.y = 0;
-        to.w = sprite->w_pix;
-        to.h = sprite->h_pix;
-        for (i = 0; i < sprite->n_total_frames; i++) {
-                to.x = i * sprite->w_pix;
+	/* Copy each frame of the sprite to the new surface. */
+	to.x = 0;
+	to.y = 0;
+	to.w = sprite->w_pix;
+	to.h = sprite->h_pix;
+	for (i = 0; i < sprite->n_total_frames; i++) {
+		to.x = i * sprite->w_pix;
 
-                /* Blit the frame. */
-                sprite_custom_blit(sprite->rsurf->surf, 
-                            &sprite->frames[i],
-                            dest, &to);
+		/* Blit the frame. */
+		sprite_custom_blit(sprite->rsurf->surf,
+				   &sprite->frames[i], dest, &to);
 
-                /* Fixup the frames as we go. */
-                sprite->frames[i] = to;
-        }
+		/* Fixup the frames as we go. */
+		sprite->frames[i] = to;
+	}
 
-        /* If the original surface was a custom rsurf then unref it. */
-        if (sprite->rsurf->custom) {
-                rsurf_unref(sprite->rsurf);
-        }
+	/* If the original surface was a custom rsurf then unref it. */
+	if (sprite->rsurf->custom) {
+		rsurf_unref(sprite->rsurf);
+	}
 
-        /* Stash the surface in a new refcounted surf wrapper. */
-        sprite->rsurf = rsurf_new(dest);
-        sprite->rsurf->custom = 1;
+	/* Stash the surface in a new refcounted surf wrapper. */
+	sprite->rsurf = rsurf_new(dest);
+	sprite->rsurf->custom = 1;
 
-        return 0;
+	return 0;
 }
 
-static void sprite_blit_faded(SDL_Surface *source, SDL_Rect *from, 
-                              SDL_Rect *to)
+static void sprite_blit_faded(SDL_Surface * source, SDL_Rect * from,
+			      SDL_Rect * to)
 {
 	int dx, dy, di, sx, sy, si, spitch, dpitch;
 	Uint32 *dpix, *spix, pixel;
-        Uint8 pix_alpha;
-        SDL_Surface *tmp = 0;
+	Uint8 pix_alpha;
+	SDL_Surface *tmp = 0;
 
 	tmp = SDL_CreateRGBSurface(source->flags,
 				   from->w, from->h,
@@ -235,42 +245,42 @@ static void sprite_blit_faded(SDL_Surface *source, SDL_Rect *from,
 			di = (dy * dpitch + dx);
 			si = (sy + from->y) * spitch + (sx + from->x);
 
-                        /* Cut alpha component in half. */
-                        pixel = spix[si];
-                        pix_alpha = ((pixel & source->format->Amask) 
-                                     >> source->format->Ashift);
-                        pix_alpha /= 2;
-                        pixel &= ~source->format->Amask;
-                        pixel |= (pix_alpha << source->format->Ashift);
+			/* Cut alpha component in half. */
+			pixel = spix[si];
+			pix_alpha = ((pixel & source->format->Amask)
+				     >> source->format->Ashift);
+			pix_alpha /= 2;
+			pixel &= ~source->format->Amask;
+			pixel |= (pix_alpha << source->format->Ashift);
 
-                        /* Assign result. */
-                        dpix[di] = pixel;
-                }
-        }
-        
-        screen_blit(tmp, NULL, to);
-        SDL_FreeSurface(tmp);
+			/* Assign result. */
+			dpix[di] = pixel;
+		}
+	}
+
+	screen_blit(tmp, NULL, to);
+	SDL_FreeSurface(tmp);
 }
 
 static void sprite_paint_wave(struct sprite *sprite, int frame, int x, int y)
 {
 	SDL_Rect src;
 	SDL_Rect dest;
-        int wavecrest;
+	int wavecrest;
 
-        frame = (frame + sprite_ticks) % sprite->n_frames;
+	frame = (frame + sprite_ticks) % sprite->n_frames;
 
 	/* Offset the index into the current sequence */
 	frame += sprite->sequence * sprite->n_frames;
 
-        // Subtle: when rendering wave sprites zoomed, we'll get artifacts due
-        // to roundoff errors in integer division. Unless we align the
-        // wavecrest to the zoom factor. So for example, if we zoom at a factor
-        // of two then the wavecrest must be a multiple of 2. Since we only
-        // support a zoom factor of 2 right now, the simplest thing to do is
-        // always use 2.
-        wavecrest = (sprite_ticks * 2) % sprite->h_pix;
-        wavecrest = sprite->h_pix - wavecrest; // make it roll south
+	// Subtle: when rendering wave sprites zoomed, we'll get artifacts due
+	// to roundoff errors in integer division. Unless we align the
+	// wavecrest to the zoom factor. So for example, if we zoom at a factor
+	// of two then the wavecrest must be a multiple of 2. Since we only
+	// support a zoom factor of 2 right now, the simplest thing to do is
+	// always use 2.
+	wavecrest = (sprite_ticks * 2) % sprite->h_pix;
+	wavecrest = sprite->h_pix - wavecrest;	// make it roll south
 
 	/* Wave sprites are painted in two blits. The first blit copies
 	 * everything below the wavecrest to the top part of the onscreen tile.
@@ -280,7 +290,7 @@ static void sprite_paint_wave(struct sprite *sprite, int frame, int x, int y)
 
 	src = sprite->frames[frame];
 	src.y += wavecrest;	/* fixme -- only works because source
-                                 * image has one column of sprites */
+				 * image has one column of sprites */
 	src.h -= wavecrest;
 
 	dest.x = x;
@@ -288,28 +298,27 @@ static void sprite_paint_wave(struct sprite *sprite, int frame, int x, int y)
 	dest.w = sprite->w_pix;
 	dest.h = src.h;
 
-        if (sprite->faded) {
-                sprite_blit_faded(sprite->rsurf->surf,  &sprite->frames[frame],
-                                  &dest);
-        } else {
-                screen_blit(sprite->rsurf->surf, &src, &dest);
-        }
+	if (sprite->faded) {
+		sprite_blit_faded(sprite->rsurf->surf, &sprite->frames[frame],
+				  &dest);
+	} else {
+		screen_blit(sprite->rsurf->surf, &src, &dest);
+	}
 
 	src = sprite->frames[frame];
 	src.h = wavecrest;
 
 	dest.x = x;
-	dest.y = dest.y + (sprite->h_pix - wavecrest) / 
-                sprite_zoom_factor;
+	dest.y = dest.y + (sprite->h_pix - wavecrest) / sprite_zoom_factor;
 	dest.w = sprite->w_pix;
 	dest.h = src.h;
-        
-        if (sprite->faded) {
-                sprite_blit_faded(sprite->rsurf->surf,  &sprite->frames[frame],
-                                  &dest);
-        } else {
-                screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
-        }
+
+	if (sprite->faded) {
+		sprite_blit_faded(sprite->rsurf->surf, &sprite->frames[frame],
+				  &dest);
+	} else {
+		screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
+	}
 
 }
 
@@ -322,32 +331,33 @@ static void sprite_paint_normal(struct sprite *sprite, int frame, int x, int y)
 	dest.w = sprite->w_pix;
 	dest.h = sprite->h_pix;
 
-#ifndef TEST_PORTRAITS 
-        /* dbg hack -- the following code won't work with portraits as sprites;
-         * need a real fix for oversize sprites... */
-        /* If the sprite is larger than a tile, ASSUME (watch out!) we're
-         * blitting a giant character to the map. In this case the bottom of
-         * the sprite will still line up with the bottom of the tile and it
-         * will be horizontally-centered, making the left, right and top
-         * overlap the neighboring tiles. */
-        if (sprite->w_pix > TILE_W) {
-                dest.x -= (sprite->w_pix - TILE_W) / 2;
-                dest.y -= (sprite->h_pix - TILE_H);
-        }
-#endif			
-        frame = (frame + sprite_ticks) % sprite->n_frames;
+#ifndef TEST_PORTRAITS
+	/* dbg hack -- the following code won't work with portraits as sprites;
+	 * need a real fix for oversize sprites... */
+	/* If the sprite is larger than a tile, ASSUME (watch out!) we're
+	 * blitting a giant character to the map. In this case the bottom of
+	 * the sprite will still line up with the bottom of the tile and it
+	 * will be horizontally-centered, making the left, right and top
+	 * overlap the neighboring tiles. */
+	if (sprite->w_pix > TILE_W) {
+		dest.x -= (sprite->w_pix - TILE_W) / 2;
+		dest.y -= (sprite->h_pix - TILE_H);
+	}
+#endif
+	frame = (frame + sprite_ticks) % sprite->n_frames;
 	frame += sprite->sequence * sprite->n_frames;
 
-        if (sprite->faded) {
-                sprite_blit_faded(sprite->rsurf->surf,  &sprite->frames[frame],
-                                  &dest);
-        } else {
-                screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
-        }
+	if (sprite->faded) {
+		sprite_blit_faded(sprite->rsurf->surf, &sprite->frames[frame],
+				  &dest);
+	} else {
+		screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
+	}
 
 }
 
-static void sprite_paint_preframed(struct sprite *sprite, int frame, int x, int y)
+static void sprite_paint_preframed(struct sprite *sprite, int frame, int x,
+				   int y)
 {
 	SDL_Rect dest;
 
@@ -356,41 +366,41 @@ static void sprite_paint_preframed(struct sprite *sprite, int frame, int x, int 
 	dest.w = sprite->w_pix;
 	dest.h = sprite->h_pix;
 
-        /* If the sprite is larger than a tile, ASSUME (watch out!) we're
-         * blitting a giant character to the map. In this case the bottom of
-         * the sprite will still line up with the bottom of the tile and it
-         * will be horizontally-centered, making the left, right and top
-         * overlap the neighboring tiles. */
-        if (sprite->w_pix > TILE_W) {
-                dest.x -= (sprite->w_pix - TILE_W) / 2;
-                dest.y -= (sprite->h_pix - TILE_H);
-        }
-        
-        frame += sprite->sequence * sprite->n_frames;
+	/* If the sprite is larger than a tile, ASSUME (watch out!) we're
+	 * blitting a giant character to the map. In this case the bottom of
+	 * the sprite will still line up with the bottom of the tile and it
+	 * will be horizontally-centered, making the left, right and top
+	 * overlap the neighboring tiles. */
+	if (sprite->w_pix > TILE_W) {
+		dest.x -= (sprite->w_pix - TILE_W) / 2;
+		dest.y -= (sprite->h_pix - TILE_H);
+	}
 
-        if (sprite->faded) {
-                sprite_blit_faded(sprite->rsurf->surf,  &sprite->frames[frame],
-                                  &dest);
-        } else {
-                screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
-        }
+	frame += sprite->sequence * sprite->n_frames;
+
+	if (sprite->faded) {
+		sprite_blit_faded(sprite->rsurf->surf, &sprite->frames[frame],
+				  &dest);
+	} else {
+		screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
+	}
 
 }
 
-static struct sprite * sprite_new_internal(int frames, int facings)
+static struct sprite *sprite_new_internal(int frames, int facings)
 {
 	struct sprite *sprite;
 
-	sprite = (struct sprite*)calloc(1, sizeof(*sprite));
-        if (!sprite)
-                return 0;
+	sprite = (struct sprite *)calloc(1, sizeof(*sprite));
+	if (!sprite)
+		return 0;
 
-        sprite->n_frames  = frames;
-        sprite->facing = SPRITE_DEF_FACING;
-        sprite->facings = facings;
-        sprite->n_total_frames = (sprite->n_frames 
-                                  * (sprite->facings ? 
-                                     NUM_PLANAR_DIRECTIONS : 1));
+	sprite->n_frames = frames;
+	sprite->facing = SPRITE_DEF_FACING;
+	sprite->facings = facings;
+	sprite->n_total_frames = (sprite->n_frames
+				  * (sprite->facings ?
+				     NUM_PLANAR_DIRECTIONS : 1));
 
 	// Allocate and initialize the rect structures which index into the
 	// image. One rect per frame of animation. Note that 'facings' is a
@@ -398,92 +408,92 @@ static struct sprite * sprite_new_internal(int frames, int facings)
 	// specify 'facings' as zero, so for these assume we'll want one
 	// sequence of frames. Sprites that do support facings will need as
 	// many sequences as there are directions supported by the game.
-	
-	sprite->frames = (SDL_Rect*)calloc(sprite->n_total_frames, 
-                                           sizeof(SDL_Rect));
-        if (!sprite->frames) {
-                goto abort;
-        }
+
+	sprite->frames = (SDL_Rect *) calloc(sprite->n_total_frames,
+					     sizeof(SDL_Rect));
+	if (!sprite->frames) {
+		goto abort;
+	}
 
 	return sprite;
 
  abort:
-        sprite_del(sprite);
-        return 0;
+	sprite_del(sprite);
+	return 0;
 }
 
 void sprite_del(struct sprite *sprite)
 {
-        if (sprite->tag)
-                free(sprite->tag);
+	if (sprite->tag)
+		free(sprite->tag);
 	if (sprite->frames)
 		free(sprite->frames);
-        if (sprite->decor)
-                sprite_del(sprite->decor);
-        rsurf_unref(sprite->rsurf);
+	if (sprite->decor)
+		sprite_del(sprite->decor);
+	rsurf_unref(sprite->rsurf);
 
-        free(sprite);
+	free(sprite);
 }
 
 void sprite_paint(struct sprite *sprite, int frame, int x, int y)
 {
-        while (sprite) {
+	while (sprite) {
 
-                if (sprite->wave) {
-                        sprite_paint_wave(sprite, frame, x, y);
-                } else {
-                        sprite_paint_normal(sprite, frame, x, y);
-                }
-                
-                sprite = sprite->decor;
-        }
+		if (sprite->wave) {
+			sprite_paint_wave(sprite, frame, x, y);
+		} else {
+			sprite_paint_normal(sprite, frame, x, y);
+		}
+
+		sprite = sprite->decor;
+	}
 }
 
 void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y)
 {
-        while (sprite) {
+	while (sprite) {
 
-                if (sprite->wave) {
-                        sprite_paint_wave(sprite, frame, x, y);
-                } else {
-                        sprite_paint_preframed(sprite, frame, x, y);
-                }
-                
-                sprite = sprite->decor;
-        }
+		if (sprite->wave) {
+			sprite_paint_wave(sprite, frame, x, y);
+		} else {
+			sprite_paint_preframed(sprite, frame, x, y);
+		}
+
+		sprite = sprite->decor;
+	}
 }
 
 void sprite_advance_ticks(int ticks)
 {
-        Sprite.ticks_to_next_animation -= ticks;
-        if (Sprite.ticks_to_next_animation <= 0) {
-                sprite_advance_frames();
-                cmdwin_repaint_cursor();
-                statusRepaint();
-                Sprite.ticks_to_next_animation += AnimationTicks;
-        }
+	Sprite.ticks_to_next_animation -= ticks;
+	if (Sprite.ticks_to_next_animation <= 0) {
+		sprite_advance_frames();
+		cmdwin_repaint_cursor();
+		statusRepaint();
+		Sprite.ticks_to_next_animation += AnimationTicks;
+	}
 }
 
 int sprite_init(void)
 {
-        Sprite.ticks_to_next_animation = 0;
-        return 0;
+	Sprite.ticks_to_next_animation = 0;
+	return 0;
 }
 
 void sprite_advance_frames(void)
 {
-        if (TimeStop) {
-                Session->time_stop_ticks++;
-        } else {
-                sprite_ticks++;
-        }
+	if (TimeStop) {
+		Session->time_stop_ticks++;
+	} else {
+		sprite_ticks++;
+	}
 	mapSetDirty();
 
 }
 
 int sprite_get_facing(struct sprite *sprite)
 {
-        return sprite->facing;
+	return sprite->facing;
 }
 
 int sprite_set_facing(struct sprite *sprite, int facing)
@@ -496,11 +506,10 @@ int sprite_set_facing(struct sprite *sprite, int facing)
 	}
 	// facing supported?
 	if ((sprite->facings & (1 << facing)) == 0) {
-                dbg("warn: sprite_set_facing: facing=%d invalid for "\
-                    "sprite %s\n",
-                    facing, sprite->tag);
+		dbg("warn: sprite_set_facing: facing=%d invalid for "
+		    "sprite %s\n", facing, sprite->tag);
 		return -1;
-        }
+	}
 
 	sprite->facing = facing;
 	sprite->sequence = 0;
@@ -528,191 +537,188 @@ void sprite_unfade(struct sprite *sprite)
 
 void sprite_zoom_out(int factor)
 {
-        sprite_zoom_factor *= factor;
+	sprite_zoom_factor *= factor;
 }
 
 extern void sprite_zoom_in(int factor)
 {
-        sprite_zoom_factor /= factor;
+	sprite_zoom_factor /= factor;
 }
 
-struct sprite * sprite_new(const char *tag, int frames, int index, int wave, 
-                           int facings, struct images *images)
+struct sprite *sprite_new(const char *tag, int frames, int index, int wave,
+			  int facings, struct images *images)
 {
 	struct sprite *sprite;
-        int col_width;
-        int row_height;
+	int col_width;
+	int row_height;
 	int i;
-        int frame;
-        int col;
-        int row;
+	int frame;
+	int col;
+	int row;
 
-        /* Allocate it. */
+	/* Allocate it. */
 	sprite = sprite_new_internal(frames, facings);
-        if (!sprite)
-                return 0;
+	if (!sprite)
+		return 0;
 
-        /* Dupe the tag if applicable. */
-        if (tag) {
-                if (!(sprite->tag = strdup(tag)))
-                        goto abort;
-        }
+	/* Dupe the tag if applicable. */
+	if (tag) {
+		if (!(sprite->tag = strdup(tag)))
+			goto abort;
+	}
 
-        /* Create a new refcounted surf. */
-        if (!(sprite->rsurf = rsurf_new(images->images)))
-                goto abort;
+	/* Create a new refcounted surf. */
+	if (!(sprite->rsurf = rsurf_new(images->images)))
+		goto abort;
 
+	/* Fill out the rest of the basic fields. */
+	sprite->wave = ! !wave;
+	sprite->w_pix = images->w;
+	sprite->h_pix = images->h;
 
-        /* Fill out the rest of the basic fields. */
-        sprite->wave = !!wave;
-        sprite->w_pix = images->w;
-        sprite->h_pix = images->h;
-
-        /* Fill out the frames based on the index and image info. */
+	/* Fill out the frames based on the index and image info. */
 	col_width = (images->w + images->offx);
 	row_height = (images->h + images->offy);
-	for (i = 0, frame = index; 
-             i < sprite->n_total_frames; 
-             i++, frame++) {
+	for (i = 0, frame = index; i < sprite->n_total_frames; i++, frame++) {
 		col = frame % images->cols;
 		row = frame / images->cols;
 		sprite->frames[i].x = col * col_width + images->offx;
 		sprite->frames[i].y = row * row_height + images->offy;
 		sprite->frames[i].w = images->w;
 		sprite->frames[i].h = images->h;
-	}        
+	}
 
 	return sprite;
 
  abort:
-        sprite_del(sprite);
-        return 0;
+	sprite_del(sprite);
+	return 0;
 }
 
 struct sprite *sprite_clone(struct sprite *orig, const char *tag)
 {
-        SDL_Rect *frames;
+	SDL_Rect *frames;
 
-        /* Allocate it. */
-        struct sprite *sprite = sprite_new_internal(orig->n_frames, 
-                                                    orig->facings);
-        if (! sprite) {
-                return 0;
-        }
+	/* Allocate it. */
+	struct sprite *sprite = sprite_new_internal(orig->n_frames,
+						    orig->facings);
+	if (!sprite) {
+		return 0;
+	}
 
-        /* Remember the frames pointer before we wipe it out with the copy. */
-        frames = sprite->frames;
+	/* Remember the frames pointer before we wipe it out with the copy. */
+	frames = sprite->frames;
 
-        /* Copy the sprite info. */
-        memcpy(sprite, orig, sizeof(*orig));
+	/* Copy the sprite info. */
+	memcpy(sprite, orig, sizeof(*orig));
 
-        /* Copy the frames. */
-        sprite->frames = frames;
-        memcpy(sprite->frames, orig->frames, 
-               sprite->n_total_frames * sizeof(sprite->frames[0]));
+	/* Copy the frames. */
+	sprite->frames = frames;
+	memcpy(sprite->frames, orig->frames,
+	       sprite->n_total_frames * sizeof(sprite->frames[0]));
 
-        /* Bump the refcount on the surface. */
-        sprite->rsurf->ref++;
+	/* Bump the refcount on the surface. */
+	sprite->rsurf->ref++;
 
-        /* Dupe the tag if applicable. */
-        if (tag) {
-                sprite->tag = strdup(tag);
-        } else if (orig->tag) {
-                sprite->tag = strdup(orig->tag);
-        }
+	/* Dupe the tag if applicable. */
+	if (tag) {
+		sprite->tag = strdup(tag);
+	} else if (orig->tag) {
+		sprite->tag = strdup(orig->tag);
+	}
 
-        return sprite;
+	return sprite;
 }
 
 void sprite_append_decoration(struct sprite *base, struct sprite *decor)
 {
-        assert(base);
-        while (base->decor) {
-                base = base->decor;
-        }
-        base->decor = sprite_clone(decor, decor->tag);
+	assert(base);
+	while (base->decor) {
+		base = base->decor;
+	}
+	base->decor = sprite_clone(decor, decor->tag);
 }
 
 char *sprite_get_tag(struct sprite *sprite)
 {
-        return sprite->tag;
+	return sprite->tag;
 }
 
 int sprite_is_faded(struct sprite *sprite)
 {
-        return sprite->faded;
+	return sprite->faded;
 }
 
 int sprite_can_face(struct sprite *sprite, int facing)
 {
-        return (sprite->facings & (1 << facing));
+	return (sprite->facings & (1 << facing));
 }
 
 /* sprite_save - save to file for reload. */
 void sprite_save(struct sprite *sprite, struct save *save)
 {
-        /* For simple sprites just save the tag. */
-        if (!sprite->decor) {
-                assert(sprite->tag);
-                save->write(save, "%s ; sprite\n", sprite->tag);
-                return;
-        }
+	/* For simple sprites just save the tag. */
+	if (!sprite->decor) {
+		assert(sprite->tag);
+		save->write(save, "%s ; sprite\n", sprite->tag);
+		return;
+	}
 
-        /* For composite sprites */
-        save->write(save, ("(mk-composite-sprite (list "));
-        while (sprite) {
-                assert(sprite->tag);
-                save->append(save, "%s ", sprite->tag);
-                sprite = sprite->decor;
-        }
-        save->append(save, ")) ; composite sprite\n");
+	/* For composite sprites */
+	save->write(save, ("(mk-composite-sprite (list "));
+	while (sprite) {
+		assert(sprite->tag);
+		save->append(save, "%s ", sprite->tag);
+		sprite = sprite->decor;
+	}
+	save->append(save, ")) ; composite sprite\n");
 }
 
 void sprite_strip_decorations(struct sprite *sprite)
 {
-        if (sprite->decor) {
-                /* Decoration sprites are always single-referenced clones, so
-                 * blow them away when they're stripped. This will recursively
-                 * delete all the trailing decor sprites. */
-                sprite_del(sprite->decor);
-                sprite->decor = 0;
-        }
+	if (sprite->decor) {
+		/* Decoration sprites are always single-referenced clones, so
+		 * blow them away when they're stripped. This will recursively
+		 * delete all the trailing decor sprites. */
+		sprite_del(sprite->decor);
+		sprite->decor = 0;
+	}
 }
 
 void sprite_blit_over(struct sprite *dest, struct sprite *src)
 {
-        int i = 0;
+	int i = 0;
 
-        /* Check preconditions. */
-        assert(dest->w_pix == src->w_pix);
-        assert(dest->h_pix == src->h_pix);
-        assert(dest->n_total_frames == src->n_total_frames);
+	/* Check preconditions. */
+	assert(dest->w_pix == src->w_pix);
+	assert(dest->h_pix == src->h_pix);
+	assert(dest->n_total_frames == src->n_total_frames);
 
-        /* Clone the destination sprite's surface before changing it. */
-        if (sprite_clone_and_replace_rsurf(dest))
-                return;
+	/* Clone the destination sprite's surface before changing it. */
+	if (sprite_clone_and_replace_rsurf(dest))
+		return;
 
-        /* For each frame... */
-        for (i = 0; i < dest->n_total_frames; i++) {
+	/* For each frame... */
+	for (i = 0; i < dest->n_total_frames; i++) {
 
-                /* Blit the source over the destination. */
-                sprite_custom_blit(src->rsurf->surf, &src->frames[i],
-                                   dest->rsurf->surf, &dest->frames[i]);
-                                
-        }
+		/* Blit the source over the destination. */
+		sprite_custom_blit(src->rsurf->surf, &src->frames[i],
+				   dest->rsurf->surf, &dest->frames[i]);
+
+	}
 }
 
 int sprite_num_frames(struct sprite *sprite)
 {
-	return sprite->n_frames;	
+	return sprite->n_frames;
 }
 
 int sprite_facings_list(struct sprite *sprite)
 {
-	return sprite->facings;	
+	return sprite->facings;
 }
 
-void sprite_paint_direct(struct sprite *sprite, int frame, SDL_Rect *dest)
+void sprite_paint_direct(struct sprite *sprite, int frame, SDL_Rect * dest)
 {
 	screen_blit(sprite->rsurf->surf, &sprite->frames[frame], dest);
 }

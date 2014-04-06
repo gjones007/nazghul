@@ -39,34 +39,31 @@ struct occ {
 	char *name;
 	float magic;
 
-        int hp_mod;   /* part of base hp contributed by occupation */
-        int hp_mult;  /* additional hp per-level contributed by occupation  */
-        int mp_mod;   /* similar, for mana */
-        int mp_mult;  /* similar, for mana */
+	int hp_mod;		/* part of base hp contributed by occupation */
+	int hp_mult;		/* additional hp per-level contributed by occupation  */
+	int mp_mod;		/* similar, for mana */
+	int mp_mult;		/* similar, for mana */
 
-        int hit_mod;  /* unused */
-        int def_mod;  /* unused */
-        int dam_mod;  /* unused */
-        int arm_mod;  /* unused */
-        
-        int xpval; /* reward for killing this type */
-        int refcount;
-		
-        struct gob *gob;
-        struct skill_set *skills;
+	int hit_mod;		/* unused */
+	int def_mod;		/* unused */
+	int dam_mod;		/* unused */
+	int arm_mod;		/* unused */
+
+	int xpval;		/* reward for killing this type */
+	int refcount;
+
+	struct gob *gob;
+	struct skill_set *skills;
 };
 
 extern struct occ *occ_new(const char *tag,
-                           const char *name,
-                           float magic,
-                           int hp_mod,
-                           int hp_mult,
-                           int mp_mod,
-                           int mp_mult,
-                           int hit_mod,
-                           int def_mod,
-                           int dam_mod,
-                           int arm_mod);
+			   const char *name,
+			   float magic,
+			   int hp_mod,
+			   int hp_mult,
+			   int mp_mod,
+			   int mp_mult,
+			   int hit_mod, int def_mod, int dam_mod, int arm_mod);
 
 extern void occ_unref(struct occ *occ);
 extern void occ_set_skills(struct occ *occ, struct skill_set *skills);

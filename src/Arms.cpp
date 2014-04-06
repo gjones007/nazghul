@@ -35,34 +35,28 @@
 #include "log.h"
 
 ArmsType::ArmsType(const char *tag, const char *name, struct sprite *sprite,
-			int slotMask,
-			char *to_hit_dice,
-			char *to_defend_dice,
-			int numHands,
-			int range,
-			int weight,
-			char *damage_dice,
-			char *armor_dice,
-			int reqActPts,
+		   int slotMask,
+		   char *to_hit_dice,
+		   char *to_defend_dice,
+		   int numHands,
+		   int range,
+		   int weight,
+		   char *damage_dice,
+		   char *armor_dice,
+		   int reqActPts,
 		   int AP_mod,
-			bool thrown,
-			bool ubiquitousAmmo,
-			sound_t *fireSound,
-			class MissileType *missileType,
-			class ObjectType *ammo_type,
-			int strAttackMod,
-			int dexAttackMod,
-			int charDamageMod,
-			float charAvoidMod,
-			bool isBeam
-			)
-			: ObjectType(tag, name, sprite, item_layer),
-				slotMask(slotMask),
-				numHands(numHands),
-				range(range),
-				weight(weight),
-				thrown(thrown),
-				ubiquitousAmmo(ubiquitousAmmo)
+		   bool thrown,
+		   bool ubiquitousAmmo,
+		   sound_t * fireSound,
+		   class MissileType * missileType,
+		   class ObjectType * ammo_type,
+		   int strAttackMod,
+		   int dexAttackMod,
+		   int charDamageMod, float charAvoidMod, bool isBeam)
+:ObjectType(tag, name, sprite, item_layer),
+slotMask(slotMask),
+numHands(numHands),
+range(range), weight(weight), thrown(thrown), ubiquitousAmmo(ubiquitousAmmo)
 {
 	toHitDice = strdup(to_hit_dice);
 	toDefendDice = strdup(to_defend_dice);
@@ -71,26 +65,24 @@ ArmsType::ArmsType(const char *tag, const char *name, struct sprite *sprite,
 	assert(toHitDice && toDefendDice && damageDice && armorDice);
 	this->fire_sound = fireSound;
 
-	if (missileType)
-	{
+	if (missileType) {
 		missile = new Missile(missileType);
 		assert(missile);
 	} else {
 		missile = NULL;
 	}
-	
+
 	ammoType = ammo_type;
-	
-	if (thrown)
-	{
+
+	if (thrown) {
 		setAmmoType(this);
 	}
-	
+
 	str_attack_mod = strAttackMod;
 	dex_attack_mod = dexAttackMod;
 	char_damage_mod = charDamageMod;
 	char_avoid_mod = charAvoidMod;
-	
+
 	required_action_points = reqActPts;
 	modifier_to_AP_of_user = AP_mod;
 	beam = isBeam;
@@ -98,18 +90,18 @@ ArmsType::ArmsType(const char *tag, const char *name, struct sprite *sprite,
 
 ArmsType::ArmsType()
 {
-        // Don't ever expect to call this. Defining it to override the default
-        // one c++ automatically creates.
-        assert(false);
+	// Don't ever expect to call this. Defining it to override the default
+	// one c++ automatically creates.
+	assert(false);
 
-        missile        = NULL;
-        ammoType		  = NULL;
-        thrown         = false;
-        weight         = 0;
-        ubiquitousAmmo = false;
-        layer          = item_layer;
-        fire_sound     = NULL_SOUND;
-        required_action_points = 1;
+	missile = NULL;
+	ammoType = NULL;
+	thrown = false;
+	weight = 0;
+	ubiquitousAmmo = false;
+	layer = item_layer;
+	fire_sound = NULL_SOUND;
+	required_action_points = 1;
 	modifier_to_AP_of_user = 0;
 }
 
@@ -118,25 +110,25 @@ ArmsType::~ArmsType()
 	if (missile != NULL)
 		delete missile;
 	if (toHitDice)
-	       free(toHitDice);
+		free(toHitDice);
 	if (toDefendDice)
-	       free(toDefendDice);
+		free(toDefendDice);
 	if (damageDice)
-	       free(damageDice);
+		free(damageDice);
 	if (armorDice)
-	       free(armorDice);
+		free(armorDice);
 }
 
-bool ArmsType::isType(int classID) 
+bool ArmsType::isType(int classID)
 {
-        if (classID == ARMS_TYPE_ID)
-                return true;
-        return ObjectType::isType(classID);
+	if (classID == ARMS_TYPE_ID)
+		return true;
+	return ObjectType::isType(classID);
 }
 
-int ArmsType::getType() 
+int ArmsType::getType()
 {
-        return ARMS_TYPE_ID;
+	return ARMS_TYPE_ID;
 }
 
 class MissileType *ArmsType::getMissileType()
@@ -182,14 +174,14 @@ bool ArmsType::isBeam()
 /*
 	triggers a hit-loc ifc event if appropriate for either weapon or missile
 */
-void ArmsType::fireHitLoc(Object *attacker, Object *target, struct place *place, int x, int y, int dam)
+void ArmsType::fireHitLoc(Object * attacker, Object * target,
+			  struct place *place, int x, int y, int dam)
 {
-	if (isMissileWeapon() || isThrownWeapon())
-	{
+	if (isMissileWeapon() || isThrownWeapon()) {
 		missile->fireHitLoc(attacker, target, place, x, y, dam);
 	}
 	if (canHitLocation())
-		hitLocation(NULL, attacker, target, place, x, y, dam);	
+		hitLocation(NULL, attacker, target, place, x, y, dam);
 }
 
 /*
@@ -198,7 +190,8 @@ void ArmsType::fireHitLoc(Object *attacker, Object *target, struct place *place,
 
 	XXX: isn't this almost an exact dupe of the other fire() method?
 */
-bool ArmsType::fire(class Character * target, int ox, int oy, int *misx, int *misy)
+bool ArmsType::fire(class Character * target, int ox, int oy, int *misx,
+		    int *misy)
 {
 	if (isMissileWeapon() || isThrownWeapon()) {
 		*misx = target->getX();
@@ -207,8 +200,7 @@ bool ArmsType::fire(class Character * target, int ox, int oy, int *misx, int *mi
 		missile->setX(ox);
 		missile->setY(oy);
 		int frange = 0;
-		if (missile->getObjectType()->isFixedRange())
-		{
+		if (missile->getObjectType()->isFixedRange()) {
 			frange = getRange();
 		}
 		missile->animate(ox, oy, misx, misy, 0, frange);
@@ -218,12 +210,14 @@ bool ArmsType::fire(class Character * target, int ox, int oy, int *misx, int *mi
 	return true;
 }
 
-static int arms_on_tile_entry(struct place *place, int x, int y, class Missile *missile)
+static int arms_on_tile_entry(struct place *place, int x, int y,
+			      class Missile * missile)
 {
 	return missile->obstructed(place, x, y) ? -1 : 0;
 }
 
-bool ArmsType::obstructed(struct place *place, int from_x, int from_y, int to_x, int to_y)
+bool ArmsType::obstructed(struct place * place, int from_x, int from_y,
+			  int to_x, int to_y)
 {
 	if (isMissileWeapon() || isThrownWeapon()) {
 		int fin_x = to_x;
@@ -232,11 +226,14 @@ bool ArmsType::obstructed(struct place *place, int from_x, int from_y, int to_x,
 		if (missile->getObjectType()->isFixedRange()) {
 			frange = getRange();
 		}
-		
-		dbg("%s:%s:checking from [%d %d] to [%d %d] in %s...", __FUNCTION__, getName(), from_x, from_y, 
-		    to_x, to_y, place_name(place));
-		int ret = map_walk_missile_path(from_x, from_y, &fin_x, &fin_y, place, missile, frange,
-						arms_on_tile_entry);
+
+		dbg("%s:%s:checking from [%d %d] to [%d %d] in %s...",
+		    __FUNCTION__, getName(), from_x, from_y, to_x, to_y,
+		    place_name(place));
+		int ret =
+		    map_walk_missile_path(from_x, from_y, &fin_x, &fin_y, place,
+					  missile, frange,
+					  arms_on_tile_entry);
 		if (ret != 0) {
 			dbg("blocked in flight!\n");
 			return true;
@@ -262,8 +259,7 @@ bool ArmsType::fire(struct place * place, int ox, int oy, int *tx, int *ty)
 		missile->setX(ox);
 		missile->setY(oy);
 		int frange = 0;
-		if (missile->getObjectType()->isFixedRange())
-		{
+		if (missile->getObjectType()->isFixedRange()) {
 			frange = getRange();
 		}
 		missile->animate(ox, oy, tx, ty, 0, frange);
@@ -273,53 +269,51 @@ bool ArmsType::fire(struct place * place, int ox, int oy, int *tx, int *ty)
 	return true;
 }
 
-bool ArmsType::fireInDirection(struct place *place, int ox, int oy, 
-                               int dx, int dy, class Object *user)
+bool ArmsType::fireInDirection(struct place * place, int ox, int oy,
+			       int dx, int dy, class Object * user)
 {
-        if (!isMissileWeapon() && !isThrownWeapon())
-                return false;
+	if (!isMissileWeapon() && !isThrownWeapon())
+		return false;
 
-        if (fire_sound)
-                sound_play(fire_sound, SOUND_MAX_VOLUME);
+	if (fire_sound)
+		sound_play(fire_sound, SOUND_MAX_VOLUME);
 
-		int misx = dx * getRange() + ox;
-		int misy = dy * getRange() + oy;
+	int misx = dx * getRange() + ox;
+	int misy = dy * getRange() + oy;
 
-        missile->setPlace(place);
-        missile->setX(ox);
-        missile->setY(oy);
-        missile->animate(ox, oy, 
-                         &misx, 
-                         &misy, 
-                         MISSILE_IGNORE_LOS|MISSILE_HIT_PARTY,0);
+	missile->setPlace(place);
+	missile->setX(ox);
+	missile->setY(oy);
+	missile->animate(ox, oy,
+			 &misx,
+			 &misy, MISSILE_IGNORE_LOS | MISSILE_HIT_PARTY, 0);
 
-        if (!missile->hitTarget() || !missile->getStruck())
-                return false;
+	if (!missile->hitTarget() || !missile->getStruck())
+		return false;
 
-        log_begin("%s hit ", getName());
-        missile->getStruck()->describe();
-        log_end("!");
-        
-        // Reference the object while damaging it, since damage can remove it
-        // from the map.
-        obj_inc_ref(missile->getStruck());
+	log_begin("%s hit ", getName());
+	missile->getStruck()->describe();
+	log_end("!");
 
-        missile->getStruck()->damage(dice_roll(damageDice));
+	// Reference the object while damaging it, since damage can remove it
+	// from the map.
+	obj_inc_ref(missile->getStruck());
 
-        if (missile->getStruck()->isDestroyed()) {
-                log_begin("%s destroyed ", getName());
-                missile->getStruck()->describe();
-                log_end("!");
-                mapSetDirty();
-        }
-        
-        // Release the reference
-        obj_dec_ref(missile->getStruck());
+	missile->getStruck()->damage(dice_roll(damageDice));
 
-        if (user)
-        	user->decrementActionPoints(getRequiredActionPoints());
+	if (missile->getStruck()->isDestroyed()) {
+		log_begin("%s destroyed ", getName());
+		missile->getStruck()->describe();
+		log_end("!");
+		mapSetDirty();
+	}
+	// Release the reference
+	obj_dec_ref(missile->getStruck());
 
-        return true;
+	if (user)
+		user->decrementActionPoints(getRequiredActionPoints());
+
+	return true;
 }
 
 void ArmsType::setThrown(bool val)
@@ -341,77 +335,77 @@ void ArmsType::setThrown(bool val)
 
 int ArmsType::getSlotMask()
 {
-        return slotMask;
+	return slotMask;
 }
 
-char * ArmsType::getToHitDice()
+char *ArmsType::getToHitDice()
 {
-        return toHitDice;
+	return toHitDice;
 }
 
-char * ArmsType::getDamageDice()
+char *ArmsType::getDamageDice()
 {
-        return damageDice;
+	return damageDice;
 }
 
-char * ArmsType::getToDefendDice()
+char *ArmsType::getToDefendDice()
 {
-        return toDefendDice;
+	return toDefendDice;
 }
 
-char * ArmsType::getArmorDice()
+char *ArmsType::getArmorDice()
 {
-        return armorDice;
+	return armorDice;
 }
 
 int ArmsType::getNumHands()
 {
-        return numHands;
+	return numHands;
 }
 
 int ArmsType::getRange()
 {
-        return range;
+	return range;
 }
 
 bool ArmsType::isThrownWeapon()
 {
-        return thrown;
+	return thrown;
 }
 
 void ArmsType::setUbiquitousAmmo(bool val)
 {
-        ubiquitousAmmo = val;
+	ubiquitousAmmo = val;
 }
 
-bool ArmsType::ammoIsUbiquitous() 
+bool ArmsType::ammoIsUbiquitous()
 {
-        return ubiquitousAmmo;
+	return ubiquitousAmmo;
 }
 
-void ArmsType::setWeight(int val) 
+void ArmsType::setWeight(int val)
 {
-        weight = val;
+	weight = val;
 }
 
-int ArmsType::getWeight(void) 
+int ArmsType::getWeight(void)
 {
-        return weight;
+	return weight;
 }
 
 int ArmsType::modifyStrAttack(int strBonus)
 {
-	return strBonus *  str_attack_mod;
+	return strBonus * str_attack_mod;
 }
 
 int ArmsType::modifyDexAttack(int dexBonus)
 {
-	return dexBonus *  dex_attack_mod;
+	return dexBonus * dex_attack_mod;
 }
 
 int ArmsType::modifyDamageBonus(int damBonus)
 {
-	return damBonus *  char_damage_mod;
+	return damBonus * char_damage_mod;
 }
 
 float ArmsType::modifyAvoidBonus(float avoidBonus)
@@ -419,6 +413,7 @@ float ArmsType::modifyAvoidBonus(float avoidBonus)
 	return avoidBonus * char_avoid_mod;
 }
 
-int ArmsType::get_AP_mod(void) {
-    return modifier_to_AP_of_user;
+int ArmsType::get_AP_mod(void)
+{
+	return modifier_to_AP_of_user;
 }
