@@ -186,7 +186,7 @@ void ztats_init(void)
                 ztats_op_paint
         };
 
-        memset(&ztats, 0, sizeof(&ztats));
+        memset(&ztats, 0, sizeof(ztats));
         list_init(&ztats.panes);
         ztats.base.ops = &ztats_ops;
 }

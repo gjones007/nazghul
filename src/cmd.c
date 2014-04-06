@@ -1783,7 +1783,7 @@ static class Object *cmd_get_talk_info(struct talk_info *info,
                                              class Object *member, 
                                              int range)
 {
-        memset(info, 0, sizeof(info));
+        memset(info, 0, sizeof(*info));
         info->origin = member;
         info->nearest = NULL;
         info->min_distance = 0;
