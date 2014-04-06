@@ -765,7 +765,7 @@
   '((name    . "ranger")
     (species . sp_human)
     (occ     . oc_ranger)
-    (sprite  . s_nager)
+    (sprite  . s_ranger)
     (stuff   . ranger-equip)
     (ai      . 'ranger-ai)
     (faction . faction-men)))
