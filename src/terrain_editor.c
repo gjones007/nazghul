@@ -686,6 +686,8 @@ static void terrain_editor_applet_ops_run(struct applet *applet, SDL_Rect *dims,
 static void terrain_editor_help_paint(struct terrain_editor_pane *pane)
 {
     static const char *text[] = {
+        " Press SHIFT-Right Arrow to see Palette",
+        "",
         "  PageUp/PageDn/ = Scroll palette up/down",
         "       Home/End  = Scroll to begin/end",
         "     Arrow Keys  = Move cursor",

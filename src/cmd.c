@@ -3453,9 +3453,10 @@ int ui_trade(struct merchant *merch)
 }
 
 static const char *cmd_help_text =
-"Use the arrow keys to indicate direction.\n"
-"Use the ESC key to cancel commands.\n"
-"Use the first letter to start a command.\n"
+"--- GENERAL ---\n"
+"Arrow keys indicate direction.\n"
+"ESC cancels commands.\n"
+"The first letter starts a command.\n"
 "\n"
 "--- COMMANDS ---\n"
 "A)ttack something\n"
@@ -3490,8 +3491,9 @@ static const char *cmd_help_text =
 "CTRL-HOME\n"
 "CTRL-END\n"
 "\n"
-"When talking to people, enter a keyword.\n"
-"Most people reply to NAME, JOB, TRADE and\n"
+"--- TALKING ---\n"
+"When talking to NPCs, enter a keyword.\n"
+"Most reply to NAME, JOB, TRADE and\n"
 "JOIN. Their replies will give you hints\n"
 "about more keywords.\n"
 ;
