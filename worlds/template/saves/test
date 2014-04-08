@@ -1,0 +1,143 @@
+;; test -- a nazghul session file
+;; Load the standard definitions file
+(load "naz.scm")
+
+(kern-script-version "0.7.1")
+;; Progress bar
+(kern-progress-bar-start "Loading" 1)
+(define original-load load)  (define (load file) (kern-progress-bar-advance 1) (original-load file))
+(kern-mk-place 'p_world "The World"
+  nil ;; sprite
+  (kern-mk-map
+    nil     19 19 pal_expanded
+    (list
+      "__ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ ^^ ^^ ^^ "
+      "__ __ __ .. .. .. .. .. .. .. .. .. .. .. __ __ ^^ .. ^^ "
+      "__ __ .. .. .. .. .. .. .. .. .. .. .. .. __ __ __ ee __ "
+      "__ .. .. .. ^^ .. ^^ .. .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. ^^ ^^ .. ^^ ^^ .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. .. .. .. .. .. .. ee __ __ __ __ "
+      "__ .. .. ^^ ^^ .. ^^ ^^ .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. .. ^^ .. ^^ .. .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. ^^ ^^ ^^ .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. ^^ .. ^^ .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. ^^ .. ^^ .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. .. .. .. .. .. .. __ __ __ __ __ "
+      "__ .. .. .. .. .. .. .. .. .. .. .. .. .. __ .. .. .. __ "
+      "__ .. .. .. .. .. .. .. ^^ .. ^^ .. .. .. __ .. .. .. __ "
+      "__ .. .. .. .. .. .. ^^ ^^ .. ^^ ^^ .. .. __ .. .. .. __ "
+      "__ __ .. .. .. .. .. .. ^^ ^^ ^^ .. .. .. __ __ .. __ __ "
+      "__ __ __ .. .. .. .. .. .. .. .. .. .. .. __ __ __ __ __ "
+      "__ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ __ "
+    )
+  )
+  #f #f #t #f
+  ;; subplaces
+  nil
+  nil ;; neighbors
+  (list ;; objects in p_world
+    (list
+      (let ((kplayer         (kern-mk-player
+          'player
+          s_wanderer
+          "Walk"
+          nil
+          1 0
+          18000 ;; turns to next meal
+          nil
+          nil
+          nil
+          nil ; player's vehicle
+          (kern-mk-inventory
+            ;; contents
+            nil
+            ;; hooks
+            (list
+            )
+          )
+          (list
+            (let ((kchar               (let ((kchar                 (kern-mk-char
+                  'ch_wanderer  ; tag
+                  "The Wanderer"  ; name
+                  sp_human  ; species
+                  oc_wanderer  ; occ
+                  s_wanderer ; sprite
+                  1  ; BaseFaction
+                  6 6 6  ; str, int, dex
+                  25 5  ;    hp_mod, hp_mult
+                  1 1  ;    mp_mod, mp_mult
+                  41 0  ;    HP, XP
+                  5  ;    mana
+                  0  ;    (OBSOLETE)
+                  1  ;    level
+                  #f  ; dead?
+                  nil  ; conv
+                  nil  ; sched
+                  nil  ; ai
+                  nil  ; inventory
+                  nil  ; readied arms
+                  ;; hooks
+                  (list
+                  )
+                ))) ;; end ((kchar ...)
+              kchar) ;; end (let ...)
+              ))             kchar)
+          )  ; list of party members
+        )))
+      )
+    10 5)
+  ) ;; end of objects in p_world
+  nil ;; on-entry-hook
+  (list ;; edge entrances
+    (list   0  18  18) ;; Northwest
+    (list   1   9  18) ;; North
+    (list   2   0  18) ;; Northeast
+    (list   3  18   9) ;; West
+    (list   4   9   9) ;; Here
+    (list   5   0   9) ;; East
+    (list   6  18   0) ;; Southwest
+    (list   7   9   0) ;; South
+    (list   8   0   0) ;; Southeast
+  )
+) ;; end of place p_world
+
+(kern-progress-bar-advance 1)
+;;--------------
+;; ObjectFreezer
+;;--------------
+;;--------------
+;; Miscellaneous
+;;--------------
+(kern-set-damage-sprite (null))
+(kern-set-crosshair (null))
+(kern-set-clock 1611 0 0 0 7 0)
+(kern-set-time-accel 1.000000)
+(kern-set-turn-count 1)
+(kern-mk-dtable
+  (list    2    0 )
+  (list    0    2 )
+)
+;; ---------
+;; Astronomy
+;; ---------
+(kern-mk-astral-body
+  'sun	; tag
+  "Fyer (the sun)"	; name
+  1	; distance
+  1	; minutes_per_phase
+  4	; minutes_per_degress
+  0	; initial_arc
+  0	; initial_phase
+  nil	; gifc
+  (list
+    (list s_sun 255 "full")
+  )
+)
+(kern-set-wind 1 0)
+(kern-add-reveal 0)
+(kern-add-quicken 0)
+(kern-add-time-stop 0)
+(kern-add-magic-negated 0)
+(kern-add-xray-vision 0)
+(kern-progress-bar-finish)
