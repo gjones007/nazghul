@@ -9,7 +9,7 @@
 
 ;; The crosshair cursor used for targeting.
 (let* ((sprite (sprite-from-image "images/system/crosshair.png"))
-       (type (mk-obj-type nil "crosshair" sprite layer-crosshair nil)))
+       (type (mk-obj-type 'crosshair "crosshair" sprite layer-crosshair nil)))
   (kern-set-crosshair type))
 
 ;; The damage sprite. This is flashed over a character when it takes damage.
