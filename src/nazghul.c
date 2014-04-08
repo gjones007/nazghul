@@ -180,15 +180,13 @@ static void parse_args(int argc, char **argv)
 		}		// switch (c)
 	}			// while (c)
 
-	// --------------------------------------------------------------------
-	// Any remaining option is assumed to be the save-file to load the game
-	// from. If there is none then abort.
-	// --------------------------------------------------------------------
-
+        /* Any remaining option is assumed to be the save-file to load the game
+         * from. If there is none then abort. */
 	if (optind < argc) {
-		nazghul_load_fname = argv[optind];
+                /* Allocate a copy so free() is always safe below */
+		nazghul_load_fname = strdup(argv[optind]);
 	}
-}				// parse_args()
+}
 
 /**
  * This initializes the various submodules.
@@ -372,8 +370,9 @@ int main(int argc, char **argv)
 
 	/* if no load file specified on the command line then run the main
 	 * menu */
-	if (!nazghul_load_fname)
+	if (!nazghul_load_fname) {
 		nazghul_load_fname = main_menu();
+        }
 
 	/* Clear out the vmask cache */
 	vmask_flush_all();
@@ -384,9 +383,9 @@ int main(int argc, char **argv)
 	/* cleanup modules that need it */
 	eventExit();
 
-	/* FIXME: need to free nazghul_load_fname */
 	/* reset save file so main menu runs */
-	nazghul_load_fname = 0;
+        free(nazghul_load_fname);
+	nazghul_load_fname = NULL;
 
 	/* ExitProgram is set when the player closes the window; in that case
 	 * drop out of the program without showing the main menu again. */
