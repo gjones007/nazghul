@@ -1754,7 +1754,9 @@ void PlayerParty::save(save_t * save)
 		save->enter(save, "(bind kplayer ");
 		gob_save(getGob(), save);
 		save->exit(save, ")\n");
-	}
+	} else {
+                save->write(save, "kplayer\n");
+        }
 
 	save->exit(save, ")\n");	// end (let ...) block
 }
