@@ -23,6 +23,7 @@
 #include "images.h"
 #include "list.h"
 #include "map.h"
+#include "mem.h"
 #include "screen.h"
 #include "session.h"
 #include "sprite.h"
@@ -331,19 +332,6 @@ static void sprite_paint_normal(struct sprite *sprite, int frame, int x, int y)
 	dest.w = sprite->w_pix;
 	dest.h = sprite->h_pix;
 
-#ifndef TEST_PORTRAITS
-	/* dbg hack -- the following code won't work with portraits as sprites;
-	 * need a real fix for oversize sprites... */
-	/* If the sprite is larger than a tile, ASSUME (watch out!) we're
-	 * blitting a giant character to the map. In this case the bottom of
-	 * the sprite will still line up with the bottom of the tile and it
-	 * will be horizontally-centered, making the left, right and top
-	 * overlap the neighboring tiles. */
-	if (sprite->w_pix > TILE_W) {
-		dest.x -= (sprite->w_pix - TILE_W) / 2;
-		dest.y -= (sprite->h_pix - TILE_H);
-	}
-#endif
 	frame = (frame + sprite_ticks) % sprite->n_frames;
 	frame += sprite->sequence * sprite->n_frames;
 
@@ -370,7 +358,8 @@ static void sprite_paint_preframed(struct sprite *sprite, int frame, int x,
 	 * blitting a giant character to the map. In this case the bottom of
 	 * the sprite will still line up with the bottom of the tile and it
 	 * will be horizontally-centered, making the left, right and top
-	 * overlap the neighboring tiles. */
+	 * overlap the neighboring tiles.
+         */
 	if (sprite->w_pix > TILE_W) {
 		dest.x -= (sprite->w_pix - TILE_W) / 2;
 		dest.y -= (sprite->h_pix - TILE_H);
@@ -387,13 +376,27 @@ static void sprite_paint_preframed(struct sprite *sprite, int frame, int x,
 
 }
 
-static struct sprite *sprite_new_internal(int frames, int facings)
+static void _sprite_fin(void *vptr)
 {
+        /* Internal destructor. */
+
+        struct sprite *sprite = (struct sprite *)vptr;
+	if (sprite->tag)
+		free(sprite->tag);
+	if (sprite->frames)
+		free(sprite->frames);
+	if (sprite->decor)
+		sprite_deref(sprite->decor);
+	rsurf_unref(sprite->rsurf);
+}
+
+static struct sprite *_sprite_alloc(int frames, int facings)
+{
+        /* Internal constructor. */
+
 	struct sprite *sprite;
 
-	sprite = (struct sprite *)calloc(1, sizeof(*sprite));
-	if (!sprite)
-		return 0;
+	sprite = MEM_ALLOC_TYPE(struct sprite, _sprite_fin);
 
 	sprite->n_frames = frames;
 	sprite->facing = SPRITE_DEF_FACING;
@@ -402,37 +405,17 @@ static struct sprite *sprite_new_internal(int frames, int facings)
 				  * (sprite->facings ?
 				     NUM_PLANAR_DIRECTIONS : 1));
 
-	// Allocate and initialize the rect structures which index into the
-	// image. One rect per frame of animation. Note that 'facings' is a
-	// bitmask, not a count. Sprites that don't have different facings
-	// specify 'facings' as zero, so for these assume we'll want one
-	// sequence of frames. Sprites that do support facings will need as
-	// many sequences as there are directions supported by the game.
-
-	sprite->frames = (SDL_Rect *) calloc(sprite->n_total_frames,
-					     sizeof(SDL_Rect));
-	if (!sprite->frames) {
-		goto abort;
-	}
+	/* Allocate and initialize the rect structures which index into the
+         * image. One rect per frame of animation. Note that 'facings' is a
+         * bitmask, not a count. Sprites that don't have different facings
+         * specify 'facings' as zero, so for these assume we'll want one
+         * sequence of frames. Sprites that do support facings will need as
+         * many sequences as there are directions supported by the game.
+         */
+	sprite->frames = (SDL_Rect *)calloc(sprite->n_total_frames,
+                                            sizeof(SDL_Rect));
 
 	return sprite;
-
- abort:
-	sprite_del(sprite);
-	return 0;
-}
-
-void sprite_del(struct sprite *sprite)
-{
-	if (sprite->tag)
-		free(sprite->tag);
-	if (sprite->frames)
-		free(sprite->frames);
-	if (sprite->decor)
-		sprite_del(sprite->decor);
-	rsurf_unref(sprite->rsurf);
-
-	free(sprite);
 }
 
 void sprite_paint(struct sprite *sprite, int frame, int x, int y)
@@ -557,7 +540,7 @@ struct sprite *sprite_new(const char *tag, int frames, int index, int wave,
 	int row;
 
 	/* Allocate it. */
-	sprite = sprite_new_internal(frames, facings);
+	sprite = _sprite_alloc(frames, facings);
 	if (!sprite)
 		return 0;
 
@@ -568,8 +551,9 @@ struct sprite *sprite_new(const char *tag, int frames, int index, int wave,
 	}
 
 	/* Create a new refcounted surf. */
-	if (!(sprite->rsurf = rsurf_new(images->images)))
+	if (!(sprite->rsurf = rsurf_new(images->images))) {
 		goto abort;
+        }
 
 	/* Fill out the rest of the basic fields. */
 	sprite->wave = ! !wave;
@@ -591,8 +575,8 @@ struct sprite *sprite_new(const char *tag, int frames, int index, int wave,
 	return sprite;
 
  abort:
-	sprite_del(sprite);
-	return 0;
+	sprite_deref(sprite);
+	return NULL;
 }
 
 struct sprite *sprite_clone(struct sprite *orig, const char *tag)
@@ -600,7 +584,7 @@ struct sprite *sprite_clone(struct sprite *orig, const char *tag)
 	SDL_Rect *frames;
 
 	/* Allocate it. */
-	struct sprite *sprite = sprite_new_internal(orig->n_frames,
+	struct sprite *sprite = _sprite_alloc(orig->n_frames,
 						    orig->facings);
 	if (!sprite) {
 		return 0;
@@ -680,7 +664,7 @@ void sprite_strip_decorations(struct sprite *sprite)
 		/* Decoration sprites are always single-referenced clones, so
 		 * blow them away when they're stripped. This will recursively
 		 * delete all the trailing decor sprites. */
-		sprite_del(sprite->decor);
+		sprite_deref(sprite->decor);
 		sprite->decor = 0;
 	}
 }
@@ -721,4 +705,9 @@ int sprite_facings_list(struct sprite *sprite)
 void sprite_paint_direct(struct sprite *sprite, int frame, SDL_Rect * dest)
 {
 	screen_blit(sprite->rsurf->surf, &sprite->frames[frame], dest);
+}
+
+void sprite_deref(struct sprite *sprite)
+{
+        mem_deref(sprite);
 }

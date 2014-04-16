@@ -182,7 +182,7 @@ static void image_dtor(void *val)
 
 static void sprite_dtor(void *val)
 {
-	sprite_del((struct sprite *)val);
+	sprite_deref((struct sprite *)val);
 }
 
 static void sound_dtor(void *val)

@@ -52,7 +52,7 @@ extern struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
 
 extern struct sprite *sprite_new(const char *tag, int frames, int index,
 				 int wave, int facings, struct images *image);
-extern void sprite_del(struct sprite *sprite);
+extern void sprite_deref(struct sprite *sprite);
 extern char *sprite_get_tag(struct sprite *sprite);
 extern int sprite_is_faded(struct sprite *sprite);
 extern int sprite_can_face(struct sprite *sprite, int facing);

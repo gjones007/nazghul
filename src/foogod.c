@@ -100,7 +100,7 @@ static int foogod_load_progress_bar_sprites(void)
  fail:
 	for (i = 0; i < 3; i++) {
 		if ((Foogod.progress_bar_sprites[i])) {
-			sprite_del(Foogod.progress_bar_sprites[i]);
+			sprite_deref(Foogod.progress_bar_sprites[i]);
 			Foogod.progress_bar_sprites[i] = 0;
 		}
 	}

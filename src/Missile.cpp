@@ -184,7 +184,7 @@ void Missile::animate(int Ax, int Ay, int *Bx, int *By, int _flags,
 	struct sprite *tmpSprite = sprite_clone(getSprite(), 0);
 	mapAnimateProjectile(Ax, Ay, Bx, By, tmpSprite, getPlace(), this,
 			     fixedrange);
-	sprite_del(tmpSprite);
+	sprite_deref(tmpSprite);
 
 	hit = (hit || (origBx == *Bx && origBy == *By));
 }
