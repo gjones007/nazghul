@@ -446,6 +446,16 @@ void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y)
 	}
 }
 
+static void sprite_advance_frames(void)
+{
+	if (TimeStop) {
+		Session->time_stop_ticks++;
+	} else {
+		sprite_ticks++;
+	}
+	mapSetDirty();
+}
+
 void sprite_advance_ticks(int ticks)
 {
 	Sprite.ticks_to_next_animation -= ticks;
@@ -461,17 +471,6 @@ int sprite_init(void)
 {
 	Sprite.ticks_to_next_animation = 0;
 	return 0;
-}
-
-void sprite_advance_frames(void)
-{
-	if (TimeStop) {
-		Session->time_stop_ticks++;
-	} else {
-		sprite_ticks++;
-	}
-	mapSetDirty();
-
 }
 
 int sprite_get_facing(struct sprite *sprite)

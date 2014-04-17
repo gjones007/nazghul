@@ -1,63 +1,60 @@
-//
-// nazghul - an old-school RPG engine
-// Copyright (C) 2002, 2003 Gordon McNutt
-//
-// This program is free software; you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by the Free
-// Software Foundation; either version 2 of the License, or (at your option)
-// any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-// more details.
-//
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, write to the Free Foundation, Inc., 59 Temple Place,
-// Suite 330, Boston, MA 02111-1307 USA
-//
-// Gordon McNutt
-// gmcnutt@users.sourceforge.net
-//
+/*
+ nazghul - an old-school RPG engine
+ Copyright (C) 2002, 2003, 2014 Gordon McNutt
+
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the Free
+ Software Foundation; either version 2 of the License, or (at your option)
+ any later version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ more details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Foundation, Inc., 59 Temple Place,
+ Suite 330, Boston, MA 02111-1307 USA
+
+ Gordon McNutt
+ gmcnutt@users.sourceforge.net
+*/
+
 #ifndef sprite_h
 #define sprite_h
 
-#include "macros.h"
+#include <SDL.h>
 
-BEGIN_DECL
-#include "list.h"
-#include <SDL.h>		/* for Uint32 */
+/* The default facing is used by objects that need to save their facing. */
 #define SPRITE_DEF_FACING -1
-    struct images;
-struct sprite;
-struct save;
 
 extern int sprite_init(void);
+
+/* This advances the global animation tick counter, as well as the special Time
+ * Stop tick counter. When enough ticks have expired to advance the animation
+ * frame, this also repaints the cmdwin cursor and the ztats window. */
+extern void sprite_advance_ticks(int ticks);
+
+extern struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
+extern struct sprite *sprite_new(const char *tag, int frames, int index,
+				 int wave, int facings, struct images *image);
+extern void sprite_deref(struct sprite *sprite);
+extern int sprite_set_facing(struct sprite *sprite, int direction);
+
 extern void sprite_paint(struct sprite *sprite, int frame, int x, int y);
 extern void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
-extern void sprite_advance_frames(void);
-extern int sprite_set_facing(struct sprite *sprite, int direction);
 extern int sprite_get_facing(struct sprite *sprite);
-
 extern int sprite_fade(struct sprite *sprite);
 extern void sprite_unfade(struct sprite *sprite);
 extern void sprite_zoom_out(int factor);
 extern void sprite_zoom_in(int factor);
-extern void sprite_advance_ticks(int ticks);
 extern void sprite_append_decoration(struct sprite *sprite,
 				     struct sprite *decor);
 
-/* sprite_clone - clone an existing sprite and give it a new tag. */
-extern struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
-
-extern struct sprite *sprite_new(const char *tag, int frames, int index,
-				 int wave, int facings, struct images *image);
-extern void sprite_deref(struct sprite *sprite);
 extern char *sprite_get_tag(struct sprite *sprite);
 extern int sprite_is_faded(struct sprite *sprite);
 extern int sprite_can_face(struct sprite *sprite, int facing);
 
-/* sprite_save - save to file for reload. */
 extern void sprite_save(struct sprite *sprite, struct save *save);
 
 /**
@@ -88,7 +85,6 @@ extern int sprite_num_frames(struct sprite *sprite);
 extern int sprite_facings_list(struct sprite *sprite);
 
 extern void sprite_paint_direct(struct sprite *sprite, int frame,
-				SDL_Rect * dest);
+                                SDL_Rect * dest);
 
-END_DECL
 #endif
