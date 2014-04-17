@@ -40,12 +40,23 @@
 
 ;; Character sprites.
 (kern-mk-sprite 's_wanderer ss_characters 4 0 #f 0)
+(kern-mk-sprite 's_player
+		(kern-mk-sprite-set 
+		 nil 32 32 1 4 0 0 
+		 "images/system/brown_blue_haired_female.png")
+		4 0 #f 0)
 
 ;; Terrain sprites
 (kern-mk-sprite 's_deep      ss_terrains 1 0 #t 0)
 (kern-mk-sprite 's_grass     ss_terrains 1 1 #f 0)
 (kern-mk-sprite 's_mountains ss_terrains 1 2 #f 0)
 (kern-mk-sprite 's_deck      ss_terrains 1 3 #f 0)
+(mk-sprite-from-image 's_diamond_deck "images/system/diamond_deck.png")
+(mk-sprite-from-image 's_sf_wall "images/system/sf_wall.png")
+(mk-sprite-from-image 's_stars "images/system/stars.png")
+(mk-sprite-from-image 's_cyan_tiles "images/system/cyan_glossy_tiles.png")
+(mk-sprite-from-image 's_ur_floor "images/system/ur_floor.png")
+(mk-sprite-from-image 's_ur_wall "images/system/ur_wall.png")
 
 ;; Odds & ends
 (mk-sprite-from-image 's_crosshair "images/system/crosshair.png")
