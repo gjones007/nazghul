@@ -233,7 +233,6 @@ struct session *session_new(void *interp)
 	sky_init(&session->sky);
 	magic_init(&session->magic);
 	list_init(&session->tickq);
-	list_init(&session->turnq);
 	node_init(&session->sched_chars);
 	list_init(&session->blenders);
 	list_init(&session->skills);
@@ -289,14 +288,6 @@ void session_del(struct session *session)
 		ptable_del(session->ptable);
 	if (session->dtable)
 		dtable_del(session->dtable);
-
-	/* Clean up the turn work queue */
-	elem = session->turnq.next;
-	while (elem != &session->turnq) {
-		struct wq_job *job = list_entry(elem, struct wq_job, list);
-		elem = elem->next;
-		wq_job_del(job);
-	}
 
 	/* Clean up the tick work queue */
 	elem = session->tickq.next;
@@ -683,14 +674,6 @@ int session_save(char *fname)
 		    Session->magic_negated.duration);
 	save->write(save, "(kern-add-xray-vision %d)\n",
 		    Session->xray.duration);
-
-	/* save the work queues */
-	/* NOTE: don't see how we can, since work queue jobs use a void
-	 * pointer. We could also require a save callback pointer in the job,
-	 * but usually the data is a C pointer which won't be valid on reload,
-	 * so I don't know what the save callback can do to help. */
-	/*         session_save_wq(&session->turnq); */
-	/*         session_save_wq(&session->tickq); */
 
 	/* Finish progress bar code */
 	save->write(save, "(kern-progress-bar-finish)\n");

@@ -113,7 +113,6 @@ typedef enum {
 
 /* Backwards-compatible replacements for the old global work queues: */
 #define TickWorkQueue (Session->tickq)
-#define TurnWorkQueue (Session->turnq)
 
 /* Access to the turn counter: */
 #define session_inc_turn_count() (Session->turn_count++)

@@ -251,7 +251,6 @@ static void play_loop(void)
 			sky_advance(&Session->sky,
 				    NULL != Place && !Place->underground);
 			windAdvanceTurns();
-			wqRunToTick(&TurnWorkQueue, Turn);
 
 			/* 
 			 * Update the "Turn" counter. This drives the
