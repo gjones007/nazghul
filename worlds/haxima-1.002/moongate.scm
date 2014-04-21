@@ -126,28 +126,6 @@
           (moongate-set-sequence! gate (cdr stages))
           (kern-add-tick-job 1 moongate-run-sequence kgate)))))
 
-;; The following version does not use the tick queue, however if you use any
-;; delay at all it noticeably pauses the game. This is especially annoying when
-;; the moongate is not visible or even in the same place as the player, who
-;; sees only inexplicable pauses in responsiveness. To make this work smoothly
-;; only moongates which have a visible or at least audible effect should cause
-;; a map repaint and a pause. It will require another kernel call to determine
-;; if this is the case.
-
-; (define (moongate-run-sequence kgate)
-;   (let* ((gate (kobj-gob-data kgate))
-;          (stages (moongate-sequence gate)))
-;     (if (null? stages)
-;         (moongate-set-open! gate (moongate-pending-open? gate))
-;         (let ((stage (car stages)))
-;           (kern-obj-set-sprite kgate (stage-sprite stage))
-;           (kern-obj-set-light kgate (stage-light stage))
-;           (kern-map-repaint)
-;           (kern-sleep 100)
-;           (moongate-set-sequence! gate (cdr stages))
-;           (moongate-run-sequence kgate)))))
-
-
 (define (moongate-setup-sequence kgate gate open? stages)
   (moongate-set-pending-open! gate open?)
   (moongate-set-sequence! gate stages)
@@ -155,13 +133,11 @@
 
 (define (moongate-open kgate)
   (let ((gate (kobj-gob-data kgate)))
-    ;;(println "moongate-open:gob=" gate)
     (if (not (moongate-open? gate))
         (moongate-setup-sequence kgate gate #t moongate-stages)
         )))
 
 (define (moongate-close kgate)
-  ;;(println "moongate-close")
   (let ((gate (kobj-gob-data kgate)))
     (if (not (moongate-closed? gate))
         (moongate-setup-sequence kgate gate #f (reverse moongate-stages))
