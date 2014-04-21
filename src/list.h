@@ -35,7 +35,8 @@ BEGIN_DECL
 #define list_empty(list) ((list)->next == (list) && (list)->prev == (list))
 #define list_entry(ptr,type,field) \
         ((type*)((char*)(ptr)-(unsigned long)(&((type *)0)->field)))
-    struct list {
+
+struct list {
 	struct list *next;
 	struct list *prev;
 };

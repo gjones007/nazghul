@@ -1,6 +1,6 @@
 /*
  * nazghul - an old-school RPG engine
- * Copyright (C) 2002, 2003 Gordon McNutt
+ * Copyright (C) 2002, 2003, 2014 Gordon McNutt
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
@@ -20,7 +20,19 @@
  * gmcnutt@users.sourceforge.net
  */
 
-extern void tick_start(long msecs);
-extern void tick_kill(void);
-extern void tick_pause(void);
-extern void tick_run(void);
+
+/* Start/stop the thread that generates tick events. */
+void tick_start(long msecs);
+void tick_kill(void);
+
+/* Pause/resume tick event generation. */
+void tick_pause(void);
+void tick_run(void);
+
+/* Increment the global tick counter. */
+void tick_increment(void);
+
+/* Add/remove a periodic callback to run on tick counter changes. Returns a
+ * handle for tick_unwatch(). */
+void *tick_watch(long period_msecs, void (*callback)(void *arg), void *arg);
+void tick_unwatch(void *handle);

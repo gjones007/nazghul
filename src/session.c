@@ -25,6 +25,7 @@
 #include "../config.h"
 #include "Character.h"
 #include "Object.h"
+#include "mem.h"
 #include "sprite.h"
 #include "terrain.h"
 #include "place.h"
@@ -52,7 +53,6 @@
 #include "foogod.h"
 #include "terrain_map.h"	// dbg
 #include "dtable.h"
-#include "wq.h"
 #include "cfg.h"
 #include "skill.h"
 #include "skill_set.h"
@@ -88,6 +88,13 @@ struct session_hook_entry {
 	struct closure *proc;
 	pointer args;
 };
+
+typedef struct {
+        struct list list;
+        void (*callback)(void *arg);
+        void *arg;
+        int delay;
+} session_tick_job_t;
 
 struct session *Session = 0;
 int load_errs = 0;
@@ -146,6 +153,27 @@ void save_err(const char *fmt, ...)
 	vwarn(fmt, args);
 	va_end(args);
 	warn("\n");
+}
+
+static void session_on_animation(void *arg)
+{
+        struct session *session = (struct session *)arg;
+
+        /* Call and remove the expired tick jobs. */
+        struct list *elem = session->tick_jobs.next;
+        while (elem != &session->tick_jobs) {
+                session_tick_job_t *job = list_entry(elem, session_tick_job_t,
+                                                     list);
+                elem = elem->next;
+                if (job->delay) {
+                        job->delay--;
+                }
+                if (! job->delay) {
+                        job->callback(job->arg);
+                        list_remove(&job->list);
+                        mem_deref(job);
+                }
+        }
 }
 
 static void data_obj_entry_unref(struct data_obj_entry *entry)
@@ -232,7 +260,7 @@ struct session *session_new(void *interp)
 	session->los = "angband";
 	sky_init(&session->sky);
 	magic_init(&session->magic);
-	list_init(&session->tickq);
+	list_init(&session->tick_jobs);
 	node_init(&session->sched_chars);
 	list_init(&session->blenders);
 	list_init(&session->skills);
@@ -254,6 +282,11 @@ void session_del(struct session *session)
 	}
 
 	freezer_del();
+
+        /* Unregister the animation event handler. */
+        if (session->sprite_watch_handle) {
+                sprite_unwatch(session->sprite_watch_handle);
+        }
 
 	/* stop sound so sound entries will be purged */
 	sound_haltall();
@@ -290,11 +323,12 @@ void session_del(struct session *session)
 		dtable_del(session->dtable);
 
 	/* Clean up the tick work queue */
-	elem = session->tickq.next;
-	while (elem != &session->tickq) {
-		struct wq_job *job = list_entry(elem, struct wq_job, list);
+	elem = session->tick_jobs.next;
+	while (elem != &session->tick_jobs) {
+		session_tick_job_t *job = list_entry(elem, session_tick_job_t,
+                                                     list);
 		elem = elem->next;
-		wq_job_del(job);
+		mem_deref(job);
 	}
 
 	session_cleanup_hooks(session);
@@ -497,6 +531,10 @@ int session_load(char *filename)
 	sky_advance(&Session->sky, NULL != Place && !Place->underground);
 
 	windRepaint();
+
+        /* Register to receive sprite animation events. */
+        Session->sprite_watch_handle = sprite_watch(session_on_animation,
+                                                    Session);
 
 	session_run_hook(Session, session_start_hook, "p", Session->player);
 
@@ -883,4 +921,14 @@ char *session_get_last_error(void)
 void session_eval(struct session *session, char *buf)
 {
 	scheme_load_string((scheme *) (session->interp), (const char *)buf);
+}
+
+void session_add_tick_job(struct session *session, int delay,
+                          void (*callback)(void *), void *arg)
+{
+        session_tick_job_t *h = MEM_ALLOC_TYPE(session_tick_job_t, NULL);
+        h->callback = callback;
+        h->arg = arg;
+        h->delay = delay;
+        list_add(&session->tick_jobs, &h->list);
 }

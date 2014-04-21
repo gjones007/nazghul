@@ -27,17 +27,16 @@
 #include "console.h"
 #include "event.h"
 #include "foogod.h"
+#include "file.h"
 #include "log.h"
 #include "list.h"
 #include "map.h"
-#include "screen.h"
-#include "status.h"
-#include "file.h"
 #include "nazghul.h"
-
-#include "session.h"		/* added for demo */
 #include "place.h"		/* added for demo */
+#include "screen.h"
+#include "session.h"		/* added for demo */
 #include "sprite.h"		/* added for demo */
+#include "status.h"
 #include "tick.h"		/* added for demo */
 
 #include <assert.h>
@@ -1167,8 +1166,7 @@ static bool menus_demo_tick_handler(struct TickHandler *th)
 	static int in_tick = 0;	/* hack: prevent recursive entry */
 	if (Session && !in_tick) {
 		in_tick = 1;
-		Tick++;
-		sprite_advance_ticks(1);
+                tick_increment();
 		if (Place) {
 			place_exec(Place);
 		}

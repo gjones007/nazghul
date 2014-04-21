@@ -32,7 +32,6 @@
 #include <time.h>
 
 int Turn;
-int Tick;
 int AnimationTicks;
 int TickMilliseconds;
 // int WindDirection;
@@ -43,7 +42,6 @@ struct los *LosEngine;
 int commonInit(void)
 {
 	Turn = 0;
-	Tick = 0;
 	srand(0);
 	return 0;
 }

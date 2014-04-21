@@ -179,9 +179,6 @@ extern "C" {
 #define MANA_RECOVERED_PER_HOUR_OF_REST 10
 #define PROB_AWAKEN                     25
 
-/* My events */
-#define TICK_EVENT              1
-
 /* Damages */
 #define DAMAGE_FIRE       10
 #define DAMAGE_POISON     1
@@ -328,7 +325,6 @@ extern "C" {
 
 	extern int Turn;
 	extern int AnimationTicks;
-	extern int Tick;
 	extern int TickMilliseconds;
 	extern int Quit;
 	extern struct los *LosEngine;

@@ -521,6 +521,11 @@ static void mapExit(void)
 	}
 }
 
+static void map_on_animation(void *arg)
+{
+        mapSetDirty();
+}
+
 int mapInit(void)
 {
 
@@ -584,6 +589,8 @@ int mapInit(void)
 
 	Map.tile_scratch_surf = screen_create_surface(TILE_W, TILE_H);
 	assert(Map.tile_scratch_surf);
+
+        sprite_watch(&map_on_animation, NULL);
 
 	return 0;
 

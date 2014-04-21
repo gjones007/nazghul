@@ -140,6 +140,11 @@ static void cmdwin_reprint_buffer(void)
 	}
 }
 
+static void cmdwin_on_animation(void *arg)
+{
+        cmdwin_repaint_cursor();
+}
+
 int cmdwin_init(void)
 {
 	cmdwin_cursor_sprite_init();
@@ -166,6 +171,7 @@ int cmdwin_init(void)
 		return -1;
 	}
 #endif
+        sprite_watch(&cmdwin_on_animation, NULL);
 
 	cmdwin_clear_no_repaint();
 	return 0;

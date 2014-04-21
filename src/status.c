@@ -256,6 +256,11 @@ static void switch_to_short_mode(void)
 	screen_repaint_frame();
 }
 
+static void status_on_animation(void *arg)
+{
+        statusRepaint();
+}
+
 int statusInit()
 {
 	memset(&Status, 0, sizeof(Status));
@@ -303,6 +308,7 @@ int statusInit()
 #ifdef ztats_misc_h
 	ztats_misc_init();
 #endif
+        sprite_watch(&status_on_animation, NULL);
 
 	return 0;
 }

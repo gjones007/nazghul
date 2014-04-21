@@ -48,9 +48,9 @@
 #define save_err_inc() (save_errs++)
 
 /* Shared between session.c and kern.c */
-extern void load_err(const char *fmt, ...);
-extern void rt_err(const char *fmt, ...);
-extern void save_err(const char *fmt, ...);
+void load_err(const char *fmt, ...);
+void rt_err(const char *fmt, ...);
+void save_err(const char *fmt, ...);
 
 /* Shared between session.c and kern.c */
 extern int load_errs;
@@ -110,9 +110,6 @@ typedef enum {
 #define session_ticks_per_turn() (int)(place_get_scale(Place) * Session->time_accel)
 #define session_set_time_accel(val) (Session->time_accel = (val))
 #define session_get_time_accel(val) (Session->time_accel)
-
-/* Backwards-compatible replacements for the old global work queues: */
-#define TickWorkQueue (Session->tickq)
 
 /* Access to the turn counter: */
 #define session_inc_turn_count() (Session->turn_count++)
@@ -208,8 +205,7 @@ struct session {
 	struct dtable *dtable;
 
 	/* The turn/tick work queues */
-	struct list turnq;
-	struct list tickq;
+	struct list tick_jobs;
 
 	/* Startup script */
 	struct closure *start_proc;
@@ -241,6 +237,8 @@ struct session {
 
 	/* The player party object for this session */
 	class PlayerParty *player;
+
+        void *sprite_watch_handle;  /* Handle for animation event watcher. */
 
 	char show_boxes:1;	/* draw red/green/yellow boxes around npcs */
 	char is_demo:1;		/* demo mode session */
@@ -281,8 +279,8 @@ typedef struct save {
 save_t *save_new(FILE * file);
 void save_del(save_t * save);
 
-extern int session_load(char *filename);
-extern int session_save(char *fname);
+int session_load(char *filename);
+int session_save(char *fname);
 struct session *session_new(void *interp);
 void session_del(struct session *session);
 
@@ -299,38 +297,42 @@ void session_del(struct session *session);
 // the object if you want to remove it from the session (NOTE: calling
 // session_rm() will NOT invoke the dtor provided to session_add()).
 // ----------------------------------------------------------------------------
-extern void *session_add(struct session *session, void *obj,
+void *session_add(struct session *session, void *obj,
 			 void (*dtor) (void *),
 			 void (*save) (save_t * save, void *obj),
 			 void (*start) (void *obj)
     );
-extern void *session_add_connection(struct session *session, void *obj,
+void *session_add_connection(struct session *session, void *obj,
 				    void (*dtor) (void *),
 				    void (*save) (save_t * save, void *obj)
     );
-extern void session_rm(struct session *session, void *handle);
+void session_rm(struct session *session, void *handle);
 
-extern void session_run_hook(struct session *session, session_hook_id_t id,
+void session_run_hook(struct session *session, session_hook_id_t id,
 			     const char *fmt, ...);
-extern void *session_add_hook(struct session *session, session_hook_id_t id,
+void *session_add_hook(struct session *session, session_hook_id_t id,
 			      struct closure *proc, pointer args);
-extern void session_rm_hook(struct session *session, session_hook_id_t id,
+void session_rm_hook(struct session *session, session_hook_id_t id,
 			    pointer code);
-extern int session_run_query(struct session *session, session_query_id_t id,
+int session_run_query(struct session *session, session_query_id_t id,
 			     const char *fmt, ...);
-extern void session_add_query(struct session *session, session_query_id_t id,
+void session_add_query(struct session *session, session_query_id_t id,
 			      struct closure *proc);
-extern const char *session_hook_id_to_str(session_hook_id_t id);
-extern session_hook_id_t session_str_to_hook_id(char *str);
+const char *session_hook_id_to_str(session_hook_id_t id);
+session_hook_id_t session_str_to_hook_id(char *str);
 
-extern void save_err(const char *fmt, ...);
-extern struct node *session_add_sched_char(struct session *session,
+void save_err(const char *fmt, ...);
+struct node *session_add_sched_char(struct session *session,
 					   class Character * npc);
-extern void session_rm_sched_char(struct node *node);
-extern void session_synch_sched_chars(struct session *session);
-extern void session_intro_sched_chars(struct session *session);
-extern char *session_get_last_error(void);
-extern void session_eval(struct session *session, char *buf);
+void session_rm_sched_char(struct node *node);
+void session_synch_sched_chars(struct session *session);
+void session_intro_sched_chars(struct session *session);
+char *session_get_last_error(void);
+void session_eval(struct session *session, char *buf);
+
+/* Schedule a job to run after 'delay' animation ticks. */
+void session_add_tick_job(struct session *session, int delay,
+                          void (*cb)(void *), void *arg);
 
 // Global session object.
 extern struct session *Session;

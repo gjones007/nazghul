@@ -25,7 +25,6 @@
 #include "screen.h"
 #include "common.h"
 #include "player.h"
-#include "wq.h"
 #include "combat.h"
 #include "session.h"
 #include "vehicle.h"

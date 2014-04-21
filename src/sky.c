@@ -26,7 +26,6 @@
 #include "place.h"
 #include "map.h"
 #include "player.h"
-#include "wq.h"
 #include "clock.h"
 #include "session.h"
 #include "gob.h"

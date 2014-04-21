@@ -29,7 +29,6 @@
 #include "common.h"
 #include "map.h"
 #include "hash.h"
-#include "wq.h"
 #include "sound.h"
 #include "status.h"
 #include "cursor.h"

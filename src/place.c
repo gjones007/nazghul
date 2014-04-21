@@ -31,7 +31,6 @@
 #include "player.h"
 #include "sky.h"
 #include "console.h"
-#include "wq.h"
 #include "Field.h"
 #include "vehicle.h"
 #include "session.h"

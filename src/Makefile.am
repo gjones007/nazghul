@@ -95,8 +95,6 @@ nazghul_SOURCES =		\
         vehicle.h \
         wind.c \
         wind.h \
-        wq.c \
-        wq.h \
 	Missile.cpp \
 	Missile.h \
 	cmd.c \

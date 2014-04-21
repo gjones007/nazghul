@@ -38,7 +38,6 @@
 #include "sprite.h"
 #include "terrain.h"
 #include "vmask.h"
-#include "wq.h"
 #include "place.h"
 #include "ptable.h"
 #include "images.h"
@@ -113,10 +112,10 @@ static pointer name(scheme *sc, pointer args) {  \
 
 #define TAG_UNK "<tag?>"
 
-struct kjob {
-	void *data;
-	closure_t *clx;
-};
+typedef struct {
+        closure_t *closure;
+        void *arg;
+} kern_tick_job_t;
 
 /* Struct used by callbacks which build scheme lists */
 struct kern_append_info {
@@ -141,39 +140,21 @@ static const char *query_to_id[] = {
 #include "session_queries.h"
 };
 
-/*****************************************************************************
- *
- * kjob - wrapper for work queue jobs
- *
- *****************************************************************************/
-static struct kjob *kjob_new(void *data, closure_t * clx)
+
+static void kern_tick_job_fin(void *arg)
 {
-	struct kjob *kjob;
-	kjob = (struct kjob *)malloc(sizeof(*kjob));
-	assert(kjob);
-	kjob->data = data;
-	kjob->clx = clx;
-	closure_ref(clx);
-	return kjob;
+        /* Finalizer for tick jobs. */
+        kern_tick_job_t *job = (kern_tick_job_t *)arg;
+        closure_unref(job->closure);
 }
 
-static void kjob_del(struct kjob *kjob)
+static void kern_on_tick(void *arg)
 {
-	closure_unref(kjob->clx);
-	free(kjob);
+        /* Callback for tick jobs, runs the closure. */
+        kern_tick_job_t *job = (kern_tick_job_t *)arg;
+        closure_exec(job->closure, "p", job->arg);
+        mem_deref(job);
 }
-
-static void kern_run_wq_job(struct wq_job *job, struct list *wq)
-{
-	struct kjob *kjob;
-	kjob = (struct kjob *)job->data;
-	//dbg("kjob_run: %08lx\n", kjob);
-	closure_exec(kjob->clx, "p", kjob->data);
-	kjob_del(kjob);
-	wq_job_del(job);
-}
-
-/*****************************************************************************/
 
 static void image_dtor(void *val)
 {
@@ -3543,8 +3524,13 @@ static pointer kern_add_tick_job(scheme * sc, pointer args)
 		return sc->NIL;
 	}
 
-	wqCreateJob(&TickWorkQueue, Tick + tick, 0,
-		    kjob_new(data, closure_new(sc, proc)), kern_run_wq_job);
+        /* Allocate a tick job to hold the closure. */
+        kern_tick_job_t *job = MEM_ALLOC_TYPE(kern_tick_job_t, kern_tick_job_fin);
+        job->arg = data;
+        job->closure = closure_new_ref(sc, proc);
+
+        /* Schedule the job to run. */
+        session_add_tick_job(Session, tick, kern_on_tick, job);
 
 	return sc->NIL;
 }

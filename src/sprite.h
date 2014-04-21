@@ -28,34 +28,34 @@
 /* The default facing is used by objects that need to save their facing. */
 #define SPRITE_DEF_FACING -1
 
-extern int sprite_init(void);
+/* Module init. */
+int sprite_init(void);
 
-/* This advances the global animation tick counter, as well as the special Time
- * Stop tick counter. When enough ticks have expired to advance the animation
- * frame, this also repaints the cmdwin cursor and the ztats window. */
-extern void sprite_advance_ticks(int ticks);
+/* Add/remove callbacks to run whenever the sprite flips animations frames. */
+void *sprite_watch(void (*callback)(void *arg), void *arg);
+void sprite_unwatch(void *handle);
 
-extern struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
-extern struct sprite *sprite_new(const char *tag, int frames, int index,
+struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
+struct sprite *sprite_new(const char *tag, int frames, int index,
 				 int wave, int facings, struct images *image);
-extern void sprite_deref(struct sprite *sprite);
-extern int sprite_set_facing(struct sprite *sprite, int direction);
+void sprite_deref(struct sprite *sprite);
+int sprite_set_facing(struct sprite *sprite, int direction);
 
-extern void sprite_paint(struct sprite *sprite, int frame, int x, int y);
-extern void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
-extern int sprite_get_facing(struct sprite *sprite);
-extern int sprite_fade(struct sprite *sprite);
-extern void sprite_unfade(struct sprite *sprite);
-extern void sprite_zoom_out(int factor);
-extern void sprite_zoom_in(int factor);
-extern void sprite_append_decoration(struct sprite *sprite,
+void sprite_paint(struct sprite *sprite, int frame, int x, int y);
+void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
+int sprite_get_facing(struct sprite *sprite);
+int sprite_fade(struct sprite *sprite);
+void sprite_unfade(struct sprite *sprite);
+void sprite_zoom_out(int factor);
+void sprite_zoom_in(int factor);
+void sprite_append_decoration(struct sprite *sprite,
 				     struct sprite *decor);
 
-extern char *sprite_get_tag(struct sprite *sprite);
-extern int sprite_is_faded(struct sprite *sprite);
-extern int sprite_can_face(struct sprite *sprite, int facing);
+char *sprite_get_tag(struct sprite *sprite);
+int sprite_is_faded(struct sprite *sprite);
+int sprite_can_face(struct sprite *sprite, int facing);
 
-extern void sprite_save(struct sprite *sprite, struct save *save);
+void sprite_save(struct sprite *sprite, struct save *save);
 
 /**
  * Remove all decorations from the sprite and discard them (see
@@ -64,7 +64,7 @@ extern void sprite_save(struct sprite *sprite, struct save *save);
  *
  * @param sprite The sprite to strip.
  */
-extern void sprite_strip_decorations(struct sprite *sprite);
+void sprite_strip_decorations(struct sprite *sprite);
 
 /**
  * Blit one sprite over another. The images of the destination sprite will be
@@ -79,12 +79,12 @@ extern void sprite_strip_decorations(struct sprite *sprite);
  * modified.
  *
  */
-extern void sprite_blit_over(struct sprite *dest, struct sprite *src);
+void sprite_blit_over(struct sprite *dest, struct sprite *src);
 
-extern int sprite_num_frames(struct sprite *sprite);
-extern int sprite_facings_list(struct sprite *sprite);
+int sprite_num_frames(struct sprite *sprite);
+int sprite_facings_list(struct sprite *sprite);
 
-extern void sprite_paint_direct(struct sprite *sprite, int frame,
+void sprite_paint_direct(struct sprite *sprite, int frame,
                                 SDL_Rect * dest);
 
 #endif

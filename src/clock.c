@@ -27,7 +27,6 @@
 #include "place.h"
 #include "map.h"
 #include "player.h"
-#include "wq.h"
 #include "session.h"
 
 #include <assert.h>

@@ -38,7 +38,6 @@
 #include "player.h"
 #include "sky.h"
 #include "map.h"
-#include "wq.h"
 #include "combat.h"
 #include "cursor.h"
 #include "Arms.h"
@@ -79,9 +78,7 @@ static int play_load_session(char *fname);
 
 static bool tickHandler(struct TickHandler *th)
 {
-	Tick++;
-	wqRunToTick(&TickWorkQueue, Tick);
-	sprite_advance_ticks(1);
+        tick_increment();
 	if (music_need_track()) {
 		session_run_hook(Session, music_change_hook, "p",
 				 Session->player);

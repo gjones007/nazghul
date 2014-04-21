@@ -20,7 +20,6 @@
 // gmcnutt@users.sourceforge.net
 //
 #include "wind.h"
-#include "wq.h"
 #include "common.h"
 #include "screen.h"
 #include "session.h"

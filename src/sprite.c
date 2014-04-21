@@ -27,6 +27,7 @@
 #include "screen.h"
 #include "session.h"
 #include "sprite.h"
+#include "tick.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -56,10 +57,14 @@ struct sprite {
 	int wave:1;		/* vertical roll                           */
 };
 
-static struct {
-	int ticks_to_next_animation;
-} Sprite;
+typedef struct {
+        struct list list;
+        void (*callback)(void *arg);
+        void *arg;
+} sprite_watcher_t;
 
+
+static struct list sprite_watchers;
 static int sprite_zoom_factor = 1;
 static unsigned int sprite_ticks = 0;
 
@@ -446,30 +451,46 @@ void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y)
 	}
 }
 
-static void sprite_advance_frames(void)
+static void sprite_on_tick(void *arg)
 {
-	if (TimeStop) {
-		Session->time_stop_ticks++;
-	} else {
-		sprite_ticks++;
-	}
-	mapSetDirty();
+        /* Advance the animation frame. */
+
+        /* XXX: convert TimeStop from a global to a local generic var like
+         * sprite_disable/enable_ticks. */
+        if (! TimeStop) {
+                sprite_ticks++;
+        }
+
+        /* Call the watchers. */
+        struct list *elem = sprite_watchers.next;
+        while (elem != &sprite_watchers) {
+                sprite_watcher_t *h = list_entry(elem, sprite_watcher_t, list);
+                elem = elem->next;
+                h->callback(h->arg);
+        }
 }
 
-void sprite_advance_ticks(int ticks)
+void *sprite_watch(void (*callback)(void *arg), void *arg)
 {
-	Sprite.ticks_to_next_animation -= ticks;
-	if (Sprite.ticks_to_next_animation <= 0) {
-		sprite_advance_frames();
-		cmdwin_repaint_cursor();
-		statusRepaint();
-		Sprite.ticks_to_next_animation += AnimationTicks;
-	}
+        sprite_watcher_t *h = MEM_ALLOC_TYPE(sprite_watcher_t, NULL);
+        h->callback = callback;
+        h->arg = arg;
+        list_add(&sprite_watchers, &h->list);
+        return h;
 }
+
+void sprite_unwatch(void *handle)
+{
+        sprite_watcher_t *h = (sprite_watcher_t*)handle;
+        list_remove(&h->list);
+        mem_deref(h);
+}
+
 
 int sprite_init(void)
 {
-	Sprite.ticks_to_next_animation = 0;
+        list_init(&sprite_watchers);
+        tick_watch(AnimationTicks, &sprite_on_tick, NULL);
 	return 0;
 }
 

@@ -36,7 +36,6 @@
 #include "sky.h"
 #include "map.h"
 #include "mem.h"
-#include "wq.h"
 #include "foogod.h"
 #include "combat.h"
 #include "cursor.h"
