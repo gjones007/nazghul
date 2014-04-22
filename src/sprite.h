@@ -28,42 +28,74 @@
 /* The default facing is used by objects that need to save their facing. */
 #define SPRITE_DEF_FACING -1
 
-/* Module init. */
+/**
+ * Module init.
+ */
 int sprite_init(void);
 
-/* Add/remove callbacks to run whenever the sprite flips animations frames. */
+/**
+ * Add/remove callbacks to run whenever the sprite flips animations
+ * frames. sprite_watch returns a handle to be used with sprite_unwatch.
+ */
 void *sprite_watch(void (*callback)(void *arg), void *arg);
 void sprite_unwatch(void *handle);
 
+/**
+ * Constructors and deref.
+ */
+struct sprite *sprite_new(
+        const char *tag, int frames, int index, int wave, int facings,
+        struct images *image);
 struct sprite *sprite_clone(struct sprite *orig, const char *new_tag);
-struct sprite *sprite_new(const char *tag, int frames, int index,
-				 int wave, int facings, struct images *image);
 void sprite_deref(struct sprite *sprite);
-int sprite_set_facing(struct sprite *sprite, int direction);
 
-void sprite_paint(struct sprite *sprite, int frame, int x, int y);
-void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
-int sprite_get_facing(struct sprite *sprite);
-int sprite_fade(struct sprite *sprite);
-void sprite_unfade(struct sprite *sprite);
-void sprite_zoom_out(int factor);
-void sprite_zoom_in(int factor);
-void sprite_append_decoration(struct sprite *sprite,
-				     struct sprite *decor);
-
+/**
+ * Accessors.
+ */
 char *sprite_get_tag(struct sprite *sprite);
-int sprite_is_faded(struct sprite *sprite);
-int sprite_can_face(struct sprite *sprite, int facing);
+int sprite_num_frames(struct sprite *sprite);
 
+/**
+ * Saver.
+ */
 void sprite_save(struct sprite *sprite, struct save *save);
 
 /**
- * Remove all decorations from the sprite and discard them (see
- * sprite_append_decoration()). Useful for rebuilding decorated sprites from
- * scratch.
- *
- * @param sprite The sprite to strip.
+ * Returns the bit mask representing the facings supported by this sprite.
  */
+int sprite_facings_list(struct sprite *sprite);
+int sprite_can_face(struct sprite *sprite, int facing);
+
+/**
+ * This is a mistake: keeping facing info in the sprite instead of in the
+ * object that refers to it.
+ */
+int sprite_set_facing(struct sprite *sprite, int direction);
+int sprite_get_facing(struct sprite *sprite);
+
+/**
+ * Paint methods. The difference between these two is that paint_frame does not
+ * use the global animation counter to offset the frame.
+ */
+void sprite_paint(struct sprite *sprite, int frame, int x, int y);
+void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
+
+/**
+ * Misc special effects. These modify the target sprite.
+ */
+int sprite_fade(struct sprite *sprite);
+void sprite_unfade(struct sprite *sprite);
+int sprite_is_faded(struct sprite *sprite);
+void sprite_zoom_out(int factor);
+void sprite_zoom_in(int factor);
+
+/**
+ * Add/remove "decorations" from the sprite. Decorations are other sprites
+ * which are blitted over (in sequence) the base sprite in the sprite_paint
+ * methods.
+ */
+void sprite_append_decoration(struct sprite *sprite,
+				     struct sprite *decor);
 void sprite_strip_decorations(struct sprite *sprite);
 
 /**
@@ -73,18 +105,13 @@ void sprite_strip_decorations(struct sprite *sprite);
  * number of frames and the same dimensions or the results are not defined. The
  * modification will not be saved with the game, so it needs to be redone at
  * load time.
- *
- * @param dest The sprite that will be modified.
- * @param src The sprite that will blit over the other one. It won't be
- * modified.
- *
  */
 void sprite_blit_over(struct sprite *dest, struct sprite *src);
 
-int sprite_num_frames(struct sprite *sprite);
-int sprite_facings_list(struct sprite *sprite);
-
-void sprite_paint_direct(struct sprite *sprite, int frame,
-                                SDL_Rect * dest);
+/**
+ * Not sure this is really necessary. It's called by kern_screen_draw_sprite,
+ * but why can't it just use the ULC of dest and call sprite_paint?
+ */
+void sprite_paint_direct(struct sprite *sprite, int frame, SDL_Rect * dest);
 
 #endif

@@ -614,6 +614,85 @@ struct connection {
 	char *to;
 };
 
+/**
+ * New-style terrain ctor. Takes alpha, light and step proc as optional keyword
+ * args.
+ */
+static pointer kern_terrain(scheme * sc, pointer args)
+{
+	int alpha, light;
+	void *sprite;
+	struct terrain *terrain;
+	const char *tag = TAG_UNK, *name;
+	pointer ret;
+	int pclass;
+	pointer proc = sc->NIL;
+
+	/* Revisit: ignore effects for now */
+
+	if (unpack(sc, &args, "ysdpd", &tag, &name, &pclass, &sprite, &alpha)) {
+		load_err("%s %s: bad args", __FUNCTION__, tag);
+		return sc->NIL;
+	}
+
+        if (scm_is_pair(sc, args)) {
+                pointer kwargs = scm_car(sc, args);
+                args = scm_cdr(sc, args);
+                while (scm_is_pair(sc, kwargs)) {
+                        pointer kwarg = scm_car(sc, kwargs);
+                        if (! scm_is_pair(sc, kwarg)) {
+                                load_err("%s: option is not a key, value pair",
+                                         __FUNCTION__);
+                                continue;
+                        }
+                        kwargs = scm_cdr(sc, kwargs);
+                        const char *key;
+                        if (unpack(sc, &kwarg, "y", &key)) {
+                                load_err("%s: option keywords must be symbols",
+                                         __FUNCTION__);
+                                continue;
+                        }
+                        if (!strcmp(key, "light")) {
+                                if (unpack(sc, &kwarg, "d", &light)) {
+                                        load_err("%s: %s must be a number",
+                                                 __FUNCTION__, key);
+                                        continue;
+                                }
+                        } else if (!strcmp(key, "on-step")) {
+                                if (unpack(sc, &kwarg, "c", &proc)) {
+                                        load_err("%s: %s must be a closure",
+                                                 __FUNCTION__, key);
+                                        continue;
+                                }
+                        } else {
+                                load_err("%s: don't recognize keyword %s",
+                                         __FUNCTION__, key);
+                                continue;
+                        }
+                }
+        }
+
+	terrain = terrain_new(tag, name, (struct sprite *)sprite, pclass);
+        terrain->alpha = alpha;
+        terrain->light = light;
+
+	if (proc != sc->NIL) {
+		terrain->effect = closure_new_ref(sc, proc);
+	}
+	terrain->renderCombat = NULL;
+
+	list_add(&Session->terrains, &terrain->session_list);
+	ret = scm_mk_ptr(sc, terrain);
+	if (tag) {
+		scm_define(sc, tag, ret);
+	}
+
+	return ret;
+}
+
+/**
+ * Old-style terrain ctor.
+ */
 static pointer kern_mk_terrain(scheme * sc, pointer args)
 {
 	int alpha, light;
@@ -632,8 +711,9 @@ static pointer kern_mk_terrain(scheme * sc, pointer args)
 		return sc->NIL;
 	}
 
-	terrain = terrain_new(tag, name, (struct sprite *)sprite, pclass,
-			      alpha, light);
+	terrain = terrain_new(tag, name, (struct sprite *)sprite, pclass);
+        terrain->alpha = alpha;
+        terrain->light = light;
 
 	if (proc != sc->NIL) {
 		terrain->effect = closure_new_ref(sc, proc);
@@ -6476,7 +6556,7 @@ KERN_API_CALL(kern_terrain_get_pclass)
 		return sc->NIL;
 	}
 
-	return scm_mk_integer(sc, terrain_pclass(terrain));
+	return scm_mk_integer(sc, terrain_get_pclass(terrain));
 }
 
 KERN_API_CALL(kern_terrain_set_combat_map)
@@ -10075,6 +10155,9 @@ scheme *kern_init(void)
 
 	/* kern-event api */
 	API_DECL(sc, "kern-event-run-keyhandler", kern_event_run_keyhandler);
+
+        /* new-style ctors */
+	API_DECL(sc, "kern-terrain", kern_terrain);
 
 	/* kern-map api */
 	API_DECL(sc, "kern-map-rotate", kern_map_rotate);

@@ -310,7 +310,7 @@ void session_del(struct session *session)
 						     session_list);
 		elem = elem->next;
 		list_remove(&terrain->session_list);
-		terrain_del(terrain);
+		terrain_deref(terrain);
 	}
 
 	if (session->crosshair)

@@ -574,11 +574,11 @@ static int place_terrain_is_passable(struct place *place, int x, int y,
 	// Can we use the generic passability test?
 	if (flags & PFLAG_IGNOREVEHICLES)
 		return place_generic_is_passable(subject, flags,
-						 terrain_pclass(terrain),
+						 terrain_get_pclass(terrain),
 						 terrain->effect);
 
 	// Is the terrain passable?
-	if (subject->isPassable(terrain_pclass(terrain)))
+	if (subject->isPassable(terrain_get_pclass(terrain)))
 		return 1;
 
 	// Is there a vehicle there?
@@ -1004,7 +1004,7 @@ struct terrain_map *place_get_combat_terrain_map(struct place *place,
 
 	WRAP_COORDS(place, x, y);
 	terrain = place->terrain_map->terrain[y * place->terrain_map->w + x];
-	return terrain_combat_map(terrain);
+	return terrain_get_combat_map(terrain);
 }
 
 /* Pathfinding ***************************************************************/
@@ -1319,7 +1319,7 @@ int place_get_movement_cost(struct place *place, int x, int y,
 	}
 
 	t = TERRAIN(place, x, y);
-	cost = obj->getMovementCost(terrain_pclass(t));
+	cost = obj->getMovementCost(terrain_get_pclass(t));
 
 	/* Impassable terrain must have a vehicle that makes it passable; use
 	 * the cost of vehicle movement */
@@ -1327,7 +1327,7 @@ int place_get_movement_cost(struct place *place, int x, int y,
 		class Vehicle *vehicle;
 		vehicle = place_get_vehicle(place, x, y);
 		if (vehicle) {
-			cost = vehicle->getMovementCost(terrain_pclass(t));
+			cost = vehicle->getMovementCost(terrain_get_pclass(t));
 		}
 	}
 

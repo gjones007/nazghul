@@ -22,7 +22,9 @@
       (light 2)
       (transparent 0))
   (kern-mk-terrain 't_deep      "deep water" pclass-deep      s_deep      transparent 0 nil)
-  (kern-mk-terrain 't_mountains "mountains"  pclass-mountains s_mountains opaque      0 nil)
+;;  (kern-mk-terrain 't_mountains "mountains"  pclass-mountains s_mountains opaque      0 nil)
+  (kern-terrain 't_mountains "mountains"  pclass-mountains s_mountains opaque
+		'((light 256)))
   (kern-mk-terrain 't_grass     "grass"      pclass-grass     s_grass     transparent 0 nil)
   (kern-mk-terrain 't_deck      "deck"       pclass-grass     s_deck      transparent 0 nil)
   )

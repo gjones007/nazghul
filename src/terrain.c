@@ -20,40 +20,24 @@
 // gmcnutt@users.sourceforge.net
 //
 #include "terrain.h"
-#include "debug.h"
-#include "sprite.h"
+
 #include "common.h"
+#include "debug.h"
+#include "mem.h"
 #include "Object.h"
+#include "sprite.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 
-//int TERRAIN_MAGIC = 0xc01dbee3;
-
-extern struct terrain *terrain_new(const char *tag,
-				   const char *name,
-				   struct sprite *sprite,
-				   int pclass, int alpha, int light)
+/**
+ * Finalizer.
+ */
+static void terrain_fin(void *arg)
 {
-	struct terrain *terrain;
-
-	terrain = (struct terrain *)calloc(1, sizeof(*terrain));
-	assert(terrain);
-
-	terrain->magic = TERRAIN_MAGIC;
-	terrain->tag = strdup(tag);
-	terrain->name = strdup(name);
-	terrain->sprite = sprite;
-	terrain->pclass = pclass;
-	terrain->alpha = alpha;
-	terrain->light = light;
-	return terrain;
-}
-
-void terrain_del(struct terrain *terrain)
-{
+        struct terrain *terrain = (struct terrain *)arg;
 	if (terrain->tag) {
 		free(terrain->tag);
 	}
@@ -63,11 +47,27 @@ void terrain_del(struct terrain *terrain)
 	if (terrain->effect) {
 		closure_unref(terrain->effect);
 	}
-	free(terrain);
+}
+
+struct terrain *terrain_new(const char *tag,
+                            const char *name,
+                            struct sprite *sprite,
+                            int pclass)
+{
+	struct terrain *terrain = MEM_ALLOC_TYPE(struct terrain, terrain_fin);
+	terrain->tag = strdup(tag);
+	terrain->name = strdup(name);
+	terrain->sprite = sprite;
+	terrain->pclass = pclass;
+	return terrain;
+}
+
+void terrain_deref(struct terrain *terrain)
+{
+        mem_deref(terrain);
 }
 
 #define BOGUS_MAX_SIZE 255	// Hack, should get a constant from somewhere
-// LONGEST_TERRAIN_GLYPH would be appropriate for glyph_str...
 
 void palette_entry_print(FILE * fp, int indent,
 			 struct terrain_palette_entry *entry)
@@ -313,3 +313,13 @@ void palette_print(FILE * fp, int indent, struct terrain_palette *palette)
 	fprintf(fp, ") ;; palette %s\n", palette->tag);
 	fprintf(fp, "\n");
 }				// palette_print()
+
+struct terrain_map *terrain_get_combat_map(struct terrain *terrain)
+{
+        return terrain->combat_map;
+}
+
+int terrain_get_pclass(struct terrain *terrain)
+{
+        return terrain->pclass;
+}
