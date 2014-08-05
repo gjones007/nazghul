@@ -1,80 +1,80 @@
-//
-// nazghul - an old-school RPG engine
-// Copyright (C) 2002, 2003 Gordon McNutt
-//
-// This program is free software; you can redistribute it and/or modify it
-// under the terms of the GNU General Public License as published by the Free
-// Software Foundation; either version 2 of the License, or (at your option)
-// any later version.
-//
-// This program is distributed in the hope that it will be useful, but WITHOUT
-// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-// FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-// more details.
-//
-// You should have received a copy of the GNU General Public License along with
-// this program; if not, write to the Free Foundation, Inc., 59 Temple Place,
-// Suite 330, Boston, MA 02111-1307 USA
-//
-// Gordon McNutt
-// gmcnutt@users.sourceforge.net
-//
+/*
+ nazghul - an old-school RPG engine
+ Copyright (C) 2002, 2003, 2014 Gordon McNutt
+
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by the Free
+ Software Foundation; either version 2 of the License, or (at your option)
+ any later version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ more details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Foundation, Inc., 59 Temple Place,
+ Suite 330, Boston, MA 02111-1307 USA
+
+ Gordon McNutt
+ gmcnutt@users.sourceforge.net
+*/
 
 #include "common.h"
 #include "map.h"
+#include "mem.h"
 #include "session.h"
 #include "terrain.h"
 #include "terrain_map.h"
 #include <assert.h>
 #include <stdio.h>
 
-#define PREFER_COMPACT_MAPS 1
+
+static void _terrain_map_fin(void *vptr)
+{
+	struct terrain_map *map = (struct terrain_map*)vptr;
+	if (map->tag) {
+		free(map->tag);
+	}
+	if (map->terrain) {
+		free(map->terrain);
+	}
+}
 
 
 struct terrain_map *terrain_map_new(const char *tag, unsigned int w,
 				    unsigned int h, struct terrain_palette *pal)
 {
-	struct terrain_map *terrain_map;
-	CREATE(terrain_map, struct terrain_map, 0);
+	struct terrain_map *map;
+
+	map = MEM_ALLOC_TYPE(struct terrain_map, _terrain_map_fin);
 	if (tag) {
-		terrain_map->tag = strdup(tag);
-		assert(terrain_map->tag);
+		map->tag = strdup(tag);
 	}
-	terrain_map->w = w;
-	terrain_map->h = h;
-	terrain_map->palette = pal;
-	terrain_map->terrain =
-	    (struct terrain **)malloc(sizeof(struct terrain *) * w * h);
-	terrain_map->refcount = 1;
-	assert(terrain_map->terrain);
-	memset(terrain_map->terrain, 0, sizeof(struct terrain *) * w * h);
-	return terrain_map;
+	map->w = w;
+	map->h = h;
+	map->palette = pal;
+	map->terrain =
+		(struct terrain **)calloc(sizeof(struct terrain *), w * h);
+	return map;
 }
+
 
 void terrain_map_ref(struct terrain_map *map)
 {
-	map->refcount++;
+	mem_ref(map);
 }
 
-int terrain_map_get_width(struct terrain_map *map)
+void terrain_map_unref(struct terrain_map *map)
 {
-	return map->w;
-}
-
-int terrain_map_get_height(struct terrain_map *map)
-{
-	return map->h;
-}
-
-const char * terrain_map_get_tag(struct terrain_map *map)
-{
-	return map->tag;
+	mem_deref(map);
 }
 
 struct terrain *terrain_map_get_terrain(struct terrain_map *map, int x, int y)
 {
 	return map->terrain[y * map->w + x];
 }
+
 
 void terrain_map_set_terrain(struct terrain_map *map, int x,
 			     int y, struct terrain *val)
@@ -83,20 +83,6 @@ void terrain_map_set_terrain(struct terrain_map *map, int x,
 
 }
 
-struct terrain_palette *terrain_map_get_palette(struct terrain_map *map)
-{
-	return map->palette;
-}
-
-void *terrain_map_get_handle(struct terrain_map *map)
-{
-	return map->handle;
-}
-
-void terrain_map_set_handle(struct terrain_map *map, void *handle)
-{
-	map->handle = handle;
-}
 
 struct terrain_map *terrain_map_clone(struct terrain_map *orig, const char *tag)
 {
@@ -118,6 +104,7 @@ struct terrain_map *terrain_map_clone(struct terrain_map *orig, const char *tag)
 
 	return map;
 }
+
 
 void terrain_map_rotate(struct terrain_map *map, int degree)
 {
@@ -224,18 +211,6 @@ void terrain_map_rotate(struct terrain_map *map, int degree)
 
 }
 
-void terrain_map_unref(struct terrain_map *terrain_map)
-{
-	assert(terrain_map->refcount);
-	terrain_map->refcount--;
-	if (!terrain_map->refcount) {
-		if (terrain_map->tag)
-			free(terrain_map->tag);
-		if (terrain_map->terrain)
-			free(terrain_map->terrain);
-		free(terrain_map);
-	}
-}
 
 void terrain_map_blit(struct terrain_map *dest, int dest_x, int dest_y,
 		      struct terrain_map *src, int src_x, int src_y,
@@ -256,6 +231,7 @@ void terrain_map_blit(struct terrain_map *dest, int dest_x, int dest_y,
 		}
 	}
 }
+
 
 void terrain_map_fill(struct terrain_map *map, int x, int y, int w, int h,
 		      struct terrain *fill)
@@ -279,6 +255,7 @@ void terrain_map_fill(struct terrain_map *map, int x, int y, int w, int h,
 	}
 }
 
+
 static void terrain_map_composite_print_block_header(struct save *save, int nn,
 						     int n_blocks, int x, int y,
 						     int sub_w, int sub_h)
@@ -301,6 +278,7 @@ static void terrain_map_composite_print_block_header(struct save *save, int nn,
 		    east_x, south_y /* SE corner */ );
 	save->write(save, "\n");
 }
+
 
 static void terrain_map_composite_save(struct save *save,
 				       struct terrain_map *map)
@@ -392,6 +370,7 @@ static void terrain_map_composite_save(struct save *save,
 
 	save->exit(save, ")\n");
 }
+
 
 void terrain_map_save(struct save *save, void *val)
 {
