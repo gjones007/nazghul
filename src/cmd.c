@@ -2931,7 +2931,6 @@ bool cmd_save_current_place(struct place * place)
 	save->indent = 0;
 	save->session_id = Session->session_id;
 
-	//terrain_map_print(file, 0, place->terrain_map);
 	terrain_map_save(save, place->terrain_map);
 	log_msg("Saved map to file:\n'%s'", file_path);
 	printf("Saved map to file '%s'\n", file_path);

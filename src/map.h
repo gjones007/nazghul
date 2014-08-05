@@ -19,8 +19,8 @@
 // Gordon McNutt
 // gmcnutt@users.sourceforge.net
 //
-#ifndef map_h
-#define map_h
+#ifndef MAP_H_INCLUDE
+#define MAP_H_INCLUDE
 
 #include "macros.h"
 #include <SDL.h>

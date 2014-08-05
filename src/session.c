@@ -262,7 +262,6 @@ struct session *session_new(void *interp)
 	magic_init(&session->magic);
 	list_init(&session->tick_jobs);
 	node_init(&session->sched_chars);
-	list_init(&session->blenders);
 	list_init(&session->skills);
 	list_init(&session->skill_sets);
 	session->time_accel = 1;

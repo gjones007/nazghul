@@ -23,7 +23,6 @@
 #include "session.h"
 
 #include "applet.h"
-#include "blender.h"
 #include "Character.h"
 #include "cmd.h"
 #include "conv.h"
@@ -229,13 +228,6 @@ static void obj_type_dtor(void *val)
 static void vehicle_type_dtor(void *val)
 {
 	delete(class VehicleType *) val;
-}
-
-static void blender_dtor(void *val)
-{
-	blender_t *blender = (blender_t *) val;
-	list_remove(&blender->list);
-	free(blender);
 }
 
 static int unpack(scheme * sc, pointer * cell, const char *fmt, ...)
@@ -812,7 +804,6 @@ static pointer kern_mk_map(scheme * sc, pointer args)
 	const char *tag = TAG_UNK;
 	struct terrain_map *map;
 	pointer ret;
-	struct list *elem;
 
 	if (unpack(sc, &args, "yddp", &tag, &width, &height, &pal)) {
 		load_err("kern-mk-map %s: bad args", tag);
@@ -865,13 +856,6 @@ static pointer kern_mk_map(scheme * sc, pointer args)
 		}
 	}
 
-	/* run all registered terrain blenders on the new map */
-	list_for_each(&Session->blenders, elem) {
-		blender_t *blender = outcast(elem, blender_t, list);
-		terrain_map_blend(map, blender->inf, blender->n_nonsup,
-				  blender->nonsup, blender->range);
-	}
-
 	map->handle = session_add(Session, map, terrain_map_dtor, NULL, NULL);
 	ret = scm_mk_ptr(sc, map);
 
@@ -894,7 +878,6 @@ static pointer kern_mk_composite_map(scheme * sc, pointer args)
 	const char *tag = TAG_UNK;
 	struct terrain_map *map = NULL, *submap = NULL;
 	pointer ret;
-	struct list *elem;
 
 	/* parse supermap tag and dimensions */
 	if (unpack(sc, &args, "ydd", &tag, &width, &height)) {
@@ -963,13 +946,6 @@ static pointer kern_mk_composite_map(scheme * sc, pointer args)
 					 y * map->submap_h, submap, 0, 0,
 					 map->submap_w, map->submap_h);
 		}
-	}
-
-	/* run all registered terrain blenders on the new map */
-	list_for_each(&Session->blenders, elem) {
-		blender_t *blender = outcast(elem, blender_t, list);
-		terrain_map_blend(map, blender->inf, blender->n_nonsup,
-				  blender->nonsup, blender->range);
 	}
 
 	/* add it to the session */
@@ -6628,154 +6604,6 @@ KERN_API_CALL(kern_terrain_map_dec_ref)
 	return sc->NIL;
 }
 
-KERN_API_CALL(kern_mk_blender)
-{
-	blender_t *blender;
-	pointer rlist;
-	int i = 0;
-
-	blender = (blender_t *) calloc(1, sizeof(*blender));
-	list_init(&blender->list);
-
-	if (unpack(sc, &args, "p", &blender->inf)) {
-		rt_err("kern-terrain-map-blend: bad args");
-		goto abort;
-	}
-
-	/* list of not-superior terrains */
-	rlist = scm_car(sc, args);
-	args = scm_cdr(sc, args);
-
-	if (!scm_is_pair(sc, rlist)) {
-		rt_err("kern-terrain-map-blend: missing non-superior list");
-		goto abort;
-	}
-
-	while (scm_is_pair(sc, rlist)
-	       && blender->n_nonsup < BLENDER_MAX_NONSUP) {
-		if (unpack
-		    (sc, &rlist, "p", &blender->nonsup[blender->n_nonsup])) {
-			rt_err
-			    ("kern-terrain-map-blend: non-superior terrain %d bad",
-			     i);
-			goto abort;
-		}
-		blender->n_nonsup++;
-	}
-
-	if (scm_is_pair(sc, rlist)) {
-		warn("kern-terrain-map-blend: at most %d non-superior "
-		     "terrains may be used, the rest will be ignored",
-		     BLENDER_MAX_NONSUP);
-	}
-
-	/* list of target (range) terrains */
-	i = 0;
-	rlist = scm_car(sc, args);
-	args = scm_cdr(sc, args);
-
-	if (!scm_is_pair(sc, rlist)) {
-		rt_err("kern-terrain-map-blend: missing range list");
-		goto abort;
-	}
-
-	while (scm_is_pair(sc, rlist)
-	       && i < BLENDER_N_RANGE) {
-
-		if (unpack(sc, &rlist, "p", &blender->range[i])) {
-			rt_err("kern-terrain-map-blend: range %d bad", i);
-			return sc->NIL;
-		}
-
-		i++;
-	}
-
-	if (i < BLENDER_N_RANGE) {
-		rt_err("kern-terrain-map-blend: expected %d ranges, got %d",
-		       BLENDER_N_RANGE, i);
-		goto abort;
-	}
-
-	session_add(Session, blender, blender_dtor, NULL, NULL);
-	list_add(&Session->blenders, &blender->list);
-
-	return sc->T;
-
- abort:
-	free(blender);
-	return sc->F;
-}
-
-KERN_API_CALL(kern_terrain_map_blend)
-{
-	struct terrain_map *map;
-	struct terrain *inf, *nonsup[32], *range[16];
-	pointer rlist;
-	int i = 0;
-	int n_nonsup = 0;
-
-	if (unpack(sc, &args, "pp", &map, &inf)) {
-		rt_err("kern-terrain-map-blend: bad args");
-		return sc->NIL;
-	}
-
-	/* list of not-superior terrains */
-	rlist = scm_car(sc, args);
-	args = scm_cdr(sc, args);
-
-	if (!scm_is_pair(sc, rlist)) {
-		rt_err("kern-terrain-map-blend: missing non-superior list");
-		return sc->NIL;
-	}
-
-	while (scm_is_pair(sc, rlist) && n_nonsup < array_sz(nonsup)) {
-
-		if (unpack(sc, &rlist, "p", &nonsup[n_nonsup])) {
-			rt_err
-			    ("kern-terrain-map-blend: non-superior terrain %d bad",
-			     i);
-			return sc->NIL;
-		}
-
-		n_nonsup++;
-	}
-
-	if (scm_is_pair(sc, rlist)) {
-		warn("kern-terrain-map-blend: at most %d non-superior "
-		     "terrains may be used, the rest will be ignored",
-		     array_sz(nonsup));
-	}
-
-	/* list of target (range) terrains */
-	i = 0;
-	rlist = scm_car(sc, args);
-	args = scm_cdr(sc, args);
-
-	if (!scm_is_pair(sc, rlist)) {
-		rt_err("kern-terrain-map-blend: missing range list");
-		return sc->NIL;
-	}
-
-	while (scm_is_pair(sc, rlist) && i < 16) {
-
-		if (unpack(sc, &rlist, "p", &range[i])) {
-			rt_err("kern-terrain-map-blend: range %d bad", i);
-			return sc->NIL;
-		}
-
-		i++;
-	}
-
-	if (i < 16) {
-		rt_err("kern-terrain-map-blend: expected 16 ranges, got %d", i);
-		return sc->NIL;
-	}
-
-	terrain_map_blend(map, inf, n_nonsup, nonsup, range);
-
-	return scm_mk_ptr(sc, map);
-}
-
 KERN_API_CALL(kern_place_get_width)
 {
 	struct place *place;
@@ -10165,7 +9993,6 @@ scheme *kern_init(void)
 	/* kern-mk api */
 	API_DECL(sc, "kern-mk-arms-type", kern_mk_arms_type);
 	API_DECL(sc, "kern-mk-astral-body", kern_mk_astral_body);
-	API_DECL(sc, "kern-mk-blender", kern_mk_blender);
 	API_DECL(sc, "kern-mk-char", kern_mk_char);
 	API_DECL(sc, "kern-mk-inventory", kern_mk_inventory);
 	API_DECL(sc, "kern-mk-effect", kern_mk_effect);
@@ -10340,7 +10167,6 @@ scheme *kern_init(void)
 		 kern_terrain_set_combat_handler);
 	API_DECL(sc, "kern-terrain-map-inc-ref", kern_terrain_map_inc_ref);
 	API_DECL(sc, "kern-terrain-map-dec-ref", kern_terrain_map_dec_ref);
-	API_DECL(sc, "kern-terrain-map-blend", kern_terrain_map_blend);
 	API_DECL(sc, "kern-terrainmap-get-width", kern_map_get_width);
 	API_DECL(sc, "kern-terrainmap-get-height", kern_map_get_height);
 

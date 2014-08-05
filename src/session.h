@@ -229,7 +229,6 @@ struct session {
 
 	struct list skills;	/* list of all skills in the game     */
 	struct list skill_sets;	/* list of all skill sets in the game */
-	struct list blenders;	/* obsolete?                          */
 
 	/* The turn count shown in the foogod window; incremented once per game
 	 * loop in play.c */

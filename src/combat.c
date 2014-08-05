@@ -50,7 +50,6 @@
 #include "log.h"
 #include "vmask.h"
 #include "factions.h"
-#include "blender.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -1303,7 +1302,6 @@ static struct terrain_map *create_temporary_terrain_map(struct combat_info
 	struct terrain_map *map;
 	int player_dx, player_dy, npc_dx, npc_dy, pcmap_x, pcmap_y, npcmap_x,
 	    npcmap_y;
-	struct list *elem;
 
 	// Create a map derived partially from the enemy's tile and
 	// partially from the player's tile.
@@ -1402,13 +1400,6 @@ static struct terrain_map *create_temporary_terrain_map(struct combat_info
 	}
 	map->palette = the_map->palette;
 	//terrain_map_print(stdout, INITIAL_INDENTATION, map);
-
-	/* run all registered terrain blenders on the new map */
-	list_for_each(&Session->blenders, elem) {
-		blender_t *blender = outcast(elem, blender_t, list);
-		terrain_map_blend(map, blender->inf, blender->n_nonsup,
-				  blender->nonsup, blender->range);
-	}
 
 	return map;
 }
