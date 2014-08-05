@@ -1198,10 +1198,10 @@ char *main_menu(void)
 	menu_scroll_data_t data;
 	char *selection = NULL;
 	struct QuitHandler qh;
-	static char *new_game_fname = file_mkpath(cfg_get("include-dirname"),
-						  cfg_get("new-game-filename"));
-	static char *tutorial_fname = file_mkpath(cfg_get("include-dirname"),
-						  cfg_get("tutorial-filename"));
+	char *new_game_fname = file_mkpath(cfg_get("include-dirname"),
+					   cfg_get("new-game-filename"));
+	char *tutorial_fname = file_mkpath(cfg_get("include-dirname"),
+					   cfg_get("tutorial-filename"));
 	char *load_fname = 0;
 	char *save_game_fname = cfg_get("save-game-filename");
 	struct TickHandler th;

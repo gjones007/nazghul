@@ -38,8 +38,9 @@ char *file_mkpath(const char *dir, const char *fname)
 	char *ret;
 	size_t dl, fl;
 
-	if (!dir)
+	if (!dir) {
 		return strdup(fname);
+	}
 	dl = strlen(dir);
 	fl = strlen(fname);
 
