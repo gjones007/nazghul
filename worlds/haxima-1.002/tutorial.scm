@@ -108,6 +108,11 @@
 ;; Party members
 (kern-party-add-member player ch_wanderer)
 
+(define (player-get key)
+  1)
+(define (player-set! key val)
+  nil)
+
 ;;----------------------------------------------------------------------------
 ;; Caution: tutorial_wilderness.scm must be loaded AFTER the player party is
 ;; declared, because it creates npc parties using a procedure that sizes them
