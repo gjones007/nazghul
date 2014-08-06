@@ -67,7 +67,7 @@
 (define lgt 2)  ;; light (density)
 (define trn 0)  ;; transparent
 
-(define hill-opacity opq)	   
+(define hill-opacity trn)
 
 (define terrains
   (list
