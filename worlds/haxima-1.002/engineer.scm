@@ -10,7 +10,7 @@
 	(list t_gem 10)
   ))
 
-(define voidship-loc (mk-loc 'p_hring 50 3))
+(define voidship-loc (mk-loc 'p_world 50 3))
 
 ;;----------------------------------------------------------------------------
 ;; Schedule

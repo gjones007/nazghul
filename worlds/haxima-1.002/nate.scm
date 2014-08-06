@@ -59,7 +59,7 @@
 
 (define (nate-secr knpc kpc)
   (cond ((is-player-party-member? knpc)
-         (cond ((equal? (get-place knpc) p_hring)
+         (cond ((equal? (get-place knpc) p_world)
 		(say knpc "Milord, we must look for the hidden entrance to Brundegardt where the forest road passes north through the mountains. "
 		     "I'll tell you the password when we are there.")
 		(quest-data-update-with 'questentry-nate 'road 1
