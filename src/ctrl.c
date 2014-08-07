@@ -79,9 +79,18 @@ static int ctrl_party_key_handler(struct KeyHandler *kh, int key, int keymod)
 		case KEY_CTRL_Z:
 			mapTogglePeering();
 			break;
+
+		case SDLK_MINUS:
+			map_zoom_out();
+			break;
+
+		case SDLK_PLUS:
+			map_zoom_in();
+			break;
 		}
 	}
 
+	/* Console scrolling will be handled here: */
 	if (console_handle_key(key, keymod)) {
 		return 0;
 	}
@@ -1052,6 +1061,14 @@ static int ctrl_character_key_handler(struct KeyHandler *kh, int key,
 
 		case KEY_CTRL_E:
 			cmdDeveloperEval(Session);
+			break;
+
+		case SDLK_MINUS:
+			map_zoom_out();
+			break;
+
+		case SDLK_PLUS:
+			map_zoom_in();
 			break;
 		}
 	}

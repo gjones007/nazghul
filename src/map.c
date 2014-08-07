@@ -47,6 +47,7 @@
 #define LMAP_SZ    (LMAP_W * LMAP_H)
 #define MAX_LIGHTS LMAP_SZ
 #define PEER_ZOOM  2
+#define MAX_ZOOM_OUT 16
 
 #define LIT        255
 #define UNLIT      0
@@ -1060,10 +1061,11 @@ static void mapRepaintView(struct mview *view, int flags)
 
 		// After shading, repaint the tile with the selected object so
 		// that it shows up brightly even in darkness.
-		if (Map.selected && Map.selected->getPlace() == Map.place)
+		if (Map.selected && Map.selected->getPlace() == Map.place) {
 			mapUpdateTile(Map.place,
 				      Map.selected->getX(),
 				      Map.selected->getY());
+		}
 	}
 
  done_painting_place:
@@ -1240,6 +1242,59 @@ void mapJitter(bool val)
 	}
 }
 
+/**
+ * Helper to handle common code needed for zoom in/out.
+ */
+static void _map_finish_zoom(void)
+{
+	Map.cam_view->subrect.w = MAP_TILE_W * Map.cam_view->zoom;
+	Map.cam_view->subrect.h = MAP_TILE_H * Map.cam_view->zoom;
+	Map.cam_view->subrect.x = (Map.cam_view->vrect.w -
+				   Map.cam_view->subrect.w) / 2;
+	Map.cam_view->subrect.y = (Map.cam_view->vrect.h -
+				   Map.cam_view->subrect.h) / 2;
+	mapCenterCamera(Map.cam_x, Map.cam_y);	// recenter
+	mapUpdate(0);
+}
+
+/**
+ * Zoom out by a factor of 2, up to the max limit.
+ */
+void map_zoom_out(void)
+{
+	int zoom = Map.cam_view->zoom * 2;
+	if (zoom > MAX_ZOOM_OUT) {
+		return;
+	}
+	Map.cam_view->zoom = zoom;
+	int dx = (Map.cam_view->vrect.w / 2);
+	int dy = (Map.cam_view->vrect.h / 2);
+	Map.cam_view->vrect.x -= dx;
+	Map.cam_view->vrect.y -= dy;
+	Map.cam_view->vrect.w *= 2;
+	Map.cam_view->vrect.h *= 2;
+	_map_finish_zoom();
+}
+
+/**
+ * Zoom in by a factor of 2, down to the normal scale.
+ */
+void map_zoom_in(void)
+{
+	int zoom = Map.cam_view->zoom / 2;
+	if (zoom < 1) {
+		return;
+	}
+	Map.cam_view->zoom = zoom;
+	Map.cam_view->vrect.w /= 2;
+	Map.cam_view->vrect.h /= 2;
+	int dx = (Map.cam_view->vrect.w / 2);
+	int dy = (Map.cam_view->vrect.h / 2);
+	Map.cam_view->vrect.x += dx;
+	Map.cam_view->vrect.y += dy;
+	_map_finish_zoom();
+}
+
 void mapPeer(bool val)
 {
 	int dx, dy;
@@ -1276,7 +1331,11 @@ void mapPeer(bool val)
 
 void mapTogglePeering(void)
 {
-	mapPeer(!Map.peering);
+	/* If zoomed in more than the usual amount then bail. */
+	if (Map.cam_view->zoom > PEER_ZOOM) {
+		return;
+	}
+	mapPeer(Map.cam_view->zoom == 1);
 	mapCenterCamera(Map.cam_x, Map.cam_y);	// recenter
 	mapUpdate(0);
 }
@@ -1931,8 +1990,10 @@ void mapUpdateTile(struct place *place, int x, int y)
 
 	}
 
-	if (x == Session->crosshair->getX() && y == Session->crosshair->getY())
+	if (x == Session->crosshair->getX() &&
+	    y == Session->crosshair->getY()) {
 		map_paint_cursor();
+	}
 
 	screen_update(&rect);
 

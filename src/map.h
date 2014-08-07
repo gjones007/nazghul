@@ -130,5 +130,12 @@ int map_walk_missile_path(int Ax, int Ay, int *Bx, int *By,
 						int y,
 						class Missile * missile));
 
+/**
+ * More general form of mapTooglePeering. Each call zooms in or out by a factor
+ * of two, up to the limits.
+ */
+extern void map_zoom_out(void);
+extern void map_zoom_in(void);
+
 END_DECL
 #endif
