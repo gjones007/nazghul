@@ -139,27 +139,6 @@
   nil                   ; container
   nil                   ; readied
   )
-
-; ;; For test
-; (kern-mk-char 
-;  'ch_thorald_greybeard ; tag
-;  "Thorald Greybeard"   ; name
-;  sp_human              ; species
-;  oc_wizard             ; occ
-;  s_companion_wizard    ; sprite
-;  faction-player        ; starting alignment
-;  0 10 2                ; str/int/dex
-;  0 1                   ; hp mod/mult
-;  10 5                  ; mp mod/mult
-;  240 0 8 speed-human-med-armor 8             ; hp/xp/mp/AP_per_turn/lvl
-;  #f                    ; dead
-;  nil                   ; conv
-;  nil                   ; sched
-;  nil                   ; special ai
-;  nil                   ; container
-;  ;;(list t_doom_staff)         ; readied
-;  nil
-;  )
  
 ;;----------------------------------------------------------------------------
 ;; Player Party
@@ -187,13 +166,10 @@
 ;; Party members
 ;;----------------------------------------------------------------------------
 (kern-party-add-member player ch_wanderer)
-;;(kern-party-add-member player ch_thorald_greybeard)
-
 
 ;;----------------------------------------------------------------------------
 ;; Places
 ;;----------------------------------------------------------------------------
-;;(load "shard.scm")
 (load "world.scm")
 
 ;;----------------------------------------------------------------------------
@@ -263,27 +239,26 @@
 ;;
 ;; Note: factions should always be allied with themselves in order for
 ;; summoning AI to work properly.
-;;       
+;;
 ;; Formatted for spreadsheet
 ;; ----------------------------------------------------------------------------
 (kern-mk-dtable
-        ;;      non pla men cgb acc mon tro spd out gnt dem fgb prs gla                
-        (list   2   0   0   0   -1  -2  -2  -2  0   -2  -2  0   0   0    ) ;; none
-        (list   0   2   2   -2  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; player
-        (list   -1  2   2   -1  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; men
-        (list   -1  -2  -2  2   -1  -2  0   -2  -2  -1  -2  -2  0   -2   ) ;; cave goblin
-        (list   -1  -2  -1  -1  2   -2  -1  -1  -2  -1  -2  -2  0   -2   ) ;; accursed
-        (list   -2  -2  -2  -2  -2  2   -2  0   -2  0   -2  0   0   -2   ) ;; monsters
-        (list   -2  -2  -2  0   -1  -2  2   -2  -2  -1  -2  -1  0   -2   ) ;; hill trogs
-        (list   -2  -2  -2  -2  -1  0   -2  2   -2  -1  -2  0   0   -2   ) ;; wood spiders
-        (list   0   -2  -2  -2  -2  -2  -2  -2  2   -2  -2  -1  0   -2   ) ;; outlaws
-        (list   -2  -2  -2  -1  -1  0   -1  -1  -2  2   -2  -1  0   -2   ) ;; gint
-        (list   -2  -2  -2  -2  -2  -2  -2  -2  -2  -2  2   -2  0   -2   ) ;; demon
-        (list   0   -2  -2  -2  -2  0   -2  0   -1  -1  -2  2   0   -2   ) ;; forest goblin
-        (list   0   2   2   0   0   0   0   0   0   0   0   0   2   2    ) ;; prisoners
-        (list   -1  2   2   -1  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; glasdrin
-)																	
-
+ ;;      non pla men cgb acc mon tro spd out gnt dem fgb prs gla
+ (list   2   0   0   0   -1  -2  -2  -2  0   -2  -2  0   0   0    ) ;; none
+ (list   0   2   2   -2  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; player
+ (list   -1  2   2   -1  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; men
+ (list   -1  -2  -2  2   -1  -2  0   -2  -2  -1  -2  -2  0   -2   ) ;; cave goblin
+ (list   -1  -2  -1  -1  2   -2  -1  -1  -2  -1  -2  -2  0   -2   ) ;; accursed
+ (list   -2  -2  -2  -2  -2  2   -2  0   -2  0   -2  0   0   -2   ) ;; monsters
+ (list   -2  -2  -2  0   -1  -2  2   -2  -2  -1  -2  -1  0   -2   ) ;; hill trogs
+ (list   -2  -2  -2  -2  -1  0   -2  2   -2  -1  -2  0   0   -2   ) ;; wood spiders
+ (list   0   -2  -2  -2  -2  -2  -2  -2  2   -2  -2  -1  0   -2   ) ;; outlaws
+ (list   -2  -2  -2  -1  -1  0   -1  -1  -2  2   -2  -1  0   -2   ) ;; gint
+ (list   -2  -2  -2  -2  -2  -2  -2  -2  -2  -2  2   -2  0   -2   ) ;; demon
+ (list   0   -2  -2  -2  -2  0   -2  0   -1  -1  -2  2   0   -2   ) ;; forest goblin
+ (list   0   2   2   0   0   0   0   0   0   0   0   0   2   2    ) ;; prisoners
+ (list   -1  2   2   -1  -2  -2  -2  -2  -2  -2  -2  -2  2   2    ) ;; glasdrin
+ )
 
 ;;----------------------------------------------------------------------------
 ;; Startup - this is a one-time only script that runs when the player starts
@@ -308,14 +283,14 @@
   (kern-log-msg "Then closes without a trace...")
   (moongate-animate black-gate (reverse blackgate-stages))
   (kern-sleep 1000)
-  
+
   (kern-log-msg "You lie dreaming for a while, of another life...")
   (kern-sleep 2000)
 
   (kern-log-enable #f)
   (kern-char-set-sleep ch_wanderer #f)
   (kern-player-set-follow-mode)
-  (kern-log-enable #t)  
+  (kern-log-enable #t)
   (kern-log-msg "...then awaken to a strange new world.")
   )
 
@@ -323,10 +298,10 @@
 
 (define (simple-start kplayer)
   (kern-obj-put-at kplayer start-loc))
-  
+
 (define (create-char kplayer)
   (kern-obj-put-at kplayer (list p_char_setup 10 17)))
-      
+
 ;;----------------------------------------------------------------------------
 ;; To skip the extended start scene comment out this next line and uncomment
 ;; the line after it.
@@ -337,142 +312,4 @@
 
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))
-
 (kern-progress-bar-finish)
-
-
-;;quickstart stuff for playtesting
-
-(if #f
-    (begin
-      (kern-obj-put-at 
-       (mk-chest
-        nil ;; trap
-        
-        '(
-         
-         ;; Food
-         ( 1000 t_food)
-         
-         ;; Gold
-         ( 1000 t_gold_coins)
-         
-         ;; Reagents
-         ( 55 sulphorous_ash)
-         ( 55 ginseng)
-         ( 55 garlic)
-         ( 55 spider_silk)
-         ( 53 blood_moss)
-         ( 53 black_pearl)
-         ( 51 nightshade)
-         ( 51 mandrake)
-         
-         ;; Items
-         ( 9 t_vas_mani_scroll)
-         ( 9 t_in_ex_por_scroll)
-         ( 9 t_sanct_lor_scroll)
-         ( 9 t_wis_quas_scroll)
-         ( 9 t_xen_corp_scroll)
-         ( 9 t_an_xen_ex_scroll)
-         ( 9 t_vas_rel_por_scroll)
-         ( 59 t_gem)
-         ( 9 t_cure_potion)
-         ( 9 t_mana_potion)
-         ( 99 t_xp_potion)
-         ( 99 t_str_potion)
-         ( 99 t_dex_potion)
-         ( 99 t_int_potion)
-         ( 99 t_info_potion)
-         ( 99 t_torch)
-         ( 99 t_picklock)
-         ( 9 t_pick)
-         ( 2 t_dragons_blood)
-         ( 2 t_hydras_blood)
-         ( 2 t_shovel)
-        ;; ( 1 t_rune_k)
-         
-         
-         ;; Arms
-	 ( 1 t_dagger)
-	 ( 1 t_mace)
-	 ( 1 t_axe)
-	 ( 1 t_sword)
-	 ( 1 t_2H_axe)
-	 ( 1 t_2H_sword)
-	 ( 1 t_morning_star)
-	 ( 1 t_halberd)
-	 ( 1 t_staff)
-
-	 ( 1 t_dagger_4)
-         ( 1 t_sword_4)
-         ( 1 t_morning_star_2)
-	 ( 1 t_stun_wand)
-	 ( 1 t_doom_staff)
-	 ( 1 t_eldritch_blade)
-	 ( 1 t_mystic_sword)
-	 ( 1 t_flaming_sword)
-
-         ( 1 t_shield)
-	 ( 1 t_scratched_shield)
-
-	 ( 1 t_leather_helm)
-	 ( 1 t_chain_coif)
-	 ( 1 t_iron_helm)
-
-	 ( 1 t_armor_leather)
-	 ( 1 t_armor_chain)
-	 ( 1 t_armor_plate)
-
-         ( 1 t_iron_helm_4)
-	 ( 1 t_armor_leather_4)
-	 ( 1 t_armor_chain_4)
-         ( 1 t_armor_plate_4)
-
-	 ( 1 t_chrono)
-	 ( 1 t_spiked_shield)
-
-	 ( 1 t_sling)
-	 ( 3 t_spear)
-
-         ( 1 t_sling_4)
-	 ( 1 t_magic_axe)
-
-	 (20 t_oil)
-	 (20 t_slime_vial)
-
-	 (  1 t_self_bow)
-	 (  1 t_bow)
-	 (  1 t_long_bow)
-	 (  1 t_great_bow)
-	 (500 t_arrow)
-
-	 (  1 t_lt_crossbow)
-	 (  1 t_crossbow)
-	 (  1 t_hvy_crossbow)
-	 (  1 t_trpl_crossbow)
-	 (500 t_bolt)
-
-         ))
-       start-loc)
-       
-      (kern-obj-put-at
-       (mk-ladder-down 'p_moongate_clearing 18 18) 
-       (list p_char_setup 17 17))
-       
-      (kern-obj-put-at
-       (mk-ladder-down 'p_trigrave 16 16) 
-       (list p_char_setup 17 16))
-       
-       (kern-obj-put-at
-       (mk-ladder-down 'p_fire_sea 4 4) 
-       (list p_char_setup 17 15))
-       
-      (kern-obj-put-at
-       (mk-ladder-down 'p_oparine 1 1) 
-       (list p_trigrave 17 16))
-       
-       (kern-obj-put-at
-       (mk-ladder-down 'p_lost_garrison 22 22) 
-       (list p_oparine 1 1))
-       
-    ))
