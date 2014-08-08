@@ -47,7 +47,7 @@
 #define LMAP_SZ    (LMAP_W * LMAP_H)
 #define MAX_LIGHTS LMAP_SZ
 #define PEER_ZOOM  2
-#define MAX_ZOOM_OUT 16
+#define MAX_ZOOM_OUT (TILE_W / 2)
 
 #define LIT        255
 #define UNLIT      0
