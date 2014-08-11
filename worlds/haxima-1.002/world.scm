@@ -15,8 +15,8 @@
 
  ;; subplaces:
  (list
-  (list p_moongate_clearing 231 410)
-  (list p_gregors_hut       225 399)
+  (list p_moongate_clearing 222 395)
+  (list p_gregors_hut       338 436)
   (list p_abandoned_farm    284 377)
   (list p_trigrave          271 400)
   (list p_enchanters_tower  143 239)

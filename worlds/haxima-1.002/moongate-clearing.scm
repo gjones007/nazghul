@@ -56,42 +56,10 @@
 ;;
 ;; This is where the player starts out.
 ;;----------------------------------------------------------------------------
+(load "moongate-clearing-map.scm")
 (kern-mk-place 'p_moongate_clearing "The Shrine of the Black Gate"
   s_shrine ;; sprite
-  (kern-mk-map
-   'm_moongate_shrine 19 30 pal_expanded
-   (list
-      "rn rn rn rn rn rn rn xx ,, ,, ,, xx rn rn rn rn rn rn rn "
-      "rn rn rn rn rn rn rn xx ,, ,, ,, xx rn rn rn rn rn rn rn "
-      "rn rn rn xx xx xx xx x! ,, ,, ,, x! xx xx xx xx rn rn rn "
-      "rn rn rn xx ,, ,, ,, ,, dd ,, ,, ,, ,, ,, ,, xx rn rn rn "
-      "rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn "
-      "rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn "
-      "rn rn rn xx xx bb ,, ,, ,, ,, ,, ,, ,, xx xx xx rn rn rn "
-      "rn rn rn rn rn xx xx ,, ,, ,, ,, dd xx xx r2 r2 r2 r2 rn "
-      "rn rn rn rn rc t3 xx xx ,, ,, ,, xx bb tt ra rn rn rn rn "
-      "rn rn rn r4 t3 tt tt x- w+ dd w+ x! tt tt t5 r2 rn rn rn "
-      "rn rn rn rc tt tt tt tt t5 .. t3 tt tt tt tt ra rn rn rn "
-      "rn rn rc |# || tt tt bb tt .. tt bb tt tt || |% ra rn rn "
-      "rn r4 |# || || || tt tt tt .. tt tt tt || || || |% r2 rn "
-      "rn r4 || || || || tt tt tt .. tt tt tt || || || || r2 rn "
-      "rn r4 || || || tt tt bb tt .. tt bb tt tt || || || r2 rn "
-      "rn rc || || tt tt tt tt tt .. tt tt tt tt tt || || ra rn "
-      "r4 |# || || tt bb tt tt tc .. ta tt tt bb tt || || |% r2 "
-      "r4 || || tt tt tt tt tc t# .. t% ta tt tt tt tt || || r2 "
-      "r4 || || tt tt tt tt tB .. dd .. tD tt tt tt tt || || r2 "
-      "r4 || || tt tt tt tt t5 tA .. tC t3 tt tt tt tt || || r2 "
-      "r4 |A || || tt bb tt tt t5 tE t3 tt tt bb tt || || |C r2 "
-      "rn r5 || || tt tt tt tt tt tt tt tt tt tt tt || || r3 rn "
-      "rn r4 || || || tt tt bb tt tt tt bb tt tt || || || r2 rn "
-      "rn r4 || || || || tt tt tt tt tt tt tt || || || || r2 rn "
-      "rn r4 |A || || || || || tt tt tt || || || || || |C r2 rn "
-      "rn rn r5 |A || || || || || || || || || || || |C r3 rn rn "
-      "rn rn rn r1 r5 |A || || || || || || || |C r3 r1 rn rn rn "
-      "rn rn rn rn rn r1 r5 |A || || || |C r3 r1 rn rn rn rn rn "
-      "rn rn rn rn rn rn rn r5 |A || |C r3 rn rn rn rn rn rn rn "
-      "rn rn rn rn rn rn rn rn r9 r9 r9 rn rn rn rn rn rn rn rn "
-    ))
+  m_moongate_clearing
   #f #f #f #f
   ;; subplaces
   nil
@@ -100,7 +68,7 @@
 
   ;; *** contents of the place ***
   (list
-   (list (kern-tag 'black-gate (mk-moongate nil)) 9 18)
+   (list (kern-tag 'black-gate (mk-moongate nil)) 15 15)
    (list (mk-gregor) 1 23)
    (list supplies_chest   1 24)
    )
