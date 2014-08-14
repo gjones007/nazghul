@@ -71,6 +71,7 @@
    (list (kern-tag 'black-gate (mk-moongate nil)) 15 15)
    (list (mk-gregor) 1 23)
    (list supplies_chest   1 24)
+   (put (mk-stone-lantern) 13 9)
    )
 
   nil ;; hooks

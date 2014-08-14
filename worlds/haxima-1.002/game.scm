@@ -360,6 +360,7 @@
 (load "edge-spawn.scm")
 (load "door.scm")
 (load "portcullis.scm")
+(load "stone-lantern.scm")
 (load "hidden.scm")
 (load "lever.scm")
 (load "timer.scm")

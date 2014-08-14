@@ -39,7 +39,6 @@
   (let ((bim (gob-data (kobj-gob kobj))))
     (bim-set-on! bim on?)
     (let ((state ((kobj-ifc kobj) 'state on? kobj)))
-      ;;(display "state:")(display state)(newline)
       (kern-obj-set-sprite kobj (state-sprite state))
       (kern-obj-set-opacity kobj (state-opacity state))
       (kern-obj-set-pclass kobj (state-pclass state))
