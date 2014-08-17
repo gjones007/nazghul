@@ -180,7 +180,7 @@ class Character:public Being {
 	virtual void resurrect();
 	virtual void rest(int hours);
 	virtual class Object *clone();
-	virtual void describe();
+	virtual void describe(bool capitalize=false);
 	virtual void examine();
 	virtual void burn();
 	virtual void save(struct save *save);

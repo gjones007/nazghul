@@ -604,7 +604,7 @@ void Object::paint(int sx, int sy)
 	}
 }
 
-void Object::describe()
+void Object::describe(bool capitalize)
 {
 	assert(getObjectType());	// else implement this method in subclass
 	getObjectType()->describe(this);

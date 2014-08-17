@@ -83,7 +83,7 @@ class PlayerParty:public Party {
 	virtual struct sprite *getSprite(void);
 	virtual const char *getName(void);
 	virtual bool isVisible();
-	virtual void describe();
+	virtual void describe(bool capitalize=false);
 	virtual void exec();
 	virtual void damage(int amount);
 	virtual void beginResting(int hours);

@@ -382,11 +382,11 @@ bool Vehicle::isNamed()
 	return name != 0;
 }
 
-void Vehicle::describe()
+void Vehicle::describe(bool capitalize)
 {
 	if (name) {
-		log_continue("the %s", name);
+		log_continue(capitalize ? "The %s" : "the %s", name);
 	} else {
-		Object::describe();
+		Object::describe(capitalize);
 	}
 }

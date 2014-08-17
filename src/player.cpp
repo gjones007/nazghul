@@ -1059,9 +1059,9 @@ bool PlayerParty::isVisible()
 	return true;
 }
 
-void PlayerParty::describe()
+void PlayerParty::describe(bool capitalize)
 {
-	log_continue("the %s", getName());
+	log_continue(capitalize ? "The %s" : "the %s", getName());
 }
 
 struct formation *PlayerParty::get_formation()

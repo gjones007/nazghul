@@ -323,7 +323,7 @@ class Object {
 	virtual bool isSubmerged();
 	virtual void setSubmerged(bool val);
 	virtual bool isShaded();
-	virtual void describe();
+	virtual void describe(bool capitalize=false);
 	virtual void examine();
 	virtual void paint(int sx, int sy);
 	virtual class Object *clone();

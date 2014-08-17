@@ -769,14 +769,14 @@ struct formation *Party::get_formation()
 	return formation;
 }
 
-void Party::describe()
+void Party::describe(bool capitalize)
 {
 	assert(Session->subject);
 	const char *diplstr = diplomacy_string(this, Session->subject);
 	if (isvowel(diplstr[0]))
-		log_continue("an ");
+		log_continue(capitalize ? "An " : "an ");
 	else
-		log_continue("a ");
+		log_continue(capitalize ? "A" : "a ");
 
 	log_continue("%s %s", diplstr, getName());
 

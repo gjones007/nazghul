@@ -94,7 +94,7 @@ class Vehicle:public Object {
 	virtual struct place *getPlace();
 	virtual void destroy();
 	virtual void save(struct save *save);
-	virtual void describe();
+	virtual void describe(bool capitalize=false);
 
 	bool isVulnerable();
 	bool turn(int dx, int dy, int *cost);

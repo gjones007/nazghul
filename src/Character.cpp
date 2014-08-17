@@ -1684,17 +1684,18 @@ bool Character::isShaded()
 		|| Object::isShaded());
 }
 
-void Character::describe()
+void Character::describe(bool capitalize)
 {
 	if (Session->subject) {
 		const char *diplstr = diplomacy_string(this, Session->subject);
-		if (isvowel(diplstr[0]))
-			log_continue("an");
-		else
-			log_continue("a");
+		if (isvowel(diplstr[0])) {
+			log_continue(capitalize ? "An" : "an");
+		} else {
+			log_continue(capitalize ? "A": "a");
+		}
 		log_continue(" %s", diplstr);
 	} else {
-		log_continue("an");
+		log_continue(capitalize ? "An" : "an");
 	}
 	log_continue(" L%d", getLevel());
 	if (isKnown()) {

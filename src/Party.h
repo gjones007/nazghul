@@ -49,7 +49,7 @@ class Party:public Being {
 	virtual bool allDead();
 	virtual void burn();
 	virtual void damage(int amount);
-	virtual void describe();
+	virtual void describe(bool capitalize=false);
 	virtual void examine();
 	virtual void destroy();
 	virtual void disembark();
