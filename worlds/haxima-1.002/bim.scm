@@ -35,7 +35,6 @@
                 (bim-set-active! bim #f)))))))
 
 (define (bim-change-state kobj khandler on?)
-  ;;(display "bim-change-state")(newline)
   (let ((bim (gob-data (kobj-gob kobj))))
     (bim-set-on! bim on?)
     (let ((state ((kobj-ifc kobj) 'state on? kobj)))
@@ -47,19 +46,16 @@
 
 ;; handlers
 (define (bim-on kobj khandler) 
-  ;(display "bim-on")(newline)
   (bim-change-state kobj khandler #t 'on)
   (bim-send-signal kobj 'on)
   )
 
 (define (bim-off kobj khandler) 
-  ;(display "bim-off")(newline)
   (bim-change-state kobj khandler #f 'on)
   (bim-send-signal kobj 'off)
   )
 
 (define (bim-toggle kobj khandler)
-  ;;(display "bim-toggle")(newline)
   (let ((bim (gob-data (kobj-gob kobj))))
     (if (bim-on? bim) 
         (bim-off kobj khandler)

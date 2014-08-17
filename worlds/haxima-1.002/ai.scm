@@ -215,6 +215,8 @@
    "Circle round, we've got a dead one!"
    "Dibs on 'is boots!"
    "Stranger, meetcha couple my friends..."
+   "Your grandmother smells of elderberries!"
+   "I fart in your general direction!"
    ))
 
 (define (bandit-taunt kbandit ktarg)
@@ -265,8 +267,7 @@
   (or 
    (get-off-bad-tile? kchar)
    (use-potion? kchar)
-   (use-torch? kchar)
-   ))
+   (use-torch? kchar)))
 
 (define (nixie-ai kchar)
   (nolight-ai kchar))
@@ -470,7 +471,6 @@
 
 ;; A lich will summon undead minions
 (define (lich-ai kchar)
-  (display "lich-ai:") (dump-char kchar)
   (or (nolight-ai kchar)
       (ai-summon kchar summon-skeleton)
       (spell-sword-ai kchar)))
@@ -615,10 +615,65 @@
                                             cast-fire-wind
                                             )))))
 
+(define (goto-and-handle kchar kobj on-handled)
+  (let ((loc (kern-obj-get-location kobj)))
+    (if (in-range? loc 1 kchar)
+        (begin 
+	  (send-signal kchar kobj 'handle)
+	  (on-handled)
+	  #t)
+        (pathfind kchar loc))))
+
+(define (get-lights kplace)
+  (filter (lambda (kobj) (kobj-is-type? kobj t_stone_lantern))
+	  (kern-place-get-objects kplace)))
+
+(define (get-unlit-lights kplace)
+  (filter (lambda (kobj) (not ((kobj-ifc kobj) 'is-on? kobj)))
+	  (get-lights kplace)))
+
+(define (get-lit-lights kplace)
+  (filter (lambda (kobj) ((kobj-ifc kobj) 'is-on? kobj))
+	  (get-lights kplace)))
+
+(define (after-dark?)
+  (let ((arc (kern-astral-body-get-arc sun)))
+    (or (> arc 290)
+	(< arc 120))))
+
+(define (turn-on-light? kchar)
+  (if (after-dark?)
+      (let* ((loc (kern-obj-get-location kchar))
+	     (klights (get-unlit-lights (loc-place loc)))
+	     (klight (nearest-obj kchar klights)))
+	(and (not (null? klight))
+	     (goto-and-handle kchar klight
+			      (lambda ()
+				(taunt kchar nil
+				       (list "Getting dark, better light this."
+					     "Let's get some light here."
+					     "Don't want any grues, do we?"
+					     "This will cheer the place up."))))
+	     ))
+      (let* ((loc (kern-obj-get-location kchar))
+	     (klights (get-lit-lights (loc-place loc)))
+	     (klight (nearest-obj kchar klights)))
+	(and (not (null? klight))
+	     (goto-and-handle kchar klight
+			      (lambda ()
+				(taunt kchar nil
+				       (list "Don't need this on any more."
+					     "Better turn this off now."
+					     "Shouldn't waste the wick!"
+					     "Who left this on?"
+					     "The sun is up!"))))
+	     ))))
+
 ;; townsman-ai -- flee visible hostiles
 (define (townsman-ai kchar)
   (or (std-ai kchar)
-      (move-away-from-foes? kchar)))
+      (move-away-from-foes? kchar)
+      (turn-on-light? kchar)))
 
 ;; ratlings fear snakes
 (define (ratling-ai kchar)

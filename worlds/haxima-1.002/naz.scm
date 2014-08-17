@@ -1408,8 +1408,7 @@
        (not (occupied? loc))
        (not (is-bad-loc? kchar loc))))
 
-(define (get-off-bad-tile? kchar)
-  
+(define (get-off-bad-tile? kchar)  
   (define (choose-good-tile tiles)
     ;;(display "choose-good-tile")(newline)
     (if (null? tiles)
@@ -1417,7 +1416,6 @@
         (if (is-good-loc? kchar (car tiles))
             (car tiles)
             (choose-good-tile (cdr tiles)))))
-
   (define (move-to-good-tile)
     ;;(display "move-to-good-tile")(newline)
     (let* ((curloc (kern-obj-get-location kchar))
@@ -1431,7 +1429,6 @@
                            (- (loc-x newloc) (loc-x curloc))
                            (- (loc-y newloc) (loc-y curloc)))
             #t))))
-
   (and
    (is-bad-loc? kchar (kern-obj-get-location kchar))
    (move-to-good-tile)))

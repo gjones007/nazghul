@@ -22,7 +22,7 @@
 
 ;; Moongate clearing
 (define (mk-zone x y w h) (list 'p_moongate_clearing x y w h))
-(define mgc-roadbend  (mk-zone 4 3 11 3))
+(define mgc-roadbend  (mk-zone 9 9 18 18))
 
 ;; Enchanter's Tower
 (define (mk-zone x y w h) (list 'p_enchanters_tower x y w h))
