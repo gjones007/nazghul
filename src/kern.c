@@ -2784,7 +2784,7 @@ static pointer kern_conv_say(scheme * sc, pointer args)
 		log_begin("^c+%c%s:^c- ", CONV_NPC_COLOR, speaker->getName());
 	} else {
 		log_begin("^c+%c", CONV_NPC_COLOR);
-		speaker->describe();
+		speaker->describe(true);
 		log_continue(":^c- ");
 	}
 
@@ -3482,6 +3482,23 @@ static pointer kern_astral_body_get_phase(scheme * sc, pointer args)
 	}
 
 	return scm_mk_integer(sc, astral_body->phase);
+}
+
+static pointer kern_astral_body_get_arc(scheme * sc, pointer args)
+{
+	struct astral_body *astral_body;
+
+	if (unpack(sc, &args, "p", &astral_body)) {
+		rt_err("kern-astral-body-get-arc: bad args");
+		return sc->NIL;
+	}
+
+	if (!astral_body) {
+		rt_err("kern-astral-body-get-arc: null object");
+		return sc->NIL;
+	}
+
+	return scm_mk_integer(sc, astral_body->arc);
 }
 
 static pointer kern_astral_body_set_gob(scheme * sc, pointer args)
@@ -9896,6 +9913,7 @@ scheme *kern_init(void)
 	/* kern-astral-body api */
 	API_DECL(sc, "kern-astral-body-get-gob", kern_astral_body_get_gob);
 	API_DECL(sc, "kern-astral-body-get-phase", kern_astral_body_get_phase);
+	API_DECL(sc, "kern-astral-body-get-arc", kern_astral_body_get_arc);
 	API_DECL(sc, "kern-astral-body-set-gob", kern_astral_body_set_gob);
 
 	/* kern-being-api */
