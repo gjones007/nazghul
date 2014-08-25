@@ -13,7 +13,7 @@
  #t  ;; wilderness
  #f  ;; tmp combat place
 
- ;; subplaces:
+ ;; subplaces:g
  (list
   (list p_moongate_clearing 336 389)
   (list p_gregors_hut       338 436)
@@ -29,8 +29,8 @@
 ;;  (list p_void_temple        5  46)
   (list p_poor_house        240 466)
 ;;  (list p_ankh_shrine       342 112)
-;;  (list p_westpass          312 409)
-;;  (list p_eastpass          311 409)
+  (list p_westpass          313 409)
+  (list p_eastpass          311 409)
 ;;  (list p_ancient_derelict  43  17)
   (list p_tower_of_absalot 367 145)
   (list p_gate_to_absalot  367 147)
