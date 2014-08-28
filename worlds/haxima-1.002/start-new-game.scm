@@ -171,6 +171,7 @@
 ;; Places
 ;;----------------------------------------------------------------------------
 (load "world.scm")
+(load "void.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Astronomy
@@ -294,10 +295,9 @@
   (kern-log-msg "...then awaken to a strange new world.")
   )
 
-(define start-loc (kern-obj-get-location black-gate))
-
 (define (simple-start kplayer)
-  (kern-obj-put-at kplayer start-loc))
+  (kern-obj-put-at kplayer
+		   (kern-obj-get-location black-gate)))
 
 (define (create-char kplayer)
   (kern-obj-put-at kplayer (list p_char_setup 10 17)))

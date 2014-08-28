@@ -240,10 +240,12 @@
        ))
 
 (define (alch-man-reward knpc kpc)
-	(say knpc "In the mountains of "
-	   "the northeast, along their southern face, "
-	   "there is a secret passage. It is near coordinates "
-	   "[92 10]."))
+	(say knpc "Take the highway west to the Quiet River, "
+	     "then follow the river north to the mountains. "
+	     "Turn east and near the mouth of the second canyon you will find a secret passage. "
+	     "If you have a sextant, the coordinates are "
+	     "[" (loc-x the-mans-hideout-loc) ", "
+	     (loc-y the-mans-hideout-loc) "]."))
 
 (define (alch-man knpc kpc)
   (let ((qstat (gob knpc)))

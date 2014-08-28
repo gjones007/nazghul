@@ -1,6 +1,5 @@
 
 (load "world-map.scm")
-(load "test-place.scm")
 (kern-load "raise-merciful-death.scm")
 
 (kern-mk-place 
@@ -16,26 +15,24 @@
  ;; subplaces:g
  (list
   (list p_moongate_clearing 336 389)
-  (list p_gregors_hut       338 436)
-  (list p_abandoned_farm    284 377)
+  (list p_gregors_hut       335 416)
+  (list p_abandoned_farm    336 442)
   (list p_trigrave          271 400)
-  (list p_enchanters_tower  143 239)
   (list p_green_tower       380 398)
-  (list p_bole              404 304)
-  (list p_glasdrin          276 207)
-  (list p_oparine           240 455)
-  (list p_absalot           367 141)
-;;  (list p_engineers_hut     50   4)
-;;  (list p_void_temple        5  46)
-  (list p_poor_house        240 466)
-;;  (list p_ankh_shrine       342 112)
+  (list p_bole              403 304)
   (list p_westpass          313 409)
   (list p_eastpass          311 409)
-;;  (list p_ancient_derelict  43  17)
-  (list p_tower_of_absalot 367 145)
-  (list p_gate_to_absalot  367 147)
-  (list p_kun               128 337)
+  (list p_glasdrin          276 207)
+  (list p_absalot           367 141)
+  (list p_enchanters_tower  143 239)
+  (list p_tower_of_absalot  367 145)
+  (list p_gate_to_absalot   367 147)
+  (list p_oparine           240 455)
+  (list p_poor_house        262 400)
+  (list p_kun               296 288)
+
   (list p_lost_halls_entrance (loc-x lost-halls-loc) (loc-y lost-halls-loc))
+;;  (list p_ankh_shrine       342 112)
 ;;  (list p_voidgap_entrance   7  75)
 ;;  (list p_voidgap_exit       4  77)
   )
@@ -48,12 +45,12 @@
   ;; moongates
   (list (kern-tag 'mg-1 (mk-moongate 'ord)) 366 397) ;; near green tower
   (list (kern-tag 'mg-2 (mk-moongate 'ord)) 262 363) ;; near cloviskeep
-  (list (kern-tag 'mg-3 (mk-moongate 'ord)) 223 449) ;; near oparine
-  (list (kern-tag 'mg-8 (mk-moongate 'ord)) 149 243) ;; near enchanter's tower
+  ;; mg-3 is on the void map
+  (list (kern-tag 'mg-4 (mk-moongate 'ord)) 112 372) ;; southwest planes
   (list (kern-tag 'mg-5 (mk-moongate 'ord)) 301 182) ;; near glasdrin, tulemane
   (list (kern-tag 'mg-6 (mk-moongate 'ord)) 46 524) ;; circe's lagoon
   (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
-  (list (kern-tag 'mg-4 (mk-moongate 'ord)) 112 372) ;; southwest planes
+  (list (kern-tag 'mg-8 (mk-moongate 'ord)) 149 243) ;; near enchanter's tower
 
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)
