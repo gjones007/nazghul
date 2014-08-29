@@ -32,7 +32,6 @@
   (list p_kun               296 288)
 
   (list p_lost_halls_entrance (loc-x lost-halls-loc) (loc-y lost-halls-loc))
-;;  (list p_ankh_shrine       342 112)
 ;;  (list p_voidgap_entrance   7  75)
 ;;  (list p_voidgap_exit       4  77)
   )
@@ -45,12 +44,11 @@
   ;; moongates
   (list (kern-tag 'mg-1 (mk-moongate 'ord)) 366 397) ;; near green tower
   (list (kern-tag 'mg-2 (mk-moongate 'ord)) 262 363) ;; near cloviskeep
-  ;; mg-3 is on the void map
+  (list (kern-tag 'mg-3 (mk-moongate 'ord)) 149 243)
   (list (kern-tag 'mg-4 (mk-moongate 'ord)) 112 372) ;; southwest planes
   (list (kern-tag 'mg-5 (mk-moongate 'ord)) 301 182) ;; near glasdrin, tulemane
   (list (kern-tag 'mg-6 (mk-moongate 'ord)) 46 524) ;; circe's lagoon
   (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
-  (list (kern-tag 'mg-8 (mk-moongate 'ord)) 149 243) ;; near enchanter's tower
 
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)

@@ -16,6 +16,7 @@
   (list p_engineers_hut     73  72)
   (list p_void_temple       11  14)
   (list p_ancient_derelict  54  98)
+  (list p_ankh_shrine       111 113)
   )
 
  nil ; neighbors
