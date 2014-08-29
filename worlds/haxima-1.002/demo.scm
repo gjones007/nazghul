@@ -659,8 +659,6 @@
 (define portal-ifc
   (ifc '()
        (method 'step (lambda (kportal kobj) 
-                       ;;(println "portal-step")
-                       ;;(kern-map-flash 100)
                        (kern-obj-remove kobj)
                        ))
        ))
@@ -695,12 +693,10 @@
 (define (scene-mgr-incr-pause! gob) (set-car! (list-tail gob 6) (+ 1 (scene-mgr-get-pause gob))))
 
 (define (scene-mgr-intro-travelers-phase kobj)
-  ;;(println "scene-mgr-intro-travelers-phase")
   (let* ((smgr (kobj-gob-data kobj))
          (n (scene-mgr-get-num-travelers smgr))
          )
     (define (put-traveler)
-      ;;(println "put-traveler")
       (traveler-mk (loc-place (kern-obj-get-location kobj)))
       (scene-mgr-incr-num-travelers! smgr)
       )
@@ -713,7 +709,6 @@
     ))
 
 (define (scene-mgr-intro-demons-phase kobj)
-  ;;(println "scene-mgr-intro-demons-phase")
   (let* ((smgr (kobj-gob-data kobj))
          (n (scene-mgr-get-num-demons smgr))
          )
@@ -764,7 +759,6 @@
       ))
 
 (define (scene-mgr-intro-wise kobj)
-  ;;(println "scene-mgr-intro-wise")
   (let* ((smgr (kobj-gob-data kobj))
          (n (scene-mgr-get-num-wise smgr))
          )
@@ -778,13 +772,11 @@
   )
 
 (define (scene-mgr-wait-for-wise kobj)
-  ;;(println "scene-mgr-wait-for-wise")
   (let ((smgr (gob kobj)))
     (if (= 8 (scene-mgr-get-num-wise-in-pos smgr))
       (scene-mgr-advance-state! smgr))))
 
 (define (scene-mgr-close-gate kobj)
-  ;;(println "scene-mgr-close-gate")
   
   (define (drop-rune krune loc)
     (kern-obj-put-at krune loc)
@@ -840,7 +832,6 @@
         (scene-mgr-incr-pause! smgr))))
 
 (define (scene-mgr-pickup-runes kobj)
-  ;;(println "scene-mgr-pickup-runes")
   (for-each (lambda (krune)
               (kern-obj-remove krune)
               (kern-map-repaint)
@@ -854,10 +845,8 @@
   )
 
 (define (scene-mgr-exit-wise kobj)
-  ;;(println "scene-mgr-exit-wise")
   (map (lambda (kwise)
          (let ((wise (gob kwise)))
-           ;;(println "post:" (cdr (npcg-get-subgob wise)))
            (npcg-set-post! wise (cdr (npcg-get-subgob wise)))
            (kern-char-set-ai kwise 'wise-exit-ai)))
        (scene-mgr-get-wise (gob kobj)))
@@ -866,7 +855,6 @@
   )
 
 (define (scene-mgr-exit-guards kobj)
-  ;;(println "scene-mgr-exit-guards") 
   (map (lambda (kchar)
 		(if (not (is-player-party-member? kchar))
            (kern-char-set-ai kchar 'traveler-exit)))
@@ -875,7 +863,6 @@
   )
 
 (define (scene-mgr-wait-for-exits kobj)
-  ;;(println "scene-mgr-wait-for-guards")
   (if (< (length (all-allies-near (kern-get-player))) 2)
 	(scene-mgr-advance-state! (gob kobj)))
   )
@@ -962,7 +949,6 @@
   )
 
 (define (scene-mgr-end-years-pass kobj)
-  (println "end-years-pass")
   (let ((trogs (filter 
                  (lambda (kobj)
                    (not (is-player-party-member? kobj)))

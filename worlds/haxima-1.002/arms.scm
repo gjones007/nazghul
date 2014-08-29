@@ -468,7 +468,6 @@
 	(ifc obj-ifc
 		(method 'on-attack
 			(lambda (kuser)
-				(println "oa")
 				(kern-sound-play-at sound-missile (kern-obj-get-location kuser))
 			)
  	))

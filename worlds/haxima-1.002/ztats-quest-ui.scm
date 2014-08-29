@@ -68,7 +68,6 @@
                       (down (1- n) top (1+ cur)))
                   )
                  (else
-                  (println "down" top " " cur)
                   (zqug-top-entry! zqug top)
                   (zqug-cur-entry! zqug cur)
                   )))

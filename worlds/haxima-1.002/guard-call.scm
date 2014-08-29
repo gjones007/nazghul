@@ -25,7 +25,6 @@
 
 ;; ctor
 (define (mk-guard-call dur)
-  (println "mk-guard-call")
   (bind (kern-mk-obj t_guard_call 1)
         (guard-call-mk dur)))
   

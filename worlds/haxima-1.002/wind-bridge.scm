@@ -48,7 +48,6 @@
                             (+ (loc-x loc) (car offset))
                             (+ (loc-y loc) (cadr offset))))
      		))
-    ;;(println "wind=" wind "gob=" gob "loc=" loc)
      (define (turn amap dir)
       (cond ((< (wind-bridge-delay gob) 2)
              (kern-log-msg "The bridge creaks in the wind!")

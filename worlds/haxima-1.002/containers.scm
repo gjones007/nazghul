@@ -275,7 +275,6 @@
                                  1 ;; locked
                                  0 ;; normal
                                  ))))
-              (println "sprite-index: " index)
               index)))
 
 (define (kcontainer-update-sprite kcontainer)
@@ -284,7 +283,6 @@
 
 (define (kcontainer-lock kcontainer khandler)
   (let ((container (gob kcontainer)))
-    (println "container-lock: " container)
     (cond ((container-open? container) (kern-log-msg "Not closed!\n") #f)
           ((container-locked? container) (kern-log-msg "Already locked!\n") #f)
           (else
@@ -314,7 +312,6 @@
 
 (define (kcontainer-magic-unlock kcontainer khandler)
   (let ((container (gob kcontainer)))
-    (println "container-magic-unlock: " container)
     (cond ((container-open? container) (kern-log-msg "Not closed!\n") #f)
           ((not (container-magic-locked? container)) 
            (kern-log-msg "Not magically locked!\n") #f)
@@ -325,7 +322,6 @@
 
 (define (kcontainer-use-key kcontainer key-type)
   (let ((container (gob kcontainer)))
-    (println "container-use-key: " container)
     (cond ((container-open? container) (kern-log-msg "Not closed!"))
           ((not (container-key-fits? container key-type)) (kern-log-msg "Key won't fit!"))
           ((container-locked? container)
@@ -339,7 +335,6 @@
 
 (define (kcontainer-lock-with-key kcontainer ktype)
   (let ((container (gob kcontainer)))
-    (println "container-lock-with-key: " container " " ktype)
     (cond ((container-open? container) (kern-log-msg "Not closed!"))
           ((container-locked? container) (kern-log-msg "Already locked!"))
           (else

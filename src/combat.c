@@ -213,12 +213,10 @@ static int location_is_safe(struct position_info *info, int current)
 	// Is it passable?
 	if (!place_is_passable(info->place, info->px, info->py,
 			       info->subject, 0)) {
-		dbg("impassable\n");
 		return -1;
 	}
 	// Is it occupied?
 	if (place_is_occupied(info->place, info->px, info->py)) {
-		dbg("occupied\n");
 		returntype = PFLAG_IGNOREBEINGS;
 		if (current &
 		    (PFLAG_IGNOREHAZARDS || PFLAG_IGNOREBEINGS
@@ -233,14 +231,12 @@ static int location_is_safe(struct position_info *info, int current)
 
 	// Is it dangerous? Hack: check for a field and dangerous terrain
 	if (place_get_object(info->place, info->px, info->py, field_layer)) {
-		dbg("possibly dangerous field\n");
 		returntype = PFLAG_IGNOREFIELDS;
 		if (current & (PFLAG_IGNOREHAZARDS || PFLAG_IGNOREFIELDS))
 			return -1;
 	}
 	terrain = place_get_terrain(info->place, info->px, info->py);
 	if (terrain->effect) {
-		dbg("possibly dangerous terrain\n");
 		returntype = PFLAG_IGNOREHAZARDS;
 		if (current & (PFLAG_IGNOREHAZARDS))
 			return -1;
@@ -250,8 +246,6 @@ static int location_is_safe(struct position_info *info, int current)
 	if (info->find_party) {
 		// Each member should be able to find a path back to the
 		// party's originating location on the map.
-		dbg("searching for path to party [%d %d]...", info->x, info->y);
-
 		as_info.x0 = info->px;
 		as_info.y0 = info->py;
 		as_info.x1 = info->x;
@@ -262,8 +256,6 @@ static int location_is_safe(struct position_info *info, int current)
 
 		path = place_find_path(info->place, &as_info, info->subject);
 
-		if (!path)
-			dbg("no path back to party\n");
 	} else {
 		// skip the pathfinding check
 		return returntype;
@@ -288,8 +280,6 @@ static int combat_search_for_safe_position(struct position_info *info,
 	static int y_offsets[] = { 0, 0, -1, 1 };
 	int locationsafety = -1;
 
-	dbg("checking [%d %d]...", info->px, info->py);
-
 	// translate the map coords into an rmap index
 	index = info->py - info->ry;
 	index *= info->rw;
@@ -298,16 +288,13 @@ static int combat_search_for_safe_position(struct position_info *info,
 	// If the current location is off-map, outside of the placement
 	// rectangle or already visited then discontinue the search.  
 	if (rmap[index]) {
-		dbg("already visited [%d]\n", index);
 		return -1;	// already visited
 	}
 	if (info->px < info->rx || info->px >= info->rx + info->rw ||
 	    info->py < info->ry || info->py >= info->ry + info->rh) {
-		dbg("outside the placement area\n");
 		return -1;	// outside the placement rect
 	}
 	if (place_off_map(info->place, info->px, info->py)) {
-		dbg("off-map\n");
 		// return -1; // off map
 		goto enqueue_neighbors;
 	}
@@ -317,7 +304,6 @@ static int combat_search_for_safe_position(struct position_info *info,
 	// If the current location is safe then the search succeeded.
 	locationsafety = location_is_safe(info, currentsafety);
 	if (locationsafety == 0) {
-		dbg("OK!\n");
 		return 0;
 	}
 
@@ -444,17 +430,13 @@ static bool combat_put_npc(class Character * pm, void *data)
 	info->px = pm->getX();
 	info->py = pm->getY();
 
-	dbg("Placing %s\n", pm->getName());
-
 	if (combat_find_safe_position(info) == -1) {
 		// If I can't place a member then I can't place it.
-		dbg("*** Can't place %s ***\n", pm->getName());
 		return false;
 	}
 
 	pm->setX(info->px);
 	pm->setY(info->py);
-	dbg("Put '%s' at [%d %d]\n", pm->getName(), info->px, info->py);
 	pm->setPlace(Place);
 	place_add_object(Place, pm);
 	pm->setOnMap(true);
@@ -482,8 +464,6 @@ static void set_party_initial_position(struct position_info *pinfo, int x,
 	pinfo->rh = MAX_PLACEMENT_RECTANGLE_H;
 	pinfo->rx = pinfo->x - pinfo->rw / 2;
 	pinfo->ry = pinfo->y - pinfo->rh / 2;
-
-	dbg("Moved party start position to [%d %d]\n", pinfo->x, pinfo->y);;
 
 }
 
@@ -601,7 +581,6 @@ bool combat_place_character(class Character * pm, void *data)
 	memset(rmap, 0, sizeof(rmap));
 	info->px = pm->getX();
 	info->py = pm->getY();
-	dbg("Placing %s\n", pm->getName());
 
 	if (combat_find_safe_position(info) != 0) {
 
@@ -628,8 +607,6 @@ bool combat_place_character(class Character * pm, void *data)
 		class Character *leader = player_party->get_leader();
 
 		if (!leader) {
-			dbg("Putting %s on start location [%d %d]\n",
-			    pm->getName(), info->x, info->y);
 			info->px = info->x;
 			info->py = info->y;
 		} else {
@@ -637,12 +614,8 @@ bool combat_place_character(class Character * pm, void *data)
 			memset(rmap, 0, sizeof(rmap));
 			info->px = leader->getX();
 			info->py = leader->getY();
-			dbg("Retrying %s\n", pm->getName());
 
 			if (combat_find_safe_position(info) != 0) {
-				dbg("Putting %s on start location "
-				    "[%d %d]\n",
-				    pm->getName(), info->x, info->y);
 				info->px = info->x;
 				info->py = info->y;
 			}
@@ -1112,7 +1085,6 @@ int combatInit(void)
 void combat_reset_state(void)
 {
 	/* Initialize the place to safe defaults */
-	fprintf(stderr, "combatreset\n");
 	Combat.state = COMBAT_STATE_DONE;
 }
 
@@ -1219,7 +1191,6 @@ static void setup_combat_place_part(struct place *place,
 	int dst_x = 0, dst_y = 0;
 
 	if (our_terrain->renderCombat) {
-		fprintf(stderr, "rc\n");
 		if (dx < 0) {
 			// facing west, fill east half
 			dst_x = COMBAT_MAP_W / 2;
@@ -1363,28 +1334,8 @@ static struct terrain_map *create_temporary_terrain_map(struct combat_info
 	//      in common.  It may be more restrictive than I have
 	//      stated, but I would need to research the question...
 	// 
-	// SAM:
-	// Hmmm...ship-to-shore blits a map with a different palette 
-	// onto a map with 'pal_standard', and this code has no way of seeing that.
-	// Possibly the map blitting should merge the palettes after all...
-	if (party_map && npc_party_map) {
-		dbg("maps '%s' '%s', palettes '%s' '%s'\n",
-		    party_map->tag, npc_party_map->tag,
-		    party_map->palette->tag, npc_party_map->palette->tag);
-		int palette_tags_match = !strcmp(party_map->palette->tag,
-						 npc_party_map->palette->tag);
-		if (!palette_tags_match) {
-			dbg("create_temporary_terrain_map() warning: \n"
-			    "  Two combat maps (tags '%s' and '%s') \n"
-			    "  merging with dissimilar palettes (tags '%s' and '%s').\n"
-			    "  (This should work OK now, but be aware...)\n",
-			    party_map->tag, npc_party_map->tag,
-			    party_map->palette->tag,
-			    npc_party_map->palette->tag);
-			// SAM: New code in palette_print() should enable us to carry on.
-			// assert(0);
-		}
-	}
+	// SAM: Hmmm...ship-to-shore blits a map with a different palette onto
+	// a map with 'pal_standard', and this code has no way of seeing that.
 	struct terrain_map *the_map;
 	if (party_map)
 		the_map = party_map;
@@ -1435,13 +1386,11 @@ static bool position_player_party(struct combat_info *cinfo)
 					      player_party->getX(),
 					      player_party->getY())) &&
 		 vehicle->getObjectType()->renderCombat) {
-		// dbg("party overlay, party over vehicle\n");
 		combat_overlay_vehicle(vehicle, cinfo->pc_dx, cinfo->pc_dy,
 				       &player_party->pinfo);
 	}
 	// Finally, since there is no vehicle map check for a camping map.
 	else if (cinfo->camping && player_party->campsite_map) {
-		// dbg("party overlay, party is camping\n");
 		combat_overlay_map(player_party->campsite_map,
 				   &player_party->pinfo, 0);
 	}
@@ -1615,15 +1564,12 @@ static bool combat_add_npc_near_edge(class Character * npc, void *arg)
 
 	/* Look for a spot. */
 	if (combat_find_safe_position(pinfo)) {
-		dbg("%s: can't place %s near [%d %d]\n", __FUNCTION__,
-		    npc->getName(), pinfo->x, pinfo->y);
 		return true;
 	}
 
 	/* Position the NPC. */
 	npc->setX(pinfo->px);
 	npc->setY(pinfo->py);
-	dbg("Put '%s' at [%d %d]\n", npc->getName(), pinfo->px, pinfo->py);
 	npc->setPlace(pinfo->place);
 	place_add_object(pinfo->place, npc);
 	npc->setOnMap(true);
@@ -1698,9 +1644,6 @@ int combat_add_party(class Party * party, int dx, int dy, int located,
 		     struct place *place, int x, int y)
 {
 	int added = 0;
-
-	dbg("combat_add_party:%s:located=%s@%s(%d, %d)\n", party->getName(),
-	    located ? "yes" : "no", place->name, x, y);
 
 	obj_inc_ref(party);
 

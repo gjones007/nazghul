@@ -146,7 +146,6 @@
 ;; Constructor -- make a guard captain
 ;;----------------------------------------------------------------------------
 (define (mk-gate-guard gate-tag post passwd)
-  (println "mk-gate-guard: " gate-tag ", " post)
   (bind
    (set-level
     (kern-char-arm-self
@@ -175,7 +174,6 @@
    (mk-gate-guard-gob gate-tag post passwd)))
 
 (define (put-gate-guard ktrig gate-tag passwd)
-  (println "put-gate-guard: " ktrig "," gate-tag)
   (kern-obj-put-at (mk-gate-guard gate-tag
                                   (cdr (kern-obj-get-location ktrig))
                                   passwd)                   

@@ -15,7 +15,6 @@
 (define (ability-range ability) (list-ref ability 5))
 
 (define (can-use-ability? ability kchar)
-  ;;(println " can-use-ability?" display ability)
   (and (<= (kern-get-magic-negated) 0)
        (>= (kern-char-get-mana kchar)
            (ability-mana-cost ability))
@@ -198,12 +197,10 @@
     (spew-in-dir dir)))
     
 (define (fire-wind-proc kchar ktarg)
-	;;(println "flamewind")
 	(let ((target (kern-obj-get-location ktarg))
 			(power (occ-ability-blackmagic kchar)))
 		(and (powers-cone-fire-test kchar target power)
 			(begin 
-				;;(println "flamewind2")
 				(kern-log-msg (kern-obj-get-name kchar)
 	                " blasts fire at "
 	                (kern-obj-get-name ktarg))
@@ -250,7 +247,6 @@
          #f)))
 
 (define (summon-skeleton-proc kchar)
-  ;;(println "summon-skeleton-proc")
   (cast-summon-proc kchar
                     (lambda () 
                       (random-select (list 'skeletal-warrior 'skeletal-spear-thrower)))
@@ -258,7 +254,6 @@
                     ))
                     
 (define (summon-slime-proc kchar)
-  ;;(println "summon-slime-proc")
   (cast-summon-proc kchar
                     (lambda () 'green-slime)
                     (/ (kern-char-get-level kchar) 2)

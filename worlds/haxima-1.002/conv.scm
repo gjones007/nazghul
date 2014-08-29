@@ -363,7 +363,6 @@
 ;; speaker) will be chosen at random. msg is the text of the comment. If kpc is
 ;; the only member of the party then the aside will not do anything.
 (define (aside kpc kchar-tag . msg)
-  ;;(println msg)
   (if (null? kchar-tag)
       (let ((members (filter (lambda (kchar)
                                (not (eqv? kchar kpc)))
@@ -556,8 +555,6 @@
 (define merch-traded-nothing   9)
 
 (define (conv-trade knpc kpc menu msgs catalog)
-  (println "conv-trade: " (kern-obj-get-activity knpc))
-  ;;(println "conv-trade: " menu msgs catalog)
   (if (and (not (string=? "working" (kern-obj-get-activity knpc)))
            (not (null? (list-ref msgs merch-closed))))
       (say knpc (list-ref msgs merch-closed) 

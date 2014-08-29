@@ -482,7 +482,6 @@ static void place_fin(void *arg)
 	place_for_each_tile(place, place_del_tile_visitor, 0);
 	hash_destroy(place->objects);
 
-	//dbg("place_del %s\n", place->tag);
 	if (place->tag) {
 		free(place->tag);
 	}
@@ -735,7 +734,6 @@ static struct tile *place_create_and_add_tile(struct place *place, int x, int y)
 	if (!tile)
 		return 0;
 	hash_add(place->objects, &tile->hashlink);
-	//dbg("place_create_and_add_tile: place=%s tile=%08lx x=%d y=%d\n", place->name, tile, x, y);
 	return tile;
 }
 
@@ -1015,8 +1013,6 @@ static int place_pathfind_is_valid_location(struct place_pathfind_context
 {
 	class Object *portal;
 
-	//dbg("[%d %d]...", x, y);
-
 	/* I used to check this after passability, but it really belongs first.
 	 * In several cases the target location may not be passable but if the
 	 * seeker can get adjacent to it that will be good enough. If this is
@@ -1024,7 +1020,6 @@ static int place_pathfind_is_valid_location(struct place_pathfind_context
 	 * flag. */
 	if ((!(context->pflags & PFLAG_ADJACENTNOTOK))
 	    && x == context->target_x && y == context->target_y) {
-		//dbg("ok\n");
 		return 1;
 	}
 
@@ -1750,7 +1745,6 @@ void place_apply_tile_effects(struct place *place, class Object * obj)
 static int place_timed_obj_exec(Object * obj)
 {
 	int time = SDL_GetTicks();
-	dbg("%s:%20s ----------\n", __FUNCTION__, obj->getName());
 	obj->exec();
 	return SDL_GetTicks() - time;
 
@@ -1763,8 +1757,6 @@ void place_exec(struct place *place)
 {
 	class Object *obj = NULL;
 	int times = 0;
-
-	dbg("%s:%20s --------------------\n", __FUNCTION__, place->name);
 
 #if ! CONFIG_CONCURRENT_WILDERNESS
 	/* FIXME: not sure if we still need this assert */

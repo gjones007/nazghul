@@ -66,25 +66,20 @@
 ;; ============================================================================
 
 (define (get-line origin dir n)
-  ;;(println "   get-line:" origin "," dir "," n)
   (cond ((= n 0) 
-         ;;(println "    nil") 
          nil)
         (else
          (cons origin
                (get-line (loc-offset origin dir) dir (- n 1))))))
 
 (define (get-cone-vert origin depth dy)
-  ;;(println " get-cone-vert:" origin "," depth "," dy)
   (let ((place (loc-place origin)))
     (define (get-lines x y n h)
-      ;;(println "  get-lines:" x "," y "," n "," h)
       (if (< h 0) nil
           (let ((line (filter (lambda (a) (and (kern-in-los? origin a)
                                                (kern-is-valid-location? a)
                                                (terrain-ok-for-field? a)))
                               (get-line (mk-loc place x y) east n))))
-            ;;(println "   line:" line)
             (cons line
                   (get-lines (if (= x 0) 0 (- x 1))
                              (+ y dy) 
@@ -113,7 +108,6 @@
                depth)))
 
 (define (get-cone origin depth dir)
-  ;;(println "get-cone:" origin "," depth "," dir)
   (cond ((= dir north) (get-cone-vert origin 
                                       (min depth (loc-y origin)) 
                                       -1))
@@ -166,7 +160,6 @@
 ;;   o applies caller-specified proc to each location
 ;; (Note: currently used for the spider's web-spew "spell")
 (define (cast-wind-spell2 origin proc dir depth)
-  ;;(println "cast-wind-spell2:" origin "," proc "," dir "," depth)
   (define (dropfield loc)
     (if (kern-is-valid-location? loc)
         (proc loc)))
@@ -176,7 +169,6 @@
   (let ((lines (get-cone origin depth dir)))
     (cond ((null? lines) nil)
           (else
-           ;;(println " doing lines")
            (map doline (cdr lines))
            (kern-map-repaint)))))
 		   

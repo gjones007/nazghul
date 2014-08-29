@@ -35,8 +35,6 @@
 ;; run a procedure on each value in the table
 (define (tbl-for-each-val fx tbl)
   (for-each (lambda (entry)
-              (println "tbl-for-each-val:entry=" entry)
-              (println "cdr=" (cdr entry))
               (apply fx (cdr entry)))
             (cdr tbl)))
 

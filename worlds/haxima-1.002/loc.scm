@@ -61,7 +61,6 @@
 
 ;; loc-add -- vector sum of locations (auto wraps)
 (define (loc-add . locs)
-  ;;(println "loc-add " locs)
   (if (null? locs)
       nil
       (loc-wrap (mk-loc (loc-place (car locs))
@@ -147,7 +146,6 @@
 
 ;; loc-smul -- scaler multiplication
 (define (loc-smul loc s)
-  ;;(println "loc-smul " loc " " s)
   (mk-loc (loc-place loc)
           (* (loc-x loc) s)
           (* (loc-y loc) s)))
@@ -155,7 +153,6 @@
 ;; loc-norm -- convert loc to normal form (where at least one component has
 ;; length 1)
 (define (loc-norm loc)
-  ;;(println "loc-norm " loc)
   (let ((s (min (abs (loc-x loc)) 
                      (abs (loc-y loc)))))
     (if (<= s 1)
@@ -240,9 +237,7 @@
         ))  
 
 (define (loc-offset loc dir)
-  ;;(println "    loc-offset:" loc "," dir)
   (define (get-place place dz)
-    ;;(println "     get-place:" place "," dz)
     (cond ((= dz 0) place)
           (else (kern-place-get-neighbor place dir))))
   (let* ((vec (direction-to-lvect dir))
@@ -260,13 +255,11 @@
 	(/ (- dir 1) 2))
 
 (define (get-cardinal-ref avector dir)
-	;;(println "gcrc " avector)
 	(vector-ref avector
 		(cardinal-dir-num dir))
 		)
 
 (define (get-cardinal-lref alist dir)
-	;;(println "gcrl " alist)
 	(list-ref alist
 		(cardinal-dir-num dir))
 		)

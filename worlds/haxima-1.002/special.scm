@@ -112,10 +112,6 @@
 
 ;; grow -- trigger hook fx to create items (eg, growing reagents, hence the name)
 (define (grow-trig ktrig ktype-tag dice)
-  (println "grow-trig")
-  (println "  ktrig=" ktrig)
-  (println "  ktype-tag=" ktype-tag)
-  (println "  dice=" dice)
   (kern-obj-put-at (kern-mk-obj (eval ktype-tag) (kern-dice-roll 
                                        dice))
                    (kern-obj-get-location ktrig)))

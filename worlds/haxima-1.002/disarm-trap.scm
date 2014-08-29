@@ -22,7 +22,6 @@
                         (ifccall ktarg 'get-traps)))
         )
     ;; Check if any unprocessed traps remaining
-    (println "traps: " traps)
     (cond ((null? traps) 
            (kern-char-task-end kchar)
            )
@@ -38,7 +37,6 @@
                   (roll (kern-dice-roll "1d20"))
                   (bonus (occ-thief-dice-roll kchar))
                   )
-             (println "trap: " trap " dc: " dc " roll: " roll " bonus: " bonus)
              (if (or 
                   (= roll 20) 
                   (> (+ roll bonus) (* 2 dc))
@@ -48,7 +46,6 @@
                        (roll (kern-dice-roll "1d20"))
                        (bonus (occ-thief-dice-roll kchar))
                        )
-                   (println "roll2: " roll " bonus2: " bonus)
                    (cond ((or 
                            (= roll 20) 
                            (> (+ roll bonus) dc)
@@ -79,7 +76,6 @@
                          (ifccall ktarg 'get-traps)))
           )
       ;; Check if there are any unprocessed traps
-      (println "traps: " traps)
       (cond ((null? traps) 
              result-no-effect
              )

@@ -19,13 +19,11 @@
               (finish-dc (* 2 dc))
               )
           ;; roll to complete
-          ;(println "complete: " roll "+" bonus " vs " finish-dc)
           (if (or (= 20 roll) (> (+ roll bonus ) finish-dc))
               (let ((roll (kern-dice-roll "1d20"))
                     (bonus (kern-dice-roll (string-append "1d" (number->string (occ-ability-thief kchar)))))
                     )
                 ;; roll to succeed
-                ;(println "succeed: " roll "+" bonus " vs " dc)
                 (cond ((or (= roll 20) (> (+ roll bonus ) dc))
                        (send-signal kchar ktarg 'unlock)
                        (kern-char-task-end kchar)

@@ -386,21 +386,6 @@
 ;; Miscellaneous crap
 (mk-obj-type 't_crosshair "crosshair" s_crosshair layer-crosshair nil)
 (kern-set-crosshair t_crosshair)
-(kern-set-frame s_frame_ulc
-                s_frame_urc
-                s_frame_llc
-                s_frame_lrc
-                s_frame_td
-                s_frame_tu
-                s_frame_tl
-                s_frame_tr
-                s_null
-                s_frame_horz
-                s_frame_vert
-                s_frame_endl
-                s_frame_endr)
-(kern-set-ascii ss_u4_charset 32)
-(kern-set-cursor ls_whirlpool)
 (kern-set-damage-sprite s_hit)
 (kern-add-query 'str_based_attack_query proc-stratt)
 (kern-add-query 'dex_based_attack_query proc-dexatt)

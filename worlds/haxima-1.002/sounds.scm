@@ -55,8 +55,6 @@
 
 (load "music/music.scm")
 
-(println ml-battle-music)
-
 (define music (list nil nil))
 
 (define (music-play-track file)

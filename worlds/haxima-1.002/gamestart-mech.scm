@@ -122,7 +122,6 @@
 	#f)
 
 (define (set-gamestart-data kbeing key value)
-	(println (get-roomdata (car (kern-obj-get-location kbeing))))
 	(let* ((rdata (get-roomdata (car (kern-obj-get-location kbeing))))
 			(curdat (list-tail rdata key)))
 		(set-car! curdat value)

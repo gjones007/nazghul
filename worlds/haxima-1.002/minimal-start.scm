@@ -16,7 +16,6 @@
 ;; progress bar.
 (define original-load load)  
 (define (load file)
-  (println (kern-get-ticks) ":" file "...")
   (kern-progress-bar-advance 1)
   (original-load file)
   )
@@ -253,51 +252,6 @@
 
 (kern-obj-set-conv ch_gregor 'gregors-conv)
 
-;;<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-;; Setup a quest-offer test
-
-;;;; (define (attach kobj val-tag)
-;;;;   (let ((val (eval val-tag))
-;;;;         (obj (gob kobj)))
-;;;;     (if (null? val) (error "attach: no val for " val-tag))
-;;;;     (if (null? obj) (error "attach: no gob for " (kern-obj-get-name kobj)))
-;;;;     (if (val 'can-attach? kobj)
-;;;;         (tbl-append! obj val-tag)
-;;;;         (val 'on-attach kobj)
-;;;;         )))
-;;;; 
-;;;; (define (attached? kobj val-tag)
-;;;;   (let ((obj (gob kobj)))
-;;;;     (if (null? obj)
-;;;;         #f
-;;;;         (tbl-get obj (val-tag 'key)))
-;;;;         ))
-;;;; 
-;;;; (define quest-offer-ifc
-;;;;   (ifc nil
-;;;;        (method 'can-attach? (lambda (knpc) (println "can-attach") #t))
-;;;;        (method 'key (lambda () 'quest-offer))
-;;;;        (method 'on-attach (lambda (knpc) ))
-;;;;        (method 'is-avail? (lambda (knpc kpc) #t))
-;;;;        (method 'offer (lambda (knpc kpc) ))
-;;;;        ))
-;;;; 
-;;;; (define (gregors-quest-make-offer kpc knpc)
-;;;;   (say knpc "Want a quest?")
-;;;;   (cond ((yes? kpc)
-;;;;          (say knpc "You got it.")
-;;;;          (quest-assign gregors-quest (gob (kern-get-player))))
-;;;;         (else
-;;;;          (say knpc "Fine. Loser.")
-;;;;          (kern-conv-end))
-;;;;         ))
-;;;; 
-;;;; (define gregors-quest-offer
-;;;;   (ifc quest-offer-ifc
-;;;;        (method 'on-attach (lambda (knpc) (kern-add-hook 'conv_end_hook gregors-quest-make-offer)))
-;;;;        (method 'key (lambda () 'gregors-quest))
-;;;;        ))
-
 ;;----------------------------------------------------------------------------
 ;; end-of-conv hook handling
 
@@ -306,9 +260,7 @@
 
 ;; a procedure to run all the end-of-conv handlers
 (define (run-end-of-conv-handlers kpc knpc args)
-  (println "run-end-of-conv-handlers:args=" args)
   (tbl-for-each-val (lambda (val)
-                      (println "val:" val)
                       (apply (eval (car val)) (cons kpc (cons knpc (cdr val)))))
                     (eval (car args))))
 
@@ -326,10 +278,7 @@
 ;;
 ;; Where 'quest' is an instance of a quest.
 (define (basic-quest-offer kpc knpc args)
-  (println "basic-quest-offer: args=" args)
-  (println "knpc=" knpc)
   (define (offer t1 t2 t3 quest)
-    (println "offer")
     (say knpc t1)
     (cond ((yes? kpc)
            (say knpc t2)
@@ -379,16 +328,13 @@
         (else
          (say knpc "WHAT? YOU SUCK!")
          ))
-  (println "leaving")
   )
 
 (define (select-random-quest-offer knpc)
-  (println "select-random-quest-offer")
   (random-select (list random-mailman-quest-offer
                    )))
 
 (define (offer-random-quest kpc knpc args)
-  (println "offer-random-quest")
   (let ((offer (select-random-quest-offer knpc)))
     (if (notnull? offer)
         (offer kpc knpc))))

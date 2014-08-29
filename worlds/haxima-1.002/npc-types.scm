@@ -693,7 +693,6 @@
   (if (not (kern-place-is-wilderness? (loc-place (kern-obj-get-location knpc))))
            (let ((loc (kern-obj-get-location knpc)))
              (map (lambda (triple)
-                    (println triple)
                     (let ((thresh (car triple))
                           (dice (cadr triple))
                           (type-tag (caddr triple)))

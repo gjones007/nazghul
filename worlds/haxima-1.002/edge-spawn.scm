@@ -1,16 +1,12 @@
 
 (define (edge-spawn-exec kwm)
 
-  ;;(println "edge-spawn-exec")
-
   (define (get-ptype loc)
-    (println "get-ptype:" loc)
     (terrain-to-ptype (kern-place-get-terrain loc)
                       (mean-player-party-level)))
 
   (define (try-to-spawn-at loc)
     (let ((ptype (get-ptype loc)))
-      ;;(println " try-to-spawn-at:ptype=" ptype)
       (if (not (null? ptype))
           (let ((kparty (ptype-generate ptype)))
             ;; note: must put the party on the map (thus giving it a refcount)

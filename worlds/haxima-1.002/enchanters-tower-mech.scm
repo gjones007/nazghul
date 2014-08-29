@@ -94,7 +94,6 @@
 						(kern-obj-relocate kuser target-loc nil))
 					(let ((target-loc (kern-obj-get-location kmirror))
 							(clone (kern-obj-clone kuser)))
-						(println (kern-char-get-arms kuser))
 						(map (lambda (ktype)
 							(kern-obj-add-to-inventory clone ktype 1))
 							(kern-char-get-arms kuser))

@@ -295,20 +295,18 @@
   (kern-log-msg "...then awaken to a strange new world.")
   )
 
-(define (simple-start kplayer)
-  (kern-obj-put-at kplayer
-		   (kern-obj-get-location black-gate)))
-
-(define (create-char kplayer)
-  (kern-obj-put-at kplayer (list p_char_setup 10 17)))
-
-;;----------------------------------------------------------------------------
-;; To skip the extended start scene comment out this next line and uncomment
-;; the line after it.
-;;----------------------------------------------------------------------------
-;;(kern-add-hook 'new_game_start_hook 'start-scene)
-;;(kern-add-hook 'new_game_start_hook 'create-char)
-(kern-add-hook 'new_game_start_hook 'simple-start)
+(if #t
+    ;; Traditional start
+    (begin
+      (define (create-char kplayer)
+	(kern-obj-put-at kplayer (list p_char_setup 9 17)))
+      (kern-add-hook 'new_game_start_hook 'create-char))
+    ;; Quick-and-dirty start
+    (begin
+      (define (simple-start kplayer)
+	(kern-obj-put-at kplayer
+			 (kern-obj-get-location black-gate)))
+      (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (load "quests-data.scm")
 (quest-assign (quest-data-get 'questentry-charcreate))

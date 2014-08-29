@@ -691,8 +691,6 @@
 (link-rm	(- stairdown-x 1)	stairdown-y	0	east	'p_lost_halls_staird	nil					#t)
 (link-rm	(+ stairdown-x 1)	stairdown-y	0	west	'p_lost_halls_staird	nil 				#t)
 
-(println "stair at " stairdown-x " " stairdown-y)
-
 ;; cemetary in random loc
 (prmap-mk-roomdata 'p_lost_halls_graves grave-x grave-y 0 (list 'p_lost_halls_r1 'p_lost_halls_r2 'p_lost_halls_r3 'p_lost_halls_r4))
 

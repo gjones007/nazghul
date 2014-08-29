@@ -11,7 +11,7 @@
  #t  ;; wilderness
  #f  ;; tmp combat place
 
- ;; subplaces:g
+ ;; subplaces
  (list
   (list p_engineers_hut     73  72)
   (list p_void_temple       11  14)

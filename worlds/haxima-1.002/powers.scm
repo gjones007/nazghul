@@ -240,7 +240,6 @@
 (define (contest-of-skill offense defense)
   (let ((oprob (+ offense 1))
         (tprob (number->string (+ offense defense 2))))
-    (println "oprob=" oprob " tprob=" tprob " offense=" offense " defense=" defense)
     (if (< (kern-dice-roll (string-append "1d" tprob))
            oprob)
           #t
@@ -1454,7 +1453,6 @@
            (let ((loc (loc-mk kplace (car xy) (cdr xy))))
              (cond ((or (not (passable? loc caster))
                         (occupied? loc))
-                    (println loc " impassable")
                     #f
                     )
                    ((not (kern-char-is-dead? caster))

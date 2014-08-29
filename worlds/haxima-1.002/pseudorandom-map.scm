@@ -440,7 +440,6 @@
 					(number->string rxloc) " "
 					(number->string ryloc) " "
 					(number->string rzloc) " "))
-				(println "loc : " rxloc " " ryloc " " rzloc)
 				)
 		)
 	))
@@ -559,12 +558,10 @@
 					(thisx (+ rxloc (car thisrmapdata)))
 					(thisy (+ ryloc (cadr thisrmapdata)))
 					(thisrtype (caddr thisrmapdata))
-					;;(temp (println "thl " thishardlink))
 					(linkmap (if (or (null? thishardlink) (null? (car (cdr thishardlink))))
 								(prmap-get-template thisx thisy rzloc thisrtype (prmap-params-edgemaps mapdata))
 								(cdr thishardlink)))
 				)
-                          ;;(println "lm " linkmap)
 				(prmap-do-map-blit destmap (car linkmap)
 					(get-cardinal-lref blitstats dir))
 				(if (> (length linkmap) 2)
@@ -573,7 +570,6 @@
 			))
 			(list north west east south))
 	)
-	;;(println "done")
 	)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -629,7 +625,6 @@
 	(let ((current (prmap-params-current mapdata)))
 		(if (not (null? current))
 			(let* ((roomkey (prmap-room-roomkey current (prmap-params-mapname mapdata))))
-                          ;;(println "freeze: " roomkey)
 				(map (lambda (obj)
 					(if (prmap-room-freezable-type obj)
 						(let*
@@ -649,11 +644,9 @@
 
 (define (prmap-room-thaw kplace mapdata)
 	(let ((roomkey (prmap-room-roomkey kplace (prmap-params-mapname mapdata))))
-          ;;(println " thaw: " roomkey)
 		(do 
 			((obj (kern-obj-thaw roomkey kplace) (kern-obj-thaw roomkey kplace)))
 			((null? obj))
-                  ;;(println "obj " (kern-obj-get-name obj))
 		)	
 		(prmap-params-set-current mapdata (prmap-roomdata-tag (get-roomdata kplace)))
 	))
@@ -897,7 +890,6 @@
 				()
 				((vector-ref flags 1))
 				(let ((currentstatus (vector-2d-get-off table 0 0 checking-cursor))	)
-				;;(println "checking " checking-cursor)
 				(cond
 					((equal? (vector-2d-get-off table 0 0 checking-cursor) 'chk))
 					;; check east
@@ -908,7 +900,6 @@
 							(check-hardlink 1 0 west)
 							)
 						(mk-linkpair 1 0 east west)
-						;;(println "mklink east " working-cursor)
 						)
 					;; check north
 					((and (< (vector-ref checking-cursor 1) (- height 1))
@@ -918,7 +909,6 @@
 							(check-hardlink 0 1 south)
 							)
 						(mk-linkpair 0 1 north south)
-						;;(println "mklink north " working-cursor)
 						)
 					((equal? (vector-2d-get-off table 0 0 checking-cursor) 'exp)
 						(vector-2d-set-off table 0 0 checking-cursor 'chk))
@@ -943,6 +933,5 @@
 						(vector-set! checking-cursor 1 0))
 				)
 			))
-			;;(println "tab " table)
 		)
 	))

@@ -929,9 +929,6 @@ void Object::setVisible(bool val)
 		visible++;
 	else {
 		visible--;
-		if (visible < 0 && getName()) {
-			printf("%s: %d\n", getName(), visible);
-		}
 	}
 }
 
@@ -1209,8 +1206,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 	int x_offsets[] = { -1, 1, 0, 0 };
 	int y_offsets[] = { 0, 0, -1, 1 };
 
-	printf("Putting %s near (%d %d)\n", getName(), new_x, new_y);
-
 	// --------------------------------------------------------------------
 	// Although the caller specified a radius, internally I use a bounding
 	// box. Assign the upper left corner in place coordinates. I don't
@@ -1281,8 +1276,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 		new_y = q_y[q_head];
 		q_head++;
 
-		printf("Checking (%d,%d)...", new_x, new_y);
-
 		// ------------------------------------------------------------
 		// Has the location already been visited? (If not then mark it
 		// as visited now).
@@ -1293,7 +1286,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 		assert(index < q_size);
 
 		if (0 != visited[index]) {
-			printf("already checked\n");
 			continue;
 		}
 		visited[index] = 1;
@@ -1314,8 +1306,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 		     place_is_occupied(new_place, new_x, new_y)) ||
 		    (!(flags & PFLAG_IGNOREHAZARDS) &&
 		     place_is_hazardous(new_place, new_x, new_y))) {
-
-			printf("occupied or hazardous\n");
 
 			// ----------------------------------------------------
 			// This place is not suitable, but its neighbors might
@@ -1379,7 +1369,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 		// stepping.
 		// ------------------------------------------------------------
 
-		printf("OK!\n");
 		relocate(new_place, new_x, new_y, REL_NOSTEP, NULL);
 		ret = true;
 
@@ -1390,8 +1379,6 @@ bool Object::putOnMap(struct place * new_place, int new_x, int new_y, int r,
 	// Didn't find anyplace suitable. Return false. If the caller wants to
 	// force placement I'll leave it to their discretion.
 	// --------------------------------------------------------------------
-
-	printf("NO PLACE FOUND!\n");
 
  done:
 	free(queued);
@@ -2211,24 +2198,12 @@ Object *Object::getSpeaker()
 void obj_inc_ref(Object * obj)
 {
 	obj->refcount++;
-#if 0
-	if (obj->getName() && !strcmp(obj->getName(), "player party"
-				      /*"The Wanderer" */ )) {
-		printf("obj_inc_ref: %d\n", obj->refcount);
-	}
-#endif
 }
 
 void obj_dec_ref(Object * obj)
 {
 	assert((obj)->refcount >= 0);
 	(obj)->refcount--;
-#if 0
-	if (obj->getName() && !strcmp(obj->getName(), "player party"
-				      /*"The Wanderer" */ )) {
-		printf("obj_dec_ref: %d\n", obj->refcount);
-	}
-#endif
 	if (!obj->refcount)
 		delete obj;
 }

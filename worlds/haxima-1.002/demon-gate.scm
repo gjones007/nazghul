@@ -94,8 +94,6 @@
 				(end-game)
 				(end-game-played! dgate)
 			))
-		(println (demon-gate-completely-unlocked? dgate) " "
-					(demon-gate-opened? dgate) " " (nossifer-vanquished?))
 		(if (and (demon-gate-completely-unlocked? dgate)
 				(not (demon-gate-opened? dgate)))
 			(begin

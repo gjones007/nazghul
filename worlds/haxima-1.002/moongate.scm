@@ -26,9 +26,7 @@
   (list moontag #f '() #f temp? moongate-default-ttl))
 
 (define (moongate-kdest gate) 
-  ;;(println "gate:" gate)
   (let ((kmoon (safe-eval (car gate))))
-    ;;(println "moon:" kmoon)
     (cond ((null? kmoon) nil)
           (else (moon-get-current-gate kmoon)))))
 (define (moongate-open? gate) (cadr gate))
@@ -48,7 +46,6 @@
   (set-car! (cdddr gate) open?))
 
 (define (moongate-destroy kgate)
-  ;;(println "moongate-destroy")
   (kern-obj-remove kgate))
 
 ;; ----------------------------------------------------------------------------

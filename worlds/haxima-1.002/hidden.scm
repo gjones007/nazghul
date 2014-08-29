@@ -7,7 +7,6 @@
 (define (hidden-quan hidden) (cadr hidden))
 
 (define (hidden-search khidden ksearcher)
-  (println "hidden-search")
   (let* ((hidden (kobj-gob-data khidden))
          (kobj (kern-mk-obj (eval (hidden-objtype-tag hidden))
                             (hidden-quan hidden))))
