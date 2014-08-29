@@ -687,6 +687,7 @@ void Object::setup()
 	y = -1;
 	place = NULL;
 	selected = false;
+	speaking = false;
 	destroyed = false;
 	tag = 0;
 	action_points = 0;	/* FIXME: assumes no debt */
@@ -816,6 +817,16 @@ struct sprite *Object::getSprite()
 bool Object::isSelected()
 {
 	return selected;
+}
+
+bool Object::isSpeaking()
+{
+	return speaking;
+}
+
+void Object::setSpeaking(bool val)
+{
+	speaking = val;
 }
 
 enum layer Object::getLayer(void)

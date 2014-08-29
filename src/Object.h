@@ -255,12 +255,11 @@ class Object {
 	virtual bool isType(int classID);
 	virtual int getType();
 
-	 Object(class ObjectType * type);	// preferred constructor
+	Object(class ObjectType * type);	// preferred constructor
 
-	 Object();
-	 virtual ~ Object();
-	virtual void init(int x, int y, struct place *place,
-			  class ObjectType * type);
+	Object();
+	virtual ~ Object();
+	virtual void init(int x, int y, struct place *place, class ObjectType * type);
 	virtual void init(class ObjectType * type);
 
 	virtual sound_t *getDamageSound();
@@ -289,6 +288,7 @@ class Object {
 	virtual bool isOnMap();
 	virtual bool isDead();
 	virtual bool isSelected();
+	virtual bool isSpeaking();
 	virtual bool isTurnEnded();
 	virtual bool isCameraAttached();
 	virtual bool isPlayerPartyMember();
@@ -313,9 +313,7 @@ class Object {
 	virtual void setPlace(struct place *place);
 	virtual void select(bool val);
 	virtual void destroy();
-	virtual void relocate(struct place *newplace, int newx, int newy,
-			      int flags = 0,
-			      struct closure *place_switch_hook = NULL);
+	virtual void relocate(struct place *newplace, int newx, int newy, int flags = 0, struct closure *place_switch_hook = NULL);
 	virtual void remove();
 	virtual void start();
 	virtual bool isVisible();
@@ -331,6 +329,7 @@ class Object {
 	virtual void synchronize();
 	virtual void exec();
 	virtual void applyEffect(closure_t * effect);
+	virtual void setSpeaking(bool val);
 
 	virtual int getActionPoints();
 	virtual int getActionPointsPerTurn();
@@ -344,16 +343,13 @@ class Object {
 	virtual void endTurn();
 	virtual void startTurn();
 	virtual void setControlMode(enum control_mode);
-	virtual bool putOnMap(struct place *place, int x, int y, int r,
-			      int flags /* PFLAG_* (see place.h) */ );
+	virtual bool putOnMap(struct place *place, int x, int y, int r, int flags /* PFLAG_* (see place.h) */ );
 	virtual void setView(struct mview *view);
 	virtual void changePlaceHook();
 	virtual MoveResult move(int dx, int dy);
 
 	// Hook/effect API.
-	virtual void hookForEach(int hook_id,
-				 int (*cb) (struct hook_entry * entry,
-					    void *data), void *data);
+	virtual void hookForEach(int hook_id, int (*cb) (struct hook_entry * entry, void *data), void *data);
 	virtual bool addEffect(struct effect *effect, struct gob *gob);
 	virtual void restoreEffect(struct effect *effect, struct gob *gob,
 				   int flags, clock_alarm_t expiration);
@@ -377,9 +373,7 @@ class Object {
 
 	virtual void setOpacity(bool opaque);
 	virtual bool isOpaque();
-	virtual bool tryToRelocateToNewPlace(struct place *place,
-					     int x, int y,
-					     struct closure *cutscene);
+	virtual bool tryToRelocateToNewPlace(struct place *place, int x, int y, struct closure *cutscene);
 
 	// Proxies into script signals
 	bool canEnter();
@@ -447,6 +441,7 @@ class Object {
 	int count;
 	struct place *place;
 	bool selected;
+	bool speaking;
 	bool destroyed;
 	int action_points;
 	enum control_mode control_mode;

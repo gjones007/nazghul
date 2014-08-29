@@ -381,6 +381,8 @@ void conv_enter(Object * npc, Object * pc, struct conv *conv)
 
 	assert(conv);
 
+	npc->setSpeaking(true);
+
 	if (!conv->keywords && conv_keyword_highlighting) {
 		conv_highlight_keywords(conv);
 	}
@@ -457,6 +459,7 @@ void conv_enter(Object * npc, Object * pc, struct conv *conv)
 	cmdwin_clear();
 	cmdwin_repaint();
 
+	npc->setSpeaking(false);
 	session_run_hook(Session, conv_end_hook, "pp", pc, npc);
 
 }

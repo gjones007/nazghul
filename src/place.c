@@ -329,6 +329,15 @@ static void tile_paint(struct tile *tile, int sx, int sy)
 			rect.w = TILE_W;
 			rect.h = TILE_H;
 			screen_highlight(&rect);
+		} else if (obj->isSpeaking()) {
+			/* Highlight speakers */
+			SDL_Rect rect;
+			Uint32 color = Blue;
+			rect.x = sx;
+			rect.y = sy;
+			rect.w = TILE_W;
+			rect.h = TILE_H;
+			screen_highlightColored(&rect, color);
 		}
 		// Paint a red box around hostiles, green around allies, and
 		// yellow around neutrals.
