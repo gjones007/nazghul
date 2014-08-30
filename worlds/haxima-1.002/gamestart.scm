@@ -59,12 +59,12 @@
 (set-roomdata p_char_setup (list 6 6 6 'start-gate))
 
 (obj-line (lambda (unused)
-	(mk-step-trig 'one-off-message "A portal beckons on the far side of the room" "intromes"))
-	15 8 10)
+	    (mk-step-trig 'one-off-message "A portal beckons on the far side of the room" "intromes"))
+	  15 8 10)
 	
 (obj-line (lambda (unused)
-	(mk-step-trig 'gamestart-light-lamps nil "lamps"))
-	14 7 11)
+	    (mk-step-trig 'gamestart-light-lamps nil "lamps"))
+	  14 7 11)
 	
 (kern-obj-put-at (mk-step-trig 'gamestart-light-lamps nil "lamps") (list p_char_setup 7 15))
 (kern-obj-put-at (mk-step-trig 'gamestart-light-lamps nil "lamps") (list p_char_setup 11 15))
@@ -104,17 +104,11 @@
 (kern-obj-put-at (mk-start-statue 'int_statue "Statue of Wisdom" s_int_statue 'gs-int-conv) (list p_char_setup 14 10))
 
 (obj-line (lambda (unused)
-	(mk-step-trig 'gamestart-statue-speak 'str_statue "statspeak"))
-	10 1 6)
+	    (mk-step-trig 'gamestart-statue-speak 'str_statue "statspeak"))
+	  10 1 6)
 (obj-line (lambda (unused)
-	(mk-step-trig 'gamestart-statue-speak 'dex_statue "statspeak"))
-	9 6 12)
+	    (mk-step-trig 'gamestart-statue-speak 'dex_statue "statspeak"))
+	  9 6 12)
 (obj-line (lambda (unused)
-	(mk-step-trig 'gamestart-statue-speak 'int_statue "statspeak"))
-	10 12 17)
-
-	
-;;(gamestart-field-circle F_fire_perm p_char_setup 4 10 4)
-;;(gamestart-field-circle F_acid_perm p_char_setup 9 8 4)
-;;(gamestart-field-circle F_energy_perm p_char_setup 14 10 4)
-
+	    (mk-step-trig 'gamestart-statue-speak 'int_statue "statspeak"))
+	  10 12 17)
