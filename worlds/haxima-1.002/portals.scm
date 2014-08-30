@@ -150,7 +150,7 @@
 (define (clue-mk msg) msg)
 (define (clue-msg clue) clue)
 (define (clue-trigger clue)
-  (apply kern-log-msg (clue-msg clue)))
+  (apply hint (clue-msg clue)))
 
 (define (clue-step kmech kchar)
   (clue-trigger (kobj-gob-data kmech)))
