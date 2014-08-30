@@ -1,4 +1,5 @@
 (kern-load "gregor.scm")
+(kern-load "moongate-clearing-mech.scm")
 
 ;;-----------------------------------------------------------------------------
 ;; Make some chests containing items to get the player started. 
@@ -50,6 +51,7 @@
     )
    ))
 
+(kcontainer-add-listener supplies_chest 'on-open-supplies)
 
 ;;----------------------------------------------------------------------------
 ;; Moongate Clearing
@@ -100,7 +102,8 @@
   (list
    (list (kern-tag 'black-gate (mk-moongate nil)) 11 11)
    (list (mk-gregor) 1 23)
-   (list supplies_chest   1 24)
+   (list supplies_chest 1 24)
+   (put (mk-step-clue "Press 'o' to o)pen chests.") 2 24)
    )
 
   nil ;; hooks
