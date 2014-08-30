@@ -47,8 +47,9 @@
   (if (is-player-party-member? kbeing)
       (begin
 	(kern-log-msg "A statue suddenly speaks to you!")
+	(hint "In conversations, type 'bye' to end.")
 	(kern-conv-begin (eval speaker))
-	(kern-log-msg "Hint: Hit 't' to t)alk to the other statues.")
+	(hint "Hit 't' to t)alk to the other statues.")
 	))
   #f
   )
@@ -200,5 +201,7 @@
   (kern-log-msg "To the southwest you see a cave.")
   (quest-remove (quest-data-get 'questentry-charcreate))
   (quest-assign (quest-data-get 'questentry-whereami))
+  (hint "Hit 'z' to scroll quests and other z)tatus.")
+  (hint "There is a peasant nearby you can t)alk to.")
   )
 
