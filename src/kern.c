@@ -1279,8 +1279,9 @@ KERN_API_CALL(kern_mk_place)
 	    kern_place_load_neighbors(sc, &args, place) ||
 	    kern_place_load_contents(sc, &args, place) ||
 	    kern_place_load_hooks(sc, &args, place) ||
-	    kern_place_load_entrances(sc, &args, place))
+	    kern_place_load_entrances(sc, &args, place)) {
 		goto abort;
+	}
 
 	place->handle = session_add(Session, place, place_dtor, place_save,
 				    place_start);
@@ -5683,87 +5684,6 @@ KERN_API_CALL(kern_place_get_objects)
 	return kern_place_for_each_object(sc, place, NULL, NULL);
 }
 
-/* struct kern_place_get_objects_in_los_info { */
-/*         struct kern_append_info ap_info; */
-/*         struct place *place; */
-/*         int ox;  /\* looker's x *\/ */
-/*         int oy;  /\* looker's y *\/ */
-/*         int rad; /\* looke r's rad *\/ */
-/*         int vx;  /\* vmask ulc x *\/ */
-/*         int vy;  /\* vmask ulc y *\/ */
-/*         char *vmask; */
-/* }; */
-
-/* static void kern_place_get_objects_in_los_cb(Object *obj, void *data) */
-/* { */
-/*         struct kern_place_get_objects_in_los_info *info; */
-/*         int x, y; */
-
-/*         info = (struct kern_place_get_objects_in_los_info *)data; */
-
-/*         /\* check if the object is within vision radius *\/ */
-/*         if (place_flying_distance(info->place, */
-/*                                   info->ox, */
-/*                                   info->oy, */
-/*                                   obj->getX(), */
-/*                                   obj->getY()) */
-/*             > info->rad) { */
-/*                 return; */
-/*         } */
-
-/*         /\* translate the object's coordinates into coordinates offset from the */
-/*          * upper left corner of the vmask region *\/ */
-/*         x = obj->getX() - info->vx; */
-/*         y = obj->getY() - info->vy; */
-
-/*         /\* check if the object is outside the vmask *\/ */
-/*         if (x < 0 || */
-/*             y < 0 || */
-/*             x >= VMASK_W || */
-/*             y >= VMASK_H) */
-/*                 return; */
-
-/*         /\* if the object's tile is marked as visible then add it to the list *\/ */
-/*         if (info->vmask[y * VMASK_W + x]) */
-/*                 kern_append_object(obj, &info->ap_info); */
-/* } */
-
-/* KERN_API_CALL(kern_place_get_objects_in_los) */
-/* { */
-/*         class Object *obj; */
-/*         struct kern_place_get_objects_in_los_info info; */
-
-/*         obj = unpack_obj(sc, &args, "kern-place-get-objects-in-los"); */
-/*         if (! obj) */
-/*                 return sc->NIL; */
-
-/*         if (! obj->getPlace()) { */
-/*                 rt_err("kern-place-get-object-in-los: obj has null place"); */
-/*                 return sc->NIL; */
-/*         } */
-
-/*         /\* initialize the context used by the callback to append objects *\/ */
-/*         info.ap_info.sc   = sc; */
-/*         info.ap_info.head = sc->NIL; */
-/*         info.ap_info.tail = sc->NIL; */
-/*         info.place        = obj->getPlace(); */
-/*         info.ox           = obj->getX(); */
-/*         info.oy           = obj->getY(); */
-/*         info.rad          = obj->getVisionRadius(); */
-/*         info.vx           = obj->getX() - VMASK_W / 2; */
-/*         info.vy           = obj->getY() - VMASK_H / 2; */
-/*         info.vmask        = vmask_get(obj->getPlace(), */
-/*                                       obj->getX(),  */
-/*                                       obj->getY()); */
-
-/*         /\* build a scheme list of the objects *\/ */
-/*         place_for_each_object(obj->getPlace(),  */
-/*                               kern_place_get_objects_in_los_cb, &info); */
-
-/*         /\* return the scheme list *\/ */
-/*         return info.ap_info.head; */
-/* } */
-
 KERN_API_CALL(kern_place_get_name)
 {
 	struct place *place;
@@ -5833,6 +5753,39 @@ KERN_API_CALL(kern_place_is_hazardous)
 		return sc->F;
 
 	return place_is_hazardous(place, x, y) ? sc->T : sc->F;
+}
+
+KERN_API_CALL(kern_place_get_gob)
+{
+	struct place *place;
+
+	if (unpack(sc, &args, "p", &place)) {
+		rt_err("%s: bad args", __FUNCTION__);
+		return sc->NIL;
+	}
+
+	struct gob* gob = place_get_gob(place);
+	return gob ? gob->p : sc->NIL;
+}
+
+
+KERN_API_CALL(kern_place_set_gob)
+{
+	struct place *place;
+
+	if (unpack(sc, &args, "p", &place)) {
+		rt_err("%s: bad args", __FUNCTION__);
+		return sc->NIL;
+	}
+
+	if (!scm_is_pair(sc, args)) {
+		rt_err("%s: no gob specified", __FUNCTION__);
+		return sc->NIL;
+	}
+
+	struct gob *gob = gob_new(sc, scm_car(sc, args));
+	place_set_gob(place, gob);
+	return sc->T;
 }
 
 KERN_API_CALL(kern_place_set_terrain)
@@ -10160,6 +10113,7 @@ scheme *kern_init(void)
 	API_DECL(sc, "kern-place-get-name", kern_place_get_name);
 	API_DECL(sc, "kern-place-get-neighbor", kern_place_get_neighbor);
 	API_DECL(sc, "kern-place-get-objects", kern_place_get_objects);
+	API_DECL(sc, "kern-place-get-gob", kern_place_get_gob);
 	API_DECL(sc, "kern-place-get-terrain", kern_place_get_terrain);
 	API_DECL(sc, "kern-place-get-terrain-map", kern_place_get_terrain_map);
 	API_DECL(sc, "kern-place-get-vehicle", kern_place_get_vehicle);
@@ -10174,6 +10128,7 @@ scheme *kern_init(void)
 		 kern_place_move_is_passable);
 	API_DECL(sc, "kern-place-set-neighbor", kern_place_set_neighbor);
 	API_DECL(sc, "kern-place-set-terrain", kern_place_set_terrain);
+	API_DECL(sc, "kern-place-set-gob", kern_place_set_gob);
 	API_DECL(sc, "kern-place-set-terrain-map", kern_place_set_terrain_map);
 	API_DECL(sc, "kern-place-synch", kern_place_synch);
 	API_DECL(sc, "kern-place-is-visible?", kern_place_is_visible);

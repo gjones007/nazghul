@@ -128,6 +128,8 @@ struct place {
 	/* Coordinates used to position the player in a subplace when he enters
 	 * from the edge: */
 	int edge_entrance[NUM_PLANAR_DIRECTIONS][2];
+
+	struct gob *gob;
 };
 
 extern struct place *Place;
@@ -297,6 +299,9 @@ int place_move_is_passable(struct place *place, int from_x, int from_y,
 			   class Object * subject, int flags);
 void place_apply_tile_effects(struct place *place, class Object * obj);
 void place_dump_stats(void);
+struct gob *place_get_gob(struct place *place);
+void place_set_gob(struct place *place, struct gob *gob);
+
 
 END_DECL
 #endif

@@ -40,6 +40,7 @@
 #include "combat.h"
 #include "event.h"		/* for demo */
 #include "kern_intvar.h"
+#include "gob.h"
 
 // #define DEBUG
 // #undef debug_h
@@ -2066,31 +2067,8 @@ static void place_save_edge_entrances(struct place *place, struct save *save)
 	save->exit(save, ")\n");
 }
 
-void place_save(struct save *save, void *val)
+static void place_inner_save(struct place *place, struct save *save)
 {
-	struct place *place;
-	struct list *elem;
-	int i;
-
-	place = (struct place *)val;
-
-	if (place->saved == save->session_id) {
-		/* Already saved once for this session, so do nothing. NOTE: If
-		 * someone is trying to reference this place they need to peek
-		 * in here and use the tag if the place is already saved. It's
-		 * not always valid for me to just write the tag here
-		 * automatically. ADDENDUM: not possible when the session is
-		 * ripping through its entries to save them (unless I add
-		 * another wrapper for place_save), and it turns out to be
-		 * harmless. It puts the occasional place var alone in the
-		 * script, but the interpreter just evaluates it and goes on.
-		 */
-		save->write(save, "%s\n", place->tag);
-		return;
-	}
-
-	place->saved = save->session_id;
-	place->saving_now = 1;
 
 	save->enter(save, "(kern-mk-place '%s \"%s\"\n",
 		    place->tag, place->name);
@@ -2109,6 +2087,7 @@ void place_save(struct save *save, void *val)
 	if (list_empty(&place->subplaces)) {
 		save->write(save, "nil\n");
 	} else {
+		struct list *elem;
 		save->enter(save, "(list\n");
 		list_for_each(&place->subplaces, elem) {
 			struct place *subplace;
@@ -2143,6 +2122,7 @@ void place_save(struct save *save, void *val)
 	 */
 
 	/* first check if there are any unsaved neighbors */
+	int i;
 	for (i = 0; i < array_sz(place->neighbors); i++) {
 		if (place->neighbors[i]
 		    //&& place->neighbors[i]->saved != save->session_id
@@ -2177,6 +2157,39 @@ void place_save(struct save *save, void *val)
 	place_save_hooks(place, save);
 	place_save_edge_entrances(place, save);
 	save->exit(save, ") ;; end of place %s\n\n", place->tag);
+}
+
+void place_save(struct save *save, void *val)
+{
+	struct place *place;
+
+	place = (struct place *)val;
+
+	if (place->saved == save->session_id) {
+		/* Already saved once for this session, so just emit the tag as
+		 * a reference to the already-created place. */
+		save->write(save, "%s\n", place->tag);
+		return;
+	}
+
+	place->saved = save->session_id;
+	place->saving_now = 1;
+
+	/* Save as a let block */
+	save->enter(save, "(let ((kplace ");
+	place_inner_save(place, save);
+	save->write(save, "))"); /* close <var-list> of let block */
+
+	/* Attach the gob */
+	if (place->gob) {
+		save->write(save, "(kern-place-set-gob kplace ");
+		gob_save(place->gob, save);
+		save->write(save, ") ;; end (kern-place-set-gob ...)\n");
+	}
+
+	/* close let */
+	save->exit(save, "kplace) ;; end (let ...)\n");
+
 	place->saving_now = 0;
 }
 
@@ -2424,4 +2437,21 @@ void place_ref(struct place *place)
 void place_deref(struct place *place)
 {
 	mem_deref(place);
+}
+
+void place_set_gob(struct place *place, struct gob *gob)
+{
+	if (place->gob) {
+		gob_unref(place->gob);
+	}
+	place->gob = gob;
+	if (gob) {
+		gob->flags |= GOB_SAVECAR;
+		gob_ref(gob);
+	}
+}
+
+struct gob * place_get_gob(struct place *place)
+{
+	return place->gob;
 }
