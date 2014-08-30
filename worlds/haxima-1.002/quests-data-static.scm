@@ -138,7 +138,7 @@
 		
 (cond ((tbl-flag? 'done)
 		(kern-ui-paginate-text
-			"You have allied yourself with the Enchanter, one of the Wise who watch over the shard."
+			"You have allied yourself with the Enchanter, one of the Wise who watch over the Shard."
 		))
 	((tbl-flag? 'talked)
 		(append header
@@ -153,7 +153,7 @@
 	((tbl-flag? 'directions)
 		(append header
 		(kern-ui-paginate-text
-			"The Enchanter's Tower may be found in the Fens, a swampland north of the town of Trigrave, in the western part of the Shard."
+			"The Enchanter's Tower may be found in the Fens, in the northwestern part of the Shard."
 		)))
 	(#t
 		(append header
