@@ -93,6 +93,7 @@
         #f  ;; locked?
         #f  ;; magic-locked?
         nil ;; key-tag
+	'() ;; listeners
         ))
 (define (is-container? gob) (eq? (car gob) 'container))
 
@@ -124,6 +125,10 @@
   (let ((key (safe-eval (container-key gob))))
     (and (not (null? key))
          (eqv? key ktype))))
+
+(define (container-listeners gob) (list-ref gob 8))
+(define (container-add-listener! gob proc)
+  (set-car! (list-tail gob 8) (cons proc (list-ref gob 8))))
 
 ;; For now always false, since they destroy themselves on open. Might change
 ;; some day...
@@ -167,6 +172,11 @@
       (kern-obj-inc-ref kobj)
       (kern-obj-inc-ref kchar)
       
+      ;; Run on-open hooks
+      (for-each (lambda (proc-sym)
+		  (apply (eval proc-sym) (list 'open kobj kchar)))
+		(container-listeners container))
+
       ;; Apply traps (see trap.scm for trap-trigger)
       (map (lambda (trap)
              (trap-trigger trap kobj kchar))
@@ -193,8 +203,10 @@
       ))))
 
 (define (kcontainer-add-trap kobj trap-sym)
-  (container-add-trap! (kobj-gob-data kobj)
-                       trap-sym))
+  (container-add-trap! (kobj-gob-data kobj) trap-sym))
+
+(define (kcontainer-add-listener kobj proc-sym)
+  (container-add-listener! (kobj-gob-data kobj) proc-sym))
 
 (define (kcontainer-get-traps kobj)
   (container-traps (kobj-gob-data kobj)))
@@ -362,6 +374,7 @@
   (ifc '()
        (method 'open kcontainer-open)
        (method 'add-trap kcontainer-add-trap)
+       (method 'add-listener kcontainer-add-listener)
        (method 'get-traps kcontainer-get-traps)
        (method 'rm-traps kcontainer-rm-traps)
        (method 'self-destruct kcontainer-self-destruct)
@@ -387,15 +400,6 @@
 ;; Test it out. First, make a new chest type.
 (mk-container-type 't_chest "chest" s_chest)
 
-;; Define a constructor for an object of the new chest type. Example usage:
-;;
-;; (put (mk-chest2 '((1 t_sword)
-;;                   (5 t_arrow)
-;;                   (2 t_torch)))
-;;      5 8)
-;;
-;; * Note the use of a quoted list.
-;;
 (define chest-sprites (list s_chest
                             s_locked_chest
                             s_magic_chest
