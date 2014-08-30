@@ -460,8 +460,7 @@
       ))
 
 (define (glasdrin-kurp knpc kpc)
-         (say knpc "Take the bridge north across the river then follow the "
-              "mountains east and north into a canyon."))
+         (say knpc "It's just beyond the western range."))
 (define (glasdrin-cita knpc kpc)
   (say knpc "The Citadel is the inner keep in the north part of the castle."))
 (define (glasdrin-ghol knpc kpc)

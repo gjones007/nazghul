@@ -228,6 +228,8 @@ class Character:public Being {
 	void taskEnd();
 	bool engagedInTask();
 	const char *getTaskName();
+	void setDescription(const char *);
+	const char * const getDescription();
 
 	struct node *plnode;	// pointer back to party list node
 	class Party *party;
@@ -331,6 +333,7 @@ class Character:public Being {
 	struct closure *taskproc;
 	struct gob *taskgob;
 	bool taskInterruptOnDamage;
+	char *description;
 };
 
 extern void char_dtor(void *val);

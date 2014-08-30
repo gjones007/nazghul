@@ -2769,6 +2769,7 @@ static pointer kern_conv_say(scheme * sc, pointer args)
 {
 	class Character *speaker;
 	struct conv *conv;
+	const char *description = NULL;
 
 	if (unpack(sc, &args, "p", &speaker)) {
 		rt_err("kern-conv-say: bad args");
@@ -2782,6 +2783,11 @@ static pointer kern_conv_say(scheme * sc, pointer args)
 
 	if (speaker->isKnown()) {
 		log_begin("^c+%c%s:^c- ", CONV_NPC_COLOR, speaker->getName());
+	} else if ((description = speaker->getDescription())) {
+		log_begin("^c+%c", CONV_NPC_COLOR);
+		log_continue("%s %s", isvowel(description[0]) ? "An" : "A",
+			     description);
+		log_continue(":^c- ");
 	} else {
 		log_begin("^c+%c", CONV_NPC_COLOR);
 		speaker->describe(true);
@@ -8167,6 +8173,28 @@ KERN_API_CALL(kern_char_set_dexterity)
 	return scm_mk_ptr(sc, character);
 }
 
+KERN_API_CALL(kern_char_set_description)
+{
+	class Character *character;
+	char *val = NULL;
+
+	/* unpack the character */
+	character =
+	    (class Character *) unpack_obj(sc, &args,
+					   "kern-char-set-description");
+	if (!character) {
+		return sc->NIL;
+	}
+
+	if (unpack(sc, &args, "s", &val)) {
+		rt_err("kern-char-set-description: bad args");
+		return sc->NIL;
+	}
+
+	character->setDescription(val);
+	return scm_mk_ptr(sc, character);
+}
+
 KERN_API_CALL(kern_char_set_intelligence)
 {
 	class Character *character;
@@ -9969,6 +9997,7 @@ scheme *kern_init(void)
 	API_DECL(sc, "kern-char-set-sched", kern_char_set_sched);
 	API_DECL(sc, "kern-char-get-speed", kern_char_get_speed);
 	API_DECL(sc, "kern-char-set-strength", kern_char_set_strength);
+	API_DECL(sc, "kern-char-set-description", kern_char_set_description);
 	API_DECL(sc, "kern-char-set-dexterity", kern_char_set_dexterity);
 	API_DECL(sc, "kern-char-set-intelligence", kern_char_set_intelligence);
 	API_DECL(sc, "kern-char-task-abort", kern_char_task_abort);

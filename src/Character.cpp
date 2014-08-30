@@ -174,7 +174,8 @@ fleeY(0),
 fleePathFlags(0),
 currentMmode(0),
 known(false),
-taskname(NULL), taskproc(NULL), taskgob(NULL), taskInterruptOnDamage(false)
+	taskname(NULL), taskproc(NULL), taskgob(NULL), taskInterruptOnDamage(false),
+	description(NULL)
 {
 	if (tag) {
 		this->tag = strdup(tag);
@@ -1700,6 +1701,8 @@ void Character::describe(bool capitalize)
 	log_continue(" L%d", getLevel());
 	if (isKnown()) {
 		log_continue(" %s", getName());
+	} else if (description) {
+		log_continue(" %s", description);
 	} else {
 		if (species && species->name) {
 			log_continue(" %s", species->name);
@@ -3265,6 +3268,11 @@ void Character::save(struct save *save)
 		}
 		save->write(save, ")\n");
 	}
+	// save the description
+	if (description) {
+		save->write(save, "(kern-char-set-description kchar \"%s\")\n",
+			    description);
+	}
 	// close the 'let' block
 	save->exit(save, "kchar)\n");
 }
@@ -3598,4 +3606,17 @@ void Character::taskEnd()
 bool Character::engagedInTask()
 {
 	return taskproc != NULL;
+}
+
+void Character::setDescription(const char *val)
+{
+	if (description) {
+		free(description);
+	}
+	description = strdup(val);
+}
+
+const char * const Character::getDescription(void)
+{
+	return description;
 }

@@ -59,7 +59,7 @@
           (say knpc "I see you got your stuff, and that letter from the Enchanter. "
                "Don't forget to ready your weapons before leaving. "
                "It's dangerous out there!")
-          (say knpc "[You meet a grizzled old peasant]"
+          (say knpc
                " Welcome, Wanderer. I've been watching for you."
                " There's some things that belong to you, over in yonder cave."
                " Go in where the chest is, open it, and get the things inside."
@@ -299,6 +299,7 @@
 
 (define (mk-gregor)
   (bind 
+   (kern-char-set-description
    (kern-mk-char
     'ch_gregor ; tag
     "Gregor"              ; name
@@ -316,8 +317,9 @@
     'townsman-ai                 ; special ai
     nil                 ; container
     (list t_axe
-          t_armor_leather
-          )              ; readied
+	  t_armor_leather
+	  )              ; readied
     )
+   "grizzled old peasant")
    (gregor-mk)
    ))
