@@ -56,33 +56,42 @@
         ))))
 
 ;; towns
+
+(define (basic-directions knpc kto)
+  (println kto)
+  (let* ((kfrom (get-place knpc))
+	 (from (kern-place-get-location kfrom))
+	 (to (kern-place-get-location kto))
+	 (diff (loc-diff from to))
+	 (dir-str (loc-to-dir-string diff))
+	 (distance (loc-grid-distance from to))
+	 (distance-str (cond ((> distance 512) "over a day")
+	 		     ((> distance 256) "half a day")
+	 		     ((> distance 128) "a couple of hours")
+	 		     ((> distance 64) "an hour")
+	 		     ((> distance 32) "half an hour")
+	 		     ((> distance 16) "a few minutes")
+	 		     (else "nearby")))
+	 )
+    (string-append distance-str " to the " dir-str)
+  ))
+
 (define (basic-trig knpc kpc)
   (say knpc "Trigrave is a small town in the west, "
        "settled where two rivers meet."))
 
+(define (basic-place knpc kpc kplace)
+  (let* ((name (kern-place-get-name kplace))
+	 (gob (kern-place-get-gob kplace))
+	 (description (tbl-get gob 'description))
+	 )
+    (say knpc name " is " description ". Do you need directions?")
+    (if (yes? kpc)
+	(say knpc "It's " (basic-directions knpc p_green_tower) ".")
+	)))
+
 (define (basic-gree knpc kpc)
-  (say knpc "Green Tower, home of the Rangers, lies deep in the Great Forest. "
-       "Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "Take the road east into the forest. "
-                    "Eventually it turns into a trail, follow it as best you can."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Take the ladder down to Westpass and ask the Rangers there."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Take the road east to the mountains and go through Eastpass. "
-                    "After that, you'll have to ask around."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go south to Trigrave and ask there."))
-              ((equal? kplace p_oparine)
-               (say knpc "Take the road north to Trigrave and ask there."))
-              ((equal? kplace p_moongate_clearing)
-               (say knpc "Follow the road south to the junction, then travel east. "
-                    "When the road bends north keep going east into the woods."))
-              (else 
-               (say knpc "It's in the middle of the Great Forest."))
-              ))))
+  (basic-place knpc kpc p_green_tower))
 
 (define (basic-bole knpc kpc)
   (say knpc "The hamlet of Bole sits in a canyon in the mountains north of "

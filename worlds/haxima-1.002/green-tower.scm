@@ -215,4 +215,11 @@
  nil   ; edge entrances
 )
 
+(kern-place-set-gob
+ p_green_tower
+ (tbl-build
+  'description "home to the Rangers"
+  )
+ )
+
 (mk-place-music p_green_tower 'ml-large-town)

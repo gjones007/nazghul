@@ -106,7 +106,24 @@
                 west
                 north)))))
           
-          
+(define (loc-to-dir-string loc)
+  (let ((x (loc-x loc))
+        (y (loc-y loc)))
+    (cond ((> x 0)
+	   (cond ((> y 0) "southeast")
+		 ((< y 0) "northeast")
+		 (else "east")
+		 ))
+	  ((< x 0)
+	   (cond ((> y 0) "southwest")
+		 ((< y 0) "northwest")
+		 (else "west")
+		 ))
+	  (else
+	   (cond ((> y 0) "south")
+		 ((< y 0) "north")
+		 (else "here")
+		 )))))
 
 ;; ----------------------------------------------------------------------------
 ;; loc-grid-distance -- return the distance needed to walk between two points

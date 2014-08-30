@@ -37,7 +37,7 @@
 
 (define (gregor-kill-nate knpc kpc)
   (say knpc "[He points a trembling finger at Nate] I have something for you.")
-  (aside kpc 'ch_nate "[Mumbling] What does this old fool want?")
+  (aside kpc 'ch_nate "What does this old fool want?")
   (prompt-for-key)
   (say knpc "[He takes out a scroll] It cost me a lot. I can't read it, but she told me what it says when I bought it.")
   (aside kpc 'ch_nate "Wait... is that a...?")
@@ -48,23 +48,23 @@
   (prompt-for-key)
   (if (equal? kpc ch_nate)
       (kern-conv-end)
-      (say knpc "[He turns to you] You shouldn't travel with folks like that. People might get the wrong idea about you."))
-  )
-
+      (say knpc "You shouldn't travel with men like that. People might get the wrong idea about you.")
+      ))
 
 (define (gregor-hail knpc kpc)
   (if (in-player-party? 'ch_nate)
       (gregor-kill-nate knpc kpc)
       (if (in-inventory? kpc t_letter_from_enchanter)
-          (say knpc "I see you got your stuff, and that letter from the Enchanter. "
-               "Don't forget to ready your weapons before leaving. "
-               "It's dangerous out there!")
+          (say knpc 
+	       "I see you got your stuff, and that letter from the Enchanter."
+               " Don't forget to ready your weapons before leaving."
+               " It's dangerous out there!")
           (say knpc
-               " Welcome, Wanderer. I've been watching for you."
+               "Welcome, Wanderer. I've been watching for you."
                " There's some things that belong to you, over in yonder cave."
                " Go in where the chest is, open it, and get the things inside."
-               " It's all for you."))
-      ))
+               " It's all for you.")
+	  )))
 
 ;; Some prompting with initial commands:
 ;; 
@@ -77,45 +77,46 @@
   (say knpc "Use the 'g' key to ^c+bget^c- stuff that's on the ground."))
 
 (define (gregor-read knpc kpc)
-  (say knpc "Use the 'r' key to ^c+bready^c- weapons or armor. "
-       "You can't use a weapon in combat until it's ready."))
+  (say knpc
+       "Use the 'r' key to ^c+bready^c- weapons or armor."
+       " You can't use a weapon in combat until it's ready.")
+  )
 
 (define (gregor-camp knpc kpc)
   (say knpc "Use the 'k' key to ^c+bkamp^c-, err...camp, in the wilderness and heal up."))
 
 (define (gregor-dang knpc kpc)
-  (say knpc "Very dangerous! If you need healing, a town inn is the safest place. "
-       "You can camp in the wilderness but it's dangerous when you're alone and have no one to keep watch. "
-       "Of course, there are spells and potions for healing, too."))
+  (say knpc 
+       "Very dangerous! If you need healing, a town inn is the safest place."
+       " You can camp in the wilderness but it's dangerous when you're alone and have no one to keep watch. "
+       " Of course, there are spells and potions for healing, too.")
+  )
 
 (define (gregor-dead knpc kpc)
-  (say knpc "Aye, it's a shame. My daughter and her husband both - "
-       "killed by trogs."))
+  (say knpc "Aye, it's a shame. My daughter and her husband were both killed by trogs."))
 
 (define (gregor-charcoal knpc kpc)
-  (say knpc "I take charcoal into town and sell it, "
-       "and some folks come by my place to buy it."))
+  (say knpc "I take charcoal into town and sell it, and some folks come by my place to buy it."))
 
 (define (gregor-hut knpc kpc)
-  (say knpc "My hut's in the forest to the South and East. "
-       "Just myself and my granddaughter living there now."))
+  (say knpc "My hut's in the forest to the South and East. Just myself and my granddaughter living there now."))
 
 (define (gregor-ench knpc kpc)
   (quest-data-assign-once 'questentry-calltoarms)
-  (say knpc "The Enchanter is one of the Wise. "
-       "He told me to look out for a Wanderer like you. "
-       "If I saw one I was to send him his way. You want directions? ")
+  (say knpc 
+       "The Enchanter is one of the Wise."
+       " He told me to look out for a Wanderer like you."
+       " If I saw one I was to send him his way. You want directions?")
   (quest-wise-subinit 'questentry-enchanter)
   (quest-data-update 'questentry-enchanter 'common 1)
   (cond ((yes? kpc)
          (quest-data-update 'questentry-calltoarms 'directions 1)
          (quest-data-update 'questentry-enchanter 'general-loc 1)
-         (say knpc "He lives in a tower in a swamp, somewhere west over the mountains. "
-	      "Take the road south, then follow it west and ask the rangers at the keep.")
-         (else 
+         (say knpc "He lives in a tower in a swamp, somewhere west over the mountains.")
+	 )
+	(else 
           (say knpc "As you wish. If you should want directions later, ask me of the Enchanter.")
-          ))
-        ))
+          )))
 
 (define (gregor-cave knpc kpc)
   (say knpc "There, that little trail that leads off the main path to the South and West. "
@@ -251,6 +252,7 @@
                              ))
        (method 'pare gregor-dead)
        (method 'plac gregor-hut)
+       (method 'rang basic-gree)
 
        (method 'shar (lambda (knpc kpc) (say knpc "The Shard?  That's what we call this land, Wanderer.")
                              (quest-data-update 'questentry-whereami 'shard 1)
