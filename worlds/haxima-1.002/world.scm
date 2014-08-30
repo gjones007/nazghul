@@ -1,6 +1,7 @@
 
 (load "world-map.scm")
 (kern-load "raise-merciful-death.scm")
+(kern-load "world-map-regions.scm")
 
 (kern-mk-place 
  'p_world

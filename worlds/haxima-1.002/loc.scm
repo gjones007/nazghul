@@ -106,31 +106,7 @@
                 west
                 north)))))
           
-(define (loc-to-dir-string loc)
-  (let ((x (loc-x loc))
-        (y (loc-y loc)))
-    (cond ((> x 0)
-	   (cond ((> y 0) "southeast")
-		 ((< y 0) "northeast")
-		 (else "east")
-		 ))
-	  ((< x 0)
-	   (cond ((> y 0) "southwest")
-		 ((< y 0) "northwest")
-		 (else "west")
-		 ))
-	  (else
-	   (cond ((> y 0) "south")
-		 ((< y 0) "north")
-		 (else "here")
-		 )))))
-
-;; ----------------------------------------------------------------------------
 ;; loc-grid-distance -- return the distance needed to walk between two points
-;;
-;; REVISIT: this has a form almost identical to the loc-adjacent? proc below
-;;
-;; ----------------------------------------------------------------------------
 (define (loc-grid-distance a b)
   (let ((place (loc-place a)))
     (if (kern-place-is-wrapping? place)
@@ -281,4 +257,39 @@
 		(cardinal-dir-num dir))
 		)
 
-		
+;; String representing the direction loc points.
+(define (loc-to-dir-string loc)
+  (let ((x (loc-x loc))
+        (y (loc-y loc)))
+    (cond ((> x 0)
+	   (cond ((> y 0) "southeast")
+		 ((< y 0) "northeast")
+		 (else "east")
+		 ))
+	  ((< x 0)
+	   (cond ((> y 0) "southwest")
+		 ((< y 0) "northwest")
+		 (else "west")
+		 ))
+	  (else
+	   (cond ((> y 0) "south")
+		 ((< y 0) "north")
+		 (else "here")
+		 )))))
+
+;; Return #t if loc is in rect, where rect is (ulcx, ulcy, width,
+;; height). Assumes non-wrapping.
+(define (loc-in-rect? loc rect)
+  (println "loc-in-rect?:" loc "," rect)
+  (let* ((x (loc-x loc))
+	 (y (loc-y loc))
+	 (ulcx (car rect))
+	 (ulcy (cadr rect))
+	 (width (caddr rect))
+	 (height (cadddr rect))
+	 )
+    (and (>= x ulcx)
+	 (< x (+ ulcx width))
+	 (>= y ulcy)
+	 (< y (+ ulcy height))
+	 )))

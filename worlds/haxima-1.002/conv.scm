@@ -57,11 +57,12 @@
 
 ;; towns
 
-(define (basic-directions knpc kto)
-  (println kto)
+;; Return a string describing distance and direction from the knpc to the
+;; kplace.
+(define (conv-directions knpc kplace)
   (let* ((kfrom (get-place knpc))
 	 (from (kern-place-get-location kfrom))
-	 (to (kern-place-get-location kto))
+	 (to (kern-place-get-location kplace))
 	 (diff (loc-diff from to))
 	 (dir-str (loc-to-dir-string diff))
 	 (distance (loc-grid-distance from to))
@@ -76,22 +77,31 @@
     (string-append distance-str " to the " dir-str)
   ))
 
+;; If kplace is in a region, return a string description.
+(define (basic-region kplace)
+  (println "basic-region:" kplace)
+  (let ((region (get-region (kern-place-get-location kplace))))
+    (println "region:" region)
+    (cond ((null? region) "")
+	  (else
+	   (string-append " in " (region-name region))
+	   ))))
+
 (define (basic-trig knpc kpc)
   (say knpc "Trigrave is a small town in the west, "
        "settled where two rivers meet."))
 
-(define (basic-place knpc kpc kplace)
+;; Describe common knowledge about a place and how to get there.
+(define (conv-place knpc kpc kplace)
   (let* ((name (kern-place-get-name kplace))
 	 (gob (kern-place-get-gob kplace))
 	 (description (tbl-get gob 'description))
 	 )
-    (say knpc name " is " description ". Do you need directions?")
-    (if (yes? kpc)
-	(say knpc "It's " (basic-directions knpc p_green_tower) ".")
-	)))
-
-(define (basic-gree knpc kpc)
-  (basic-place knpc kpc p_green_tower))
+    (say knpc
+	 name " is " description "."
+	 " It's " (conv-directions knpc kplace)
+	 (basic-region kplace) "."
+	 )))
 
 (define (basic-bole knpc kpc)
   (say knpc "The hamlet of Bole sits in a canyon in the mountains north of "
@@ -308,7 +318,7 @@
        ;; towns & regions
        (method 'absa basic-absa)
        (method 'bole basic-bole)
-       (method 'gree basic-gree)
+       (method 'gree (lambda (knpc kpc) (conv-place knpc kpc p_green_tower)))
        (method 'trig basic-trig)
        (method 'lost basic-lost)
        (method 'opar basic-opar)
@@ -340,7 +350,7 @@
   (kern-conv-say knpc msg)
   (kern-conv-get-yes-no? kpc))
 (define (prompt-for-key)
-  (kern-log-msg "<Hit any key to continue>")
+  (kern-log-msg "^c+c<Hit any key to continue>^c-")
   (kern-ui-waitkey))
 (define (meet msg)
   (kern-log-msg msg))

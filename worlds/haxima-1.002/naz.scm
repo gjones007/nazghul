@@ -1708,13 +1708,6 @@
   (kern-log-end)
   )
 
-(define (find-first fn? lst)
-  (if (null? lst)
-      nil
-      (if (fn? (car lst))
-          (car lst)
-          (find-first fn? (cdr lst)))))
-
 (define (append! lst val)
   (cond ((null? lst) nil)
         ((null? (cdr lst)) (set-cdr! lst val))

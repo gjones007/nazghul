@@ -127,7 +127,7 @@
   (say knpc "Go ahead and open it and get the stuff inside."))
 
 (define (gregor-stuf knpc kpc)
-  (say knpc "The common folk made offerings of such things, thinking one day a Wanderer might come again."))
+  (say knpc "The common folk made offerings in the cave, thinking one day a Wanderer might come again."))
 
 (define (gregor-leav knpc kpc)
   (say knpc "If you want to leave just follow the trail south and step off the map."))
@@ -155,10 +155,10 @@
            (prompt-for-key)
            (say knpc "I hate to ask, but they say Wanderers used to help folks. Will you help me now?")
            (cond ((yes? kpc)
-                  (say knpc "Thank you. "
-                       "When you get your equipment, go to Green Tower. "
-                       "Ask there about bandits. "
-                       "Someone may know where to find them.")
+                  (say knpc "Thank you."
+                       " When you get your equipment, go to Green Tower."
+                       " Ask there about bandits."
+                       " Someone may know where to find them.")
                   (quest-data-assign-once 'questentry-bandits)
                   (quest-accepted! quest #t)
                   )
@@ -252,7 +252,6 @@
                              ))
        (method 'pare gregor-dead)
        (method 'plac gregor-hut)
-       (method 'rang basic-gree)
 
        (method 'shar (lambda (knpc kpc) (say knpc "The Shard?  That's what we call this land, Wanderer.")
                              (quest-data-update 'questentry-whereami 'shard 1)
@@ -265,15 +264,17 @@
                              (quest-data-update 'questentry-whereami 'wanderer 1)
                              ))
 
-       (method 'spid (lambda (knpc kpc) (say knpc "Some of the spiders in the deep parts  "
-					     "of the woods are monstrous --  "
-					     " as big as oxen! "
-					     "Children of Angriss, we call those.")))
-       (method 'angr (lambda (knpc kpc) (say knpc "Just a legend. "
-					     "Mother of all wood spiders. "
-                                             "Scares the kids, keeps them out o' the woods "
-                                             "where they can get lost.")))
-
+       (method 'spid (lambda (knpc kpc)
+		       (say knpc
+			    "Some spiders in the deep woods are monstrous -- big as oxen!"
+			    " Children of Angriss, we call those.")
+		       ))
+       (method 'angr (lambda (knpc kpc)
+		       (say knpc
+			    "Angriss, Mother of all wood spiders."
+			    " She's just a legend to scare the kids to keep them out of the woods.")
+		       ))
+       
        (method 'town (lambda (knpc kpc) (say knpc "Trigrave is the closest town. "
 					     "Follow the road South and you can't miss it.")))
 

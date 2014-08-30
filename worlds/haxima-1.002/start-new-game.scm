@@ -26,7 +26,6 @@
 (kern-load "game.scm")
 (kern-load "quests-mech.scm")
 (kern-load "camping-map.scm")
-
 (kern-load "quests-data-static.scm")
 (kern-load "zones.scm")
 (kern-load "runes.scm")
@@ -168,7 +167,7 @@
 (kern-party-add-member player ch_wanderer)
 
 ;;----------------------------------------------------------------------------
-;; Places
+;; Wilderness places
 ;;----------------------------------------------------------------------------
 (load "world.scm")
 (load "void.scm")
@@ -295,12 +294,16 @@
   (kern-log-msg "...then awaken to a strange new world.")
   )
 
-(if #t
+(load "quests-data.scm")
+
+(if #f
     ;; Traditional start
     (begin
       (define (create-char kplayer)
 	(kern-obj-put-at kplayer (list p_char_setup 9 17)))
-      (kern-add-hook 'new_game_start_hook 'create-char))
+      (kern-add-hook 'new_game_start_hook 'create-char)
+      (quest-assign (quest-data-get 'questentry-charcreate))
+      )
     ;; Quick-and-dirty start
     (begin
       (define (simple-start kplayer)
@@ -308,6 +311,4 @@
 			 (kern-obj-get-location black-gate)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
-(load "quests-data.scm")
-(quest-assign (quest-data-get 'questentry-charcreate))
 (kern-progress-bar-finish)
