@@ -423,6 +423,12 @@
 (define (taunt kchar ktarg taunts)
   (say kchar (random-select taunts)))
 
+(define (hint . msg)
+  (kern-log-begin "^c+cHint: ")
+  (map kern-log-continue msg)
+  (kern-log-end "^c-")
+  )
+
 ;; ----------------------------------------------------------------------------
 ;; search-rect -- apply a procedure to every location in a rectangular region
 ;; and return a list of its non-nil results.
