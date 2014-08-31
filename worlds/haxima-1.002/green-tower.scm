@@ -218,7 +218,7 @@
 (kern-place-set-gob
  p_green_tower
  (tbl-build
-  'description "home to the Rangers"
+  'description "home to the Rangers of the deep woods"
   )
  )
 

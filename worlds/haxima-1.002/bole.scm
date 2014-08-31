@@ -193,4 +193,11 @@
  (list p_dryad_grove p_bole)
  )
 
+(kern-place-set-gob
+ p_bole
+ (tbl-build
+  'description "a lonely hamlet settled in a valley"
+  )
+ )
+
 (mk-place-music p_dryad_grove 'ml-small-town)
