@@ -78,14 +78,20 @@
   ))
 
 ;; If kplace is in a region, return a string description.
-(define (basic-region kplace)
-  (println "basic-region:" kplace)
+(define (conv-setting knpc kplace)
+  (println "conv-setting:" kplace)
   (let ((region (get-region (kern-place-get-location kplace))))
     (println "region:" region)
     (cond ((null? region) "")
 	  (else
-	   (string-append " in " (region-name region))
-	   ))))
+	   (let* ((here (get-region (kern-place-get-location (loc-place (kern-obj-get-location knpc)))))
+		  (demonstrative (if (equal? here region) " here" " over"))
+		  )
+	     (println region)
+	     (println here)
+	     (println (equal? here region))
+	     (string-append demonstrative " in " (region-name region))
+	   )))))
 
 (define (basic-trig knpc kpc)
   (say knpc "Trigrave is a small town in the west, "
@@ -93,40 +99,19 @@
 
 ;; Describe common knowledge about a place and how to get there.
 (define (conv-place knpc kpc kplace)
-  (let* ((name (kern-place-get-name kplace))
-	 (gob (kern-place-get-gob kplace))
-	 (description (tbl-get gob 'description))
-	 )
-    (say knpc
-	 name " is " description "."
-	 " It's " (conv-directions knpc kplace)
-	 (basic-region kplace) "."
-	 )))
-
-(define (basic-bole knpc kpc)
-  (say knpc "The hamlet of Bole sits in a canyon in the mountains north of "
-       "the Great Wood. Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "It's northeast of here. Follow the mountains."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Take the ladder down to Westpass and ask the Rangers there."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Take the road east to the mountains and go through Eastpass. "
-                    "After that, you'll have to ask around."))
-              ((equal? kplace p_green_tower)
-               (say knpc "Go north through the forest until you hit the mountains, "
-                    "then follow them east a short while."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go south to Trigrave and ask there."))
-              (else 
-               (say knpc "I think it's by the mountains north of the Great Wood."))
-              ))))
+  (let ((name (kern-place-get-name kplace))
+	(gob (kern-place-get-gob kplace))
+	(directions (conv-directions knpc kplace))
+	(setting (conv-setting knpc kplace))
+	)
+    (cond ((null? gob) (say knpc name " is " directions setting "."))
+	  (else
+	   (let ((description (tbl-get gob 'description)))
+	     (say knpc
+		  name " is " description "."
+		  " It's " directions setting ".")
+	     )))))
               
-(define (basic-absa knpc kpc)
-  (say knpc "Absalot, a great and wicked city, was destroyed for its sins."))
-
 (define (basic-opar knpc kpc)
   (say knpc "The city of Oparine can be found in the southwest by a "
        "deep harbor. Do you need directions?")
@@ -316,10 +301,10 @@
        (method 'necr basic-necr)
 
        ;; towns & regions
-       (method 'absa basic-absa)
-       (method 'bole basic-bole)
+       (method 'absa (lambda (knpc kpc) (conv-place knpc kpc p_absalot)))
+       (method 'bole (lambda (knpc kpc) (conv-place knpc kpc p_bole)))
        (method 'gree (lambda (knpc kpc) (conv-place knpc kpc p_green_tower)))
-       (method 'trig basic-trig)
+       (method 'trig (lambda (knpc kpc) (conv-place knpc kpc p_trigrave)))
        (method 'lost basic-lost)
        (method 'opar basic-opar)
        (method 'fens basic-fens)
