@@ -332,3 +332,11 @@
  )
 
 (mk-place-music p_trigrave 'ml-small-town)
+
+
+
+(kern-place-set-gob
+ p_trigrave
+ (tbl-build
+  'description "a small town on an island where two rivers meet"
+  ))

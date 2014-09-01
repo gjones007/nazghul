@@ -37,3 +37,9 @@
  )
 
 (mk-place-music p_westpass 'ml-castle)
+
+(kern-place-set-gob
+ p_westpass
+ (tbl-build
+  'description "a guarded passage under the mountains"
+  ))

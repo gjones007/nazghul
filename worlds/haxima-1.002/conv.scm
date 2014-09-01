@@ -84,18 +84,18 @@
     (println "region:" region)
     (cond ((null? region) "")
 	  (else
-	   (let* ((here (get-region (kern-place-get-location (loc-place (kern-obj-get-location knpc)))))
+	   (let* ((here
+		   (get-region
+		    (kern-place-get-location
+		     (loc-place (kern-obj-get-location knpc)))))
 		  (demonstrative (if (equal? here region) " here" " over"))
 		  )
 	     (println region)
 	     (println here)
 	     (println (equal? here region))
-	     (string-append demonstrative " in " (region-name region))
+	     (string-append demonstrative " " (region-preposition region) " "
+			    (region-name region))
 	   )))))
-
-(define (basic-trig knpc kpc)
-  (say knpc "Trigrave is a small town in the west, "
-       "settled where two rivers meet."))
 
 ;; Describe common knowledge about a place and how to get there.
 (define (conv-place knpc kpc kplace)
@@ -111,93 +111,7 @@
 		  name " is " description "."
 		  " It's " directions setting ".")
 	     )))))
-              
-(define (basic-opar knpc kpc)
-  (say knpc "The city of Oparine can be found in the southwest by a "
-       "deep harbor. Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "Take the ladder down to Eastpass and follow the road west."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Follow the road west."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Follow the road west and south all the way to the sea."))
-              ((equal? kplace p_green_tower)
-               (say knpc "Follow the trail south and west to Westpass and ask the rangers when you get there."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go south to Trigrave and ask there."))
-              ((equal? kplace p_glasdrin)
-               (say knpc "Take the road south."))
-              ((equal? kplace p_oparine)
-               (say knpc "Well, here you are already!"))
-              (else 
-               (say knpc "It's on the southern coast somewhere."))
-              ))))
 
-(define (basic-east knpc kpc)
-  (say knpc "Eastpass guards the eastern pass into the River Plain. Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "Take the ladder down, you'll come out in Eastpass."))
-              ((equal? kplace p_eastpass)
-               (say knpc "You're here already."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Follow the road east and you'll run right into it."))
-              ((equal? kplace p_green_tower)
-               (say knpc "Travel west through the woods, then follow the road west to Westpass and ask there."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go south to Trigrave and ask there."))
-              ((equal? kplace p_glasdrin)
-               (say knpc "Take the road south as far as you can and ask there."))
-              ((equal? kplace p_oparine)
-               (say knpc "Take the road north to Trigrave and ask there."))
-              (else 
-               (say knpc "It's by the mountains west of the Great Forest."))
-              ))))
-
-(define (basic-west knpc kpc)
-  (say knpc "Westpass guards the western pass into the Great Forest. Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "This is it."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Take the ladder down and you'll come out in it."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Follow the road east and ask in Eastpass."))
-              ((equal? kplace p_green_tower)
-               (say knpc "Travel west through the woods, then follow the road west."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go south to Trigrave and ask there."))
-              ((equal? kplace p_glasdrin)
-               (say knpc "Take the road south as far as you can."))
-              ((equal? kplace p_oparine)
-               (say knpc "Take the road north to Trigrave and ask there."))
-              (else 
-               (say knpc "Follow the road east from Trigrave."))
-              ))))
-
-(define (basic-glas knpc kpc)
-  (say knpc "Glasdrin is the fortified city of the Paladins. Do you need directions?")
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "Follow the road east and north."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Go east to Westpass and ask there."))
-              ((equal? kplace p_trigrave)
-               (say knpc "Go east to Eastpass and ask there."))
-              ((equal? kplace p_green_tower)
-               (say knpc "Go west through the woods until you hit the road, then follow it north."))
-              ((equal? kplace p_enchanters_tower)
-               (say knpc "Go east through the pass and follow the river."))
-              ((equal? kplace p_oparine)
-               (say knpc "Follow the road north to Trigave and ask there, or take a ship and follow the coastline all the way north."))
-              (else 
-               (say knpc "It's up near the northeast coast on an island."))
-              ))))
 
 (define (basic-fens knpc kpc)
   (say knpc "The Fens are a swampy area in the northwest."))
@@ -237,9 +151,6 @@
   (say knpc "The Shard is what we call our world.")
   (quest-data-update 'questentry-whereami 'shard 1)
   )
-
-(define (basic-peni knpc kpc)
-  (say knpc "The Peninsula is our little corner of the Shard."))
 
 (define (basic-warr knpc kpc)
   (say knpc "The Warritrix is the Wise Warrior. If you're looking for her try Glasdrin.")
@@ -305,14 +216,17 @@
        (method 'bole (lambda (knpc kpc) (conv-place knpc kpc p_bole)))
        (method 'gree (lambda (knpc kpc) (conv-place knpc kpc p_green_tower)))
        (method 'trig (lambda (knpc kpc) (conv-place knpc kpc p_trigrave)))
-       (method 'lost basic-lost)
-       (method 'opar basic-opar)
+       (method 'opar (lambda (knpc kpc) (conv-place knpc kpc p_oparine)))
+       (method 'west (lambda (knpc kpc) (conv-place knpc kpc p_westpass)))
+       (method 'east (lambda (knpc kpc) (conv-place knpc kpc p_eastpass)))
+       (method 'glas (lambda (knpc kpc) (conv-place knpc kpc p_glasdrin)))
+
        (method 'fens basic-fens)
        (method 'shar basic-shar)
-       (method 'peni basic-peni)
        (method 'kurp basic-kurp)
-       (method 'glas basic-glas)
        (method 'fire basic-fire)
+
+       (method 'lost basic-lost)
 
        ;; establishments
        (method 'whit basic-whit)

@@ -164,3 +164,8 @@
 (mk-place-music p_oparine 'ml-large-town)
 
 
+(kern-place-set-gob
+ p_oparine
+ (tbl-build
+  'description "a port city situated by a deep harbor"
+  ))

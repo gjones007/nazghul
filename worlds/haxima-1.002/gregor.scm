@@ -275,9 +275,6 @@
 			    " She's just a legend to scare the kids to keep them out of the woods.")
 		       ))
        
-       (method 'town (lambda (knpc kpc) (say knpc "Trigrave is the closest town. "
-					     "Follow the road South and you can't miss it.")))
-
        (method 'trol (lambda (knpc kpc) (say knpc "Trolls eat folks. "
 					     "Even crack the bones and suck the marrow. "
 					     "Nothing left to bury.")))

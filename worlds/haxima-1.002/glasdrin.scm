@@ -159,3 +159,10 @@
 )
 
 (mk-place-music p_glasdrin 'ml-large-town)
+
+
+(kern-place-set-gob
+ p_glasdrin
+ (tbl-build
+  'description "the fortified city of the Paladins"
+  ))
