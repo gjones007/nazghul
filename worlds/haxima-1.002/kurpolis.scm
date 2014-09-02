@@ -59,11 +59,7 @@
 
 (mk-place-music p_kurpolis_entrance 'ml-castle)
 
-(kern-place-set-gob
- p_kurpolis_entrance
- (tbl-build
-  'description "the remains of an ancient underground city"
-  ))
+(place-describe! p_kurpolis_entrance "the remains of an ancient underground city")
 
 (mk-dungeon-room
  'p_goblin_crossroads "Goblin Crossroads"

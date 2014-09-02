@@ -95,10 +95,5 @@
                     (kern-obj-put-at (mk-corpse) loc))
                   20)
 
-(kern-place-set-gob p_absalot
-		    (tbl-build
-		     'description "the ruin of a great city destroyed for its wickedness"
-		     ))
-
-
+(place-describe! p_absalot "the ruin of a great city destroyed for its wickedness")
 (mk-place-music p_absalot 'ml-dungeon-adventure)

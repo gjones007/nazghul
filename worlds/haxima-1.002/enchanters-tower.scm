@@ -226,13 +226,8 @@
  
  )
  
+(place-describe! p_enchanters_tower "an old white tower")
 (mk-place-music p_enchanters_tower 'ml-castle)
-
-(kern-place-set-gob
- p_enchanters_tower
- (tbl-build
-  'description "an old white tower"
-  ))
 
 
 (kern-mk-place 

@@ -161,11 +161,5 @@
 	(kern-obj-put-at kmir (list p_oparine 5 45))
 	(kern-obj-put-at ksen (list p_oparine 5 46)))
 
+(place-describe! p_oparine "a port city on a deep harbor")
 (mk-place-music p_oparine 'ml-large-town)
-
-
-(kern-place-set-gob
- p_oparine
- (tbl-build
-  'description "a port city situated by a deep harbor"
-  ))

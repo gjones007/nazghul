@@ -36,10 +36,5 @@
  (put (spawn-pt 'forest-goblin-stalker) 11 10)
  )
 
+(place-describe! p_westpass "a guarded passage under the mountains")
 (mk-place-music p_westpass 'ml-castle)
-
-(kern-place-set-gob
- p_westpass
- (tbl-build
-  'description "a guarded passage under the mountains"
-  ))

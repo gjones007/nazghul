@@ -23,6 +23,7 @@
 ;;----------------------------------------------------------------------------
 ;; Load the read-only game data. See the note on 'kern-load' vs 'load' above.
 ;;----------------------------------------------------------------------------
+(kern-load "place.scm")
 (kern-load "game.scm")
 (kern-load "quests-mech.scm")
 (kern-load "camping-map.scm")

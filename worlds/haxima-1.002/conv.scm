@@ -45,55 +45,53 @@
 ;; Return a string describing distance and direction from the knpc to the
 ;; kplace.
 (define (conv-directions knpc kplace)
-  (let* ((kfrom (get-place knpc))
-	 (from (kern-place-get-location kfrom))
-	 (to (kern-place-get-location kplace))
-	 )
-    (if (null? to) nil
-	(let* ((diff (loc-diff from to))
-	       (dir-str (loc-to-dir-string diff))
-	       (distance (loc-grid-distance from to))
-	       (distance-str (cond ((> distance 512) "over a day")
-				   ((> distance 256) "half a day")
-				   ((> distance 128) "a couple of hours")
-				   ((> distance 64) "an hour")
-				   ((> distance 32) "half an hour")
-				   ((> distance 16) "a few minutes")
-				   (else "nearby")))
-	       )
-	  (string-append distance-str " to the " dir-str)
-	  ))))
+  (if (place-location-is-unknown? kplace)
+      nil
+      (let* ((kfrom (get-place knpc))
+	     (from (kern-place-get-location kfrom))
+	     (to (kern-place-get-location kplace)))
+	(if (null? to)
+	    nil
+	    (let* ((diff (loc-diff from to))
+		   (dir-str (loc-to-dir-string diff))
+		   (distance (loc-grid-distance from to))
+		   (distance-str (cond ((> distance 512) "over a day")
+				       ((> distance 256) "half a day")
+				       ((> distance 128) "a couple of hours")
+				       ((> distance 64) "an hour")
+				       ((> distance 32) "half an hour")
+				       ((> distance 16) "a few minutes")
+				       (else "nearby"))))
+	      (string-append distance-str " to the " dir-str)
+	      )))))
 
 ;; If kplace is in a region, return a string description.
 (define (conv-setting knpc kplace)
-  (let ((loc (kern-place-get-location kplace))
-	)
-    (if (null? loc)
-	nil
-	(let ((region (get-region-by-loc (kern-place-get-location kplace)))
-	      )
-	  (if (null? region)
-	      nil
-	      (let* ((here
-		      (get-region-by-loc
-		       (kern-place-get-location
-			(loc-place (kern-obj-get-location knpc)))))
-		     (demonstrative (if (equal? here region) " here" " over"))
-		     )
-		(string-append demonstrative " " (region-preposition region) " "
-			       (region-name region))
-		))))))
-  
+  (if (place-location-is-unknown? kplace)
+      nil
+      (let ((loc (kern-place-get-location kplace)))
+	(if (null? loc)
+	    nil
+	    (let ((region (get-region-by-loc (kern-place-get-location kplace))))
+	      (if (null? region)
+		  nil
+		  (let* ((here
+			  (get-region-by-loc
+			   (kern-place-get-location
+			    (loc-place (kern-obj-get-location knpc)))))
+			 (demonstrative (if (equal? here region) " here" " over")))
+		    (string-append demonstrative " " (region-preposition region) " "
+				   (region-name region))
+		    )))))))
+
 ;; Combine results of directions and setting.
 (define (conv-directions-and-setting knpc kplace)
   (let ((directions (conv-directions knpc kplace))
-	(setting (conv-setting knpc kplace))
-	)
+	(setting (conv-setting knpc kplace)))
     (if (null? directions)
 	(if (null? setting)
 	    nil
-	    (string-append setting)
-	    )
+	    (string-append setting))
 	(if (null? setting)
 	    (string-append directions)
 	    (string-append directions setting)
@@ -126,10 +124,6 @@
 	)
   (say knpc d " " f)
   ))
-
-(define (basic-lost knpc kpc)
-  (say knpc "The Lost Halls? I've only heard them mentioned in bard's songs. "
-       "I didn't know they really existed."))
 
 ;; establishments
 (define (basic-whit knpc kpc)
@@ -234,7 +228,7 @@
        (method 'kurp (lambda (knpc kpc) (conv-describe-place knpc kpc p_kurpolis_entrance)))
        (method 'fire basic-fire)
 
-       (method 'lost basic-lost)
+       (method 'lost (lambda (knpc kpc) (conv-describe-place knpc kpc p_lost_halls_entrance)))
 
        ;; establishments
        (method 'whit basic-whit)

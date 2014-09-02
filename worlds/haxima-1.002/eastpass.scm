@@ -37,8 +37,4 @@
 
 (mk-place-music p_eastpass 'ml-castle)
 
-(kern-place-set-gob
- p_eastpass
- (tbl-build
-  'description "a guarded passage under the mountains"
-  ))
+(place-describe! p_eastpass "a guarded passage under the mountains")

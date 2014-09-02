@@ -3,7 +3,7 @@
 (define (tbl-mk)
   (list '*tbl*))
 
-;; the val for key (#f if none)
+;; the value for key (nil if none)
 (define (tbl-get tbl key)
   (let ((kvpair (assoc key (cdr tbl))))
     (if kvpair

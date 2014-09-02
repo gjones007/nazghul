@@ -10,7 +10,7 @@
  
 (kern-mk-place 
 	'p_lost_halls_entrance
-	"Gate to the Lost Halls"
+	"The Lost Halls"
 	s_dungeon          ; sprite
 	(kern-mk-map nil 21 21 pal_expanded
 	(list
@@ -63,6 +63,9 @@
 		)
  )
  
+(place-describe! p_lost_halls_entrance "just a legend from bard's songs")
+(place-set-location-unknown! p_lost_halls_entrance)
+
 (kern-mk-place 
 	'p_lost_halls_r1
 	"The Lost halls"
