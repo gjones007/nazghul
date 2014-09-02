@@ -12,7 +12,7 @@
 ;;
 
 (mk-dungeon-room
- 'p_kurpolis_entrance "Entrance to Kurpolis"
+ 'p_kurpolis_entrance "Kurpolis"
 	(list
 		"rr rr rr rr xx xx x! xx xx && xx xx x! xx xx rn rn rn rn "
 		"rr .. .. .. ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
@@ -58,6 +58,12 @@
  )
 
 (mk-place-music p_kurpolis_entrance 'ml-castle)
+
+(kern-place-set-gob
+ p_kurpolis_entrance
+ (tbl-build
+  'description "the remains of an ancient underground city"
+  ))
 
 (mk-dungeon-room
  'p_goblin_crossroads "Goblin Crossroads"

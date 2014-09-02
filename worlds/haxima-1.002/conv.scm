@@ -38,22 +38,7 @@
 ;; wise
 (define (basic-ench knpc kpc)
   (say knpc "The Enchanter is the Wise Wizard. "
-       "He lives in a tower by the Fens, do you need directions?")
-  (quest-wise-subinit 'questentry-enchanter)
-  (quest-data-update 'questentry-enchanter 'general-loc 1)
-  (if (yes? kpc)
-      (let ((kplace (get-place knpc)))
-        (cond ((equal? kplace p_westpass)
-               (say knpc "Take the ladder down. You'll come out in Eastpass. "
-                    "The knights can help you from there."))
-              ((equal? kplace p_eastpass)
-               (say knpc "Take the road west to Trigrave and ask around there."))
-              ((equal? kplace p_trigrave)
-              	(quest-data-update 'questentry-calltoarms 'directions 1)
-               (say knpc "Take the road north to The Fen."))
-              (else 
-               (say knpc "The Fens are somewhere in the northwest."))
-        ))))
+       "He lives in a white tower by the Fens."))
 
 ;; towns
 
@@ -63,62 +48,84 @@
   (let* ((kfrom (get-place knpc))
 	 (from (kern-place-get-location kfrom))
 	 (to (kern-place-get-location kplace))
-	 (diff (loc-diff from to))
-	 (dir-str (loc-to-dir-string diff))
-	 (distance (loc-grid-distance from to))
-	 (distance-str (cond ((> distance 512) "over a day")
-	 		     ((> distance 256) "half a day")
-	 		     ((> distance 128) "a couple of hours")
-	 		     ((> distance 64) "an hour")
-	 		     ((> distance 32) "half an hour")
-	 		     ((> distance 16) "a few minutes")
-	 		     (else "nearby")))
 	 )
-    (string-append distance-str " to the " dir-str)
-  ))
+    (if (null? to) nil
+	(let* ((diff (loc-diff from to))
+	       (dir-str (loc-to-dir-string diff))
+	       (distance (loc-grid-distance from to))
+	       (distance-str (cond ((> distance 512) "over a day")
+				   ((> distance 256) "half a day")
+				   ((> distance 128) "a couple of hours")
+				   ((> distance 64) "an hour")
+				   ((> distance 32) "half an hour")
+				   ((> distance 16) "a few minutes")
+				   (else "nearby")))
+	       )
+	  (string-append distance-str " to the " dir-str)
+	  ))))
 
 ;; If kplace is in a region, return a string description.
 (define (conv-setting knpc kplace)
-  (println "conv-setting:" kplace)
-  (let ((region (get-region (kern-place-get-location kplace))))
-    (println "region:" region)
-    (cond ((null? region) "")
-	  (else
-	   (let* ((here
-		   (get-region
-		    (kern-place-get-location
-		     (loc-place (kern-obj-get-location knpc)))))
-		  (demonstrative (if (equal? here region) " here" " over"))
-		  )
-	     (println region)
-	     (println here)
-	     (println (equal? here region))
-	     (string-append demonstrative " " (region-preposition region) " "
-			    (region-name region))
-	   )))))
-
-;; Describe common knowledge about a place and how to get there.
-(define (conv-place knpc kpc kplace)
-  (let ((name (kern-place-get-name kplace))
-	(gob (kern-place-get-gob kplace))
-	(directions (conv-directions knpc kplace))
+  (let ((loc (kern-place-get-location kplace))
+	)
+    (if (null? loc)
+	nil
+	(let ((region (get-region-by-loc (kern-place-get-location kplace)))
+	      )
+	  (if (null? region)
+	      nil
+	      (let* ((here
+		      (get-region-by-loc
+		       (kern-place-get-location
+			(loc-place (kern-obj-get-location knpc)))))
+		     (demonstrative (if (equal? here region) " here" " over"))
+		     )
+		(string-append demonstrative " " (region-preposition region) " "
+			       (region-name region))
+		))))))
+  
+;; Combine results of directions and setting.
+(define (conv-directions-and-setting knpc kplace)
+  (let ((directions (conv-directions knpc kplace))
 	(setting (conv-setting knpc kplace))
 	)
-    (cond ((null? gob) (say knpc name " is " directions setting "."))
-	  (else
-	   (let ((description (tbl-get gob 'description)))
-	     (say knpc
-		  name " is " description "."
-		  " It's " directions setting ".")
-	     )))))
+    (if (null? directions)
+	(if (null? setting)
+	    nil
+	    (string-append setting)
+	    )
+	(if (null? setting)
+	    (string-append directions)
+	    (string-append directions setting)
+	    ))))
+	    
 
+;; Describe common knowledge about a place and how to get there.
+(define (conv-describe-place knpc kpc kplace)
+  (let ((name (kern-place-get-name kplace))
+	(gob (kern-place-get-gob kplace))
+	(dir-and-set (conv-directions-and-setting knpc kplace))
+	)
+    (if (null? gob)
+	(if (null? dir-and-set)
+	    (say knpc "I only know rumours.")
+	    (say knpc name " is " dir-and-set ".")
+	    )
+	(let ((description (tbl-get gob 'description)))
+	  (if (null? dir-and-set)
+	      (say knpc name " is " description ".")
+	      (say knpc name " is " description "."
+		   " It's " dir-and-set "."
+		   ))))))
 
-(define (basic-fens knpc kpc)
-  (say knpc "The Fens are a swampy area in the northwest."))
-
-(define (basic-kurp knpc kpc)
-  (say knpc "Kurpolis is an ancient underground ruin. "
-       "The entrance is somewhere in the northern mountains."))
+(define (conv-describe-region knpc kpc name)
+  (let* ((r (get-region-by-name name))
+	 (d (region-description r))
+	 (facts (region-facts r))
+	 (f (if (null? facts) "" (random-select facts)))
+	)
+  (say knpc d " " f)
+  ))
 
 (define (basic-lost knpc kpc)
   (say knpc "The Lost Halls? I've only heard them mentioned in bard's songs. "
@@ -212,18 +219,19 @@
        (method 'necr basic-necr)
 
        ;; towns & regions
-       (method 'absa (lambda (knpc kpc) (conv-place knpc kpc p_absalot)))
-       (method 'bole (lambda (knpc kpc) (conv-place knpc kpc p_bole)))
-       (method 'gree (lambda (knpc kpc) (conv-place knpc kpc p_green_tower)))
-       (method 'trig (lambda (knpc kpc) (conv-place knpc kpc p_trigrave)))
-       (method 'opar (lambda (knpc kpc) (conv-place knpc kpc p_oparine)))
-       (method 'west (lambda (knpc kpc) (conv-place knpc kpc p_westpass)))
-       (method 'east (lambda (knpc kpc) (conv-place knpc kpc p_eastpass)))
-       (method 'glas (lambda (knpc kpc) (conv-place knpc kpc p_glasdrin)))
+       (method 'absa (lambda (knpc kpc) (conv-describe-place knpc kpc p_absalot)))
+       (method 'bole (lambda (knpc kpc) (conv-describe-place knpc kpc p_bole)))
+       (method 'gree (lambda (knpc kpc) (conv-describe-place knpc kpc p_green_tower)))
+       (method 'trig (lambda (knpc kpc) (conv-describe-place knpc kpc p_trigrave)))
+       (method 'opar (lambda (knpc kpc) (conv-describe-place knpc kpc p_oparine)))
+       (method 'west (lambda (knpc kpc) (conv-describe-place knpc kpc p_westpass)))
+       (method 'east (lambda (knpc kpc) (conv-describe-place knpc kpc p_eastpass)))
+       (method 'glas (lambda (knpc kpc) (conv-describe-place knpc kpc p_glasdrin)))
+       (method 'whit (lambda (knpc kpc) (conv-describe-place knpc kpc p_enchanters_tower)))
 
-       (method 'fens basic-fens)
+       (method 'fens (lambda (knpc kpc) (conv-describe-region knpc kpc "The North Fens")))
        (method 'shar basic-shar)
-       (method 'kurp basic-kurp)
+       (method 'kurp (lambda (knpc kpc) (conv-describe-place knpc kpc p_kurpolis_entrance)))
        (method 'fire basic-fire)
 
        (method 'lost basic-lost)
