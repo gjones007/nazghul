@@ -1317,6 +1317,26 @@
                  nil     ; edge entrances
                  ))
 
+;; Same as mk-dungeon-room, but give it an icon for the world map
+(define (mk-dungeon-entrance tag name terrain . objects)
+  (kern-mk-place tag
+                 name
+                 s_dungeon     ; sprite
+                 (kern-mk-map nil 19 19 pal_expanded terrain)
+                 #f      ; wraps
+                 #t      ; underground
+                 #f      ; large-scale (wilderness)
+                 #f      ; tmp combat place
+                 nil     ; subplaces
+                 nil     ; neighbors
+
+                 ;; objects -- automatically add a monster manager
+                 (cons (put (mk-monman) 0 0)
+                       objects)
+                 (list 'on-entry-to-dungeon-room) ; hooks
+                 nil     ; edge entrances
+                 ))
+
 (define (mk-combat-map tag . terrain)
   (kern-mk-map tag 19 19 pal_expanded terrain))
 
