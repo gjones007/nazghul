@@ -245,6 +245,15 @@ static int conv_lookup_keyword(struct conv *conv, char *word)
 }
 
 /**
+ * Return the keyword matching 'word' or NULL if not found.
+ */
+static const char *conv_get_matching_keyword(struct conv *conv, char *word)
+{
+	int i = conv_lookup_keyword(conv, word);
+	return (i == -1) ? NULL : conv->keywords[i];
+}
+
+/**
  * Check if a word is a keyword and, if so, to mark it (marking is used to show
  * the player which keywords have already been used in a conversation).
  *
@@ -403,7 +412,7 @@ void conv_enter(Object * npc, Object * pc, struct conv *conv)
 	for (;;) {
 
 		/* Truncate the query to 4 characters */
-		conv_query[4] = 0;
+		//conv_query[4] = 0;
 
 		conv_mark_if_keyword(conv, conv_query);
 
@@ -412,8 +421,15 @@ void conv_enter(Object * npc, Object * pc, struct conv *conv)
 			((class Character *) npc)->setKnown(true);
 		}
 
+		/* If the query matches a keyword prefix, expand/contract it to
+		 * use the exact keyword, else just let if through as-is. */
+		const char *keyword = conv_get_matching_keyword(conv, conv_query);
+		if (! keyword) {
+			keyword = conv_query;
+		}
+
 		/* Query the NPC */
-		closure_exec(conv->proc, "ypp", conv_query, npc, pc);
+		closure_exec(conv->proc, "ypp", keyword, npc, pc);
 
 		if (conv_done)
 			break;
