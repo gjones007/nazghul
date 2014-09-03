@@ -31,6 +31,7 @@
   (list p_oparine           240 455)
   (list p_poor_house        262 400)
   (list p_kun               296 288)
+  (list p_kurpolis          (loc-x kurpolis-loc) (loc-y kurpolis-loc))
 
   (list p_lost_halls_entrance (loc-x lost-halls-loc) (loc-y lost-halls-loc))
 ;;  (list p_voidgap_entrance   7  75)
@@ -55,9 +56,7 @@
   (put (mk-edge-spawn-generator) 0 0)
 
   ;; dungeons
-  (put (mk-dungeon 'p_kurpolis_entrance 9 10)
-       (loc-x kurpolis-loc)
-       (loc-y kurpolis-loc))
+;  (put (mk-dungeon 'p_kurpolis_entrance 9 10) (loc-x kurpolis-loc) (loc-y kurpolis-loc))
   (put (mk-dungeon 'p_mushroom_cave 7 12)
        (loc-x mushroom-cave-loc)
        (loc-y mushroom-cave-loc))

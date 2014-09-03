@@ -309,6 +309,7 @@
     (begin
       (define (simple-start kplayer)
 	(kern-obj-put-at kplayer
+			 ;(list p_world 240 233)))
 			 (kern-obj-get-location black-gate)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 

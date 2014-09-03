@@ -224,8 +224,9 @@
        (method 'whit (lambda (knpc kpc) (conv-describe-place knpc kpc p_enchanters_tower)))
 
        (method 'fens (lambda (knpc kpc) (conv-describe-region knpc kpc "The North Fens")))
+       (method 'isme (lambda (knpc kpc) (conv-describe-region knpc kpc "The Ismere Valley")))
        (method 'shar basic-shar)
-       (method 'kurp (lambda (knpc kpc) (conv-describe-place knpc kpc p_kurpolis_entrance)))
+       (method 'kurp (lambda (knpc kpc) (conv-describe-place knpc kpc p_kurpolis)))
        (method 'fire basic-fire)
 
        (method 'lost (lambda (knpc kpc) (conv-describe-place knpc kpc p_lost_halls_entrance)))

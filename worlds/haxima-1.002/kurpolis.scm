@@ -11,30 +11,56 @@
 ;; define dungeon rooms
 ;;
 
+(mk-dungeon-entrance
+ 'p_kurpolis "Kurpolis"
+ (list
+  "rr rr rr rr rr rr rr rr rr rr rr rr rr rr rr rr rr rr rr "
+  "rr rr rr rr rr rr rr rr rr rr rr rr gg gg rr rr rr rr rr "
+  "rr rr rr rr rr rr rr rr rr rr rr rr rr gg rr rr rr rr rr "
+  "rr rr rr rr rr .K .U .R .P .O .L .I .S ~x rr rr rr rr rr "
+  "rr rr rr rr bb gg gg gg gg gg gg gg gg gg xx rr rr rr rr "
+  "rr rr rr rr xx gg gg gg cc cc cc gg gg gg xx rr rr rr rr "
+  "rr rr rr rr xx gg gg gg cc cc cc gg gg gg xx rr rr rr rr "
+  "rr rr rr rr xx gg gg gg cc cc cc gg gg gg xx rr rr rr rr "
+  "rr rr rr rr xx x! gg gg gg cc gg gg gg x! xx rr rr rr rr "
+  "rr rr rr rr rr xx xx gg gg cc gg gg xx xx rr rr rr rr rr "
+  "rr rr rr rr rr rr xx gg gg cc gg gg xx rr rr rr rr rr rr "
+  "rr rr rr rr rr rr xx gg gg cc gg gg xx rr rr rr rr rr rr "
+  "rr rr rr rr rr rr x! gg gg cc gg gg x! rr rr rr rr rr rr "
+  "rr rr rr rr rr rr xx gg gg cc gg gg xx rr rr rr rr rr rr "
+  "rr rr rr rr rr rr xx gg gg cc gg gg xx rr rr rr rr rr rr "
+  "rr rr rr rr rr rr xx gg gg cc gg gg xx rr rr rr rr rr rr "
+  "rr rr rr rr rr xx xx gg gg cc gg gg bb xx rr rr rr rr rr "
+  "rr rr rr rr xx x! gg gg gg cc gg gg gg x! xx rr rr rr rr "
+  "rr rr rr rr xx gg gg gg gg cc gg gg gg gg xx rr rr rr rr "
+  )
+ (put (mk-ladder-down 'p_kurpolis_entrance 9 10) 9 6)
+)
+
 (mk-dungeon-room
- 'p_kurpolis_entrance "Kurpolis"
-	(list
-		"rr rr rr rr xx xx x! xx xx && xx xx x! xx xx rn rn rn rn "
-		"rr .. .. .. ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"xx xx x! xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"xx xx ,, ,, ,, ,, ,, [[ @@ @@ @@ ]] ,, ,, x! rn rn rn rn "
-		"xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn r8 r8 rn "
-		"xx xx ,, xx xx xx xx xx xx x! xx xx xx xx xx rc bb ,, ra "
-		"xx xx ,, xx xx .K .U .R .P .O .L .I .S xx ,, bb bb bb ,, "
-		"xx xx ,, xx x! ,, ,, ,, ,, ,, ,, ,, ,, x! bb bb ,, bb ,, "
-		"xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ ,, bb ,, ,, ,, "
-		"x! ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, bb ,, "
-		"xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ bb bb bb bb ,, "
-		"xx xx ,, xx x! ,, ,, ,, ,, ,, ,, ,, ,, x! bb bb ,, bb r3 "
-		"xx xx ,, xx xx xx xx xx xx xx xx xx xx xx xx ,, bb r3 rn "
-		"xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx r1 r1 rn rn "
-		"xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"xx xx x! xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
-		"rn rn rn rn xx xx xx xx xx xx xx xx xx xx xx rn rn rn rn "
-	)
- (put (apply mk-ladder-up kurpolis-loc) 9 10)
+ 'p_kurpolis_entrance "Kurpolis Guardhouse"
+ (list
+  "rr rr rr rr xx xx x! xx xx && xx xx x! xx xx rn rn rn rn "
+  "rr .. .. .. ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "xx xx x! xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "xx xx ,, ,, ,, ,, ,, [[ @@ @@ @@ ]] ,, ,, x! rn rn rn rn "
+  "xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn r8 r8 rn "
+  "xx xx ,, xx xx xx xx xx xx x! xx xx xx xx xx rc bb ,, ra "
+  "xx xx ,, xx xx .K .U .R .P .O .L .I .S xx ,, bb bb bb ,, "
+  "xx xx ,, xx x! ,, ,, ,, ,, ,, ,, ,, ,, x! bb bb ,, bb ,, "
+  "xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ ,, bb ,, ,, ,, "
+  "x! ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, bb ,, "
+  "xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ bb bb bb bb ,, "
+  "xx xx ,, xx x! ,, ,, ,, ,, ,, ,, ,, ,, x! bb bb ,, bb r3 "
+  "xx xx ,, xx xx xx xx xx xx xx xx xx xx xx xx ,, bb r3 rn "
+  "xx xx ,, xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx r1 r1 rn rn "
+  "xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "xx xx x! xx xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "rn rn rn rn xx ,, ,, ,, ,, ,, ,, ,, ,, ,, xx rn rn rn rn "
+  "rn rn rn rn xx xx xx xx xx xx xx xx xx xx xx rn rn rn rn "
+  )
+ (put (mk-ladder-up 'p_kurpolis 9 6) 9 10)
  (put (mk-door) 2 8)
  (put (mk-door) 2 12)
  (put (mk-door) 4 15)
