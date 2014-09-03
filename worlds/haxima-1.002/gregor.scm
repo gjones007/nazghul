@@ -66,22 +66,6 @@
                " It's all for you.")
 	  )))
 
-;; Some prompting with initial commands:
-;; 
-;; Hmmm...perhaps it would be desirable to have game-UI promts
-;; spoken out-of-character, so that the NPCs don't break the game fiction...
-(define (gregor-open knpc kpc)
-  (say knpc "Use the 'o' key to ^c+bopen^c- chests."))
-
-(define (gregor-get knpc kpc)
-  (say knpc "Use the 'g' key to ^c+bget^c- stuff that's on the ground."))
-
-(define (gregor-read knpc kpc)
-  (say knpc
-       "Use the 'r' key to ^c+bready^c- weapons or armor."
-       " You can't use a weapon in combat until it's ready.")
-  )
-
 (define (gregor-camp knpc kpc)
   (say knpc "Use the 'k' key to ^c+bkamp^c-, err...camp, in the wilderness and heal up."))
 
@@ -185,9 +169,6 @@
        (method 'join (lambda (knpc kpc) (say knpc "Nope. Already got a job.")))
        (method 'name (lambda (knpc kpc) (say knpc "Gregor's my name.")))
 
-       (method 'open gregor-open)
-       (method 'get  gregor-get)
-
        (method 'cave gregor-cave)
        (method 'ches gregor-ches)
 
@@ -195,7 +176,6 @@
        (method 'equi gregor-stuf)  ;; A synonym
        (method 'gear gregor-stuf)  ;; A synonym
 
-       (method 'read gregor-read)
        (method 'dang gregor-dang)
 
        (method 'camp gregor-camp)
