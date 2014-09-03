@@ -228,7 +228,7 @@
        (method 'gran (lambda (knpc kpc) (say knpc "I've a granddaughter name of Ilya.")))
        (method 'help (lambda (knpc kpc) (say knpc "There's always folks who need help. "
                                              "These are hard times in a hard land.")))
-       (method 'hill (lambda (knpc kpc) (say knpc "Trolls are always a threat in the foothills, "
+       (method 'hill (lambda (knpc kpc) (say knpc "Trogs are always a threat in the foothills, "
                                              "but more so of late.")))
        (method 'husb (lambda (knpc kpc) (say knpc "My son-in-law was a simple farmer. "
                                              "Why the trogs attacked I don't know. "
@@ -269,7 +269,7 @@
 			    " She's just a legend to scare the kids to keep them out of the woods.")
 		       ))
        
-       (method 'trol (lambda (knpc kpc) (say knpc "Trolls eat folks. "
+       (method 'trog (lambda (knpc kpc) (say knpc "Trogs eat folks. "
 					     "Even crack the bones and suck the marrow. "
 					     "Nothing left to bury.")))
 
