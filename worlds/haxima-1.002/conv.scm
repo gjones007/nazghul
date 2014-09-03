@@ -218,7 +218,7 @@
        (method 'gree (lambda (knpc kpc) (conv-describe-place knpc kpc p_green_tower)))
        (method 'trig (lambda (knpc kpc) (conv-describe-place knpc kpc p_trigrave)))
        (method 'opar (lambda (knpc kpc) (conv-describe-place knpc kpc p_oparine)))
-       (method 'west (lambda (knpc kpc) (conv-describe-place knpc kpc p_westpass)))
+       (method 'westpass (lambda (knpc kpc) (conv-describe-place knpc kpc p_westpass)))
        (method 'east (lambda (knpc kpc) (conv-describe-place knpc kpc p_eastpass)))
        (method 'glas (lambda (knpc kpc) (conv-describe-place knpc kpc p_glasdrin)))
        (method 'whit (lambda (knpc kpc) (conv-describe-place knpc kpc p_enchanters_tower)))
