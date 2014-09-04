@@ -163,7 +163,7 @@
        ;; on the other hand, is a feature of the ifc mechanism (see ifc.scm).
        (method 'default (lambda (knpc kpc) (say knpc "Can't help you there.")))
        (method 'hail gregor-hail)
-       (method 'heal (lambda (knpc kpc) (say knpc "[cough] Well enough, my granddaughter helps take care of me.")))
+       (method 'health (lambda (knpc kpc) (say knpc "[cough] Well enough, my granddaughter helps take care of me.")))
        (method 'bye gregor-bye)
        (method 'job (lambda (knpc kpc) (say knpc "I'm a charcoal burner. I also care for this shrine.")))
        (method 'join (lambda (knpc kpc) (say knpc "Nope. Already got a job.")))
@@ -183,12 +183,6 @@
 
        (method 'band gregor-band)
        (method 'leav gregor-leav)
-
-       ;; SAM -- This response seems to be shadowed by the gregor-band declaration above?
-       (method 'band (lambda (knpc kpc) (say knpc "A band of rogues been raiding the shrine "
-                                             "when I'm not around. They haven't attacked me, "
-                                             "so they're probably just vagabonds, "
-                                             "afraid of an old man's cudgel.")))
 
        (method 'char gregor-charcoal)
        (method 'burn gregor-charcoal)  ;; A synonym
@@ -249,7 +243,7 @@
 			    " She's just a legend to scare the kids to keep them out of the woods.")
 		       ))
        
-       (method 'trog (lambda (knpc kpc) (say knpc "Trogs eat folks. "
+       (method 'trog (lambda (knpc kpc) (say knpc "Trogs eat us, if they can. "
 					     "Even crack the bones and suck the marrow. "
 					     "Nothing left to bury.")))
 
@@ -268,7 +262,14 @@
           (say knpc "The Accursed? People say they trade their souls for power. "
                "If not for the Wise they would overrun the Shard.")))     
        
-       (method 'witc (lambda (knpc kpc) (say knpc "Don't know of any witches in these parts any more.")))
+       (method 'witc
+	       (lambda (knpc kpc)
+		 (say knpc "Don't know of any witches in these parts any more, unless you count Hackle.")))
+       (method 'hack
+	       (lambda (knpc kpc)
+		 (say knpc "Hackle is a mad old woman who lives in Bole."
+		      " Some say she's a witch."
+		      " Just crazy, I say.")))
        ))
 
 (define (mk-gregor)
