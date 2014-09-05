@@ -2,6 +2,27 @@
 ;; Generic conversation
 ;;----------------------------------------------------------------------------
 
+;; Macro to emit boilerplate for simple reply statements. Turns this:
+;;   (reply 'hello "Hello, yourself!")
+;; Into this:
+;;   (method 'hello (lambda knpc kpc) (say knpc "Hello, yourself!"))
+(macro (reply form)
+  `(method ,(cadr form) (lambda (knpc kpc) (say knpc ,@(cddr form)))))
+
+;; Macro to emit boilerplate for more complex reply statements. Turns this:
+;;   (react 'hello
+;;          (if (in-player-party? 'ch_nate)
+;;              (say knpc "Well, well, my old nemesis.")
+;;              (say knpc "You seen Nate?")))
+;; Into:
+;;   (method 'hello
+;;           (lambda (knpc kpc)
+;;             (if (in-player-party? 'ch_nate)
+;;                 (say knpc "Well, well, my old nemesis.")
+;;                 (say knpc "You seen Nate?"))))
+(macro (react form)
+  `(method ,(cadr form) (lambda (knpc kpc) ,@(cddr form))))
+
 ;; fundamentals
 (define (generic-hail knpc kpc)
   (say knpc "Well met"))
