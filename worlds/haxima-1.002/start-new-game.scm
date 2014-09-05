@@ -297,7 +297,7 @@
 
 (load "quests-data.scm")
 
-(if #f
+(if #t
     ;; Traditional start
     (begin
       (define (create-char kplayer)

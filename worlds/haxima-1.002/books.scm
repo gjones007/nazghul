@@ -61,9 +61,15 @@
    (kern-ui-page-text
     "To the Wanderer -- IMPORTANT"
    ""
-   "It is most ^c+rcritical^c- that you ^c+yfind me^c-. The peasant who cares for this shrine can point the way. Beware."
+   "It is most critical that you find me when you are ready. The peasant who cares for this shrine can point the way."
+   ""
+   "But first walk the Shard. Speak to the common folk. Learn our ways."
+   ""
+   "When magic can no longer bar your way, come to the White Tower."
    ""
    "--Enchanter"
+   ""
+   "P.S. Beware the Accursed."
    )
    (quest-data-assign-once 'questentry-calltoarms)
    result-ok))

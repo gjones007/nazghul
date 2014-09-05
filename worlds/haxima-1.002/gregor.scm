@@ -51,21 +51,6 @@
       (say knpc "You shouldn't travel with men like that. People might get the wrong idea about you.")
       ))
 
-(define (gregor-hail knpc kpc)
-  (if (in-player-party? 'ch_nate)
-      (gregor-kill-nate knpc kpc)
-      (if (in-inventory? kpc t_letter_from_enchanter)
-          (say knpc 
-	       "I see you got your stuff, and that letter from the Enchanter."
-               " Don't forget to ready your weapons before leaving."
-               " It's dangerous out there!")
-          (say knpc
-               "Welcome, Wanderer. I've been watching for you."
-               " There's some things that belong to you, over in yonder cave."
-               " Go in where the chest is, open it, and get the things inside."
-               " It's all for you.")
-	  )))
-
 (define (gregor-camp knpc kpc)
   (say knpc "Use the 'k' key to kamp, err...camp, in the wilderness and heal up."))
 
@@ -169,8 +154,8 @@
 	      (quest-data-assign-once 'questentry-calltoarms)
 	      (say knpc "The Enchanter is one of the Wise."
 		   " He told me to look out for a Wanderer like you."
-		   " If I saw one I was to send him his way. "
-		   " He lives in the White Tower.")
+		   " If I saw one I was to help on him his way. "
+		   " The Enchanter lives in the White Tower.")
 	      (quest-wise-subinit 'questentry-enchanter)
 	      (quest-data-update 'questentry-enchanter 'common 1))
 
