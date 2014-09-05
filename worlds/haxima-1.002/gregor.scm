@@ -159,8 +159,8 @@
 	      (quest-wise-subinit 'questentry-enchanter)
 	      (quest-data-update 'questentry-enchanter 'common 1))
 
-       (reply 'folk "There's homesteads scattered about in "
-	      "the woods and the foothills.")
+       (reply 'folk "There's homesteads scattered about in the woods and the foothills."
+	      " You should talk to as many people as you can.")
        (reply 'fore "Stay out of the deep woods. "
 	      "Bandits, spiders and worse live there.")
        (reply 'gate "No one can predict when it will open, "
@@ -206,6 +206,12 @@
        (reply 'angr
 	      "Angriss, Mother of all wood spiders."
 	      " She's just a legend to scare the kids to keep them out of the woods.")
+       (reply 'talk
+	      "Most folks are happy to tell you their name."
+	      " And they love to talk about their job or their health."
+	      " A few might need somebody to solve a quest for them."
+	      " Some may even want to join you."
+	      )
        (reply 'trog
 	      "Trogs eat us, if they can."
 	      " Even crack the bones and suck the marrow."
@@ -228,6 +234,7 @@
 	      "Hackle is a mad old woman who lives in Bole."
 	      " Some say she's a witch."
 	      " Just crazy, I say.")
+       (method 'ques gregor-band)
        ))
 
 (define (mk-gregor)
