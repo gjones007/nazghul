@@ -233,26 +233,26 @@
 (define (mk-gregor)
   (bind 
    (kern-char-set-description
-   (kern-mk-char
-    'ch_gregor ; tag
-    "Gregor"              ; name
-    sp_human            ; species
-    nil                 ; occ
-    s_old_townsman          ; sprite
-    faction-men         ; starting alignment
-    0 10 5              ; str/int/dex
-    0 0                 ; hp mod/mult
-    0 0                 ; mp mod/mult
-    max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
-    #f                  ; dead
-    'gregor-conv        ; conv
-    sch_gregor          ; sched
-    'townsman-ai                 ; special ai
-    nil                 ; container
-    (list t_axe
-	  t_armor_leather
-	  )              ; readied
-    )
-   "grizzled old peasant")
+    (kern-mk-char
+     'ch_gregor ; tag
+     "Gregor"              ; name
+     sp_human            ; species
+     nil                 ; occ
+     s_old_townsman          ; sprite
+     faction-men         ; starting alignment
+     0 10 5              ; str/int/dex
+     0 0                 ; hp mod/mult
+     0 0                 ; mp mod/mult
+     max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
+     #f                  ; dead
+     'gregor-conv        ; conv
+     sch_gregor          ; sched
+     'townsman-ai                 ; special ai
+     nil                 ; container
+     (list t_axe
+	   t_armor_leather
+	   )              ; readied
+     )
+    "grizzled old peasant")
    (gregor-mk)
    ))
