@@ -226,7 +226,7 @@
     ;; Main
     (if (ench-met? ench)
         (if (quest-done? (ench-quest ench 4))
-            (say knpc "Welcome, friend of the Wise")
+            (say knpc "Welcome, friend of the Wise.")
             (if (quest-accepted? (ench-quest ench 4))
                 (check-fourth-quest)
                 (if (quest-accepted? (ench-quest ench 3))
@@ -241,9 +241,10 @@
         (begin
           (quest-data-update-with 'questentry-calltoarms 'talked 1 (quest-notify (grant-xp-fn 10)))
           (kern-log-msg "This ageless mage looks unsurprised to see you.")
-          (say knpc "I was wondering when you would get here. "
-               "It took you long enough!")
-          (ench-met! ench #t)))))
+          (say knpc "I was wondering when you would get here. It took you long enough!")
+          (ench-met! ench #t)
+	  (ench-offer-first-quest knpc kpc)
+	  ))))
 
 (define (ench-name knpc kpc)
   (say knpc "I am known as the Enchanter."))
@@ -276,48 +277,51 @@
        "And as to whether you are good or evil, that depends upon you."))
 
 (define (ench-offer-first-quest knpc kpc)
-  (say knpc "I do not quibble over definitions of good and evil. "
-       "They are easily recognized when encountered. "
-       "Do you intend to do good while you are here?")
+  (say knpc "Do you intend to do good while you are here?")
   (if (kern-conv-get-yes-no? kpc)
       ;; yes - player intends to do good
       (begin
-        (say knpc "Then you will find me to be your ally. "
-             "But beware! Many who claim to be good are not, "
-             "or fail when put to the test. Are you ready to be tested?")
-        (if (kern-conv-get-yes-no? kpc)
-            ;; yes - player is ready to be tested
-            (begin
-              (say knpc "Very well. An item was recently stolen from me. "
-                   "I need someone to find the thief, "
-                   "recover the item and return it to me. Are you willing?")
-              (if (kern-conv-get-yes-no? kpc)
-                  ;; yes -- player is willing
-                  (begin
-                    (say knpc "Good! Rangers have tracked the thief to "
-                         "Trigrave. Go there and inquire about a ^c+mthief^c-.")
-							(quest-data-assign-once 'questentry-thiefrune)
-              		(quest-data-complete 'questentry-calltoarms)
-                  	;; if you dont read the letter, you might not get the quest till now!
-              		(quest-data-assign-once 'questentry-calltoarms)
-                  	(quest-data-update-with 'questentry-calltoarms 'done 1 (grant-xp-fn 10))
-                    (quest-accepted! (ench-first-quest (gob knpc)) #t)
-                    )
-                  ;; no -- player is not willing
-                  (say knpc "Perhaps I misjudged you.")))
-            ;; no -- player is not ready
-            (say knpc "It is not enough to speak of doing good, one cannot "
-                 "BE good without DOING good.")))
+	(say knpc "Then you will find me to be your ally. "
+	     "But beware! Many who claim to be good are not, "
+	     "or fail when put to the test. Are you ready to be tested?")
+	(if (kern-conv-get-yes-no? kpc)
+	    ;; yes - player is ready to be tested
+	    (begin
+	      (say knpc "Very well. An item was recently stolen from me. "
+		   "I need someone to find the thief, "
+		   "recover the item and return it to me. Are you willing?")
+	      (if (kern-conv-get-yes-no? kpc)
+		  ;; yes -- player is willing
+		  (begin
+		    (say knpc "Good! Rangers have tracked the thief to "
+			 "Trigrave. Go there and inquire about a ^c+mthief^c-.")
+		    (quest-data-assign-once 'questentry-thiefrune)
+		    (quest-data-complete 'questentry-calltoarms)
+		    ;; if you dont read the letter, you might not get the quest till now!
+		    (quest-data-assign-once 'questentry-calltoarms)
+		    (quest-data-update-with 'questentry-calltoarms 'done 1 (grant-xp-fn 10))
+		    (quest-accepted! (ench-first-quest (gob knpc)) #t)
+		    )
+		  ;; no -- player is not willing
+		  (say knpc "Perhaps I misjudged you.")))
+	    ;; no -- player is not ready
+	    (say knpc "It is not enough to speak of doing good, one cannot "
+		 "BE good without DOING good.")))
       ;; no -- player does not intend to do good
       (say knpc "We shall see. Evil men can do good without meaning to, "
-           "and men who would be callous find they can't ignore their "
-           "conscience.")))
+	   "and men who would be callous find they can't ignore their "
+	   "conscience.")
+      ))
 
 (define (ench-good knpc kpc)
   (if (quest-accepted? (ench-first-quest (gob knpc)))
       (say knpc "The wicked flee when no one pursues, but the righteous are "
            "bold as dragons.")
-      (ench-offer-first-quest knpc kpc)))
+      (begin
+	(say knpc "I do not quibble over definitions of good and evil. "
+	     "They are easily recognized when encountered.")
+	(ench-offer-first-quest knpc kpc)
+	)))
 
 (define (ench-gate knpc kpc)
   (say knpc "There are many gates in the land which connect to "
@@ -426,6 +430,7 @@
        (method 'ench ench-ench)
        (method 'accu ench-accu)
        (method 'alch ench-alch)
+       (method 'demo ench-demo)
        (method 'evil ench-good)
        (method 'gate ench-gate)
        (method 'good ench-good)
@@ -443,7 +448,11 @@
        (method 'wrig ench-wrig)
        (method 'emgi ench-wrig)
        (method 'kalc ench-kalc)
-       (method 'demo ench-demo)
+       (react 'ques
+	      (if (not (quest-accepted? (ench-first-quest (gob knpc))))
+		  (ench-offer-first-quest knpc kpc)
+		  (say knpc "We've already talked about that. What else?")
+		  ))
        ))
 
 ;;----------------------------------------------------------------------------
@@ -451,45 +460,48 @@
 ;;----------------------------------------------------------------------------
 (define (mk-enchanter-first-time tag)
   (bind 
-   (kern-char-arm-self
-    (kern-mk-char 
-     tag ;;..........tag
-     "Enchanter" ;;.......name
-     sp_human ;;.....species
-     oc_wizard ;;.. .occupation
-     s_old_mage ;;..sprite
-     faction-men ;;..faction
-     0 ;;...........custom strength modifier
-     7 ;;...........custom intelligence modifier
-     0 ;;...........custom dexterity modifier
-     10 ;;............custom base hp modifier
-     2 ;;............custom hp multiplier (per-level)
-     20 ;;............custom base mp modifier
-     5 ;;............custom mp multiplier (per-level)
-     max-health ;;..current hit points
-     -1  ;;...........current experience points
-     max-health ;;..current magic points
-     0
-     enchanter-start-lvl  ;;..current level
-     #f ;;...........dead?
-     'enchanter-conv ;;...conversation (optional)
-     sch_enchanter ;;.....schedule (optional)
-     'townsman-ai ;;..........custom ai (optional)
-     ;;..............container (and contents)
-     (mk-inventory
-      (list
-       (list 10  t_food)
-       (list 100 t_arrow)
-       (list 1   t_bow)
-       (list 1   t_dagger)
-       (list 1   t_sword)
-       (list 1   t_leather_helm)
-       (list 1   t_armor_leather)
-       (list 5   t_torch)
-       (list 5   t_cure_potion)
-       (list 5   t_heal_potion)
-       ))
-     nil ;;.........readied arms (in addition to the container contents)
-     nil ;;..........hooks in effect
-     ))
-   (enchanter-mk)))
+   (kern-char-set-description
+    (kern-char-arm-self
+     (kern-mk-char 
+      tag ;;..........tag
+      "Enchanter" ;;.......name
+      sp_human ;;.....species
+      oc_wizard ;;.. .occupation
+      s_old_mage ;;..sprite
+      faction-men ;;..faction
+      0 ;;...........custom strength modifier
+      7 ;;...........custom intelligence modifier
+      0 ;;...........custom dexterity modifier
+      10 ;;............custom base hp modifier
+      2 ;;............custom hp multiplier (per-level)
+      20 ;;............custom base mp modifier
+      5 ;;............custom mp multiplier (per-level)
+      max-health ;;..current hit points
+      -1  ;;...........current experience points
+      max-health ;;..current magic points
+      0
+      enchanter-start-lvl  ;;..current level
+      #f ;;...........dead?
+      'enchanter-conv ;;...conversation (optional)
+      sch_enchanter ;;.....schedule (optional)
+      'townsman-ai ;;..........custom ai (optional)
+      ;;..............container (and contents)
+      (mk-inventory
+       (list
+	(list 10  t_food)
+	(list 100 t_arrow)
+	(list 1   t_bow)
+	(list 1   t_dagger)
+	(list 1   t_sword)
+	(list 1   t_leather_helm)
+	(list 1   t_armor_leather)
+	(list 5   t_torch)
+	(list 5   t_cure_potion)
+	(list 5   t_heal_potion)
+	))
+      nil ;;.........readied arms (in addition to the container contents)
+      nil ;;..........hooks in effect
+      ))
+    "grim mage")
+   (enchanter-mk)
+   ))
