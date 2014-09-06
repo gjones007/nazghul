@@ -6205,6 +6205,19 @@ KERN_API_CALL(kern_set_turn_count)
 	return sc->T;
 }
 
+KERN_API_CALL(kern_set_turns_per_minute)
+{
+	int val;
+
+	if (unpack(sc, &args, "d", &val)) {
+		rt_err("%s: bad args", __FUNCTION__);
+		return sc->F;
+	}
+
+	TURNS_PER_MINUTE = val;
+	return sc->T;
+}
+
 KERN_API_CALL(kern_add_reveal)
 {
 	int val;
@@ -10242,6 +10255,7 @@ scheme *kern_init(void)
 	API_DECL(sc, "kern-test-recursion", kern_test_recursion);
 	API_DECL(sc, "kern-ticks-per-turn", kern_ticks_per_turn);
 	API_DECL(sc, "kern-set-turn-count", kern_set_turn_count);
+	API_DECL(sc, "kern-set-turns-per-minute", kern_set_turns_per_minute);
 	API_DECL(sc, "kern-map-flash-sprite", kern_map_flash_sprite);
 	API_DECL(sc, "kern-script-version", kern_script_version);
 

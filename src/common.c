@@ -37,6 +37,8 @@ int TickMilliseconds;
 // int WindDirection;
 int ShowAllTerrain = 0;
 
+int TURNS_PER_MINUTE = 20;
+
 struct los *LosEngine;
 
 int commonInit(void)
