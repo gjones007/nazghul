@@ -39,6 +39,7 @@
 (kern-load "lost-halls-mech.scm")
 (kern-load "voidgap-mech.scm")
 (kern-load "player.scm")
+(kern-load "turns.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Time -- this needs to be set before loading any dungeon rooms
