@@ -1668,6 +1668,9 @@ void PlayerParty::startSession(void)
 		combat_set_state(COMBAT_STATE_DONE);
 	}
 
+	if (place_is_wilderness_combat(getPlace())) {
+		combat_set_place(getPlace());
+	}
 }
 
 void PlayerParty::setOnMap(bool val)

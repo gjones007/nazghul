@@ -72,5 +72,6 @@ extern int combat_add_party(class Party * party, int dx, int dy, int located,
 			    struct place *place, int x, int y);
 extern int combat_add_party_on_edge(class Party * party, int dx, int dy,
 				    struct place *place);
+extern void combat_set_place(struct place *place);
 
 #endif

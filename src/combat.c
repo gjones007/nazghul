@@ -1748,3 +1748,10 @@ void combat_exit(void)
 	//mapUpdate(0);
 
 }
+
+/* Used to initialized the combat place on session start, if the session is
+ * loaded from a game saved during wilderness combat. */
+void combat_set_place(struct place *place)
+{
+	Combat.place = place;
+}
