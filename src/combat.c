@@ -76,7 +76,6 @@ enum combat_faction_status {
 
 static struct {
 	struct place *place;
-	void *session_handle;
 	enum combat_state state;
 	char vmap[7 * 7];	// visited map (used to search for positions)
 	class Vehicle *enemy_vehicle;
