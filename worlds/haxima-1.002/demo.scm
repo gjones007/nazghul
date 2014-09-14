@@ -394,8 +394,6 @@
                 s_frame_vert
                 s_frame_endl
                 s_frame_endr)
-(kern-set-ascii ss_u4_charset 32)
-(kern-set-cursor ls_whirlpool)
 (kern-set-damage-sprite s_hit)
 (kern-add-query 'str_based_attack_query proc-stratt)
 (kern-add-query 'dex_based_attack_query proc-dexatt)
