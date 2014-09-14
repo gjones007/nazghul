@@ -101,4 +101,4 @@
  )
 
 (kern-obj-put-at (mk-world-musicdata 'ml-travelling) (list p_world 0 0))
-(kern-place-add-on-entry-hook p_world 'music-on-combat-entry)
+(kern-place-add-on-entry-hook p_world 'music-on-place-entry)

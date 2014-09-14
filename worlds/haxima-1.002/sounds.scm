@@ -19,18 +19,17 @@
 (define sound-ship-move sound-splashing)
 
 ;; ambient sound 'object'
-
 (define ambience-ifc
-    (ifc '()
-         (method 'exec
-                 (lambda (ksound)
-                   (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
-                   ))
-         (method 'on-entry
-                 (lambda (ksound)
-                   (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
-                   ))
-         ))
+  (ifc '()
+       (method 'exec
+	       (lambda (ksound)
+		 (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
+		 ))
+       (method 'on-entry
+	       (lambda (ksound)
+		 (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
+		 ))
+       ))
 
 (mk-obj-type 't_ambience nil
              '()
@@ -44,136 +43,177 @@
 ;;==========================================================================
 ;; music
 
-(define default-music "music/ballad.ogg")
+(define default-music "music/audionetwork/ANW1082_10_Princes-In-The-Tower.mp3")
 
+;; Helper to create lists of tracks
 (define (music-list . entries)
-	(if (null? entries)
-		(list default-music)
-		entries
-	)
-)
+  (if (null? entries)
+      (list default-music)
+      entries))
 
+;; The track lists go here:
 (load "music/music.scm")
 
-(define music (list nil nil))
+;; Initialize music track list to empty. Initialize flags.
+(define music nil)
+(define music-playing? #f)
+(define music-for-combat? #f)
 
-(define (music-play-track file)
-	(set-car! music file)
-	(kern-music-play file)
-)
+;; Clear the current track list.
+(define (music-reset!)
+  (println "music-reset!")
+  (set! music nil)
+  (set! music-playing? #f)
+  )
 
-(define (music-handler filelist)
-	(set-car! (cdr music) filelist)
-	(if (or (null? (car music))
-				(not (in-text-list? (car music) filelist)))
-		(music-play-track (random-select (cadr music)))
-	))
-		
-(define (music-cue filelist)
-	(set-car! (cdr music) filelist)
-	)
-	
-(define (music-cue-ref listref)
-	(let ((cuelist (safe-eval listref)))
-		(if (not (null? cuelist))
-			(music-cue cuelist))
-	))
-	
-(define (music-fake-current)
-	(if (not (null? (cadr music)))
-			(set-car! music (car (cadr music)))
-		))
-		
-(music-handler (list default-music))
+;; Start a track.
+(define (music-play track)
+  (println "music-play:" track)
+  (kern-music-play track)
+  (set! music-playing? #t)
+  )
 
-(define (music-change-handler player)
-	(if (not (null? (cadr music)))
-			(music-play-track (random-select (cadr music)))
-		)
-	)
-	
-(kern-add-hook 'music_change_hook 'music-change-handler)
-	
-;;combo play + cue, with sensible eval and null behaviour
-(define (music-set-pair immediate therafter)
-	(let* ((imm (safe-eval immediate))
-			(ther (safe-eval therafter))
-			(cuelist (if (null? imm)
-								nil
-								ther))
-			(playlist (if (null? imm)
-								ther
-								imm))
-			)
-		(if (not (null? playlist))
-			(music-handler playlist))
-		(if (not (null? cuelist))
-			(music-cue cuelist))
-	))
+;; Add a track to the end of the list.
+(define (music-append! track)
+  (println "music-append! " track)
+  (if (not (null? track))
+      (if music-playing?
+	  (set! music (append music (list track)))
+	  (music-play track)
+	  )))
+
+;; Pull the next track from the head of the list.
+(define (music-dequeue!)
+  (println "music-dequeue!")
+  (let ((top (car music)))
+    (set! music (cdr music))
+    top))
+
+;; Randomly choose when to start another track.
+(define (music-idle-timeout?)
+  (= 0 (modulo (random-next) 1000)))
+
+;; Callback from kernel. Called every tick while there are no music tracks
+;; playing.
+(define (on-music-done kplayer)
+  (set! music-playing? #f)
+  (if (not (null? music))
+      (music-play (music-dequeue!))
+      (if (music-idle-timeout?)
+	  (let ((kplace (player-member-loc)))
+	    (if (notnull? kplace)
+		(let ((mgob (place-mgob kplace)))
+		  (music-append! (music-select (mgob-normal mgob)))
+		  ))))))
+
+(kern-add-hook 'music_change_hook 'on-music-done)
 
 
 ;;==================================================================================
 ;; interactive music handler
 
+(define (mgob-new normal engagement combat victory)
+  (list #t normal engagement combat victory))
+(define (mgob-not-in-combat? mgob) (car mgob))
+(define (mgob-not-in-combat! mgob v) (set-car! mgob v))
+(define (mgob-normal mgob) (list-ref mgob 1))
+(define (mgob-engagement mgob) (list-ref mgob 2))
+(define (mgob-combat mgob) (list-ref mgob 3))
+(define (mgob-victory mgob) (list-ref mgob 4))
+
+
 (mk-obj-type 't_sounddata nil nil layer-none nil)
+
+
+;; Given a symbol representing a list of music tracks, randomly select one.
+(define (music-select symbol-list)
+  (random-select (safe-eval symbol-list)))
+
+
+;; Interrupt the current music, queuing up the fanfare and combat soundtrack.
+(define (music-start-combat mgob)
+  (println "music-start-combat:" mgob)
+  (music-reset!)
+  (set! music-for-combat? #t)
+  (music-append! (music-select (mgob-engagement mgob)))
+  (music-append! (music-select (mgob-combat mgob)))
+  )
+
+;; Interrupt the current music, queuing up a normal track.
+;; FIXME: using the normal track
+(define (music-start-defeat mgob)
+  (println "music-start-defeat:" mgob)
+  (music-reset!)
+  (set! music-for-combat? #f)
+  (music-append! (music-select (mgob-normal mgob)))
+  )
+
+(define (music-start-victory mgob)
+  (println "music-start-victory:" mgob)
+  (music-reset!)
+  (set! music-for-combat? #f)
+  (music-append! (music-select (mgob-victory mgob)))
+  )
+
+;; Get the music gob for a place
+(define (place-mgob kplace)
+  (let ((kobjs (kplace-get-objects-of-type kplace t_sounddata)))
+    (cond ((null? kobjs) nil)
+	  (else (gob (car kobjs))))))
+
 
 ;; use kern-set-combat-state-listener to call this
 ;; do it on system startup too (kern-set-gamestart-hook)
-(define (music-on-combat-change player)
-  (let ((playerloc (player-member-loc)))
-    (if (notnull? playerloc)
-        (let ((dataslist (kplace-get-objects-of-type playerloc t_sounddata)))
-          (if (notnull? dataslist)
-              (let* ((sounddata (gob (car dataslist)))
-                     (oldstate (car sounddata))
-                     (newstate (null? (all-hostiles (car (kern-party-get-members player)))))
-                     )
-                (set-car! sounddata newstate)
-                (if newstate
-                    (if oldstate
-                        (music-set-pair nil (list-ref sounddata 1))
-                        (music-set-pair (list-ref sounddata 4) (list-ref sounddata 1))
-                        )
-                    (if oldstate
-                        (music-set-pair (list-ref sounddata 2) (list-ref sounddata 3))
-                        (music-set-pair nil (list-ref sounddata 3))
-                        )
-                    )
-                ))
-          ))))
-    
-;; use place entry hooks to call this
-(define (music-on-combat-entry playerloc player)
-	(let ((dataslist (kplace-get-objects-of-type playerloc t_sounddata)))
-		(if (not (null? dataslist))
-			(let ((sounddata (gob (car dataslist)))
-					(newstate (null? (all-hostiles (car (kern-party-get-members player)))))
-					)
-				(set-car! sounddata newstate)
-				(if newstate
-					(music-set-pair nil (list-ref sounddata 1))
-					(music-set-pair (list-ref sounddata 2) (list-ref sounddata 3))
-				)		
-				(music-fake-current)		
-			))
-	))		
+(define (music-on-combat-change kplayer event)
+  (println "music-on-combat-change:" event)
+  (let ((kplace (player-member-loc)))
+    (if (notnull? kplace)
+	(let* ((mgob (place-mgob kplace)))
+	  (cond ((equal? event 'start)
+		 (music-start-combat mgob)
+		 )
+		((equal? event 'victory)
+		 (music-start-victory mgob)
+		 )
+		((equal? event 'defeat)
+		 (music-start-defeat mgob)
+		))))))
+
+(define (music-on-place-entry kplace kplayer)
+  (println "music-on-place-entry")
+  (if (not music-playing?)
+      (let* ((mgob (place-mgob kplace))
+	     )
+	;; Only play ambient music if nothing is already playing.
+	(println "nothing playing => start")
+	(music-append! (music-select (mgob-normal mgob)))
+	)))
+
+(define (music-on-session-start kplayer)
+  (println "music-on-session-start")
+  (let ((kplace (loc-place (kern-obj-get-location kplayer))))
+    (music-on-place-entry kplace kplayer)))
+
 
 ;; use this to make data object
 (define (mk-sounddata normal engagement combat victory)
-	(bind (kern-obj-set-visible (kern-mk-obj t_sounddata 1) #f)
-		(list #t normal engagement combat victory)
+  (bind (kern-obj-set-visible (kern-mk-obj t_sounddata 1) #f)
+	(mgob-new normal engagement combat victory)
 	))
-	
-;;normal combat music entries
+
+
+;; normal combat music entries
 (define (mk-basic-musicdata noncombatml)
-	(mk-sounddata noncombatml 'ml-battle-intro 'ml-battle-music 'ml-battle-over))
-	
-;;world music entries dont use combat stuff
+  (mk-sounddata noncombatml 'ml-battle-intro 'ml-battle-music 'ml-battle-over))
+
+
+;; world music entries dont use combat stuff
 (define (mk-world-musicdata noncombatml)
-	(mk-sounddata noncombatml nil noncombatml nil))
-	
+  (mk-sounddata noncombatml nil noncombatml nil))
+
+
 ;; do-it-all method- adds an object and the hook to a place
-(define (mk-place-music place noncombatml)
-	(kern-obj-put-at (mk-basic-musicdata noncombatml) (list place 0 0))
-	(kern-place-add-on-entry-hook place 'music-on-combat-entry))
-	
+(define (mk-place-music kplace noncombatml)
+  (kern-obj-put-at (mk-basic-musicdata noncombatml) (list kplace 0 0))
+  (kern-place-add-on-entry-hook kplace 'music-on-place-entry))
+
