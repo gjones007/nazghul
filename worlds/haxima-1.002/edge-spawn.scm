@@ -31,7 +31,7 @@
         )))
 
   (define (roll-to-spawn?) 
-    (>= (modulo (random-next) 100) 98))
+    (>= (modulo (random-next) 100) 96))
 
   (if (and (kern-place-is-wilderness? (loc-place (kern-obj-get-location (kern-get-player))))
            (roll-to-spawn?))
