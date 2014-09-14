@@ -132,7 +132,7 @@ void combat_set_state(enum combat_state new_state)
 		switch (new_state) {
 		case COMBAT_STATE_FIGHTING:
 			log_banner("^c+mCOMBAT^c-");
-			sound_play(Combat.sound_enter, SOUND_MAX_VOLUME);
+			session_run_hook(Session, combat_change_hook, "py", Session->player, "start");
 			break;
 		case COMBAT_STATE_LOOTING:
 			break;
@@ -149,12 +149,12 @@ void combat_set_state(enum combat_state new_state)
 		switch (new_state) {
 		case COMBAT_STATE_LOOTING:
 			log_banner("^c+gVICTORY^c-");
-			sound_play(Combat.sound_victory, SOUND_MAX_VOLUME);
+			session_run_hook(Session, combat_change_hook, "py", Session->player, "victory");
 			player_party->addExperience(COMBAT_VICTORY_XP);
 			break;
 		case COMBAT_STATE_DONE:
 			log_banner("^c+rDEFEAT^c-");
-			sound_play(Combat.sound_defeat, SOUND_MAX_VOLUME);
+			session_run_hook(Session, combat_change_hook, "py", Session->player, "defeat");
 			break;
 		default:
 			assert(false);
@@ -166,7 +166,7 @@ void combat_set_state(enum combat_state new_state)
 		switch (new_state) {
 		case COMBAT_STATE_FIGHTING:
 			log_banner("^c+mCOMBAT^c-");
-			sound_play(Combat.sound_enter, SOUND_MAX_VOLUME);
+			session_run_hook(Session, combat_change_hook, "py", Session->player, "start");
 			break;
 		case COMBAT_STATE_DONE:
 			break;
@@ -180,7 +180,7 @@ void combat_set_state(enum combat_state new_state)
 		switch (new_state) {
 		case COMBAT_STATE_FIGHTING:
 			log_banner("^c+mCOMBAT^c-");
-			sound_play(Combat.sound_enter, SOUND_MAX_VOLUME);
+			session_run_hook(Session, combat_change_hook, "py", Session->player, "start");
 			break;
 		case COMBAT_STATE_LOOTING:
 		case COMBAT_STATE_DONE:
@@ -197,7 +197,6 @@ void combat_set_state(enum combat_state new_state)
 	}
 
 	Combat.state = new_state;
-	session_run_hook(Session, combat_change_hook, "p", Session->player);
 }
 
 // returns 0 for ok position, -1 for no position, or a PFLAG type for fallback positions with problems
