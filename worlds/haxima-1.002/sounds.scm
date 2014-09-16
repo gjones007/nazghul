@@ -191,8 +191,10 @@
 
 (define (music-on-session-start kplayer)
   (println "music-on-session-start")
-  (let ((kplace (loc-place (kern-obj-get-location kplayer))))
-    (music-on-place-entry kplace kplayer)))
+  (let ((kplace (player-member-loc)))
+    (if (notnull? kplace)
+	(music-on-place-entry kplace kplayer)
+	)))
 
 
 ;; use this to make data object
