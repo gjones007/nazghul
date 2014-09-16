@@ -166,7 +166,9 @@
   (kern-log-enable #t)
   (kern-log-msg "A dark gate rises in a quiet clearing...")
   (moongate-animate black-gate blackgate-stages)
-  (kern-sleep 2000)	
+  (kern-sleep 2000)
+  (kern-sound-play sound-moongate-enter)
+  (kern-map-flash 1000)
   (kern-log-enable #f)
   )
 
