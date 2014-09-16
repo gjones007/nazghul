@@ -1,6 +1,9 @@
 Music Credits
 -------------
 
+All of the following are Copyright Jim Paterson, www.mfiles.co.uk.
+Distributed under the Creative Commons Attribution Share Alike license.
+
 ballad.mid
 bassoons-and-harpsichord.mid
 double-trios.mid
@@ -17,6 +20,11 @@ minstrel-dance.mid
 Minuet-like-Mozart.mid
 wind-trio.mid
 
-Copyright Jim Paterson,
-www.mfiles.co.uk.
-Distributed under the Creative Commons Attribution Share Alike license.
+
+
+The following are by primordiality
+(https://www.freesound.org/people/primordiality/). Distributed under the
+Creative Commons Attribution License.
+
+78825__primordiality__fanfare-4.wav
+78824__primordiality__fanfare-3.wav

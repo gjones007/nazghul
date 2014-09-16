@@ -1,7 +1,7 @@
 (kern-load "gamestart-mech.scm")
 (kern-load "gamestart-statues.scm")
 
-(kern-mk-place 'p_char_setup "the Path"
+(kern-mk-place 'p_char_setup "The Path"
   s_shrine ;; sprite
   (kern-mk-map 'm_char_setup 19 19 pal_expanded
 	(list
@@ -48,6 +48,8 @@
   nil
 
 )
+
+(mk-place-music p_char_setup 'ml-char-setup)
  
 (define (obj-line objfactory yloc xloc xmax)
 	(kern-obj-put-at (objfactory xloc) (list p_char_setup xloc yloc))
