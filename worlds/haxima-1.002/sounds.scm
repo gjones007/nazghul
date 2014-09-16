@@ -1,6 +1,7 @@
 
 (kern-mk-sound 'sound-damage         "damage.wav")
-(kern-mk-sound 'sound-walking        "walk.wav")
+;(kern-mk-sound 'sound-walking        "walk.wav")
+(kern-mk-sound 'sound-walking        "Hit_Hurt9.wav")
 ;(kern-mk-sound 'sound-splashing      "rowing.wav")
 (kern-mk-sound 'sound-splashing      "water2.wav")
 (kern-mk-sound 'sound-squishing      "walk.wav") ;; fixme

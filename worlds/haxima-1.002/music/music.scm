@@ -69,8 +69,8 @@
 
 (define ml-large-town
 	(music-list
-"music/bassoons-and-harpsichord.ogg"
-"music/Minuet-like-Mozart.ogg"
+;;"music/bassoons-and-harpsichord.ogg"
+;;"music/Minuet-like-Mozart.ogg"
 ))
 
 (define ml-castle
