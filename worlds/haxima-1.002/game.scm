@@ -392,7 +392,7 @@
 (kern-add-query 'damage_bonus_query proc-stratt)
 (kern-add-query 'defense_bonus_query proc-dexdef)
 (kern-add-hook 'combat_change_hook 'music-on-combat-change)
-(kern-add-hook 'session_start_hook 'music-on-combat-change)
+(kern-add-hook 'session_start_hook 'music-on-session-start)
 
 ;; Setup the global effect sprites
 (kern-set-quicken-sprite s_quicken)
