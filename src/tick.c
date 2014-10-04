@@ -46,8 +46,8 @@ static int tick_killed = 0;
 static SDL_Thread *tick_thread = NULL;
 static long ticks = 0;
 static struct list tick_watchers = {
-        .next = &tick_watchers,
-        .prev = &tick_watchers
+        &tick_watchers,
+        &tick_watchers
 };
 
 
