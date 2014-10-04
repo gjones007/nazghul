@@ -102,6 +102,7 @@
        (door-set-timeout! door 10)
        (door-update-kstate kdoor)
        (door-send-signal kdoor 'open)
+       (kern-sound-play-at sound-door-open (kern-obj-get-location kdoor))       
        #t))))
   
 (define (door-close kdoor khandler)
@@ -112,6 +113,7 @@
         (door-set-timeout! door 0)
         (door-update-kstate kdoor)
         (door-send-signal kdoor 'close)
+       (kern-sound-play-at sound-door-close (kern-obj-get-location kdoor))
         #t)))
 
 (define (door-lock kdoor khandler)

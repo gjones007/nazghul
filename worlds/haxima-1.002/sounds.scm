@@ -1,4 +1,5 @@
-
+(kern-mk-sound 'sound-door-open "sounds/door-open.ogg")
+(kern-mk-sound 'sound-door-close "sounds/door-close.ogg")
 (kern-mk-sound 'sound-damage         "damage.wav")
 ;(kern-mk-sound 'sound-walking        "walk.wav")
 (kern-mk-sound 'sound-walking        "Hit_Hurt9.wav")
