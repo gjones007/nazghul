@@ -110,16 +110,19 @@
 
 ;; Combine results of directions and setting.
 (define (conv-directions-and-setting knpc kplace)
-  (let ((directions (conv-directions knpc kplace))
-	(setting (conv-setting knpc kplace)))
-    (if (null? directions)
-	(if (null? setting)
-	    nil
-	    (string-append setting))
-	(if (null? setting)
-	    (string-append directions)
-	    (string-append directions setting)
-	    ))))
+  (if (equal? (loc-place (kern-obj-get-location knpc))
+	      kplace)
+      "where you are now"
+      (let ((directions (conv-directions knpc kplace))
+	    (setting (conv-setting knpc kplace)))
+	(if (null? directions)
+	    (if (null? setting)
+		nil
+		(string-append setting))
+	    (if (null? setting)
+		(string-append directions)
+		(string-append directions setting)
+		)))))
 	    
 
 ;; Describe common knowledge about a place and how to get there.
