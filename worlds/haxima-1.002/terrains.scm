@@ -45,6 +45,9 @@
 		      )			
 		  )
 		))
+	(if (eqv? (kern-obj-get-mmode obj)
+		  mmode-walk)
+	    (kern-sound-play sound-squishing))
 	)))
 
 (define (terrain-effect-lava obj)
