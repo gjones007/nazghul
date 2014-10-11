@@ -1024,7 +1024,7 @@ void Object::damage(int amount)
 	// Paint the red "*" damage symbol over the character's icon on the map
 	if (isOnMap()) {
 		mapPaintDamage(getX(), getY());
-		sound_play(getDamageSound(), SOUND_MAX_VOLUME);
+		sound_play(getDamageSound(), SOUND_50_PERCENT_VOLUME);
 	}
 
 	runHook(OBJ_HOOK_DAMAGE, 0);

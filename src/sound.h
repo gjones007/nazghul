@@ -30,6 +30,9 @@ BEGIN_DECL
 typedef struct sound sound_t;
 
 extern int SOUND_MAX_VOLUME;
+extern int SOUND_75_PERCENT_VOLUME;
+extern int SOUND_50_PERCENT_VOLUME;
+extern int SOUND_25_PERCENT_VOLUME;
 
 extern int sound_init(void);
 extern void sound_exit(void);

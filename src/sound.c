@@ -57,6 +57,9 @@ struct sound {
 
 sound_t *sound_reverse_lookup[NUM_SOUNDS];
 
+int SOUND_25_PERCENT_VOLUME = int(SDL_MIX_MAXVOLUME / 4);
+int SOUND_50_PERCENT_VOLUME = (SOUND_25_PERCENT_VOLUME * 2);
+int SOUND_75_PERCENT_VOLUME = (SOUND_25_PERCENT_VOLUME * 3);
 int SOUND_MAX_VOLUME = SDL_MIX_MAXVOLUME;
 
 /* This indicates whether or not the player has turned sound on or off. */
