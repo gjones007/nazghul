@@ -627,6 +627,12 @@
         (kern-map-repaint))))
 
 ;; ----------------------------------------------------------------------------
+;; kobj-drop -- called after an object is dropped
+;; ----------------------------------------------------------------------------
+(define (kobj-on-drop kobj kchar kplace x y)
+  (kern-sound-play sound-drop))
+
+;; ----------------------------------------------------------------------------
 ;; kobj-get-at -- get an object of a specific type from the location
 ;; ----------------------------------------------------------------------------
 (define (kobj-get-at kchar loc ktype)

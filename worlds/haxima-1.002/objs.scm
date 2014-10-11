@@ -5,4 +5,6 @@
 ;; Make the basic object interface which supports g)et
 (define obj-ifc
   (ifc '()
-       (method 'get kobj-get)))
+       (method 'get kobj-get)
+       (method 'on-drop kobj-on-drop)
+       ))

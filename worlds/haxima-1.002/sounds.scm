@@ -16,6 +16,8 @@
 (kern-mk-sound 'sound-fireblast       "sounds/fireblast.wav")
 (kern-mk-sound 'sound-chest-open "sounds/chest-open.ogg")
 (kern-mk-sound 'sound-get "sounds/get.ogg")
+(kern-mk-sound 'sound-drop "sounds/drop.ogg")
+(kern-mk-sound 'sound-money "sounds/money.ogg")
 
 ;; Aliases
 (define sound-ship-move sound-splashing)
