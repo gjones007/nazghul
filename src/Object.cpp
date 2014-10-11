@@ -67,7 +67,8 @@
 #define GIFC_CAN_SENSE        (1<<14)
 #define GIFC_CAN_XAMINE       (1<<15)
 #define GIFC_CAN_DESCRIBE     (1<<16)
-#define GIFC_CAN_ON_ATTACK     (1<<17)
+#define GIFC_CAN_ON_ATTACK    (1<<17)
+#define GIFC_CAN_ON_DROP      (1<<18)
 
 ObjectType::ObjectType()
 {
@@ -1879,6 +1880,12 @@ bool ObjectType::canGet()
 	return (gifc_cap & GIFC_CAN_GET);
 }
 
+bool ObjectType::canDrop()
+{
+	// Hack: arms types not converted over to use gifc's yet
+	return (gifc_cap & GIFC_CAN_ON_DROP);
+}
+
 bool ObjectType::canBuy()
 {
 	return (gifc_cap & GIFC_CAN_BUY);
@@ -1984,6 +1991,12 @@ int ObjectType::cast(Object * caster)
 int ObjectType::get(Object * obj, Object * getter)
 {
 	return closure_exec(gifc, "ypp", "get", obj, getter);
+}
+
+int ObjectType::drop(Object * obj, Object * dropper, struct place *place, int x,
+		     int y)
+{
+	return closure_exec(gifc, "ypppdd", "on-drop", obj, dropper, place, x, y);
 }
 
 int ObjectType::buy(Object * buyer, int q)

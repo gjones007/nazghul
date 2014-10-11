@@ -184,6 +184,7 @@ class ObjectType {
 	bool isCastable();	// spells
 	bool canExec();		// mechs, etc
 	bool canGet();
+	bool canDrop();
 	bool canOpen();
 	bool canStep();
 	bool canHandle();
@@ -202,6 +203,7 @@ class ObjectType {
 	int use(Object * user);
 	int exec(Object * obj);
 	int get(Object * obj, Object * getter);
+	int drop(Object * obj, Object * dropper, struct place *, int, int);
 	int open(Object * obj, Object * opener);
 	int step(Object * obj, Object * stepper);
 	int sense(Object * obj, Object * stepper);

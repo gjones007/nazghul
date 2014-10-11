@@ -3513,6 +3513,24 @@ void cmdSettings(void)
 	statusSetMode(omode);
 }
 
+/**
+ * Helper function for dropping item.
+ */
+static void cmd_char_drop_item_at(class Character *actor, class Object *obj,
+				  int quantity, int x, int y)
+{
+	class ObjectType *type = obj->getObjectType();
+	struct place *place = actor->getPlace();
+
+	obj->relocate(place, x, y, REL_NOSTEP, NULL);
+	actor->takeOut(type, quantity);
+	actor->runHook(OBJ_HOOK_DROP_DONE, "pd", type, quantity);
+
+	if (type->canDrop()) {
+		type->drop(obj, actor, place, x, y);
+	}
+}
+
 void cmdDrop(class Character * actor)
 {
 	enum StatusMode omode;
@@ -3569,19 +3587,13 @@ void cmdDrop(class Character * actor)
 	obj->setCount(quantity);
 	if (place_get_movement_cost(actor->getPlace(), x, y,
 				    obj, 0) < PTABLE_NO_DROP) {
-		obj->relocate(actor->getPlace(), x, y, REL_NOSTEP,	/* FIXME: really? */
-			      NULL);
-		actor->takeOut(ie->type, quantity);
-		actor->runHook(OBJ_HOOK_DROP_DONE, "pd", ie->type, quantity);
-	} else
-	    if (place_get_movement_cost
-		(actor->getPlace(), actor->getX(), actor->getY(), obj,
-		 0) < PTABLE_IMPASSABLE) {
-		obj->relocate(actor->getPlace(), actor->getX(), actor->getY(), REL_NOSTEP,	/* FIXME: really? */
-			      NULL);
-		actor->takeOut(ie->type, quantity);
-		actor->runHook(OBJ_HOOK_DROP_DONE, "pd", ie->type, quantity);
-		log_msg("%s wouldnt fit!", ie->type->getName());
+		cmd_char_drop_item_at(actor, obj, quantity, x, y);
+	} else if (place_get_movement_cost
+		   (actor->getPlace(), actor->getX(), actor->getY(), obj,
+		    0) < PTABLE_IMPASSABLE) {
+		cmd_char_drop_item_at(actor, obj, quantity, actor->getX(),
+				      actor->getY());
+		log_msg("%s wouldn't fit!", ie->type->getName());
 	} else {
 		log_msg("Couldnt drop %s!", ie->type->getName());
 	}
