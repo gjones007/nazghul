@@ -168,6 +168,8 @@
       #f)
      (else
 
+      (kern-sound-play sound-chest-open)
+
       ;; Applying traps can destroy both kobj and kchar
       (kern-obj-inc-ref kobj)
       (kern-obj-inc-ref kchar)
