@@ -615,6 +615,7 @@
 (define (kobj-get kobj kchar)
   (if (kern-obj-put-into kobj kchar)
       (begin
+	(kern-sound-play sound-get)
         (if (not (is-player-party-member? kchar))        
             (kern-log-msg (kern-obj-get-name kchar)
                           " gets "
