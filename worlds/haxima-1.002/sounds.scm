@@ -8,7 +8,7 @@
 (kern-mk-sound 'sound-cannon-fire    "sounds/cannon.wav")
 (kern-mk-sound 'sound-clock          "sounds/clock.wav")
 (kern-mk-sound 'sound-clock-chime    "sounds/clock-chime.wav")
-(kern-mk-sound 'sound-river          "sounds/river.wav")
+(kern-mk-sound 'sound-river          "sounds/river.ogg")
 (kern-mk-sound 'sound-wind          "sounds/wind.wav")
 (kern-mk-sound 'sound-missile          "sounds/swish.wav")
 (kern-mk-sound 'sound-explode          "sounds/boom.wav")
