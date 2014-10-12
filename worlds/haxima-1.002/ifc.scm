@@ -63,7 +63,7 @@
   (if (null? ifc) 0
       (cap ifc (list 'get 'use 'exec 'open 'handle 'step 'attack 'mix 
                      'enter 'cast 'bump 'hit-loc 'buy 'search 'sense 'xamine 'describe 'on-attack
-                     'on-drop))))
+                     'on-drop 'on-ready 'on-unready))))
 
 ;; The gob internal api:
 (define (gob-mk kobj members) (list kobj members))
