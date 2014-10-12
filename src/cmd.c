@@ -1258,33 +1258,27 @@ bool cmdReady(class Character * member)
 		committed = true;
 
 		class ArmsType *arms = (class ArmsType *) ie->type;
+		int req_ap = arms->getRequiredActionPoints();
 
 		log_begin("%s - ", arms->getName());
 
 		if (ie->ref && member->unready(arms)) {
 			msg = "unreadied!";
-			member->decrementActionPoints(arms->
-						      getRequiredActionPoints
-						      ());
+			member->decrementActionPoints(req_ap);
 			statusRepaint();
+			if (arms->canOnUnready()) {
+				arms->onUnready(member);
+			}
 		} else {
 
 			switch (member->ready(arms)) {
 			case Character::Readied:
 				statusRepaint();
 				msg = "readied!";
-				member->decrementActionPoints(arms->
-							      getRequiredActionPoints
-							      ());
-				/* Move the readied item to the front of the
-				 * list for easy access next time, and to
-				 * percolate frequently-used items up to the
-				 * top. */
-				//player_party->inventory->moveToFront(ie);
-				/* After re-ordering the list, reset the status
-				 * viewer to synch it back up with the new
-				 * list. */
-				//statusSetMode(Ready);
+				member->decrementActionPoints(req_ap);
+				if (arms->canOnReady()) {
+					arms->onReady(member);
+				}
 				break;
 			case Character::NoAvailableSlot:
 				msg = "all full!";

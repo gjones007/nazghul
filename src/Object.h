@@ -185,6 +185,8 @@ class ObjectType {
 	bool canExec();		// mechs, etc
 	bool canGet();
 	bool canDrop();
+	bool canOnReady();
+	bool canOnUnready();
 	bool canOpen();
 	bool canStep();
 	bool canHandle();
@@ -204,6 +206,8 @@ class ObjectType {
 	int exec(Object * obj);
 	int get(Object * obj, Object * getter);
 	int drop(Object * obj, Object * dropper, struct place *, int, int);
+	int onReady(Object *actor);
+	int onUnready(Object *actor);
 	int open(Object * obj, Object * opener);
 	int step(Object * obj, Object * stepper);
 	int sense(Object * obj, Object * stepper);

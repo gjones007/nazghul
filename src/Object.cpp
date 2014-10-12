@@ -69,6 +69,8 @@
 #define GIFC_CAN_DESCRIBE     (1<<16)
 #define GIFC_CAN_ON_ATTACK    (1<<17)
 #define GIFC_CAN_ON_DROP      (1<<18)
+#define GIFC_CAN_ON_READY     (1<<19)
+#define GIFC_CAN_ON_UNREADY   (1<<20)
 
 ObjectType::ObjectType()
 {
@@ -1886,6 +1888,16 @@ bool ObjectType::canDrop()
 	return (gifc_cap & GIFC_CAN_ON_DROP);
 }
 
+bool ObjectType::canOnReady()
+{
+	return (gifc_cap & GIFC_CAN_ON_READY);
+}
+
+bool ObjectType::canOnUnready()
+{
+	return (gifc_cap & GIFC_CAN_ON_UNREADY);
+}
+
 bool ObjectType::canBuy()
 {
 	return (gifc_cap & GIFC_CAN_BUY);
@@ -1997,6 +2009,16 @@ int ObjectType::drop(Object * obj, Object * dropper, struct place *place, int x,
 		     int y)
 {
 	return closure_exec(gifc, "ypppdd", "on-drop", obj, dropper, place, x, y);
+}
+
+int ObjectType::onReady(Object * actor)
+{
+	return closure_exec(gifc, "ypp", "on-ready", this, actor);
+}
+
+int ObjectType::onUnready(Object * actor)
+{
+	return closure_exec(gifc, "ypp", "on-unready", this, actor);
 }
 
 int ObjectType::buy(Object * buyer, int q)
