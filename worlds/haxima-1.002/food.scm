@@ -11,6 +11,7 @@
 (define food-ifc
   (ifc '()
        (method 'get (lambda (kobj getter)
+		      (kern-sound-play sound-get-food)
                       (kern-obj-inc-ref kobj)
                       (kern-obj-remove kobj)
                       (kern-obj-add-food getter (* food-value
