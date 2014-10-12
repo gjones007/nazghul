@@ -25,6 +25,7 @@
 (define alcohol-ifc
   (ifc '()
        (method 'get (lambda (kobj getter)
+		      (kern-sound-play sound-get-drink)
                       (kern-obj-inc-ref kobj)
                       (kern-obj-remove kobj)
                       (kern-obj-add-food getter (* alcohol-value

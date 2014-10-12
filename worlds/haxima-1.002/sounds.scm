@@ -19,6 +19,7 @@
 (kern-mk-sound 'sound-drop "sounds/drop.ogg")
 (kern-mk-sound 'sound-money "sounds/money.ogg")
 (kern-mk-sound 'sound-get-food "sounds/mmm.ogg")
+(kern-mk-sound 'sound-get-drink "sounds/swallow.ogg")
 
 ;; Aliases
 (define sound-ship-move sound-splashing)
