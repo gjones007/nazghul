@@ -190,10 +190,13 @@
   (if (not music-playing?)
       (let* ((mgob (place-mgob kplace))
 	     )
-	;; Only play ambient music if nothing is already playing.
-	(println "nothing playing => start")
-	(music-append! (music-select (mgob-normal mgob)))
-	)))
+	(if (not (null? mgob))
+	    (begin
+	      ;; Only play ambient music if nothing is already playing.
+	      (println "nothing playing => start")
+	      (println "mgob:" mgob)
+	      (music-append! (music-select (mgob-normal mgob)))
+	      )))))
 
 (define (music-on-session-start kplayer)
   (println "music-on-session-start")
