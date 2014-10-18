@@ -99,3 +99,5 @@
   (music-list
    "music/audionetwork/ANW1082_10_Princes-In-The-Tower.mp3"
    ))
+
+(define music-quest-assigned "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav")

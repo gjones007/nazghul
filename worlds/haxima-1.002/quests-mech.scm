@@ -103,6 +103,7 @@
 ;; assigns a quest from the quest data table, while ensuring it is not
 ;;      given out repeatedly
 (define (quest-data-assign-once tag)
+  (kern-music-play music-quest-assigned)
 	(let ((questentry (quest-data-get tag)))
 		(if (not (quest-assigned? questentry))
 			(quest-assign questentry)
