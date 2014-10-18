@@ -256,15 +256,12 @@ MoveResult Party::move(int dx, int dy)
 	int oldy;
 	class Object *mech;
 
-	dbg("move:%s:dx=%d dy=%d\n", getName(), dx, dy);
-
 	this->dx = dx;
 	this->dy = dy;
 
 	/* Check if the party is in a vehicle that must turn its facing before
 	 * moving */
 	if (turn_vehicle()) {
-		dbg("move:%s:ChangedFacing\n", getName());
 		return ChangedFacing;
 	}
 
@@ -278,12 +275,8 @@ MoveResult Party::move(int dx, int dy)
 	newy = place_wrap_y(oldplace, oldy + dy);
 	newplace = oldplace;
 
-	dbg("move:%s:place=%s x=%d y=%d\n", getName(), newplace->name, newx,
-	    newy);
-
 	/* Walking off the edge of a map */
 	if (place_off_map(oldplace, newx, newy)) {
-		dbg("move:%s:off-map\n", getName());
 		return OffMap;
 	}
 
@@ -293,38 +286,32 @@ MoveResult Party::move(int dx, int dy)
 		/* If this party is hostile to the player then begin combat */
 		if (are_hostile(this, player_party)
 		    && attackPlayer(dx, dy)) {
-			dbg("move:%s:EngagedEnemy (player)\n", getName());
 			return EngagedEnemy;
 
 		}
 
-		dbg("move:%s:WasOccupied (by player)\n", getName());
 		return WasOccupied;
 	}
 
 	/* Check if another entity is already there */
 	if (place_is_occupied(oldplace, newx, newy)) {
-		dbg("move:%s:WasOccupied\n", getName());
 		return WasOccupied;
 	}
 
 	/* Check for a vehicle. */
 	class Vehicle *veh = place_get_vehicle(newplace, newx, newy);
 	if (veh && (vehicle || veh->getOccupant())) {
-		dbg("move:%s:WasOccupied (by vehicle)\n", getName());
 		return WasOccupied;
 	}
 
 	/* Check passability */
 	if (!place_is_passable(oldplace, newx, newy, this, PFLAG_MOVEATTEMPT)) {
-		dbg("move:%s:WasImpassable\n", getName());
 		return WasImpassable;
 	}
 
 	/* When wandering, don't wander over terrain hazards. When pathfinding,
 	 * assume that braving the hazard is the best course. */
 	if (wandering && place_is_hazardous(newplace, newx, newy)) {
-		dbg("move:%s:AvoidedHazard\n", getName());
 		return AvoidedHazard;
 	}
 
@@ -339,7 +326,6 @@ MoveResult Party::move(int dx, int dy)
 		// mech->step(this), not only did this invoke the step but it
 		// was redundant, because the relocate() call checks for step
 		// trigger mechs)
-		dbg("move:%s:AvoidedHazard (mech)\n", getName());
 		return AvoidedHazard;
 	}
 
@@ -348,8 +334,6 @@ MoveResult Party::move(int dx, int dy)
 	action_points -=
 	    place_get_diagonal_movement_cost(getPlace(), oldx, oldy, getX(),
 					     getY(), this, 0);
-	dbg("move:%s:MovedOk\n", getName());
-
 	return MovedOk;
 }
 

@@ -22,6 +22,8 @@
 (kern-mk-sound 'sound-get-drink "sounds/swallow.ogg")
 (kern-mk-sound 'sound-ready "sounds/ready.ogg")
 (kern-mk-sound 'sound-unready "sounds/unready.ogg")
+(kern-mk-sound 'sound-portcullis-open "sounds/portcullis.ogg")
+(kern-mk-sound 'sound-portcullis-close "sounds/portcullis.ogg")
 
 ;; Aliases
 (define sound-ship-move sound-splashing)

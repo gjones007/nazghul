@@ -12,6 +12,22 @@
 
 (define portcullis-ifc
   (ifc bim-ifc
+       (method 'on (lambda (kobj khandler)
+		     (bim-on kobj khandler)
+		     (let ((loc (kern-obj-get-location kobj)))
+		       (if (not (null? loc))
+			   ;; can be nil temporarily on startup
+			   (kern-sound-play-at sound-portcullis-open
+					       (kern-obj-get-location kobj))
+		       ))))
+       (method 'off (lambda (kobj khandler)
+		     (bim-off kobj khandler)
+		     (let ((loc (kern-obj-get-location kobj)))
+		       (if (not (null? loc))
+			   ;; can be nil temporarily on startup
+			   (kern-sound-play-at sound-portcullis-close
+					       (kern-obj-get-location kobj))
+		       ))))
        (method 'open kportcullis-manual)
        (method 'close kportcullis-manual)
        (method 'open-remote bim-on)
