@@ -51,7 +51,7 @@
                 (optarg 'ap 0)
                 (optarg 'lvl default-level)
                 (optarg 'dead #f)
-                (optarg 'conv nil)
+                (eval (optarg 'conv nil))
                 (optarg 'sched nil)
                 (eval (optarg 'ai ''std-ai))
                 (mk-inventory (filter notnull?
@@ -767,6 +767,7 @@
     (sprite  . s_ranger)
     (stuff   . ranger-equip)
     (ai      . 'ranger-ai)
+    (conv    . 'ranger-conv)
     (faction . faction-men)))
 
 (define skeletal-spear-thrower

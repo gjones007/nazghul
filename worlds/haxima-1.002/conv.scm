@@ -351,8 +351,8 @@
 
 (define (ranger-wise knpc kpc)
   (say knpc "Rangers have an informal alliance with the Wise. They give us "
-       "aid and hospitality. In return we give them news. Sometimes we serve "
-       "them as messengers and scouts."))
+       "aid and hospitality. We give them news. Sometimes we serve "
+       "as messengers and scouts."))
 
 (define (ranger-join knpc kpc)
   (cond ((has? kpc t_ranger_orders 1)
@@ -375,6 +375,7 @@
 
 (define ranger-conv
   (ifc basic-conv
+       (method 'job (lambda (knpc kpc) (say knpc "I'm a ranger.")))
        (method 'join ranger-join)
        (method 'rang ranger-ranger)
        (method 'wise ranger-wise)
