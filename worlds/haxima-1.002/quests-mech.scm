@@ -121,6 +121,7 @@
 	
 ;; assuming quest in the QDT uses a tbl for payload, updates a key/value pair
 (define (quest-data-update tag key value)
+  (kern-music-play music-quest-updated)
   (let* ((qpayload (car (qst-payload (quest-data-get tag))))
 	 (updatehook (tbl-get qpayload 'on-update))
 	 )
@@ -136,6 +137,7 @@
 	
 ;; updates as per quest-data-update, but additionally triggers a passed in function
 (define (quest-data-update-with tag key value callback)
+  (kern-music-play music-quest-updated)
   (let* (	
          (quest (quest-data-get tag))
          (qpayload (car (qst-payload quest)))

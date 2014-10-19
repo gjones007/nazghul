@@ -101,3 +101,4 @@
    ))
 
 (define music-quest-assigned "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav")
+(define music-quest-updated  "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav")
