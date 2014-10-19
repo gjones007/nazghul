@@ -9,19 +9,19 @@
 
 ;; These should be a short fanfare
 (define ml-battle-intro
-	(music-list
-	 "music/78825__primordiality__fanfare-4.wav"
-;;"music/dragon-quest.ogg"
-;;"music/into-battle.ogg"
-))
+  (music-list
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav"
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav"
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2105_77_To-The-Rescue-6-(Sting).wav"
+   ))
 
 ;; These should be a short fanfare
 (define ml-battle-over
-	(music-list
-	 "music/78824__primordiality__fanfare-3.wav"
-;;"music/game-music2.ogg"
-;;"music/dragon-slayer.ogg"
-))
+  (music-list
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1520_36_For-King-And-Country-7-(Sting).wav"
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2105_78_To-The-Rescue-7-(Sting).wav"
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1857_24_The-Flag-9-(Sting).wav"
+   ))
 
 ;; These should be a short fanfare
 (define ml-battle-lost
@@ -98,4 +98,10 @@
 (define ml-char-setup
   (music-list
    "music/audionetwork/ANW1082_10_Princes-In-The-Tower.mp3"
+   ))
+
+(define ml-dark-suspense
+  (music-list
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2175_79_Suspense-5.mp3"
+   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2175_80_Suspense-6.mp3"
    ))
