@@ -1679,8 +1679,8 @@ void options_menu(void)
 			options[i].handler(&options[i]);
 
 			/* Update the menu string. */
-			options[i].changed = strcmp(options[i].entry_val,
-						    options[i].val);
+			options[i].changed = !!strcmp(options[i].entry_val,
+						      options[i].val);
 			snprintf(menu_strings[i], OPTION_MAXMENUSTRLEN,
 				 "%s [%s] %c %s",
 				 options[i].name,
