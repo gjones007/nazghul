@@ -298,7 +298,7 @@
 
 (load "quests-data.scm")
 
-(if #t
+(if #f
     ;; Traditional start
     (begin
       (define (create-char kplayer)
@@ -310,8 +310,7 @@
     (begin
       (define (simple-start kplayer)
 	(kern-obj-put-at kplayer
-			 ;(list p_world 240 233)))
-			 (kern-obj-get-location black-gate)))
+			 (list p_green_tower 0 31)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

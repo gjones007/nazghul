@@ -10,30 +10,26 @@
 ;; These should be a short fanfare
 (define ml-battle-intro
   (music-list
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav"
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav"
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2105_77_To-The-Rescue-6-(Sting).wav"
+   "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav"
+   "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav"
+   "music/audionetwork/ANW2105_77_To-The-Rescue-6-(Sting).wav"
    ))
 
 ;; These should be a short fanfare
 (define ml-battle-over
   (music-list
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1520_36_For-King-And-Country-7-(Sting).wav"
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW2105_78_To-The-Rescue-7-(Sting).wav"
-   "/home/gmcnutt/git/nazghul/worlds/haxima-1.002/music/audionetwork/ANW1857_24_The-Flag-9-(Sting).wav"
+   "music/audionetwork/ANW1520_36_For-King-And-Country-7-(Sting).wav"
+   "music/audionetwork/ANW2105_78_To-The-Rescue-7-(Sting).wav"
+   "music/audionetwork/ANW1857_24_The-Flag-9-(Sting).wav"
    ))
-
-;; These should be a short fanfare
-(define ml-battle-lost
-	(music-list
-"music/fair-camelot.ogg"
-"music/dragon-slayer.ogg"
-))
 
 (define ml-battle-music
 	(music-list
-"music/audionetwork/ANW2169_05_Tense-Realisation.mp3"
-"music/audionetwork/ANW2087_05_Brooding-Thoughts.mp3"
+	 "music/audionetwork/ANW2169_05_Tense-Realisation.mp3"
+	 "music/audionetwork/ANW2087_05_Brooding-Thoughts.mp3"
+	 "music/audionetwork/ANW2068_22_Lethal-Weapon-3.mp3"
+	 "music/audionetwork/ANW2196_132_Make-Or-Break-8-(60).mp3"
+	 "music/audionetwork/ANW2110_01_Determined.mp3"
 ))
 
 (define ml-outdoor-adventure
@@ -56,8 +52,10 @@
 
 (define ml-travelling
 	(music-list
-"music/audionetwork/ANW2152_05_Final-Road.mp3"
-"music/audionetwork/ANW1086_01_Back-Canyon.mp3"
+	 "music/audionetwork/ANW2152_05_Final-Road.mp3"
+	 "music/audionetwork/ANW1086_01_Back-Canyon.mp3"
+	 "music/audionetwork/ANW2211_01_Journey-Begins.mp3"
+	 "music/audionetwork/ANW1877_03_Signals.mp3"
 ))
 
 (define ml-small-town

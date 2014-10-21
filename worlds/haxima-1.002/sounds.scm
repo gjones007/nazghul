@@ -25,8 +25,10 @@
 (kern-mk-sound 'sound-portcullis-open "sounds/portcullis.ogg")
 (kern-mk-sound 'sound-portcullis-close "sounds/portcullis.ogg")
 
-(kern-mk-sound 'fanfare-quest-assigned "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav")
-(kern-mk-sound 'fanfare-quest-updated "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav")
+(kern-mk-sound 'fanfare-quest-assigned
+	       "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav")
+(kern-mk-sound 'fanfare-quest-updated
+	       "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav")
 
 ;; Aliases
 (define sound-ship-move sound-splashing)
@@ -36,11 +38,13 @@
   (ifc '()
        (method 'exec
 	       (lambda (ksound)
-		 (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
+		 (kern-sound-play-ambient (eval (gob ksound))
+					  (kern-obj-get-location ksound))
 		 ))
        (method 'on-entry
 	       (lambda (ksound)
-		 (kern-sound-play-ambient (eval (gob ksound)) (kern-obj-get-location ksound))
+		 (kern-sound-play-ambient (eval (gob ksound))
+					  (kern-obj-get-location ksound))
 		 ))
        ))
 
@@ -122,7 +126,7 @@
 (kern-add-hook 'music_change_hook 'on-music-done)
 
 
-;;==================================================================================
+;;==============================================================================
 ;; interactive music handler
 
 (define (mgob-new normal engagement combat victory)
