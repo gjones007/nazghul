@@ -108,7 +108,7 @@
 
 ;; Randomly choose when to start another track.
 (define (music-idle-timeout?)
-  (= 0 (modulo (random-next) 1000)))
+  (= 0 (modulo (random-next) 2000)))
 
 ;; Callback from kernel. Called every tick while there are no music tracks
 ;; playing.
@@ -128,6 +128,19 @@
 
 ;;==============================================================================
 ;; interactive music handler
+;;
+;; Most places should have a t_sounddata object and an on-entry hook that
+;; activates it. The (mk-place-music ...) method is the simplest way to set
+;; this up
+;;
+;; The t_sounddata object has 4 lists of music tracks:
+;;   1. Ambient music to play when there is no combat
+;;   2. Fanfares to play at the start of combat
+;;   3. Music to play during combat
+;;   4. Fanfare to play at the end of combat
+;;
+;; The (mk-place-music ...) method takes the first list as an argument and uses
+;; standard music lists for the remaining three.
 
 (define (mgob-new normal engagement combat victory)
   (list #t normal engagement combat victory))

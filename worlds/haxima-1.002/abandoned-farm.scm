@@ -81,4 +81,4 @@
                nil ; edge entrances
                )
 
-(mk-place-music p_abandoned_farm 'ml-dark-suspense)
+(mk-place-music p_abandoned_farm 'ml-creepy-area)

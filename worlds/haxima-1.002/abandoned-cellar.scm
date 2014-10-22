@@ -122,4 +122,4 @@
 ;; read-only and not saved with the session.
 ;; ----------------------------------------------------------------------------
 
-(mk-place-music p_abandoned_cellar 'ml-dungeon-adventure)
+(mk-place-music p_abandoned_cellar 'ml-creepy-area)
