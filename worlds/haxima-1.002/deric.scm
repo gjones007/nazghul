@@ -115,15 +115,15 @@
               (deric-set-tell-secret! (kobj-gob-data knpc)))
             (say knpc "[laughing] I'm sorry if I must disagree! People of "
                  "destiny are never appreciated by their fellows.")))
-      (say knpc "[sigh] So many people lead worthless, wasted lives. I'm glad "
-           "I'm not one of them!")))
+      (say knpc "[sigh] So many people lead worthless, wasted lives. "
+	   "I'm glad I'm not one of them!")))
 
 (define (deric-secret knpc kpc)
   (if (deric-tell-secret? (kobj-gob-data knpc))
       (say knpc "In the lower level of the Tower there is a hidden passage. "
-           "Go down the ladder and enter the southeast supply room. "
-           "On the east wall is a secret door! "
-           "I have no idea what it was for.")
+           "Go down the ladder and enter the cistern room on the northeast. "
+           "On the north wall is a secret door! "
+           "I have no idea what it is for.")
       (say knpc "Nothing I want to tell a stranger like you!")))
 
 (define (deric-afraid knpc kpc)
@@ -134,18 +134,21 @@
 (define (deric-prison knpc kpc)
   (say knpc "Yes. Very secure. We currently only have one prisoner, "
        "a forest goblin we caught skulking around here. "
-       "A quite vicious-looking brute, I must say. "
+       "A vicious-looking brute, I must say. "
        "Not that I am afraid of him. Ahem."))
 
 (define (deric-gobl knpc kpc)
-  (say knpc "Sneaky fellows! Why, just the other day I caught one here in town and had him thrown into prison."))
+  (say knpc "Sneaky fellows! Why, just the other day I caught one here in "
+       "town and had him thrown into prison."))
 
 (define (deric-brute knpc kpc)
-  (say knpc "Very suspicious. He obviously did not come to trade, "
-       "for he carried no merchandise. And he speaks not a lick of Common. "
-       "In fact, he refuses to say anything! Well, some time spent "
-       "underground should loosen his tongue. I'll find out what he's "
-       "scheming."))
+  (say knpc "Very suspicious. "
+       "He obviously did not come to trade, since he had no money or "
+       "merchandise. "
+       "And he speaks not a lick of Common. "
+       "In fact, he refuses to say anything! "
+       "Well, some time spent underground will loosen his tongue. "
+       "I'll find out what he's scheming."))
 
 (define (deric-default knpc kpc)
   (say knpc "You must ask another of that!"))
