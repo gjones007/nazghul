@@ -585,13 +585,13 @@
 					"The ghost of Ghertie the pirate" 
 					"A ghost")
 				(if (tbl-flag? 'ghertieloc)
-					"haunts the inn at Oparine. "
-					"may be found in Oparine. ")
+					" haunts the inn at Oparine."
+					" may be found in Oparine.")
 				(if (tbl-flag? 'revenge)
-					"She seeks ^c+mrevenge^c-, and may aid you if you take care of her unfinished business."
-					(string-append "Why does "
-						(if (tbl-flag? 'ghertieid) "she" "it")
-						"linger in undeath?"
+					" She seeks ^c+mrevenge^c-, and may aid you if you take care of her unfinished business."
+					(string-append " Why does"
+						(if (tbl-flag? 'ghertieid) " she" " it")
+						" linger in undeath?"
 					)
 				))
 		))
