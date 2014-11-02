@@ -117,4 +117,4 @@
    )
 ) ;; end of place p_moongate_clearing
 
-(mk-place-music p_moongate_clearing 'ml-moongate-clearing)
+(mk-place-music p_moongate_clearing 'ml-peaceful-area)

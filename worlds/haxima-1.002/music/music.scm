@@ -10,17 +10,17 @@
 ;; These should be a short fanfare
 (define ml-battle-intro
   (music-list
-   "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav"
-   "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav"
-   "music/audionetwork/ANW2105_77_To-The-Rescue-6-(Sting).wav"
+   "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).mp3"
+   "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).mp3"
+   "music/audionetwork/ANW2105_77_To-The-Rescue-6-(Sting).mp3"
    ))
 
 ;; These should be a short fanfare
 (define ml-battle-over
   (music-list
-   "music/audionetwork/ANW1520_36_For-King-And-Country-7-(Sting).wav"
-   "music/audionetwork/ANW2105_78_To-The-Rescue-7-(Sting).wav"
-   "music/audionetwork/ANW1857_24_The-Flag-9-(Sting).wav"
+   "music/audionetwork/ANW1520_36_For-King-And-Country-7-(Sting).mp3"
+   "music/audionetwork/ANW2105_78_To-The-Rescue-7-(Sting).mp3"
+   "music/audionetwork/ANW1857_24_The-Flag-9-(Sting).mp3"
    ))
 
 (define ml-battle-music
@@ -44,6 +44,7 @@
    "music/audionetwork/ANW1254_05_Burned-Earth.mp3"
    "music/audionetwork/ANW2169_18_Unfinished-Business-3.mp3"
    "music/audionetwork/ANW2171_03_Betrayed.mp3"
+   "music/audionetwork/ANW1500_06_Nevada-Snakebite.mp3"
 ))
 
 (define ml-creepy-area
@@ -66,34 +67,38 @@
 ))
 
 (define ml-large-town
-	(music-list
-;;"music/bassoons-and-harpsichord.ogg"
-;;"music/Minuet-like-Mozart.ogg"
+  (music-list
 ))
 
 (define ml-castle
-	(music-list
-	 "music/audionetwork/ANW2166_16_Quiet-Altitude-2-(60).mp3"
-	 "music/audionetwork/ANW2166_21_Acoustic-Hymn-4-(60).mp3"
+  (music-list
+   "music/audionetwork/ANW2166_16_Quiet-Altitude-2-(60).mp3"
+   "music/audionetwork/ANW2166_21_Acoustic-Hymn-4-(60).mp3"
 ))
 
 (define ml-dungeon-town
-	(music-list
-"music/double-trios.ogg"
-;;"music/ballad.ogg"	
+  (music-list
 ))
 
 (define ml-sailing
-	(music-list
-"music/wind-trio.ogg"
+  (music-list
+   "music/audionetwork/ANW1120_08_Hornpipe.mp3"
+   "music/audionetwork/ANW2202_16_Shore-Leave-7-(30).mp3"
+   "music/audionetwork/ANW2202_37_Silver's-Set-4-(60).mp3"
 ))
 
-(define ml-moongate-clearing
+(define ml-peaceful-area
   (music-list
    "music/audionetwork/ANW2038_14_Serene-Scene.mp3"
+   "music/audionetwork/ANW1132_06_New-Age.mp3"
    ))
 
 (define ml-char-setup
   (music-list
    "music/audionetwork/ANW1082_10_Princes-In-The-Tower.mp3"
    ))
+
+(define ml-void-travel
+  (music-list
+   ))
+
