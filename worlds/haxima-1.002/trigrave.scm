@@ -152,23 +152,25 @@
 
 (kern-load "gwen.scm")
 (bind 
- (kern-mk-char 'ch_gwen ; tag
-               "Gwen"               ; name
-               sp_human            ; species
-               nil                 ; occ
-               s_gwen ; sprite
-               faction-men         ; starting alignment
-               0 1 2              ; str/int/dex
-               0 0                 ; hp mod/mult
-               0 0                 ; mp mod/mult
-               max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
-               #f                  ; dead
-               'gwen-conv          ; conv
-               sch_gwen           ; sched
-               'townsman-ai                 ; special ai
-               (mk-inventory (list (list 1 t_dagger)))                 ; container
-               nil                 ; readied
-               )
+ (kern-char-set-description
+  (kern-mk-char 'ch_gwen ; tag
+		"Gwen"               ; name
+		sp_human            ; species
+		nil                 ; occ
+		s_gwen ; sprite
+		faction-men         ; starting alignment
+		0 1 2              ; str/int/dex
+		0 0                 ; hp mod/mult
+		0 0                 ; mp mod/mult
+		max-health -1 max-health 0 2  ; hp/xp/mp/AP_per_turn/lvl
+		#f                  ; dead
+		'gwen-conv          ; conv
+		sch_gwen           ; sched
+		'townsman-ai                 ; special ai
+		(mk-inventory (list (list 1 t_dagger)))                 ; container
+		nil                 ; readied
+		)
+  "enchanting grey-eyed woman")
  (gwen-mk))
 
 (kern-load "chanticleer.scm")
