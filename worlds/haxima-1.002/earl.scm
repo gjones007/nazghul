@@ -86,17 +86,17 @@
 
        (method 'batt
                (lambda (knpc kpc)
-                 (say knpc "Yep. I fought with Lord Calvin against the "
+                 (say knpc "Yep. I fought with King Clovis against the "
                       "Goblin Horde!")))
        (method 'calv
                (lambda (knpc kpc)
-                 (say knpc "Now there was a warlord! Calvin conquered "
+                 (say knpc "Now there was a warlord! Clovis conquered "
                       "everything from the Gray Sea to the Northern Rim!")))
        (method 'hord
                (lambda (knpc kpc)
-                 (say knpc "In those days the Goblins were united under one "
+                 (say knpc "In those days the goblins were united under one "
                       "chieftain, and threatened the whole Peninsula! By the "
-                      "time Lord Calvin was done with them they were scattered "
+                      "time King Clovis was done with them they were scattered "
                       "and hiding in the hills. They've never recovered!")))
        (method 'mage
                (lambda (knpc kpc)
@@ -107,5 +107,7 @@
                  (say knpc "I was a battle mage once. Long ago.")))
        (method 'thie
                (lambda (knpc kpc)
-                 (say knpc "I saw a stranger fleeing west! No, south! No... Oh, drat, I can't remember.")))
+                 (say knpc "I saw a stranger fleeing west!"
+		      " No, south! No..."
+		      " Oh, drat, I can't remember.")))
        ))
