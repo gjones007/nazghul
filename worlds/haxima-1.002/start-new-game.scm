@@ -310,7 +310,7 @@
     (begin
       (define (simple-start kplayer)
 	(kern-obj-put-at kplayer
-			 (list p_green_tower 0 31)))
+			 (list p_green_tower 50 51)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

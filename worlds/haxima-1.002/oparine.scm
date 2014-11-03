@@ -162,4 +162,4 @@
 	(kern-obj-put-at ksen (list p_oparine 5 46)))
 
 (place-describe! p_oparine "a port city on a deep harbor")
-(mk-place-music p_oparine 'ml-large-town)
+(mk-place-music p_oparine 'ml-sea-shanties)

@@ -28,13 +28,13 @@
    "music/audionetwork/ANW2169_05_Tense-Realisation.mp3"
    "music/audionetwork/ANW2087_05_Brooding-Thoughts.mp3"
    "music/audionetwork/ANW2068_22_Lethal-Weapon-3.mp3"
-   "music/audionetwork/ANW2110_01_Determined.mp3"
    ))
 
 (define ml-outdoor-adventure
+  ;; Used for dangerous, somewhat creepy or ominous locations
   (music-list
-   "music/audionetwork/ANW1097_06_Autumn.mp3"
-   "music/audionetwork/ANW2169_27_Space-Infinity-3.mp3"
+   "music/audionetwork/ANW2007_01_Campaign.mp3"
+
    "music/audionetwork/ANW2175_81_Suspense-7.mp3"
 ))
 
@@ -64,11 +64,14 @@
 (define ml-small-town
   (music-list
    "music/audionetwork/ANW1985_37_Glue-4-(60).mp3"
+   "music/audionetwork/ANW2209_13_Four-Leaf-Clover-8-(30).mp3"
 ))
 
 (define ml-large-town
   (music-list
-))
+   "music/audionetwork/ANW1097_06_Autumn.mp3"
+   "music/audionetwork/ANW1520_47_Market-Town-5-(30).mp3"
+   ))
 
 (define ml-castle
   (music-list
@@ -78,19 +81,23 @@
 
 (define ml-dungeon-town
   (music-list
+   "music/audionetwork/ANW2110_01_Determined.mp3"
 ))
 
 (define ml-sailing
   (music-list
    "music/audionetwork/ANW1120_08_Hornpipe.mp3"
-   "music/audionetwork/ANW2202_16_Shore-Leave-7-(30).mp3"
    "music/audionetwork/ANW2202_37_Silver's-Set-4-(60).mp3"
+   "music/audionetwork/ANW2202_23_All-At-Sea-3.mp3"
+   "music/audionetwork/ANW2202_97_John-Silver\'s-Dance-3.mp3"
 ))
 
 (define ml-peaceful-area
   (music-list
    "music/audionetwork/ANW2038_14_Serene-Scene.mp3"
    "music/audionetwork/ANW1132_06_New-Age.mp3"
+   "music/audionetwork/ANW1097_06_Autumn.mp3"
+   "music/audionetwork/ANW2214_29_Angels-In-The-Breeze-7-\(60\).mp3"
    ))
 
 (define ml-char-setup
@@ -98,7 +105,20 @@
    "music/audionetwork/ANW1082_10_Princes-In-The-Tower.mp3"
    ))
 
-(define ml-void-travel
+(define ml-void
   (music-list
+   "music/audionetwork/ANW2169_27_Space-Infinity-3.mp3"
+   "music/audionetwork/ANW2213_11_Like-A-Ghost-2.mp3"
    ))
 
+(define ml-sea-shanties
+  (music-list
+   "music/audionetwork/ANW1855_08_Jolly-Sailor.mp3"
+   "music/audionetwork/ANW2202_16_Shore-Leave-7-(30).mp3"
+   "music/audionetwork/ANW2202_69_Rock-The-Boat-9-\(30\).mp3"
+  ))
+
+(define ml-final-battle
+  (music-list
+   "music/audionetwork/ANW2052_01_Crash.mp3"
+   ))

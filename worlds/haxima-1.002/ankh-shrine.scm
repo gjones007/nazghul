@@ -111,4 +111,4 @@
  (list p_demon_gate p_ankh_shrine)
  )
 
-(mk-place-music p_demon_gate 'ml-battle-music)
+(mk-place-music p_demon_gate 'ml-final-battle)

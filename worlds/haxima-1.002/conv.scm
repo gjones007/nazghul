@@ -256,7 +256,7 @@
        (method 'kurp (lambda (knpc kpc) (conv-describe-place knpc kpc p_kurpolis)))
        (method 'fire basic-fire)
 
-       (method 'lost (lambda (knpc kpc) (conv-describe-place knpc kpc p_lost_halls_entrance)))
+       (method 'hall (lambda (knpc kpc) (conv-describe-place knpc kpc p_lost_halls_entrance)))
 
        ;; establishments
        (method 'whit basic-whit)

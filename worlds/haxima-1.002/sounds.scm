@@ -1,3 +1,5 @@
+
+
 (kern-mk-sound 'sound-door-open "sounds/door-open.ogg")
 (kern-mk-sound 'sound-door-close "sounds/door-close.ogg")
 (kern-mk-sound 'sound-damage "sounds/damage.wav")
@@ -25,10 +27,10 @@
 (kern-mk-sound 'sound-portcullis-open "sounds/portcullis.ogg")
 (kern-mk-sound 'sound-portcullis-close "sounds/portcullis.ogg")
 
-(kern-mk-sound 'fanfare-quest-assigned
-	       "music/audionetwork/ANW1857_28_The-Flag-13-(Sting).wav")
 (kern-mk-sound 'fanfare-quest-updated
-	       "music/audionetwork/ANW1520_66_This-Glorious-Land-9-(Sting).wav")
+	       "sounds/ANW1857_28_The-Flag-13-(Sting).ogg")
+(kern-mk-sound 'fanfare-quest-assigned
+	       "sounds/ANW1520_66_This-Glorious-Land-9-(Sting).ogg")
 
 ;; Aliases
 (define sound-ship-move sound-splashing)

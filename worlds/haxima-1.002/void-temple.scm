@@ -50,4 +50,4 @@
  )
 
  
-(mk-place-music p_void_temple 'ml-outdoor-adventure)
+(mk-place-music p_void_temple 'ml-void)
