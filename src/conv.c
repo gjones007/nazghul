@@ -423,8 +423,9 @@ void conv_enter(Object * npc, Object * pc, struct conv *conv)
 
 		/* If the query matches a keyword prefix, expand/contract it to
 		 * use the exact keyword, else just let if through as-is. */
-		const char *keyword = conv_get_matching_keyword(conv, conv_query);
-		if (! keyword) {
+		const char *keyword =
+		    conv_get_matching_keyword(conv, conv_query);
+		if (!keyword) {
 			keyword = conv_query;
 		}
 
