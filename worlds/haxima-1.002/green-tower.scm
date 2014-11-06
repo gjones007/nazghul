@@ -106,7 +106,6 @@
 (mk-deric 'ch_deric)
 
 (kern-load "jorn.scm")
-(kern-load "abe.scm")
 (kern-load "kama.scm")
 (kern-load "abigail.scm")
 (kern-load "edward.scm") ;; for GTL
