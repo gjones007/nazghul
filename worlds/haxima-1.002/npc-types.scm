@@ -24,6 +24,7 @@
             (car default)
             (error "Missing key:" key)))))
 
+
 ;; Wrapper to kern-mk-char that supports variable args and provides defaults,
 ;; when possible, where nothing is specified. 'kwargs' should be an associated
 ;; list of keyword-argument pairs.
@@ -32,7 +33,7 @@
     (get kwargs key default))
   (define (arg key)
     (get kwargs key))
-  (kern-mk-char (optarg 'tag nil)
+  (kern-mk-char (eval (optarg 'tag nil))
                 (optarg 'name nil)
                 (arg 'species)
                 (optarg 'occ nil)
@@ -58,7 +59,7 @@
                                       (map (lambda (x) 
                                              (apply roll-to-add x))
                                            (optarg 'stuff nil))))
-                (optarg 'arms nil)
+                (map eval (optarg 'arms nil))
                 (optarg 'hooks nil)))
 
 ;; mk-stock-char -- convenience wrapper for kern-mk-char. Handles the
@@ -107,26 +108,6 @@
   (set-level (apply (eval ctor-tag) args) 
              (kern-dice-roll lvl-dice)))
 
-;; npct -- NPC type
-;; (define (mk-npct2 name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms)
-;;   (list name spec occ spr traps equip eff ai faction conv drop-fx drop-fx-parms))
-;; (define (mk-npct name spec occ spr traps equip eff ai faction conv)
-;;   (mk-npct2 name spec occ spr traps equip eff ai faction conv nil nil))
-;; (define (npct-name npct) (car npct))
-;; (define (npct-spec npct) (cadr npct))
-;; (define (npct-occ npct) (caddr npct))
-;; (define (npct-spr npct) (cadddr npct))
-;; (define (npct-traps npct) (list-ref npct 4))
-;; (define (npct-eqp npct) (list-ref npct 5))
-;; (define (npct-effects npct) (list-ref npct 6))
-;; (define (npct-ai npct) (list-ref npct 7))
-;; (define (npct-faction npct) (list-ref npct 8))
-;; (define (npct-conv npct) (list-ref npct 9))
-;; (define (npct-drop-fx npct) (list-ref npct 10))
-;; (define (npct-drop-fx-parms npct) (list-ref npct 11))
-
-
-
 ;; npcg -- generic NPC gob
 (define (npcg-mk type) 
   (list 'npcg 
@@ -166,37 +147,6 @@
 (define (mk-inventory contents)
   (kern-mk-inventory contents))
 
-;; mk-npc -- create a kernel character of the given type, faction and level
-;; (define (mk-npc npct-tag lvl)
-;;   (let* ((npct (eval npct-tag))
-;;          (npc (bind
-;;                (set-level
-;;                 (kern-char-arm-self
-;;                  (mk-stock-char
-;;                   (npct-name npct)
-;;                   (npct-spec npct)
-;;                   (npct-occ npct)
-;;                   (npct-spr npct)
-;;                   (npct-faction npct)
-;;                   (npct-ai npct)
-;;                   (mk-inventory
-;;                    (filter notnull?
-;;                            (map (lambda (x)
-;;                                   (apply roll-to-add x))
-;;                                 (npct-eqp npct))))
-;;                   nil
-;;                   (npct-conv npct)))
-;;                 lvl)
-;;                (npcg-mk npct-tag))))
-;;     (map (lambda (eff) (apply-eff-pkg npc eff))
-;;          (npct-effects npct))
-;;     (if (not (null? (npct-drop-fx npct)))
-;;         (kern-obj-add-effect npc 
-;;                              ef_loot_drop 
-;;                              (loot-drop-mk (npct-drop-fx npct)
-;;                                            (npct-drop-fx-parms npct))))
-;;     npc))
-
 (define (mk-npc npct-tag lvl)
   (let* ((npct (eval npct-tag))
          (npc (mk-char npct)))
@@ -207,13 +157,6 @@
            (apply-eff-pkg npc eff))
          (get npct 'effects nil))
     npc))
-
-;; spawn-npc -- like mk-npc but mark the npc as spawned (this allows monster
-;; managers to periodically clean up old spawned NPC's)
-;(define (spawn-npc npct-tag lvl)
-;  (let ((kchar (mk-npc npct-tag lvl)))
-;    (npcg-set-spawned! (gob kchar) #t)
-;    kchar))
 
 (define (spawn-npc npct-tag lvl)
   (let ((kchar (mk-npc npct-tag lvl)))
