@@ -104,11 +104,11 @@
 ;;      given out repeatedly
 (define (quest-data-assign-once tag)
   (kern-sound-play fanfare-quest-assigned)
-	(let ((questentry (quest-data-get tag)))
-		(if (not (quest-assigned? questentry))
-			(quest-assign questentry)
-		)
-	))
+  (let ((questentry (quest-data-get tag)))
+    (if (not (quest-assigned? questentry))
+	(quest-assign questentry)
+	)
+    ))
 	
 ;; checks if a quest from the quest data table has been assigned
 (define (quest-data-assigned? tag)
@@ -121,7 +121,6 @@
 	
 ;; assuming quest in the QDT uses a tbl for payload, updates a key/value pair
 (define (quest-data-update tag key value)
-  (kern-sound-play fanfare-quest-updated)
   (let* ((qpayload (car (qst-payload (quest-data-get tag))))
 	 (updatehook (tbl-get qpayload 'on-update))
 	 )
@@ -129,8 +128,10 @@
 	(begin
 	  (tbl-set! qpayload key value)
 	  (if (not (null? updatehook))
-	      ((eval updatehook))
-	      )
+	      (begin
+		(kern-sound-play fanfare-quest-updated)
+		((eval updatehook))
+		))
 	  (qst-bump! (quest-data-get tag))
 	  ))
     ))
