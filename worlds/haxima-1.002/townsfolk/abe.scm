@@ -1,45 +1,35 @@
 ;;----------------------------------------------------------------------------
-;; Schedule
-;; 
-;; In Green Tower
-;;----------------------------------------------------------------------------
-(define abe-bed gt-abe-bed)
-(define abe-mealplace gt-ws-tbl2)
-(define abe-workplace gt-ruins)
-(define abe-leisureplace gt-ws-hall)
-(kern-mk-sched 'sch_abe
-               (list 0  0 abe-bed          "sleeping")
-               (list 7  0 abe-mealplace    "eating")
-               (list 8  0 abe-workplace    "working")
-               (list 12 0 abe-mealplace    "eating")
-               (list 13 0 abe-workplace    "working")
-               (list 18 0 abe-mealplace    "eating")
-               (list 19 0 abe-leisureplace "idle")
-               (list 22 0 abe-bed          "sleeping")
-               )
-
-;;----------------------------------------------------------------------------
-;; Gob
-;;----------------------------------------------------------------------------
-(define (abe-mk) (list #f))
-(define (abe-met? gob) (car gob))
-(define (abe-met! gob) (set-car! gob #t))
-
-;;----------------------------------------------------------------------------
-;; Conversation
-;; 
 ;; Abe is a scholar who knows much of the runes. He fled from Absalot with the
 ;; Alchemist, and now lives in Green Tower.
 ;; ----------------------------------------------------------------------------
+
+(let ((bed gt-abe-bed)
+      (mealplace gt-ws-tbl2)
+      (workplace gt-ruins)
+      (leisureplace gt-ws-hall)
+      )
+  (kern-mk-sched 'sch_abe
+		 (list 0  0 bed          "sleeping")
+		 (list 7  0 mealplace    "eating")
+		 (list 8  0 workplace    "working")
+		 (list 12 0 mealplace    "eating")
+		 (list 13 0 workplace    "working")
+		 (list 18 0 mealplace    "eating")
+		 (list 19 0 leisureplace "idle")
+		 (list 22 0 bed          "sleeping")
+		 ))
+
+
 (define abe-conv
   (ifc green-tower-conv
 
        (reply 'default "I'll look that up in the archives when I get a chance.")
+
        (react 'hail
-	      (if (abe-met? (gob knpc))
+	      (if (kern-char-is-known? knpc)
 		  (say knpc "Hello again.")
 		  (begin
-		    (abe-met! (gob knpc))
+		    (kern-char-set-known knpc #t)
 		    (say knpc "Hello. Say, aren't you a Wanderer?")
 		    (if (yes? kpc)
 			(say knpc "I am most honored!"
@@ -51,6 +41,7 @@
 			     " Sorry. I just thought... never mind.")))))
 
        (reply 'bye "Let me know if you find any ruins!")
+
        (react 'job
 	      (say knpc "I'm a scholar."
 		   " I'm studying the ruins here in Green Tower."
@@ -64,13 +55,15 @@
 		    (say knpc "Yes, just like Absalot!"))))
 
        (reply 'name "Oh. Yes. I'm Abe.")
+
        (reply 'join "Oh, no, I couldn't possibly..."
 	      " I'm not really that sort of person.")
 
        (reply 'absa
-	      "Not many know that beneath Absalot is an older city. "
-	      "The ruins there are similar to the ruins here in Green Tower. "
-	      "I am certain they were built by the same civilization!")
+	      "Not many know that beneath Absalot is an older city."
+	      " The ruins there are similar to the ruins here in Green Tower."
+	      " I am certain they were built by the same civilization!")
+
        (react 'rune
 	      (if (any-in-inventory? kpc rune-types)
 		  (begin
@@ -139,13 +132,15 @@
 	      " and the keys were separated."
 	      " Each key takes the form of a powerful rune."
 	      " They've been lost or hidden for a long time.")
+
        (react 'eigh
 	      (say knpc "Legend says that there are eight runes in all,"
 		   " are you seeking the others?")
 	      (if (yes? kpc)
 		  (say knpc "The old stories speak of some,"
 		       " such as King Clovis's charm, or the Void Temple.")
-		  (say knpc "Just idle curiosity? Believe me, I understand.")))
+		  (say knpc "Just idle curiosity? Believe me, I understand."))
+	      )
 
        (reply 'quee "I'm not sure what you are insinuating.")
 
@@ -174,7 +169,6 @@
 	      (quest-data-update 'questentry-whereami 'shard 2)
 	      )
 
-
        (react 'civi
 	      (say knpc
 		   "I don't know much about the people that built the ruins,"
@@ -183,7 +177,8 @@
 	      (if (yes? kpc)
 		  (say knpc "Then I won't mention it!")
 		  (say knpc "Human sacrifice, cannibalism, demon worship."
-		       " Accursed practices!")))
+		       " Accursed practices!"))
+	      )
 
        (reply 'accu
 	      "Yes, the Accursed have a long history."
@@ -203,10 +198,14 @@
 
        (reply 'alch "How is the secretive old rascal?"
 	      " I haven't seen him since we were neighbors.")
+
        (reply 'neig "In Absalot. Before we had to flee.")
+
        (reply 'flee "[He sighs] It's a long story. Ask around."
-	      "It doesn't matter anymore.")
+	      " It doesn't matter anymore.")
+
        (reply 'gobl "Deric and Gen have a lot of experience with goblins.")
+
        ))
 
 (define (mk-abe)
@@ -224,5 +223,5 @@
 		 (sched . sch_abe)
 		 (ai . 'townsman-ai)
 		 (arms . (t_staff t_armor_leather))
-		 (ctor . abe-mk)
+		 (ctor . tbl-mk)
 		 )))
