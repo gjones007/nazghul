@@ -112,8 +112,8 @@ static pointer name(scheme *sc, pointer args) {  \
 #define TAG_UNK "<tag?>"
 
 typedef struct {
-        closure_t *closure;
-        void *arg;
+	closure_t *closure;
+	void *arg;
 } kern_tick_job_t;
 
 /* Struct used by callbacks which build scheme lists */
@@ -139,20 +139,19 @@ static const char *query_to_id[] = {
 #include "session_queries.h"
 };
 
-
 static void kern_tick_job_fin(void *arg)
 {
-        /* Finalizer for tick jobs. */
-        kern_tick_job_t *job = (kern_tick_job_t *)arg;
-        closure_unref(job->closure);
+	/* Finalizer for tick jobs. */
+	kern_tick_job_t *job = (kern_tick_job_t *) arg;
+	closure_unref(job->closure);
 }
 
 static void kern_on_tick(void *arg)
 {
-        /* Callback for tick jobs, runs the closure. */
-        kern_tick_job_t *job = (kern_tick_job_t *)arg;
-        closure_exec(job->closure, "p", job->arg);
-        mem_deref(job);
+	/* Callback for tick jobs, runs the closure. */
+	kern_tick_job_t *job = (kern_tick_job_t *) arg;
+	closure_exec(job->closure, "p", job->arg);
+	mem_deref(job);
 }
 
 static void image_dtor(void *val)
@@ -627,46 +626,46 @@ static pointer kern_terrain(scheme * sc, pointer args)
 		return sc->NIL;
 	}
 
-        if (scm_is_pair(sc, args)) {
-                pointer kwargs = scm_car(sc, args);
-                args = scm_cdr(sc, args);
-                while (scm_is_pair(sc, kwargs)) {
-                        pointer kwarg = scm_car(sc, kwargs);
-                        if (! scm_is_pair(sc, kwarg)) {
-                                load_err("%s: option is not a key, value pair",
-                                         __FUNCTION__);
-                                continue;
-                        }
-                        kwargs = scm_cdr(sc, kwargs);
-                        const char *key;
-                        if (unpack(sc, &kwarg, "y", &key)) {
-                                load_err("%s: option keywords must be symbols",
-                                         __FUNCTION__);
-                                continue;
-                        }
-                        if (!strcmp(key, "light")) {
-                                if (unpack(sc, &kwarg, "d", &light)) {
-                                        load_err("%s: %s must be a number",
-                                                 __FUNCTION__, key);
-                                        continue;
-                                }
-                        } else if (!strcmp(key, "on-step")) {
-                                if (unpack(sc, &kwarg, "c", &proc)) {
-                                        load_err("%s: %s must be a closure",
-                                                 __FUNCTION__, key);
-                                        continue;
-                                }
-                        } else {
-                                load_err("%s: don't recognize keyword %s",
-                                         __FUNCTION__, key);
-                                continue;
-                        }
-                }
-        }
+	if (scm_is_pair(sc, args)) {
+		pointer kwargs = scm_car(sc, args);
+		args = scm_cdr(sc, args);
+		while (scm_is_pair(sc, kwargs)) {
+			pointer kwarg = scm_car(sc, kwargs);
+			if (!scm_is_pair(sc, kwarg)) {
+				load_err("%s: option is not a key, value pair",
+					 __FUNCTION__);
+				continue;
+			}
+			kwargs = scm_cdr(sc, kwargs);
+			const char *key;
+			if (unpack(sc, &kwarg, "y", &key)) {
+				load_err("%s: option keywords must be symbols",
+					 __FUNCTION__);
+				continue;
+			}
+			if (!strcmp(key, "light")) {
+				if (unpack(sc, &kwarg, "d", &light)) {
+					load_err("%s: %s must be a number",
+						 __FUNCTION__, key);
+					continue;
+				}
+			} else if (!strcmp(key, "on-step")) {
+				if (unpack(sc, &kwarg, "c", &proc)) {
+					load_err("%s: %s must be a closure",
+						 __FUNCTION__, key);
+					continue;
+				}
+			} else {
+				load_err("%s: don't recognize keyword %s",
+					 __FUNCTION__, key);
+				continue;
+			}
+		}
+	}
 
 	terrain = terrain_new(tag, name, (struct sprite *)sprite, pclass);
-        terrain->alpha = alpha;
-        terrain->light = light;
+	terrain->alpha = alpha;
+	terrain->light = light;
 
 	if (proc != sc->NIL) {
 		terrain->effect = closure_new_ref(sc, proc);
@@ -704,8 +703,8 @@ static pointer kern_mk_terrain(scheme * sc, pointer args)
 	}
 
 	terrain = terrain_new(tag, name, (struct sprite *)sprite, pclass);
-        terrain->alpha = alpha;
-        terrain->light = light;
+	terrain->alpha = alpha;
+	terrain->light = light;
 
 	if (proc != sc->NIL) {
 		terrain->effect = closure_new_ref(sc, proc);
@@ -3604,13 +3603,14 @@ static pointer kern_add_tick_job(scheme * sc, pointer args)
 		return sc->NIL;
 	}
 
-        /* Allocate a tick job to hold the closure. */
-        kern_tick_job_t *job = MEM_ALLOC_TYPE(kern_tick_job_t, kern_tick_job_fin);
-        job->arg = data;
-        job->closure = closure_new_ref(sc, proc);
+	/* Allocate a tick job to hold the closure. */
+	kern_tick_job_t *job =
+	    MEM_ALLOC_TYPE(kern_tick_job_t, kern_tick_job_fin);
+	job->arg = data;
+	job->closure = closure_new_ref(sc, proc);
 
-        /* Schedule the job to run. */
-        session_add_tick_job(Session, tick, kern_on_tick, job);
+	/* Schedule the job to run. */
+	session_add_tick_job(Session, tick, kern_on_tick, job);
 
 	return sc->NIL;
 }
@@ -5764,10 +5764,9 @@ KERN_API_CALL(kern_place_get_gob)
 		return sc->NIL;
 	}
 
-	struct gob* gob = place_get_gob(place);
+	struct gob *gob = place_get_gob(place);
 	return gob ? gob->p : sc->NIL;
 }
-
 
 KERN_API_CALL(kern_place_set_gob)
 {
@@ -7412,9 +7411,8 @@ KERN_API_CALL(kern_add_hook)
 	if (scm_is_pair(sc, args)) {
 		pargs = scm_car(sc, args);
 	}
-	void *ret =
-	    session_add_hook(Session, (session_hook_id_t) id,
-			     closure_new(sc, pproc), pargs);
+	void *ret = session_add_hook(Session, (session_hook_id_t) id,
+				     closure_new(sc, pproc), pargs);
 	return ret ? scm_mk_ptr(sc, ret) : sc->NIL;
 }
 
@@ -9935,42 +9933,33 @@ scheme *kern_init(void)
 	API_DECL(sc, "kern-char-add-experience", kern_char_add_experience);
 	API_DECL(sc, "kern-char-arm-self", kern_char_arm_self);
 	API_DECL(sc, "kern-char-attack", kern_char_attack);
-	API_DECL(sc, "kern-char-dec-mana", kern_char_dec_mana);
 	API_DECL(sc, "kern-char-charm", kern_char_charm);
+	API_DECL(sc, "kern-char-dec-mana", kern_char_dec_mana);
 	API_DECL(sc, "kern-char-get-arms", kern_char_get_arms);
-	API_DECL(sc, "kern-char-get-experience-value",
-		 kern_char_get_experience_value);
-	API_DECL(sc, "kern-char-get-hp", kern_char_get_hp);
-	API_DECL(sc, "kern-char-get-inventory", kern_char_get_inventory);
-	API_DECL(sc, "kern-char-get-level", kern_char_get_level);
-	API_DECL(sc, "kern-char-get-mana", kern_char_get_mana);
-	API_DECL(sc, "kern-char-get-occ", kern_char_get_occ);
-	API_DECL(sc, "kern-char-get-max-hp", kern_char_get_max_hp);
-	API_DECL(sc, "kern-char-get-max-mana", kern_char_get_max_mana);
-	API_DECL(sc, "kern-char-get-party", kern_char_get_party);
-	API_DECL(sc, "kern-char-get-readied-weapons",
-		 kern_char_get_readied_weapons);
-	API_DECL(sc, "kern-char-get-species", kern_char_get_species);
-	API_DECL(sc, "kern-char-get-strength", kern_char_get_strength);
-	API_DECL(sc, "kern-char-get-dexterity", kern_char_get_dexterity);
-	API_DECL(sc, "kern-char-get-intelligence", kern_char_get_intelligence);
-	API_DECL(sc, "kern-char-get-base-strength",
-		 kern_char_get_base_strength);
 	API_DECL(sc, "kern-char-get-base-dexterity",
 		 kern_char_get_base_dexterity);
 	API_DECL(sc, "kern-char-get-base-intelligence",
 		 kern_char_get_base_intelligence);
-	API_DECL(sc, "kern-char-set-sched", kern_char_set_sched);
-	API_DECL(sc, "kern-char-get-speed", kern_char_get_speed);
-	API_DECL(sc, "kern-char-set-strength", kern_char_set_strength);
-	API_DECL(sc, "kern-char-set-description", kern_char_set_description);
-	API_DECL(sc, "kern-char-set-dexterity", kern_char_set_dexterity);
-	API_DECL(sc, "kern-char-set-intelligence", kern_char_set_intelligence);
-	API_DECL(sc, "kern-char-task-abort", kern_char_task_abort);
-	API_DECL(sc, "kern-char-task-begin", kern_char_task_begin);
-	API_DECL(sc, "kern-char-task-continue", kern_char_task_continue);
-	API_DECL(sc, "kern-char-task-end", kern_char_task_end);
+	API_DECL(sc, "kern-char-get-base-strength",
+		 kern_char_get_base_strength);
+	API_DECL(sc, "kern-char-get-dexterity", kern_char_get_dexterity);
+	API_DECL(sc, "kern-char-get-experience-value",
+		 kern_char_get_experience_value);
+	API_DECL(sc, "kern-char-get-hp", kern_char_get_hp);
+	API_DECL(sc, "kern-char-get-intelligence", kern_char_get_intelligence);
+	API_DECL(sc, "kern-char-get-inventory", kern_char_get_inventory);
+	API_DECL(sc, "kern-char-get-level", kern_char_get_level);
+	API_DECL(sc, "kern-char-get-mana", kern_char_get_mana);
+	API_DECL(sc, "kern-char-get-max-hp", kern_char_get_max_hp);
+	API_DECL(sc, "kern-char-get-max-mana", kern_char_get_max_mana);
+	API_DECL(sc, "kern-char-get-occ", kern_char_get_occ);
+	API_DECL(sc, "kern-char-get-party", kern_char_get_party);
+	API_DECL(sc, "kern-char-get-readied-weapons",
+		 kern_char_get_readied_weapons);
 	API_DECL(sc, "kern-char-get-skills", kern_char_get_skills);
+	API_DECL(sc, "kern-char-get-species", kern_char_get_species);
+	API_DECL(sc, "kern-char-get-speed", kern_char_get_speed);
+	API_DECL(sc, "kern-char-get-strength", kern_char_get_strength);
 	API_DECL(sc, "kern-char-get-weapons", kern_char_get_weapons);
 	API_DECL(sc, "kern-char-is-asleep?", kern_char_is_asleep);
 	API_DECL(sc, "kern-char-is-dead?", kern_char_is_dead);
@@ -9982,22 +9971,31 @@ scheme *kern_init(void)
 	API_DECL(sc, "kern-char-resurrect", kern_char_resurrect);
 	API_DECL(sc, "kern-char-set-ai", kern_char_set_ai);
 	API_DECL(sc, "kern-char-set-control-mode", kern_char_set_control_mode);
+	API_DECL(sc, "kern-char-set-description", kern_char_set_description);
+	API_DECL(sc, "kern-char-set-dexterity", kern_char_set_dexterity);
 	API_DECL(sc, "kern-char-set-fleeing", kern_char_set_fleeing);
 	API_DECL(sc, "kern-char-set-hp", kern_char_set_hp);
+	API_DECL(sc, "kern-char-set-intelligence", kern_char_set_intelligence);
 	API_DECL(sc, "kern-char-set-known", kern_char_set_known);
 	API_DECL(sc, "kern-char-set-level", kern_char_set_level);
 	API_DECL(sc, "kern-char-set-mana", kern_char_set_mana);
 	API_DECL(sc, "kern-char-set-player-controlled",
 		 kern_char_set_player_controlled);
+	API_DECL(sc, "kern-char-set-sched", kern_char_set_sched);
 	API_DECL(sc, "kern-char-set-schedule", kern_char_set_schedule);
 	API_DECL(sc, "kern-char-set-sleep", kern_char_set_sleep);
+	API_DECL(sc, "kern-char-set-strength", kern_char_set_strength);
+	API_DECL(sc, "kern-char-task-abort", kern_char_task_abort);
+	API_DECL(sc, "kern-char-task-begin", kern_char_task_begin);
+	API_DECL(sc, "kern-char-task-continue", kern_char_task_continue);
+	API_DECL(sc, "kern-char-task-end", kern_char_task_end);
 	API_DECL(sc, "kern-char-uncharm", kern_char_uncharm);
 	API_DECL(sc, "kern-char-unready", kern_char_unready);
 
 	/* kern-event api */
 	API_DECL(sc, "kern-event-run-keyhandler", kern_event_run_keyhandler);
 
-        /* new-style ctors */
+	/* new-style ctors */
 	API_DECL(sc, "kern-terrain", kern_terrain);
 
 	/* kern-map api */
