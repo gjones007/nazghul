@@ -311,10 +311,20 @@ static int unpack(scheme * sc, pointer * cell, const char *fmt, ...)
 			break;
 		case 'p':	/* C pointer */
 			ptrval = va_arg(args, void **);
+		try_c_ptr:
 			if (car == sc->NIL) {
 				*ptrval = 0;
 			} else if (scm_is_ptr(sc, car)) {
 				*ptrval = scm_ptr_val(sc, car);
+			} else if (scm_is_sym(sc, car)) {
+				/* I'll allow symbols which evaluate to C
+				 * pointers. */
+				pointer slot;
+				slot = sc->vptr->find_slot_in_env(sc,
+								  sc->envir,
+								  car, 1);
+				car = scm_cdr(sc, slot);
+				goto try_c_ptr;
 			} else {
 				errs++;
 				load_err("arg %d not a C ptr", count);
@@ -426,7 +436,7 @@ static int unpack_rect(scheme * sc, pointer * args, SDL_Rect * rect)
 
 	/* Can't use the rect fields directly because they're only Uint16 */
 	if (unpack(sc, &prect, "dddd", &x, &y, &w, &h)) {
-		load_err("%s: error unpacking rect elements", __FUNCTION__);
+		load_err("%s: error unpacking rect elements", __func__);
 		return -1;
 	}
 
@@ -622,7 +632,7 @@ static pointer kern_terrain(scheme * sc, pointer args)
 	/* Revisit: ignore effects for now */
 
 	if (unpack(sc, &args, "ysdpd", &tag, &name, &pclass, &sprite, &alpha)) {
-		load_err("%s %s: bad args", __FUNCTION__, tag);
+		load_err("%s %s: bad args", __func__, tag);
 		return sc->NIL;
 	}
 
@@ -633,31 +643,31 @@ static pointer kern_terrain(scheme * sc, pointer args)
 			pointer kwarg = scm_car(sc, kwargs);
 			if (!scm_is_pair(sc, kwarg)) {
 				load_err("%s: option is not a key, value pair",
-					 __FUNCTION__);
+					 __func__);
 				continue;
 			}
 			kwargs = scm_cdr(sc, kwargs);
 			const char *key;
 			if (unpack(sc, &kwarg, "y", &key)) {
 				load_err("%s: option keywords must be symbols",
-					 __FUNCTION__);
+					 __func__);
 				continue;
 			}
 			if (!strcmp(key, "light")) {
 				if (unpack(sc, &kwarg, "d", &light)) {
 					load_err("%s: %s must be a number",
-						 __FUNCTION__, key);
+						 __func__, key);
 					continue;
 				}
 			} else if (!strcmp(key, "on-step")) {
 				if (unpack(sc, &kwarg, "c", &proc)) {
 					load_err("%s: %s must be a closure",
-						 __FUNCTION__, key);
+						 __func__, key);
 					continue;
 				}
 			} else {
 				load_err("%s: don't recognize keyword %s",
-					 __FUNCTION__, key);
+					 __func__, key);
 				continue;
 			}
 		}
@@ -1698,12 +1708,12 @@ static void kern_load_conv(scheme * sc, pointer sym, Object * obj)
 	}
 
 	if (!(proc = closure_new_ref(sc, sym))) {
-		load_err("%s: closure_new failed", __FUNCTION__);
+		load_err("%s: closure_new failed", __func__);
 		return;
 	}
 
 	if (!(conv = conv_new(proc))) {
-		load_err("%s: conv_new failed", __FUNCTION__);
+		load_err("%s: conv_new failed", __func__);
 		goto done2;
 	}
 
@@ -2904,24 +2914,24 @@ static pointer kern_conv_trade(scheme * sc, pointer args)
 	pointer catalog = sc->NIL;
 
 	if (unpack(sc, &args, "pps", &npc, &pc, &menu)) {
-		rt_err("kern-conv-trade: bad args");
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!npc || !pc) {
-		rt_err("kern-conv-trade: null kernel object(s)");
+		rt_err("%s: null kernel object(s)", __func__);
 		return sc->NIL;
 	}
 
 	/* Get the catalog */
 	if (!scm_is_pair(sc, args)) {
-		rt_err("kern-conv-trade: no catalog!");
+		rt_err("%s: no catalog!", __func__);
 		return sc->NIL;
 	}
 	catalog = scm_car(sc, args);
 	args = scm_cdr(sc, args);
 	if (!scm_is_pair(sc, catalog)) {
-		rt_err("kern-conv-trade: catalog is not a list");
+		rt_err("%s: catalog is not a list", __func__);
 		return sc->NIL;
 	}
 
@@ -2929,7 +2939,7 @@ static pointer kern_conv_trade(scheme * sc, pointer args)
 	merch.name = npc->getName();
 	merch.n_trades = scm_len(sc, catalog);
 	if (!merch.n_trades) {
-		rt_err("kern-conv-trade: nothing in trade list");
+		rt_err("%s: nothing in trade list", __func__);
 		return sc->NIL;
 	}
 	merch.trades = (struct trade_info *)calloc(merch.n_trades,
@@ -2946,14 +2956,13 @@ static pointer kern_conv_trade(scheme * sc, pointer args)
 
 		if (unpack
 		    (sc, &p, "pds", &type, &trade->cost, &trade->sales_pitch)) {
-			rt_err("kern-conv-trade: bad args in trade list %d", i);
+			rt_err("%s: bad args in trade list %d", __func__, i);
 			goto abort;
 		}
 
 		if (!type) {
-			rt_err
-			    ("kern-conv-trade: null object type in trade list %d",
-			     i);
+			rt_err("%s: null object type in trade list %d",
+			       __func__, i);
 			goto abort;
 		}
 
@@ -4608,12 +4617,12 @@ KERN_API_CALL(kern_char_task_begin)
 	}
 
 	if (unpack(sc, &args, "scl", &taskname, &taskproc, &taskgob)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->F;
 	}
 
 	if (taskproc == sc->NIL) {
-		rt_err("%s: nil task procedure not allowed", __FUNCTION__);
+		rt_err("%s: nil task procedure not allowed", __func__);
 		return sc->F;
 	}
 
@@ -4655,7 +4664,7 @@ KERN_API_CALL(kern_char_task_continue)
 	}
 
 	if (unpack(sc, &args, "scl", &taskname, &taskproc, &taskgob)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->F;
 	}
 
@@ -5760,7 +5769,7 @@ KERN_API_CALL(kern_place_get_gob)
 	struct place *place;
 
 	if (unpack(sc, &args, "p", &place)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
@@ -5773,12 +5782,12 @@ KERN_API_CALL(kern_place_set_gob)
 	struct place *place;
 
 	if (unpack(sc, &args, "p", &place)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!scm_is_pair(sc, args)) {
-		rt_err("%s: no gob specified", __FUNCTION__);
+		rt_err("%s: no gob specified", __func__);
 		return sc->NIL;
 	}
 
@@ -6209,7 +6218,7 @@ KERN_API_CALL(kern_set_turns_per_minute)
 	int val;
 
 	if (unpack(sc, &args, "d", &val)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->F;
 	}
 
@@ -7391,10 +7400,10 @@ KERN_API_CALL(kern_add_hook)
 	char *hookstr;
 
 	if (unpack(sc, &args, "yc", &hookstr, &pproc)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
-////         printf("%s() %s: ", __FUNCTION__, hookstr);
+////         printf("%s() %s: ", __func__, hookstr);
 ////         if (scm_is_sym(sc, pproc)) {
 ////             printf("%s\n", scm_sym_val(sc, pproc));
 ////         } else {
@@ -7403,7 +7412,7 @@ KERN_API_CALL(kern_add_hook)
 
 	session_hook_id_t id = session_str_to_hook_id(hookstr);
 	if (id >= NUM_HOOKS) {
-		load_err("%s: bad hook id=%d (%s)", __FUNCTION__, id, hookstr);
+		load_err("%s: bad hook id=%d (%s)", __func__, id, hookstr);
 		return sc->NIL;
 	}
 
@@ -7422,7 +7431,7 @@ KERN_API_CALL(kern_rm_hook)
 	char *hookstr;
 
 	if (unpack(sc, &args, "yc", &hookstr, &pproc)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
@@ -7441,7 +7450,7 @@ KERN_API_CALL(kern_add_query)
 	int id = 0;
 
 	if (unpack(sc, &args, "yo", &str, &pproc)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->F;
 	}
 
@@ -9492,7 +9501,7 @@ KERN_API_CALL(kern_status_set_title)
 {
 	char *title;
 	if (unpack(sc, &args, "s", &title)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
@@ -9517,12 +9526,12 @@ KERN_API_CALL(kern_screen_print)
 	int flags = 0;
 
 	if (unpack_rect(sc, &args, &rect)) {
-		load_err("%s: error unpacking rect", __FUNCTION__);
+		load_err("%s: error unpacking rect", __func__);
 		return sc->NIL;
 	}
 
 	if (unpack(sc, &args, "d", &flags)) {
-		load_err("%s: error unpacking flags", __FUNCTION__);
+		load_err("%s: error unpacking flags", __func__);
 		return sc->NIL;
 	}
 
@@ -9539,7 +9548,7 @@ KERN_API_CALL(kern_screen_print)
 		} else if (scm_is_real(sc, val)) {
 			n = snprintf(ptr, room, "%f", scm_real_val(sc, val));
 		} else {
-			rt_err("%s: unknown type", __FUNCTION__);
+			rt_err("%s: unknown type", __func__);
 		}
 
 		ptr += n;
@@ -9566,12 +9575,12 @@ KERN_API_CALL(kern_screen_draw_sprite)
 	struct sprite *toblit;
 
 	if (unpack_rect(sc, &args, &rect)) {
-		load_err("%s: error unpacking rect", __FUNCTION__);
+		load_err("%s: error unpacking rect", __func__);
 		return sc->NIL;
 	}
 
 	if (unpack(sc, &args, "d", &flags)) {
-		load_err("%s: error unpacking flags", __FUNCTION__);
+		load_err("%s: error unpacking flags", __func__);
 		return sc->NIL;
 	}
 
@@ -9599,12 +9608,12 @@ KERN_API_CALL(kern_screen_shade)
 	int amount;
 
 	if (unpack_rect(sc, &args, &rect)) {
-		load_err("%s: error unpacking 'screenrect' arg", __FUNCTION__);
+		load_err("%s: error unpacking 'screenrect' arg", __func__);
 		return sc->NIL;
 	}
 
 	if (unpack(sc, &args, "d", &amount)) {
-		load_err("%s: error unpacking 'amount' arg", __FUNCTION__);
+		load_err("%s: error unpacking 'amount' arg", __func__);
 		return sc->NIL;
 	}
 
@@ -9617,7 +9626,7 @@ KERN_API_CALL(kern_screen_erase)
 	SDL_Rect rect;
 
 	if (unpack_rect(sc, &args, &rect)) {
-		load_err("%s: error unpacking 'screenrect' arg", __FUNCTION__);
+		load_err("%s: error unpacking 'screenrect' arg", __func__);
 		return sc->NIL;
 	}
 
@@ -9630,7 +9639,7 @@ KERN_API_CALL(kern_screen_update)
 	SDL_Rect rect;
 
 	if (unpack_rect(sc, &args, &rect)) {
-		load_err("%s: error unpacking 'screenrect' arg", __FUNCTION__);
+		load_err("%s: error unpacking 'screenrect' arg", __func__);
 		return sc->NIL;
 	}
 
@@ -9655,17 +9664,17 @@ KERN_API_CALL(kern_event_run_keyhandler)
 	struct closure *proc;
 
 	if (unpack(sc, &args, "o", &pclos)) {
-		load_err("%s: error in arg", __FUNCTION__);
+		load_err("%s: error in arg", __func__);
 		return sc->F;
 	}
 
 	if (sc->NIL == pclos) {
-		load_err("%s: NIL closure arg", __FUNCTION__);
+		load_err("%s: NIL closure arg", __func__);
 		return sc->F;
 	}
 
 	if (!(proc = closure_new_ref(sc, pclos))) {
-		load_err("%s: closure_new failed", __FUNCTION__);
+		load_err("%s: closure_new failed", __func__);
 		return sc->F;
 	}
 
@@ -9727,12 +9736,12 @@ KERN_API_CALL(kern_applet_run)
 	struct kern_applet *ka;
 
 	if (unpack(sc, &args, "ool", &prun, &ppaint, &pgob)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!(ka = KERN_ALLOC(struct kern_applet))) {
-		load_err("%s: alloc failed", __FUNCTION__);
+		load_err("%s: alloc failed", __func__);
 		return sc->NIL;
 	}
 
@@ -9798,18 +9807,18 @@ KERN_API_CALL(kern_define)
 	struct kern_define_data *data;
 
 	if (unpack(sc, &args, "yl", &str, &pcell)) {
-		load_err("%s: bad args", __FUNCTION__);
+		load_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!(data = KERN_ALLOC(struct kern_define_data))) {
-		load_err("%s: alloc failed", __FUNCTION__);
+		load_err("%s: alloc failed", __func__);
 		return sc->NIL;
 	}
 
 	if (!(data->sym = strdup(str))) {
 		KERN_FREE(data);
-		load_err("%s: strdup failed", __FUNCTION__);
+		load_err("%s: strdup failed", __func__);
 		return sc->NIL;
 	}
 
@@ -9826,12 +9835,12 @@ KERN_API_CALL(kern_obj_set_portrait)
 	struct sprite *sprite;
 
 	if (unpack(sc, &args, "pp", &obj, &sprite)) {
-		rt_err("%s: bad args", __FUNCTION__);
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!obj) {
-		rt_err("%s: null object", __FUNCTION__);
+		rt_err("%s: null object", __func__);
 		return sc->NIL;
 	}
 
@@ -9854,7 +9863,7 @@ KERN_API_CALL(kern_script_version)
 
 	if (sscanf(verstr, "%u.%u.%u", &Session->major, &Session->minor,
 		   &Session->release) != 3) {
-		load_err("%s: bad version string '%s'", __FUNCTION__, verstr);
+		load_err("%s: bad version string '%s'", __func__, verstr);
 		return sc->NIL;
 	}
 
