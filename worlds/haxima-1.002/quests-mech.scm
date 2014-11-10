@@ -138,7 +138,6 @@
 	
 ;; updates as per quest-data-update, but additionally triggers a passed in function
 (define (quest-data-update-with tag key value callback)
-  (kern-sound-play fanfare-quest-updated)
   (let* (	
          (quest (quest-data-get tag))
          (qpayload (car (qst-payload quest)))
@@ -152,8 +151,10 @@
                 (tbl-set! qpayload key value)
                 (callback quest)
                 (if (not (null? updatehook))
-                    ((eval updatehook))
-                    )		
+		    (begin
+		      (kern-sound-play fanfare-quest-updated)
+		      ((eval updatehook))
+		      ))
                 (qst-bump! (quest-data-get tag))
                 )
               )
