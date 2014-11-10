@@ -62,7 +62,8 @@
 
 ;; trigger quest update
 (define (rune-k-receive ktype kchar)
-	(quest-data-update-with 'questentry-thiefrune 'recovered 1 (quest-notify (grant-party-xp-fn 50)))
+	(quest-data-update-with 'questentry-thiefrune 'recovered 1
+				(quest-notify (grant-party-xp-fn 50)))
 	(quest-data-update 'questentry-rune-k 'player-got-rune 1)
 	)
 (define (rune-k-get kobj kchar)
