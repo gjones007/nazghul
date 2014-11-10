@@ -2,7 +2,9 @@
 ;; Abe is a scholar who knows much of the runes. He fled from Absalot with the
 ;; Alchemist, and now lives in Green Tower.
 ;; ----------------------------------------------------------------------------
-
+;;----------------------------------------------------------------------------
+;; Schedule
+;;----------------------------------------------------------------------------
 (let ((bed gt-abe-bed)
       (mealplace gt-ws-tbl2)
       (workplace gt-ruins)
@@ -19,7 +21,9 @@
 		 (list 22 0 bed          "sleeping")
 		 ))
 
-
+;;----------------------------------------------------------------------------
+;; Conversation
+;;----------------------------------------------------------------------------
 (define abe-conv
   (ifc green-tower-conv
 
