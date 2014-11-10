@@ -24,13 +24,13 @@
 ;; if current value is not a list, converts it to a list first
 (define (tbl-append! tbl key val)
   (let ((entry (assoc key (cdr tbl))))
-     (cond ((or (not entry)
-            	(not (pair? (cdr entry))))
-        	(tbl-set! tbl key (list val)))
-        ((not (pair? (cadr entry)))
-        	(set-cdr! entry (list (cons val (cdr entry)))))
-        (#t 
-        	(set-cdr! entry (list (cons val (cadr entry))))))))
+    (cond ((or (not entry)
+	       (not (pair? (cdr entry))))
+	   (tbl-set! tbl key (list val)))
+	  ((not (pair? (cadr entry)))
+	   (set-cdr! entry (list (cons val (cdr entry)))))
+	  (#t
+	   (set-cdr! entry (list (cons val (cadr entry))))))))
 
 ;; run a procedure on each value in the table
 (define (tbl-for-each-val fx tbl)
@@ -47,23 +47,22 @@
 
 ;; set table values from name/value list
 (define (tbl-set-all! tbl entrydata)
-	(if (not (null? entrydata))
-		(begin
-			(tbl-set! tbl (car entrydata) (car (cdr entrydata)))
-			(tbl-set-all! tbl (cddr entrydata))
-		)
-	))
+  (if (not (null? entrydata))
+      (begin
+	(tbl-set! tbl (car entrydata) (car (cdr entrydata)))
+	(tbl-set-all! tbl (cddr entrydata))
+	)))
 
 (define (tbl-build . entrydata)
-	(let ((tbl (tbl-mk)))
-		(tbl-set-all! tbl entrydata)
-		tbl
-	))
+  (let ((tbl (tbl-mk)))
+    (tbl-set-all! tbl entrydata)
+    tbl
+    ))
 
 (define (is-tbl? tbl)
   (and (pair? tbl)
        (equal? (car tbl) '*tbl*)
        )
   )
-	
-	
+
+
