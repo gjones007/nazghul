@@ -1,19 +1,13 @@
-;;############################################################################
+;;----------------------------------------------------------------------------
 ;; Module: townsfolk
 ;;
 ;; All townsfolk are loaded from this file. This file should be loaded by saved
 ;; games as well as new ones.
 ;;
-;; Townsfolk are NPCs who have conversations, schedules, etc. They are
+;; Townsfolk are NPCs who have conversations, schedules, and gobs. They are
 ;; "permanent", in that they aren't automatically generated for combat or guard
 ;; duty.
-;;############################################################################
-
-;;============================================================================
-;; Procedures
-;;
-;; Procedures common but limited to this module should go here.
-;;============================================================================
+;;----------------------------------------------------------------------------
 
 ;;----------------------------------------------------------------------------
 ;; mk-townsman -- create a townsman from the list of options in `kwargs`, which
@@ -31,7 +25,8 @@
     (kern-char-set-description kchar (arg 'desc))
     kchar))
 
-;;============================================================================
-;; The files to load.
-;;============================================================================
+;;----------------------------------------------------------------------------
+;; The character files.
+;;----------------------------------------------------------------------------
 (load "townsfolk/abe.scm")
+(load "townsfolk/alchemist.scm")
