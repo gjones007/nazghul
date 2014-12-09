@@ -40,11 +40,12 @@
 (kern-load "voidgap-mech.scm")
 (kern-load "player.scm")
 (kern-load "turns.scm")
+(kern-load "townsman.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Time -- this needs to be set before loading any dungeon rooms
 ;;----------------------------------------------------------------------------
-(define hour 07)
+(define hour 09) ;; debug -- should be 7
 (define minutes 00)
 (define time-in-minutes (+ (* hour 60) minutes))
 (define game-start-time (time-mk 1611 0 0 0 hour minutes))
@@ -309,8 +310,11 @@
     ;; Quick-and-dirty start
     (begin
       (define (simple-start kplayer)
+	(kern-obj-put-at (kern-mk-obj t_rune_k 1) (list p_oparine 4 28))
+	(kern-obj-put-at (kern-mk-obj t_hydras_blood 1) (list p_oparine 5 28))
+	(kern-obj-put-at (kern-mk-obj t_dragons_blood 1) (list p_oparine 6 28))
 	(kern-obj-put-at kplayer
-			 (list p_green_tower 50 51)))
+			 (list p_oparine 3 28)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

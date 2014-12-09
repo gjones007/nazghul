@@ -109,6 +109,7 @@
 (kern-load "kama.scm")
 (kern-load "abigail.scm")
 (kern-load "edward.scm") ;; for GTL
+(kern-load "abe.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Place

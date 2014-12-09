@@ -34,17 +34,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; quest assignment callbacks for use in quest definition
 
-;; causes a notification on assignment
+;; Called when a quest is assigned.
 (define (quest-assign-notify quest target)
   (let ((notifytext (if (qst-complete? quest)
 			"^c+mQuest completed:^c-\n^c+m"
 			"^c+mNew quest:^c-\n^c+m"
 			)))
-    (if use-quest-pane
-	(kern-log-msg notifytext (qst-title quest) "^c-")
-	)
-    #t
-    ))
+    (println "quest-assign-notify")
+    (kern-sound-play fanfare-quest-assigned)
+    (kern-log-msg notifytext (qst-title quest) "^c-")
+    #t))
 
 ;; ensures parent/subquest relation once quest is assigned
 (define (quest-assign-subquest quest target)
@@ -96,19 +95,15 @@
     (tbl-get qpayload tag)))
 
 ;; assigns a quest from the quest data table, while ensuring it is not
-;;      given out repeatedly
+;; given out repeatedly
 (define (quest-data-assign-once tag)
-  (kern-sound-play fanfare-quest-assigned)
   (let ((questentry (quest-data-get tag)))
     (if (not (quest-assigned? questentry))
-	(quest-assign questentry)
-	)
-    ))
+	(quest-assign questentry))))
 
 ;; checks if a quest from the quest data table has been assigned
 (define (quest-data-assigned? tag)
-  (quest-assigned? (quest-data-get tag))
-  )
+  (quest-assigned? (quest-data-get tag)))
 
 ;; checks if a quest from the quest data table has been assigned and completed
 (define (quest-data-complete? tag)
@@ -117,46 +112,33 @@
 ;; assuming quest in the QDT uses a tbl for payload, updates a key/value pair
 (define (quest-data-update tag key value)
   (let* ((qpayload (car (qst-payload (quest-data-get tag))))
-	 (updatehook (tbl-get qpayload 'on-update))
-	 )
+	 (updatehook (tbl-get qpayload 'on-update)))
     (if (not (equal? (tbl-get qpayload key) value))
 	(begin
 	  (tbl-set! qpayload key value)
+	  (if (quest-data-assigned? tag)
+	      (kern-sound-play fanfare-quest-updated))
 	  (if (not (null? updatehook))
-	      (begin
-		(kern-sound-play fanfare-quest-updated)
-		((eval updatehook))
-		))
-	  (qst-bump! (quest-data-get tag))
-	  ))
-    ))
+		((eval updatehook)))
+	  (qst-bump! (quest-data-get tag))))))
 
-;; updates as per quest-data-update, but additionally triggers a passed in function
+;; updates as per quest-data-update, but additionally triggers a passed in
+;; function
 (define (quest-data-update-with tag key value callback)
-  (let* (	
-         (quest (quest-data-get tag))
-         (qpayload (car (qst-payload quest)))
-         )
+  (let* ((quest (quest-data-get tag))
+         (qpayload (car (qst-payload quest))))
     (if (is-tbl? qpayload)
-        (let (
-              (updatehook (tbl-get qpayload 'on-update))
-              )
+        (let ((updatehook (tbl-get qpayload 'on-update)))
           (if (not (equal? (tbl-get qpayload key) value))
               (begin			
                 (tbl-set! qpayload key value)
                 (callback quest)
+		(if (quest-data-assigned? tag)
+		    (kern-sound-play fanfare-quest-updated))
                 (if (not (null? updatehook))
-		    (begin
-		      (kern-sound-play fanfare-quest-updated)
-		      ((eval updatehook))
-		      ))
-                (qst-bump! (quest-data-get tag))
-                )
-              )
-          )
-        )
-    )
-  )
+		      ((eval updatehook)))
+                (qst-bump! (quest-data-get tag))))))))
+
 
 ;; sets the description for a quest in the QDT
 (define (quest-data-descr! tag descr)

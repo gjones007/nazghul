@@ -77,6 +77,7 @@
 (kern-load "lia.scm")
 (kern-load "fing.scm")
 (kern-load "ghertie.scm")
+(kern-load "alchemist.scm")
 
 ;;----------------------------------------------------------------------------
 ;; Place

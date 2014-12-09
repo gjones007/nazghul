@@ -1,0 +1,7 @@
+(define (mk-townsman kwargs)
+  (define (arg key)
+    (get kwargs key))
+  (let ((kchar (mk-char kwargs)))
+    (bind kchar (apply (arg 'ctor)))
+    (kern-char-set-description kchar (arg 'desc))
+    kchar))
