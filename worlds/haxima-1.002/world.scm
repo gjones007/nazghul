@@ -15,6 +15,7 @@
 
  ;; subplaces:g
  (list
+  (list p_cloviskeep        275 336)
   (list p_moongate_clearing 336 389)
   (list p_gregors_hut       335 416)
   (list p_abandoned_farm    336 442)

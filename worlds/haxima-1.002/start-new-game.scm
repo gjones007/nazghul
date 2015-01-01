@@ -66,6 +66,9 @@
 ;;----------------------------------------------------------------------------
 ;; Places
 ;;----------------------------------------------------------------------------
+(load "maps/init.scm")
+(load "places/init.scm")
+
 (load "gregors-hut.scm")
 (load "moongate-clearing.scm")
 (load "abandoned-farm.scm")
@@ -314,7 +317,7 @@
 	(kern-obj-put-at (kern-mk-obj t_hydras_blood 1) (list p_oparine 5 28))
 	(kern-obj-put-at (kern-mk-obj t_dragons_blood 1) (list p_oparine 6 28))
 	(kern-obj-put-at kplayer
-			 (list p_oparine 3 28)))
+			 (list p_cloviskeep 31 63)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

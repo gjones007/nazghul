@@ -21,7 +21,8 @@
     (list  "~s"   t_shallow_sludge)
     (list  "dd"   t_dirt)
     (list  "gg"   t_gravel)
-	
+    (list  "xf"   t_fence)
+
     (list  "%%"   t_bog)                ;; "bog"
     (list  ".."   t_grass)              ;; "grass"
     (list  ".!"   t_sunlit_grass)              ;; "grass"

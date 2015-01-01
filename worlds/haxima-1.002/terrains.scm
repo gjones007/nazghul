@@ -262,6 +262,7 @@
    (list 't_wis_sign      "a sign of wisdom" pclass-wall s_book_sign             trn 1024 nil) 
    (list 't_nat_rock      "natural stone wall" pclass-wall s_nat_rock            opq 0 nil) 
    (list 't_fake_wall_nrock  "natural stone wall" pclass-forest  s_secret_nrock   opq 0 nil)
+   (list 't_fence "a fence" pclass-boulder s_fence trn 0 nil)
    ))
 
 (map (lambda (terrain) (apply kern-mk-terrain terrain)) terrains)

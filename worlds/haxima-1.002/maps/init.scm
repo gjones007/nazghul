@@ -1,0 +1,1 @@
+(load "maps/cloviskeep.scm")
