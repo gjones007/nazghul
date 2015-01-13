@@ -37,15 +37,18 @@
 ;; 'tag' will become the scheme variable name for the effect.
 ;; 'name' is displayed in the UI.
 ;; 'sprite' is displayed in the UI. It needs to be an 8x16 sprite.
-;; 'exec' is called when the hook fires: (gob subject)
-;; 'apply' is called when the effect is attached: (gob subject)
-;; 'rm' is called when the effect is removed: (gob subject)
+;; 'exec' is called when the hook fires: (fgob subject)
+;; 'apply' is called when the effect is attached: (fgob subject)
+;; 'rm' is called when the effect is removed: (fgob subject)
 ;; 'restart' is called when...
 ;; 'hook' is the hook to run the exec proc on.
 ;; 'sym' is unused.
 ;; 'ddc' is ???
 ;; 'cum' is true iff the effect can be applied more than once.
 ;; 'dur' is the duration of the effect in game minutes
+;;
+;; The 'fgob' is short for "effect gob", which was an argument supplied when
+;; the effect was applied via kern-obj-add-effect.
 ;;
 (define (mk-effect tag name sprite exec apply rm restart hook sym ddc cum dur)
   (kern-mk-effect tag name sprite exec apply rm restart hook ddc cum dur))
@@ -309,7 +312,6 @@
 ;; is applied, and decreasing it when the effect is removed. It does this in a
 ;; two-step process. The first step is an effect which runs on the special
 ;; ----------------------------------------------------------------------------
-
 (define temp-light-power (list 0))
 
 (define (temp-light-power-set power)
@@ -774,6 +776,88 @@
    ef_stealth_drop
    ef_stealth_use  
    ))
+
+;;----------------------------------------------------------------------------
+;; Serpentine
+;;
+;; Used to implement segmented snake-like critters.
+;; ----------------------------------------------------------------------------
+(define (serpentine-on-exec fgob kobj)
+  (println "serpentine-on-exec")
+  (println "gob=" (gob kobj))
+  (define (follow newloc segments-info)
+    (println "follow:newloc=" newloc)
+    (println "follow:segments-info=" segments-info)
+    (if (not (null? segments-info))
+	(let* ((segment (car segments-info))
+	       (id (tbl-get segment 'segment-id))
+	       (oldloc (apply loc-mk
+			      (cons (loc-place newloc)
+				    (tbl-get segment 'last-xy)))))
+	  (define (is-segment? kobj)
+	    (and (kern-obj-is-being? kobj)
+		 (let ((gg (gob kobj)))
+		   (and (is-tbl? gg)
+			(eqv? (tbl-get gg 'segment-id) id)))))
+	  (let ((ksegments (filter is-segment?
+				   (kern-get-objects-at oldloc))))
+	    (cond ((null? ksegments)
+		   (println "missing segment"))
+		  (else
+		   (let* ((kseg (car ksegments))
+			  (gseg (gob kseg)))
+		     (kern-obj-relocate kseg newloc nil)
+		     (tbl-set! gseg 'last-xy (loc-coords newloc))
+		     (follow oldloc (cdr segments-info)))))))))
+  (let* ((head (gob kobj))
+	 (segments-info (tbl-get head 'segments))
+	 (newloc (kern-obj-get-location kobj))
+	 )
+    (follow newloc segments-info)
+    ))
+
+(define (serpentine-on-spawn kobj fgob)
+  (define (place-segment segment curloc)
+    (define (choose-good-tile tiles)
+      (if (null? tiles)
+	  nil
+	  (if (is-good-loc? segment (car tiles))
+	      (car tiles)
+	      (choose-good-tile (cdr tiles)))))
+    (let* ((tiles (get-4-neighboring-tiles curloc))
+	   (newloc (choose-good-tile tiles)))
+      (cond ((null? newloc)
+	     (kern-obj-put-at segment curloc)
+	     curloc)
+	    (else
+	     (kern-obj-put-at segment newloc)
+	     newloc))))
+  (define (spawn-segments head n)
+    (cond ((= n 0) nil)
+	  (else
+	   (let* ((segment (spawn-npc fgob 3))
+		  (loc (place-segment segment (kern-obj-get-location head)))
+		  (gob (tbl-build 'segment-id n
+				  'last-xy (cdr loc)))
+		  )
+	     (bind segment gob)
+	     (cons gob (spawn-segments segment (- n 1)))))))
+  (bind kobj (tbl-build 'segments (spawn-segments kobj 2))))
+  
+
+(kern-mk-effect
+ 'ef_serpentine      ;; tag
+ "Serpentine"        ;; name (unused in this case)
+ nil                 ;; sprite
+ 'serpentine-on-exec  ;; exec
+ nil                 ;; on-apply
+ nil                 ;; on-remove
+ nil                 ;; restart
+ move-done-hook      ;; hook
+ 0                   ;; detection difficulty class
+ #f                  ;; is-cumulative?
+ -1                  ;; duration (turns, -1 for infinite)
+ )
 
 ;;----------------------------------------------------------------------------
 ;; Effect Test Procedures

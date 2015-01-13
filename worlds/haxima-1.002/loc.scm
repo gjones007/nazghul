@@ -4,6 +4,7 @@
 (define (loc-place loc) (car loc))
 (define (loc-x loc) (cadr loc))
 (define (loc-y loc) (caddr loc))
+(define (loc-coords loc) (cdr loc))
 
 ;; eval-loc -- given a loc where the place is a tag, return one where the place
 ;; is bound to the kernel object referred to by the tag

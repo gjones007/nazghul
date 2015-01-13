@@ -4,7 +4,7 @@
 ;; Slots should be listed in desired paper-doll rendering order, bottom layer
 ;; to top.
 (define humanoid
-  (list 
+  (list
    slot-armor
    slot-boot
    slot-helm
@@ -39,18 +39,19 @@
 
 ;; mk-species -- register a species type with the kernel
 (define (mk-species tag name str int dex spd con mag vr mmode weap morph xp sspr armordice mvsnd)
-  (kern-mk-species tag name str int dex (rel-spd spd) vr mmode 
-                   con 
+  (kern-mk-species tag name str int dex (rel-spd spd) vr mmode
+                   con
                    (max (round (/ con 10)) 1)
-                   mag 
+                   mag
                    (max (round (/ mag 2)) 1)
                    sspr
-                   weap #t sound-damage 
+                   weap #t sound-damage
                    mvsnd
                    xp
                    #f ;; stationary?
+		   #f ;; disable diagonal movement?
                    armordice
-                   morph nil)) 
+                   morph nil))
 
 (define (mk-stationary-species tag name str int dex spd con mag vr mmode weap morph xp sspr armordice)
   (kern-mk-species tag name str int dex (rel-spd spd) vr mmode 
@@ -63,8 +64,24 @@
                    nil
                    xp 
                    #t ;; stationary?
+		   #t ;; disable diagonal movement?
                    armordice
                    morph nil)) 
+
+(define (mk-non-diagonal-species tag name str int dex spd con mag vr mmode weap morph xp sspr armordice)
+  (kern-mk-species tag name str int dex (rel-spd spd) vr mmode
+                   con
+                   (max (round (/ con 10)) 1)
+                   mag
+                   (max (round (/ mag 2)) 1)
+                   sspr
+                   weap #t sound-damage
+                   nil
+                   xp
+                   #f ;; stationary?
+		   #t ;; disable diagonal movement?
+                   armordice
+                   morph nil))
 
 ;; Note: SF Bug# [ 1523228 ] "AI not moving to attack" was almost certainly
 ;; caused by the limited vision radius of most species not reaching across the
@@ -122,10 +139,13 @@
 ;;          tag                 name             st in dx   spd bHP bMP  vr mmode           weap         morph    xp sspr               armrdc  mvsnd
 
 ;; species that don't move around
-;;                     tag          name         st in dx   spd bHP bMP vr mmode           weap         morph    xp sspr     armrdc
-(mk-stationary-species 'sp_dryad    "dryad"      12 12  4   100  12   6   6 mmode-walk      nil          nil       8 s_forest nil  )
-(mk-stationary-species 'sp_hydra    "hydra"      20  2 10   140  30   8   6 mmode-walk      t_tentacles  nil      10 nil      nil  )
-(mk-stationary-species 'sp_mimic    "mimic"      11  3 10   100  15   0   5 mmode-walk      t_fangs      nil       2 s_chest  "1d2")
+;;                     tag              name           st in dx   spd bHP bMP vr mmode           weap         morph    xp sspr     armrdc
+(mk-stationary-species 'sp_dryad        "dryad"        12 12  4   100  12   6   6 mmode-walk      nil          nil       8 s_forest nil  )
+(mk-stationary-species 'sp_hydra        "hydra"        20  2 10   140  30   8   6 mmode-walk      t_tentacles  nil      10 nil      nil  )
+(mk-stationary-species 'sp_mimic        "mimic"        11  3 10   100  15   0   5 mmode-walk      t_fangs      nil       2 s_chest  "1d2")
+(mk-stationary-species 'sp_wyrm_segment "wyrm segment" 20  2 10   140  30   8   6 mmode-walk      nil          nil      10 nil      nil  )
+
+(mk-non-diagonal-species 'sp_wyrm       "wyrm"         20  2 10   140  30   8   19 mmode-walk      nil          nil      10 nil      nil  )
 
 ;;----------------------------------------------------------------------------
 ;; This list of the undead species is used by spells which affect the undead.

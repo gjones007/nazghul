@@ -1211,6 +1211,22 @@
     (ai . 'sludge-tentacle-ai)
     (faction . faction-monster)))
 
+(define wyrm-segment
+  '((name . "wyrm segment")
+    (species . sp_wyrm_segment)
+    (sprite . s_tentacle)
+    (faction . faction-monster)))
+
+(define wyrm-effects (list (list ef_serpentine list 'wyrm-segment)))
+
+(define wyrm
+  '((name . "wyrm")
+    (species . sp_wyrm)
+    (sprite . s_great_kraken)
+    (effects . wyrm-effects)
+    (ai . 'wyrm-ai)
+    (faction . faction-monster)))
+
 (define griffin         
   '((name . "griffin")
     (species . sp_griffin)

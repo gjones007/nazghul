@@ -6,11 +6,17 @@
  #f #f #f #f
  nil  ; subplaces
  nil  ; neighbots
+
  ;; *** contents ***
  (list
+  (put (mk-monman) 0 0)
+  (put (spawn-pt2 'wyrm 'serpentine-on-spawn 'wyrm-segment) 22 53)
   )
 
- nil  ; hooks
+ ;; *** on-entry hooks ***
+ (list
+  'on-entry-to-dungeon-room)
+
  ;; *** entrances ***
  (list
   )

@@ -321,16 +321,19 @@
 ;; monsters is calculated on-the-fly based on the player party level. The
 ;; faction and npc type mix are determined by the "factory", which is passed to
 ;; the spawn-pt constructor.
-(define (spawn-pt-mk npct-tag)
-  (list 'spawn-pt npct-tag))
+(define (spawn-pt-mk npct-tag on-spawn-sym on-spawn-args)
+  (list 'spawn-pt npct-tag on-spawn-sym on-spawn-args))
 (define (spawn-pt-npct-tag sppt) (cadr sppt))
 
 (define (spawn-pt-exec ksppt)
   (let* ((sppt (gob ksppt)))
-    (let ((npc (spawn-npc (spawn-pt-npct-tag sppt) (calc-level))))
+    (let ((npc (spawn-npc (spawn-pt-npct-tag sppt) (calc-level)))
+	  (on-spawn-sym (caddr sppt)))
       (kern-obj-put-at npc (kern-obj-get-location ksppt))
-      npc)
-    ))
+      (println "on-spawn-sym: " on-spawn-sym)
+      (if (not (null? on-spawn-sym))
+	  (apply (eval on-spawn-sym) (cons npc (cadddr sppt))))
+      npc)))
 
 (define spawn-pt-ifc
   (ifc nil
@@ -338,9 +341,12 @@
 
 (mk-obj-type 't_spawn_pt nil nil layer-none spawn-pt-ifc)
 
-(define (spawn-pt npct-tag)
+(define (spawn-pt2 npct-tag on-spawn-sym . on-spawn-args)
   (bind (kern-obj-set-visible (kern-mk-obj t_spawn_pt 1) #f)
-        (spawn-pt-mk npct-tag)))
+        (spawn-pt-mk npct-tag on-spawn-sym on-spawn-args)))
+
+(define (spawn-pt npct-tag)
+  (spawn-pt2 npct-tag nil nil))
 
 ;;----------------------------------------------------------------------------
 ;; guard-pt -- a spawn pt which creates an npc with a guard post
@@ -358,7 +364,7 @@
 
 (define (guard-pt npct-tag)
   (bind (kern-obj-set-visible (kern-mk-obj t_guard_pt 1) #f)
-        (spawn-pt-mk npct-tag)))
+        (spawn-pt-mk npct-tag nil nil)))
 
 ;;----------------------------------------------------------------------------
 ;; step-pt -- triggered when a kchar steps on it; spawns one or more npcs at
