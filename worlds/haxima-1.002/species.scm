@@ -145,7 +145,7 @@
 (mk-stationary-species 'sp_mimic        "mimic"        11  3 10   100  15   0   5 mmode-walk      t_fangs      nil       2 s_chest  "1d2")
 (mk-stationary-species 'sp_wyrm_segment "wyrm segment" 20  2 10   140  30   8   6 mmode-walk      nil          nil      10 nil      nil  )
 
-(mk-non-diagonal-species 'sp_wyrm       "wyrm"         20  2 10   140  30   8   19 mmode-walk      nil          nil      10 nil      nil  )
+(mk-non-diagonal-species 'sp_wyrm       "wyrm"         20  2 10   140  30   8   19 mmode-walk      t_fangs          nil      10 nil      nil  )
 
 ;;----------------------------------------------------------------------------
 ;; This list of the undead species is used by spells which affect the undead.
