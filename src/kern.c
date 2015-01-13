@@ -1118,9 +1118,10 @@ KERN_API_CALL(kern_place_apply_tile_effects)
 		return sc->NIL;
 	}
 
-	obj = unpack_obj(sc, &args, "kern-obj-relocate");
-	if (!obj)
+	obj = unpack_obj(sc, &args, __func__);
+	if (!obj) {
 		return sc->NIL;
+	}
 
 	place_apply_tile_effects(place, obj);
 	return sc->NIL;
@@ -1311,6 +1312,7 @@ static pointer kern_mk_species(scheme * sc, pointer args)
 	int str, intl, dex, spd, vr, hpmod, hpmult, argno = 1;
 	int mpmod, mpmult, visible, n_slots, n_spells, i, xpval;
 	int stationary = 0;
+	int disable_diagonals = 0;
 	struct sprite *sleep_sprite;
 	class ArmsType *weapon;
 	const char *tag = TAG_UNK, *name, *armor_dice;
@@ -1320,11 +1322,11 @@ static pointer kern_mk_species(scheme * sc, pointer args)
 	pointer ret;
 	struct mmode *mmode;
 
-	if (unpack(sc, &args, "ysdddddpddddppbppdbs", &tag, &name, &str,
+	if (unpack(sc, &args, "ysdddddpddddppbppdbbs", &tag, &name, &str,
 		   &intl, &dex, &spd, &vr, &mmode, &hpmod, &hpmult, &mpmod,
 		   &mpmult, &sleep_sprite, &weapon,
 		   &visible, &damage_sound, &walking_sound,
-		   &xpval, &stationary, &armor_dice)) {
+		   &xpval, &stationary, &disable_diagonals, &armor_dice)) {
 		load_err("kern-mk-species %s: bad args", tag);
 		return sc->NIL;
 	}
@@ -1360,6 +1362,7 @@ static pointer kern_mk_species(scheme * sc, pointer args)
 	species->mmode = mmode;
 	species->xpval = xpval;
 	species->stationary = stationary;
+	species->disable_diagonals = disable_diagonals;
 
 	/* Optional armor dice */
 	if (armor_dice) {
@@ -1950,15 +1953,17 @@ static pointer kern_obj_relocate(scheme * sc, pointer args)
 	int x, y;
 	struct closure *clx = NULL;
 
-	obj = unpack_obj(sc, &args, "kern-obj-relocate");
-	if (!obj)
+	obj = unpack_obj(sc, &args, __func__);
+	if (!obj) {
 		return sc->NIL;
+	}
 
-	if (unpack_loc(sc, &args, &place, &x, &y, "kern-obj-relocate"))
+	if (unpack_loc(sc, &args, &place, &x, &y, __func__)) {
 		return sc->NIL;
+	}
 
 	if (unpack(sc, &args, "o", &cutscene)) {
-		rt_err("kern-obj-relocate: bad args");
+		rt_err("%s: bad cutscene arg", __func__);
 		return sc->NIL;
 	}
 

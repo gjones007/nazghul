@@ -52,6 +52,7 @@ class Being:public Object {
  protected:
 	void setDefaults();
 	virtual void switchPlaces(class Being *);
+	virtual bool diagonalMovementAllowed();
 
  private:
 	char *name;

@@ -27,7 +27,7 @@ BEGIN_DECL
 #include "tree.h"
 #define ASTAR_HORZ (1 << 0)
 #define ASTAR_VERT (1 << 1)
-    struct astar_search_info {
+struct astar_search_info {
 	int x0;
 	int x1;
 	int y0;
@@ -42,6 +42,7 @@ BEGIN_DECL
 	void *context;
 	bool limit_depth;
 	int max_depth;
+	int disable_diagonals:1;
 };
 
 struct astar_node {

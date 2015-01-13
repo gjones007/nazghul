@@ -37,10 +37,10 @@ BEGIN_DECL struct species {
 	int vr;
 	struct mmode *mmode;
 
-	int hp_mod;		/* part of base hp contributed by species */
-	int hp_mult;		/* additional hp per-level contributed by species */
-	int mp_mod;		/* similar, for mana */
-	int mp_mult;		/* similar, for mana */
+	int hp_mod;   /* part of base hp contributed by species */
+	int hp_mult;  /* additional hp per-level contributed by species */
+	int mp_mod;   /* similar, for mana */
+	int mp_mult;  /* similar, for mana */
 
 	struct sprite *sleep_sprite;
 	int n_slots;
@@ -51,10 +51,11 @@ BEGIN_DECL struct species {
 	bool visible;
 	sound_t *damage_sound;
 	sound_t *movement_sound;
-	int xpval;		/* reward for killing this type */
-	char *armor_dice;	/* for scaly or chitinous types */
+	int xpval;		  /* reward for killing this type */
+	char *armor_dice;	  /* for scaly or chitinous types */
 	struct skill_set *skills;
-	int stationary:1;	/* doesn't move?                */
+	int stationary:1;	  /* doesn't move? */
+	int disable_diagonals:1;  /* no diagonal movement? */
 };
 
 extern struct species *species_new(const char *tag,

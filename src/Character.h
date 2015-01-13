@@ -302,7 +302,7 @@ class Character:public Being {
 
  protected:
 	 virtual void switchPlaces(class Being *);
-
+	 virtual bool diagonalMovementAllowed();
  private:
 	 bool atAppointment();
 	void dropItems();

@@ -32,11 +32,6 @@
 
 #define COORD_TO_INDEX(x,y,w) ((y)*(w)+(x))
 
-/**
- * The number of neighbors to search. If you want to allow NPC's to have
- * diagonal movement, set this to 8. Otherwise set it to 4.
- */
-#define CONFIG_NEIGHBORS 8
 #define MAX_DEPTH 1000		/* hack to limit search time on large places */
 
 static struct heap *schedule;	/* Priority queue of nodes to explore */
@@ -335,19 +330,17 @@ struct astar_node *astar_search(struct astar_search_info *info)
 			for (col = 0, info->x0 = node->x - 1; col < 3;
 			     col++, info->x0++) {
 
-#if (CONFIG_NEIGHBORS==4)
-				/* skip diagonals and center */
-				if (((row * 3 + col) % 2) == 0) {
-					continue;
+				if (info->disable_diagonals) {
+					/* skip diagonals and center */
+					if (((row * 3 + col) % 2) == 0) {
+						continue;
+					}
+				} else {
+					/* skip center */
+					if ((row == col) && (row == 1)) {
+						continue;
+					}
 				}
-#elif (CONFIG_NEIGHBORS==8)
-				/* skip center */
-				if ((row == col) && (row == 1)) {
-					continue;
-				}
-#else
-#error CONFIG_NEIGHBORS undefined or has bad value
-#endif
 
 				/* Wrap x-coord if applicable */
 				if (info->wraps)

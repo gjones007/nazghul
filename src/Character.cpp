@@ -3620,3 +3620,8 @@ const char * const Character::getDescription(void)
 {
 	return description;
 }
+
+bool Character::diagonalMovementAllowed()
+{
+	return ! species->disable_diagonals;
+}

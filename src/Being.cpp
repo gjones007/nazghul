@@ -138,7 +138,8 @@ bool Being::pathfindTo(struct place *destplace, int destx, int desty, int flags)
 			} else if (pathPtr->x != destx || pathPtr->y != desty) {
 				pathPtr = pathPtr->next;
 
-				// if we are about to hit nasty terrain, reevaluate our options
+				// if we are about to hit nasty terrain,
+				// reevaluate our options
 				if (pathPtr
 				    && place_get_terrain(getPlace(), pathPtr->x,
 							 pathPtr->y)->effect) {
@@ -181,6 +182,7 @@ bool Being::pathfindTo(struct place *destplace, int destx, int desty, int flags)
 		as_info.x1 = destx;
 		as_info.y1 = desty;
 		as_info.flags = flags;
+		as_info.disable_diagonals = diagonalMovementAllowed() ? 0 : 1;
 		cachedPath = place_find_path(getPlace(), &as_info, this);
 	}
 	// If we still don't have a valid path then give up
@@ -376,4 +378,9 @@ void Being::clearCachedPath()
 		cachedPath = NULL;
 		cachedPathPlace = NULL;
 	}
+}
+
+bool Being::diagonalMovementAllowed()
+{
+	return true;
 }
