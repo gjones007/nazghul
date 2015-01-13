@@ -807,7 +807,7 @@
 		   (let* ((kseg (car ksegments))
 			  (gseg (gob kseg)))
 		     (kern-obj-relocate kseg newloc nil)
-		     (tbl-set! gseg 'last-xy (loc-coords newloc))
+		     (tbl-set! segment 'last-xy (loc-coords newloc))
 		     (follow oldloc (cdr segments-info)))))))))
   (let* ((head (gob kobj))
 	 (segments-info (tbl-get head 'segments))
