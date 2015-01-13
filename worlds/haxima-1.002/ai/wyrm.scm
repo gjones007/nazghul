@@ -1,0 +1,2 @@
+(define (wyrm-ai kchar)
+  )
