@@ -781,10 +781,36 @@
 ;; Serpentine
 ;;
 ;; Used to implement segmented snake-like critters.
-;; ----------------------------------------------------------------------------
-(define (serpentine-on-exec fgob kobj)
+;;
+;; The head and each segment includes a doubly-linked list in its gob,
+;; referring to the location of the previous and next segments. For example, 3
+;; segment critter might have these entries for the head:
+;;
+;;  'next (list 2 3)
+;;  'prev nil
+;;
+;; And the middle segment:
+;;
+;;  'next (list 3 3)
+;;  'prev (list 1 3)
+;;
+;; And the tail:
+;;
+;;  'next nil
+;;  'prev (list 2 3)
+;;
+;;----------------------------------------------------------------------------
+
+;; When a segment is damaged, transfer the damage to the head. kobj is the
+;; segment.
+(define (serpentine-on-damage efgob kseg)
+  )
+
+;; When the head moves, have all the segments follow. Update their locations in
+;; the head's gob.
+(define (serpentine-on-exec fgob khead)
   (println "serpentine-on-exec")
-  (println "gob=" (gob kobj))
+  (println "gob=" (gob khead))
   (define (follow newloc segments-info)
     (println "follow:newloc=" newloc)
     (println "follow:segments-info=" segments-info)
@@ -809,13 +835,15 @@
 		     (kern-obj-relocate kseg newloc nil)
 		     (tbl-set! segment 'last-xy (loc-coords newloc))
 		     (follow oldloc (cdr segments-info)))))))))
-  (let* ((head (gob kobj))
+  (let* ((head (gob khead))
 	 (segments-info (tbl-get head 'segments))
-	 (newloc (kern-obj-get-location kobj))
+	 (newloc (kern-obj-get-location khead))
 	 )
     (follow newloc segments-info)
     ))
 
+;; Generate segments behind the head. Give each a segment-id in its gob, and
+;; list the segment-ids and locations in order in the head's gob.
 (define (serpentine-on-spawn kobj fgob)
   (define (place-segment segment curloc)
     (define (choose-good-tile tiles)
@@ -832,17 +860,19 @@
 	    (else
 	     (kern-obj-put-at segment newloc)
 	     newloc))))
-  (define (spawn-segments head n)
+  (define (spawn-segments prevloc head-id n)
     (cond ((= n 0) nil)
 	  (else
-	   (let* ((segment (spawn-npc fgob 3))
-		  (loc (place-segment segment (kern-obj-get-location head)))
+	   (let* ((ksegment (spawn-npc fgob 3))
+		  (loc (place-segment ksegment prevloc))
 		  (gob (tbl-build 'segment-id n
-				  'last-xy (cdr loc)))
-		  )
-	     (bind segment gob)
-	     (cons gob (spawn-segments segment (- n 1)))))))
-  (bind kobj (tbl-build 'segments (spawn-segments kobj 2))))
+				  'head-id head-id
+				  'last-xy (cdr loc))))
+	     (bind ksegment gob)
+	     (cons gob (spawn-segments loc head-id (- n 1)))))))
+  (let ((head-id (gensym))
+	(segments (spawn-segments (kern-obj-get-location kobj) head-id 8)))
+    (bind kobj (tbl-build 'id head-id 'segments segments))))
   
 
 (kern-mk-effect
