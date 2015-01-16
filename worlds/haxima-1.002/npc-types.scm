@@ -1211,10 +1211,13 @@
     (ai . 'sludge-tentacle-ai)
     (faction . faction-monster)))
 
+(define wyrm-segment-effects (list ef_damage_serpentine))
+
 (define wyrm-segment
   '((name . "wyrm segment")
     (species . sp_wyrm_segment)
     (sprite . s_tentacle)
+    (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 
 (define wyrm-effects (list (list ef_move_serpentine list 'wyrm-segment)))

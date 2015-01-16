@@ -815,13 +815,35 @@
 ;; When a segment is damaged, transfer the damage to the head. kobj is the
 ;; segment.
 (define (serpentine-on-damage efgob ksegment)
-  (define (find-head kobj)
-    (let* ((prevloc (tbl-get (gob kobj) 'prev)))
-      (if (null? prevloc)
-	  kobj
-	  (find-head (get-segment-at prevloc)))))
-  (let ((khead (find-head ksegment)))
-    (println "found head at " (kern-obj-get-location khead))))
+  (println "serpentine-on-damage:gob=" (gob ksegment))
+  (let* ((segloc (kern-obj-get-location ksegment))
+	 (kplace (loc-place segloc))
+	 (xy-to-loc (lambda (xy)
+		      (if (null? xy)
+			  nil
+			  (cons kplace xy)))))
+    (define (find-head kobj)
+      (let* ((prevloc (xy-to-loc (tbl-get (gob kobj) 'prev))))
+	(if (null? prevloc)
+	    kobj
+	    (find-head (get-segment-at prevloc)))))
+    (let ((khead (find-head ksegment)))
+      (println "found head at " (kern-obj-get-location khead))
+      (kern-obj-apply-damage khead "hit" 20))))
+
+(kern-mk-effect
+ 'ef_damage_serpentine ;; tag
+ "damage serpentine"        ;; name (unused in this case)
+ nil                 ;; sprite
+ 'serpentine-on-damage  ;; exec
+ nil                 ;; on-apply
+ nil                 ;; on-remove
+ nil                 ;; restart
+ on-damage-hook      ;; hook
+ 0                   ;; detection difficulty class
+ #f                  ;; is-cumulative?
+ -1                  ;; duration (turns, -1 for infinite)
+ )
 
 ;; When the head moves, have all the segments follow. Update their locations in
 ;; the head's gob.
@@ -848,6 +870,21 @@
 							'next)))))))))
 
     (follow headloc (xy-to-loc (tbl-get (gob khead) 'next)))))
+
+
+(kern-mk-effect
+ 'ef_move_serpentine ;; tag
+ "move serpentine"        ;; name (unused in this case)
+ nil                 ;; sprite
+ 'serpentine-on-exec  ;; exec
+ nil                 ;; on-apply
+ nil                 ;; on-remove
+ nil                 ;; restart
+ move-done-hook      ;; hook
+ 0                   ;; detection difficulty class
+ #f                  ;; is-cumulative?
+ -1                  ;; duration (turns, -1 for infinite)
+ )
 
 ;; Generate segments behind the head.
 ;; XXX: currently uses a hard-coded number of segments
@@ -879,21 +916,6 @@
   (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead) 8)
 			 'prev nil
 			 'is-segment #t)))
-
-
-(kern-mk-effect
- 'ef_move_serpentine ;; tag
- "Serpentine"        ;; name (unused in this case)
- nil                 ;; sprite
- 'serpentine-on-exec  ;; exec
- nil                 ;; on-apply
- nil                 ;; on-remove
- nil                 ;; restart
- move-done-hook      ;; hook
- 0                   ;; detection difficulty class
- #f                  ;; is-cumulative?
- -1                  ;; duration (turns, -1 for infinite)
- )
 
 ;;----------------------------------------------------------------------------
 ;; Effect Test Procedures
