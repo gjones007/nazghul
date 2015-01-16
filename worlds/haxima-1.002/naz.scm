@@ -1852,3 +1852,8 @@
               '("turn" "minute" "hour" "day" "week" "month" "year" 
                 "century" "millenium")))
 
+;; Make a copy of a list.
+(define (copy ll)
+  (cond ((null? ll) nil)
+	(else
+	 (cons (car ll) (copy (cdr ll))))))

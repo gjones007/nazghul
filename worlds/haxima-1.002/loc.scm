@@ -5,6 +5,15 @@
 (define (loc-x loc) (cadr loc))
 (define (loc-y loc) (caddr loc))
 (define (loc-coords loc) (cdr loc))
+(define (loc-set-x! loc x) (set-car! (cdr loc) x))
+(define (loc-set-y! loc y) (set-car! (cddr loc) y))
+
+;; There is a subtle difference between this and the previous two. When the
+;; coordinate list is shared between locations (aliased) then this will not
+;; affect the other locations like loc-set-x!/y! will. The flip side is that
+;; this allows the sharing of coordinates between locations when coords is
+;; obtained via (loc-coords other-loc), so be aware.
+(define (loc-set-coords! loc coords) (set-cdr! loc coords))
 
 ;; eval-loc -- given a loc where the place is a tag, return one where the place
 ;; is bound to the kernel object referred to by the tag

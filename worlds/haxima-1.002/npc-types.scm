@@ -1217,7 +1217,7 @@
     (sprite . s_tentacle)
     (faction . faction-monster)))
 
-(define wyrm-effects (list (list ef_serpentine list 'wyrm-segment)))
+(define wyrm-effects (list (list ef_move_serpentine list 'wyrm-segment)))
 
 (define wyrm
   '((name . "wyrm")
