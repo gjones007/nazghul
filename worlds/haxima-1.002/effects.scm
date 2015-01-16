@@ -780,7 +780,9 @@
 ;;----------------------------------------------------------------------------
 ;; Serpentine
 ;;
-;; Used to implement segmented snake-like critters.
+;; Used to implement segmented snake-like critters. Given a "head" object and
+;; an npc-type for creating new segments, the serpentine-make-body procedure
+;; will spawn a chain of segments on suitable terrain around the head.
 ;;
 ;; The head and each segment includes a doubly-linked list in its gob,
 ;; referring to the location of the previous and next segments. For example, 3
@@ -801,50 +803,55 @@
 ;;
 ;;----------------------------------------------------------------------------
 
+(define (get-segment-at loc)
+  (define (is-segment? kobj)
+    (and (kern-obj-is-being? kobj)
+	 (let ((gg (gob kobj)))
+	   (and (is-tbl? gg)
+		(tbl-get gg 'is-segment)))))
+  (safe-car (filter is-segment? (kern-get-objects-at loc))))
+
+
 ;; When a segment is damaged, transfer the damage to the head. kobj is the
 ;; segment.
-(define (serpentine-on-damage efgob kseg)
-  )
+(define (serpentine-on-damage efgob ksegment)
+  (define (find-head kobj)
+    (let* ((prevloc (tbl-get (gob kobj) 'prev)))
+      (if (null? prevloc)
+	  kobj
+	  (find-head (get-segment-at prevloc)))))
+  (let ((khead (find-head ksegment)))
+    (println "found head at " (kern-obj-get-location khead))))
 
 ;; When the head moves, have all the segments follow. Update their locations in
 ;; the head's gob.
-(define (serpentine-on-exec fgob khead)
-  (println "serpentine-on-exec")
-  (println "gob=" (gob khead))
-  (define (follow newloc segments-info)
-    (println "follow:newloc=" newloc)
-    (println "follow:segments-info=" segments-info)
-    (if (not (null? segments-info))
-	(let* ((segment (car segments-info))
-	       (id (tbl-get segment 'segment-id))
-	       (oldloc (apply loc-mk
-			      (cons (loc-place newloc)
-				    (tbl-get segment 'last-xy)))))
-	  (define (is-segment? kobj)
-	    (and (kern-obj-is-being? kobj)
-		 (let ((gg (gob kobj)))
-		   (and (is-tbl? gg)
-			(eqv? (tbl-get gg 'segment-id) id)))))
-	  (let ((ksegments (filter is-segment?
-				   (kern-get-objects-at oldloc))))
-	    (cond ((null? ksegments)
-		   (println "missing segment"))
-		  (else
-		   (let* ((kseg (car ksegments))
-			  (gseg (gob kseg)))
-		     (kern-obj-relocate kseg newloc nil)
-		     (tbl-set! segment 'last-xy (loc-coords newloc))
-		     (follow oldloc (cdr segments-info)))))))))
-  (let* ((head (gob khead))
-	 (segments-info (tbl-get head 'segments))
-	 (newloc (kern-obj-get-location khead))
-	 )
-    (follow newloc segments-info)
-    ))
+(define (serpentine-on-exec unused khead)
+  (println "serpentine-on-exec:gob=" (gob khead))
 
-;; Generate segments behind the head. Give each a segment-id in its gob, and
-;; list the segment-ids and locations in order in the head's gob.
-(define (serpentine-on-spawn kobj fgob)
+  (let* ((headloc (kern-obj-get-location khead))
+	 (kplace (loc-place headloc))
+	 (xy-to-loc (lambda (xy)
+		      (if (null? xy)
+			  nil
+			  (cons kplace xy)))))
+    (define (follow prevloc curloc)
+      (println "follow:prevloc=" prevloc ", curloc=" curloc)
+      (if (notnull? curloc)
+	  (let ((ksegment (get-segment-at curloc)))
+	    (cond ((null? ksegment) nil)
+		  (else
+		   (let ((oldloc (copy curloc)))
+		     (kern-obj-relocate ksegment prevloc nil)
+		     (loc-set-x! curloc (loc-x prevloc))
+		     (loc-set-y! curloc (loc-y prevloc))
+		     (follow oldloc (xy-to-loc (tbl-get (gob ksegment)
+							'next)))))))))
+
+    (follow headloc (xy-to-loc (tbl-get (gob khead) 'next)))))
+
+;; Generate segments behind the head.
+;; XXX: currently uses a hard-coded number of segments
+(define (serpentine-make-body khead segments-npctype-tag)
   (define (place-segment segment curloc)
     (define (choose-good-tile tiles)
       (if (null? tiles)
@@ -854,29 +861,28 @@
 	      (choose-good-tile (cdr tiles)))))
     (let* ((tiles (get-4-neighboring-tiles curloc))
 	   (newloc (choose-good-tile tiles)))
-      (cond ((null? newloc)
-	     (kern-obj-put-at segment curloc)
-	     curloc)
-	    (else
-	     (kern-obj-put-at segment newloc)
-	     newloc))))
-  (define (spawn-segments prevloc head-id n)
+      (if (not (null? newloc))
+	  (kern-obj-put-at segment newloc))
+      newloc))
+  (define (spawn-segments prevloc n)
     (cond ((= n 0) nil)
 	  (else
-	   (let* ((ksegment (spawn-npc fgob 3))
-		  (loc (place-segment ksegment prevloc))
-		  (gob (tbl-build 'segment-id n
-				  'head-id head-id
-				  'last-xy (cdr loc))))
-	     (bind ksegment gob)
-	     (cons gob (spawn-segments loc head-id (- n 1)))))))
-  (let ((head-id (gensym))
-	(segments (spawn-segments (kern-obj-get-location kobj) head-id 8)))
-    (bind kobj (tbl-build 'id head-id 'segments segments))))
-  
+	   (let* ((ksegment (spawn-npc segments-npctype-tag 3))
+		  (loc (place-segment ksegment prevloc)))
+	     (cond ((null? loc) nil)
+		   (else
+		    (bind ksegment
+			  (tbl-build 'prev (loc-coords prevloc)
+				     'next (spawn-segments loc (- n 1))
+				     'is-segment #t))
+		    (loc-coords loc)))))))
+  (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead) 8)
+			 'prev nil
+			 'is-segment #t)))
+
 
 (kern-mk-effect
- 'ef_serpentine      ;; tag
+ 'ef_move_serpentine ;; tag
  "Serpentine"        ;; name (unused in this case)
  nil                 ;; sprite
  'serpentine-on-exec  ;; exec
