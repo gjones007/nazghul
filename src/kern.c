@@ -2530,12 +2530,12 @@ static pointer kern_obj_apply_damage(scheme * sc, pointer args)
 	int amount;
 
 	if (unpack(sc, &args, "psd", &obj, &desc, &amount)) {
-		rt_err("kern-obj-inflict-damage: bad args");
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!obj) {
-		rt_err("kern-obj-inflict-damage: null object");
+		rt_err("%s: null object", __func__);
 		return sc->NIL;
 	}
 
@@ -2552,12 +2552,12 @@ static pointer kern_obj_inflict_damage(scheme * sc, pointer args)
 	class Character *attacker;
 
 	if (unpack(sc, &args, "psdp", &obj, &desc, &amount, &attacker)) {
-		rt_err("kern-obj-apply-damage: bad args");
+		rt_err("%s: bad args", __func__);
 		return sc->NIL;
 	}
 
 	if (!obj) {
-		rt_err("kern-obj-apply-damage: null object");
+		rt_err("%s: null object", __func__);
 		return sc->NIL;
 	}
 
