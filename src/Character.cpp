@@ -565,7 +565,6 @@ const char *Character::getWoundDescription()
 		return "Fleeing";
 
 	return desc[(getHp() * 4) / getMaxHp()];
-	return desc[(getHp() * 4) / getMaxHp()];
 }
 
 void Character::groupExitTo(struct place *dest_place, int dest_x, int dest_y,
