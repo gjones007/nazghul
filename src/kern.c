@@ -4475,12 +4475,12 @@ KERN_API_CALL(kern_char_set_hp)
 	class Character *ch;
 	int val;
 
-	ch = (class Character *) unpack_obj(sc, &args, "kern-char-set-hp");
+	ch = (class Character *) unpack_obj(sc, &args, __func__);
 	if (!ch)
 		return sc->NIL;
 
 	if (unpack(sc, &args, "d", &val)) {
-		rt_err("kern-char-set-hp: bad args");
+		rt_err("%s: bad args", __func__);
 	} else {
 		ch->setHp(val);
 	}
