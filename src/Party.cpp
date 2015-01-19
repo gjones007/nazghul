@@ -804,23 +804,10 @@ sound_t *Party::get_movement_sound()
 	return sound;
 }
 
-static bool member_burn(class Character * member, void *data)
-{
-	member->burn();
-	return false;
-}
-
 static bool member_sleep(class Character * member, void *data)
 {
 	member->sleep();
 	return false;
-}
-
-void Party::burn()
-{
-	forEachMember(member_burn, NULL);
-	if (allDead())
-		destroy();
 }
 
 void Party::sleep()

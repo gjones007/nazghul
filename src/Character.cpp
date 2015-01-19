@@ -1736,7 +1736,6 @@ void Character::examine()
 		}
 	}
 
-	//log_continue(" %s", getWoundDescription());
 	log_continue(" hp:%d/%d", getHp(), getMaxHp());
 	log_continue(" mp:%d/%d", getMana(), getMaxMana());
 	log_continue(" ap:%d/%d", action_points, getActionPointsPerTurn());
@@ -2126,13 +2125,6 @@ int Character::getArmor()
 class Party *Character::getParty()
 {
 	return party;
-}
-
-void Character::burn()
-{
-	dbg("%s:%s\n", __FUNCTION__, getName());
-	damage(DAMAGE_FIRE);
-	log_msg("%s burning-%s!", getName(), getWoundDescription());
 }
 
 void Character::sleep()

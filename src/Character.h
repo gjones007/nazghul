@@ -182,7 +182,6 @@ class Character:public Being {
 	virtual class Object *clone();
 	virtual void describe(bool capitalize=false);
 	virtual void examine();
-	virtual void burn();
 	virtual void save(struct save *save);
 	virtual void sleep();
 	virtual bool tryToRelocateToNewPlace(struct place *place,

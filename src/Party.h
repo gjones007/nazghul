@@ -47,7 +47,6 @@ class Party:public Being {
 	virtual int getVisionRadius();
 	virtual bool addMember(class Character *);
 	virtual bool allDead();
-	virtual void burn();
 	virtual void damage(int amount);
 	virtual void describe(bool capitalize=false);
 	virtual void examine();

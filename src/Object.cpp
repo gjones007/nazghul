@@ -1009,10 +1009,6 @@ void Object::applyEffect(closure_t * effect)
 	closure_exec(effect, "p", this);
 }
 
-void Object::burn()
-{
-}
-
 void Object::sleep()
 {
 }
