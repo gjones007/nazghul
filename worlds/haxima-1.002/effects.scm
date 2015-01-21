@@ -817,37 +817,22 @@
 ;; When a segment is damaged, propogate the damage to all other segments and
 ;; the head.
 (define (serpentine-on-damage efgob ksegment)
-  (println "serpentine-on-damage:gob=" (gob ksegment))
   (let* ((segloc (kern-obj-get-location ksegment))
 	 (kplace (loc-place segloc))
 	 (xy-to-loc (lambda (xy)
 		      (if (null? xy)
 			  nil
 			  (cons kplace xy)))))
-    (define (find-head kobj)
-      (let* ((prevloc (xy-to-loc (tbl-get (gob kobj) 'prev))))
-	(if (null? prevloc)
-	    kobj
-	    (find-head (get-segment-at prevloc)))))
-    (define (propogate-forward kobj)
-      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) 'prev)))))
+    (define (propogate-damage kobj dir)
+      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) dir)))))
 	(if (not (null? kprev))
 	    (begin
 	      (kern-obj-inc-ref kprev)
 	      (kern-char-set-hp kprev (kern-char-get-hp kobj))
-	      (propogate-forward kprev)
+	      (propogate-damage kprev dir)
 	      (kern-obj-dec-ref kprev)))))
-    (define (propogate-backward kobj)
-      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) 'next)))))
-	(if (not (null? kprev))
-	    (begin
-	      (kern-obj-inc-ref kprev)
-	      (kern-char-set-hp kprev (kern-char-get-hp kobj))
-	      (propogate-backward kprev)
-	      (kern-obj-dec-ref kprev)
-	      ))))
-    (propogate-forward ksegment)
-    (propogate-backward ksegment)))
+    (propogate-damage ksegment 'prev)
+    (propogate-damage ksegment 'next)))
 
 (kern-mk-effect
  'ef_damage_serpentine ;; tag
