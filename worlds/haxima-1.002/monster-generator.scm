@@ -330,9 +330,8 @@
     (let ((npc (spawn-npc (spawn-pt-npct-tag sppt) (calc-level)))
 	  (on-spawn-sym (caddr sppt)))
       (kern-obj-put-at npc (kern-obj-get-location ksppt))
-      (println "on-spawn-sym: " on-spawn-sym)
       (if (not (null? on-spawn-sym))
-	  (apply (eval on-spawn-sym) (cons npc (cadddr sppt))))
+	  (apply (eval on-spawn-sym) (cons npc (cdddr sppt))))
       npc)))
 
 (define spawn-pt-ifc

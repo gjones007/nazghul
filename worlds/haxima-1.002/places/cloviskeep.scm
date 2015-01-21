@@ -10,7 +10,7 @@
  ;; *** contents ***
  (list
   (put (mk-monman) 0 0)
-  (put (spawn-pt2 'wyrm 'serpentine-make-body 'wyrm-segment) 22 53)
+  (put (spawn-pt2 'wyrm 'serpentine-make-body 'wyrm-segment 6) 22 53)
   )
 
  ;; *** on-entry hooks ***

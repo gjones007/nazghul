@@ -813,7 +813,6 @@
       nil
       (safe-car (filter is-segment? (kern-get-objects-at loc)))))
 
-
 ;; When a segment is damaged, propogate the damage to all other segments and
 ;; the head.
 (define (serpentine-on-damage efgob ksegment)
@@ -874,7 +873,6 @@
 
     (follow headloc (xy-to-loc (tbl-get (gob khead) 'next)))))
 
-
 (kern-mk-effect
  'ef_move_serpentine ;; tag
  "move serpentine"        ;; name (unused in this case)
@@ -889,9 +887,9 @@
  -1                  ;; duration (turns, -1 for infinite)
  )
 
-;; Generate segments behind the head.
-;; XXX: currently uses a hard-coded number of segments
-(define (serpentine-make-body khead segments-npctype-tag)
+;; Generate segments behind the head. 'args' should be a list:
+;;   (npc-type-tag num-segments)
+(define (serpentine-make-body khead args)
   (define (place-segment segment curloc)
     (define (choose-good-tile tiles)
       (if (null? tiles)
@@ -907,7 +905,7 @@
   (define (spawn-segments prevloc n)
     (cond ((= n 0) nil)
 	  (else
-	   (let* ((ksegment (spawn-npc segments-npctype-tag 3))
+	   (let* ((ksegment (spawn-npc (car args) 3))
 		  (loc (place-segment ksegment prevloc)))
 	     (cond ((null? loc) nil)
 		   (else
@@ -916,7 +914,8 @@
 				     'next (spawn-segments loc (- n 1))
 				     'is-segment #t))
 		    (loc-coords loc)))))))
-  (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead) 8)
+  (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead)
+					       (cadr args))
 			 'prev nil
 			 'is-segment #t)))
 
