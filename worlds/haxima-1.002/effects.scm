@@ -809,11 +809,13 @@
 	 (let ((gg (gob kobj)))
 	   (and (is-tbl? gg)
 		(tbl-get gg 'is-segment)))))
-  (safe-car (filter is-segment? (kern-get-objects-at loc))))
+  (if (null? loc)
+      nil
+      (safe-car (filter is-segment? (kern-get-objects-at loc)))))
 
 
-;; When a segment is damaged, transfer the damage to the head. kobj is the
-;; segment.
+;; When a segment is damaged, propogate the damage to all other segments and
+;; the head.
 (define (serpentine-on-damage efgob ksegment)
   (println "serpentine-on-damage:gob=" (gob ksegment))
   (let* ((segloc (kern-obj-get-location ksegment))
@@ -827,9 +829,25 @@
 	(if (null? prevloc)
 	    kobj
 	    (find-head (get-segment-at prevloc)))))
-    (let ((khead (find-head ksegment)))
-      (println "found head at " (kern-obj-get-location khead))
-      (kern-obj-apply-damage khead "hit" 20))))
+    (define (propogate-forward kobj)
+      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) 'prev)))))
+	(if (not (null? kprev))
+	    (begin
+	      (kern-obj-inc-ref kprev)
+	      (kern-char-set-hp kprev (kern-char-get-hp kobj))
+	      (propogate-forward kprev)
+	      (kern-obj-dec-ref kprev)))))
+    (define (propogate-backward kobj)
+      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) 'next)))))
+	(if (not (null? kprev))
+	    (begin
+	      (kern-obj-inc-ref kprev)
+	      (kern-char-set-hp kprev (kern-char-get-hp kobj))
+	      (propogate-backward kprev)
+	      (kern-obj-dec-ref kprev)
+	      ))))
+    (propogate-forward ksegment)
+    (propogate-backward ksegment)))
 
 (kern-mk-effect
  'ef_damage_serpentine ;; tag

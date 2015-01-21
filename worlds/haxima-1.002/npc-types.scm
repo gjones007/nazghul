@@ -1220,7 +1220,8 @@
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 
-(define wyrm-effects (list (list ef_move_serpentine list 'wyrm-segment)))
+(define wyrm-effects (list ef_damage_serpentine
+			   (list ef_move_serpentine list 'wyrm-segment)))
 
 (define wyrm
   '((name . "wyrm")
