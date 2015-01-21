@@ -398,13 +398,14 @@ void Character::damage(int amount)
 	if (hp <= 0) {
 		return;
 	}
-	// This will run the "on-damage-hook":
-	Object::damage(amount);
 
 	// setHP() might call kill(), which calls remove(), which will destroy
 	// most objects
 	obj_inc_ref(this);
 	setHp(hp - amount);
+
+	// This will run the "on-damage-hook":
+	Object::damage(amount);
 
 	if (isPlayerControlled()) {
 		statusFlash(getOrder(), Red);
