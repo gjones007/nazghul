@@ -717,7 +717,7 @@ int sprite_num_frames(struct sprite *sprite)
 	return sprite->n_frames;
 }
 
-int sprite_facings_list(struct sprite *sprite)
+int sprite_facings_mask(struct sprite *sprite)
 {
 	return sprite->facings;
 }

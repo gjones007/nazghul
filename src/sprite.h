@@ -63,7 +63,7 @@ void sprite_save(struct sprite *sprite, struct save *save);
 /**
  * Returns the bit mask representing the facings supported by this sprite.
  */
-int sprite_facings_list(struct sprite *sprite);
+int sprite_facings_mask(struct sprite *sprite);
 int sprite_can_face(struct sprite *sprite, int facing);
 
 /**

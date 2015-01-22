@@ -1723,10 +1723,10 @@ void mapAnimateProjectile(int Ax, int Ay, int *Bx, int *By,
 
 	// Select the sprite orientation based on direction of travel
 	if (sprite) {
-		if ((sprite_facings_list(sprite) & 495) == 495)	//nsew + diagonals
+		if ((sprite_facings_mask(sprite) & 495) == 495)	//nsew + diagonals
 		{
 			sprite_set_facing(sprite, vector_to_8facing(dX, dY));
-		} else if ((sprite_facings_list(sprite) & 170) == 170)	//nsew only
+		} else if ((sprite_facings_mask(sprite) & 170) == 170)	//nsew only
 		{
 			sprite_set_facing(sprite, vector_to_dir(dX, dY));
 		}
