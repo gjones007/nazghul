@@ -905,7 +905,8 @@
   (define (spawn-segments prevloc n)
     (cond ((= n 0) nil)
 	  (else
-	   (let* ((ksegment (spawn-npc (car args) 3))
+	   (let* ((ksegment (spawn-npc (car args)
+				       (kern-char-get-level khead)))
 		  (loc (place-segment ksegment prevloc)))
 	     (cond ((null? loc) nil)
 		   (else
@@ -915,7 +916,7 @@
 				     'is-segment #t))
 		    (loc-coords loc)))))))
   (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead)
-					       (cadr args))
+					       (kern-char-get-level khead))
 			 'prev nil
 			 'is-segment #t)))
 
