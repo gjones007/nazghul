@@ -1726,10 +1726,11 @@ static int object_run_hook_entry(struct hook_entry *entry, void *data)
 	struct object_run_hook_entry_data *info;
 	info = (struct object_run_hook_entry_data *)data;
 
-	if (entry->effect->exec)
+	if (entry->effect->exec) {
 		return closure_execlpv(entry->effect->exec,
 				       hook_entry_gob(entry),
 				       info->obj, info->fmt, info->args);
+	}
 	return 0;
 }
 
