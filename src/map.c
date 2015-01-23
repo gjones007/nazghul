@@ -1394,7 +1394,7 @@ static void mapPaintProjectile(SDL_Rect * rect, struct sprite *sprite,
 	// Paint the missile at the new location
 	sprite_zoom_out(Map.aview->zoom);
 	screen_zoom_out(Map.aview->zoom);
-	sprite_paint_frame(sprite, currentframe, rect->x, rect->y);
+	sprite_paint(sprite, currentframe, rect->x, rect->y);
 	sprite_zoom_in(Map.aview->zoom);
 	screen_zoom_in(Map.aview->zoom);
 
