@@ -337,28 +337,6 @@ static void sprite_paint_normal(struct sprite *sprite, int frame, int x, int y)
 	dest.w = sprite->w_pix;
 	dest.h = sprite->h_pix;
 
-	frame = (frame + sprite_ticks) % sprite->n_frames;
-	frame += sprite->sequence * sprite->n_frames;
-
-	if (sprite->faded) {
-		sprite_blit_faded(sprite->rsurf->surf, &sprite->frames[frame],
-				  &dest);
-	} else {
-		screen_blit(sprite->rsurf->surf, &sprite->frames[frame], &dest);
-	}
-
-}
-
-static void sprite_paint_preframed(struct sprite *sprite, int frame, int x,
-				   int y)
-{
-	SDL_Rect dest;
-
-	dest.x = x;
-	dest.y = y;
-	dest.w = sprite->w_pix;
-	dest.h = sprite->h_pix;
-
 	/* If the sprite is larger than a tile, ASSUME (watch out!) we're
 	 * blitting a giant character to the map. In this case the bottom of
 	 * the sprite will still line up with the bottom of the tile and it
@@ -370,6 +348,7 @@ static void sprite_paint_preframed(struct sprite *sprite, int frame, int x,
 		dest.y -= (sprite->h_pix - TILE_H);
 	}
 
+	frame = (frame + sprite_ticks) % sprite->n_frames;
 	frame += sprite->sequence * sprite->n_frames;
 
 	if (sprite->faded) {
@@ -431,20 +410,6 @@ void sprite_paint(struct sprite *sprite, int frame, int x, int y)
 			sprite_paint_wave(sprite, frame, x, y);
 		} else {
 			sprite_paint_normal(sprite, frame, x, y);
-		}
-
-		sprite = sprite->decor;
-	}
-}
-
-void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y)
-{
-	while (sprite) {
-
-		if (sprite->wave) {
-			sprite_paint_wave(sprite, frame, x, y);
-		} else {
-			sprite_paint_preframed(sprite, frame, x, y);
 		}
 
 		sprite = sprite->decor;

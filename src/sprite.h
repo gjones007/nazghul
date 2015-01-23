@@ -74,11 +74,9 @@ int sprite_set_facing(struct sprite *sprite, int direction);
 int sprite_get_facing(struct sprite *sprite);
 
 /**
- * Paint methods. The difference between these two is that paint_frame does not
- * use the global animation counter to offset the frame.
+ * The paint function.
  */
 void sprite_paint(struct sprite *sprite, int frame, int x, int y);
-void sprite_paint_frame(struct sprite *sprite, int frame, int x, int y);
 
 /**
  * Misc special effects. These modify the target sprite.
