@@ -803,7 +803,7 @@
 ;;
 ;;----------------------------------------------------------------------------
 
-(define (get-segment-at loc)
+(define (get-segment-at kplace loc)
   (define (is-segment? kobj)
     (and (kern-obj-is-being? kobj)
 	 (let ((gg (gob kobj)))
@@ -811,19 +811,16 @@
 		(tbl-get gg 'is-segment)))))
   (if (null? loc)
       nil
-      (safe-car (filter is-segment? (kern-get-objects-at loc)))))
+      (safe-car (filter is-segment? (kern-get-objects-at (cons kplace loc))))))
 
 ;; When a segment is damaged, propogate the damage to all other segments and
 ;; the head.
 (define (serpentine-on-damage efgob ksegment)
   (let* ((segloc (kern-obj-get-location ksegment))
-	 (kplace (loc-place segloc))
-	 (xy-to-loc (lambda (xy)
-		      (if (null? xy)
-			  nil
-			  (cons kplace xy)))))
+	 (kplace (loc-place segloc)))
     (define (propogate-damage kobj dir)
-      (let ((kprev (get-segment-at (xy-to-loc (tbl-get (gob kobj) dir)))))
+      (println "propogate-damage:gob=" (gob kobj))
+      (let ((kprev (get-segment-at kplace (tbl-get (gob kobj) dir))))
 	(if (not (null? kprev))
 	    (begin
 	      (kern-obj-inc-ref kprev)
@@ -847,31 +844,27 @@
  -1                  ;; duration (turns, -1 for infinite)
  )
 
-;; When the head moves, have all the segments follow. Update their locations in
-;; the head's gob.
-(define (serpentine-on-exec unused khead)
-  (println "serpentine-on-exec:gob=" (gob khead))
-
-  (let* ((headloc (kern-obj-get-location khead))
-	 (kplace (loc-place headloc))
-	 (xy-to-loc (lambda (xy)
-		      (if (null? xy)
-			  nil
-			  (cons kplace xy)))))
-    (define (follow prevloc curloc)
-      (println "follow:prevloc=" prevloc ", curloc=" curloc)
-      (if (notnull? curloc)
-	  (let ((ksegment (get-segment-at curloc)))
-	    (cond ((null? ksegment) nil)
-		  (else
-		   (let ((oldloc (copy curloc)))
-		     (kern-obj-relocate ksegment prevloc nil)
-		     (loc-set-x! curloc (loc-x prevloc))
-		     (loc-set-y! curloc (loc-y prevloc))
-		     (follow oldloc (xy-to-loc (tbl-get (gob ksegment)
-							'next)))))))))
-
-    (follow headloc (xy-to-loc (tbl-get (gob khead) 'next)))))
+;; When the head moves, have all the segments follow. This is called before the
+;; head moves. 'newx' and 'newy' tell where it will move to.
+(define (serpentine-on-exec fxgob khead kplace newx newy)
+  (define (follow head-coords my-newloc ksegment)
+    (if (null? ksegment)
+	nil
+	(let ((gg (gob ksegment))
+	      (my-oldloc (kern-obj-get-location ksegment)))
+	  (kern-obj-relocate ksegment my-newloc nil)
+	  (tbl-set! gg 'prev head-coords)
+	  (tbl-set! gg 'next (follow (loc-coords my-newloc)
+				     my-oldloc
+				     (get-segment-at kplace
+						     (tbl-get gg 'next))))
+	  (loc-coords my-newloc)
+	  )))
+  (let ((head-gob (gob khead)))
+    (tbl-set! head-gob 'next
+	      (follow (list newx newy)
+		      (kern-obj-get-location khead)
+		      (get-segment-at kplace (tbl-get head-gob 'next))))))
 
 (kern-mk-effect
  'ef_move_serpentine ;; tag
