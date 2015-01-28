@@ -80,7 +80,6 @@
 ;; loc-diff -- vector difference of two locations; on wrapping maps there are
 ;; two solutions, the shortest is returned
 (define (loc-diff a b)
-  (println a "->" b)
   (let ((place (loc-place a)))
     (if (kern-place-is-wrapping? place)
         (let ((w (kern-place-get-width place)))
