@@ -819,7 +819,6 @@
   (let* ((segloc (kern-obj-get-location ksegment))
 	 (kplace (loc-place segloc)))
     (define (propogate-damage kobj dir)
-      (println "propogate-damage:gob=" (gob kobj))
       (let ((kprev (get-segment-at kplace (tbl-get (gob kobj) dir))))
 	(if (not (null? kprev))
 	    (begin
@@ -844,6 +843,52 @@
  -1                  ;; duration (turns, -1 for infinite)
  )
 
+(define xy-to-dir-matrix
+  (vector
+   (vector NORTHWEST NORTH NORTHEAST)
+   (vector WEST      HERE  EAST)
+   (vector SOUTHWEST SOUTH SOUTHEAST)
+   ))
+
+(define (xy-to-dir x y)
+  (vector-ref (vector-ref xy-to-dir-matrix
+			  (+ 1 y))
+	      (+ 1 x)))
+
+(define (set-facing kobj x0 y0 prev next)
+  (define (dir-from x1 y1)
+    (xy-to-dir (- x1 x0) (- y1 y0)))
+  (let ((next-dir (if (null? next) -1
+		      (dir-from (car next) (cadr next))))
+	(prev-dir (if (null? prev) -1
+		      (dir-from (car prev) (cadr prev))))
+	)
+    (cond ((= prev-dir WEST)
+	   (cond ((= next-dir NORTH) (kern-obj-set-facing kobj NORTHWEST))
+		 ((= next-dir EAST) (kern-obj-set-facing kobj WEST))
+		 ((= next-dir SOUTH) (kern-obj-set-facing kobj SOUTHWEST))
+		 (else (kern-obj-set-facing kobj prev-dir))))
+	  ((= prev-dir NORTH)
+	   (cond ((= next-dir EAST) (kern-obj-set-facing kobj NORTHEAST))
+		 ((= next-dir SOUTH) (kern-obj-set-facing kobj NORTH))
+		 ((= next-dir WEST) (kern-obj-set-facing kobj NORTHWEST))
+		 (else (kern-obj-set-facing kobj prev-dir))))
+	  ((= prev-dir EAST)
+	   (cond ((= next-dir SOUTH) (kern-obj-set-facing kobj SOUTHEAST))
+		 ((= next-dir WEST) (kern-obj-set-facing kobj EAST))
+		 ((= next-dir NORTH) (kern-obj-set-facing kobj NORTHEAST))
+		 (else (kern-obj-set-facing kobj prev-dir))))
+	  ((= prev-dir SOUTH)
+	   (cond ((= next-dir WEST) (kern-obj-set-facing kobj SOUTHWEST))
+		 ((= next-dir NORTH) (kern-obj-set-facing kobj SOUTH))
+		 ((= next-dir EAST) (kern-obj-set-facing kobj SOUTHEAST))
+		 (else (kern-obj-set-facing kobj prev-dir))))
+	  (else
+	   (cond ((= next-dir WEST) (kern-obj-set-facing kobj EAST))
+		 ((= next-dir NORTH) (kern-obj-set-facing kobj SOUTH))
+		 ((= next-dir EAST) (kern-obj-set-facing kobj WEST))
+		 (else (kern-obj-set-facing kobj NORTH)))))))
+
 ;; When the head moves, have all the segments follow. This is called before the
 ;; head moves. 'newx' and 'newy' tell where it will move to.
 (define (serpentine-on-exec fxgob khead kplace newx newy)
@@ -858,13 +903,19 @@
 				     my-oldloc
 				     (get-segment-at kplace
 						     (tbl-get gg 'next))))
+	  (set-facing ksegment (loc-x my-newloc) (loc-y my-newloc)
+		      head-coords
+		      (tbl-get gg 'next))
 	  (loc-coords my-newloc)
 	  )))
-  (let ((head-gob (gob khead)))
-    (tbl-set! head-gob 'next
-	      (follow (list newx newy)
-		      (kern-obj-get-location khead)
-		      (get-segment-at kplace (tbl-get head-gob 'next))))))
+  (let* ((head-gob (gob khead))
+	 (next (follow (list newx newy)
+		       (kern-obj-get-location khead)
+		       (get-segment-at kplace (tbl-get head-gob 'next))))
+	 )
+    (tbl-set! head-gob 'next next)
+    (set-facing khead newx newy nil next)
+    ))
 
 (kern-mk-effect
  'ef_move_serpentine ;; tag
@@ -903,15 +954,20 @@
 		  (loc (place-segment ksegment prevloc)))
 	     (cond ((null? loc) nil)
 		   (else
-		    (bind ksegment
-			  (tbl-build 'prev (loc-coords prevloc)
-				     'next (spawn-segments loc (- n 1))
-				     'is-segment #t))
-		    (loc-coords loc)))))))
-  (bind khead (tbl-build 'next (spawn-segments (kern-obj-get-location khead)
-					       (kern-char-get-level khead))
-			 'prev nil
-			 'is-segment #t)))
+		    (let ((next (spawn-segments loc (- n 1)))
+			  (prev (loc-coords prevloc)))
+		      (bind ksegment (tbl-build 'prev prev
+						'next next
+						'is-segment #t))
+		      (set-facing ksegment (loc-x loc) (loc-y loc) prev next)
+		      (loc-coords loc))))))))
+  (let* ((headloc (kern-obj-get-location khead))
+	 (next (spawn-segments headloc (* 4 (kern-char-get-level khead)))))
+    (bind khead (tbl-build 'next next
+			   'prev nil
+			   'is-segment #t))
+    (set-facing khead (loc-x headloc) (loc-y headloc) nil next)
+  ))
 
 ;;----------------------------------------------------------------------------
 ;; Effect Test Procedures
