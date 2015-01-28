@@ -898,7 +898,7 @@
   (define (spawn-segments prevloc n)
     (cond ((= n 0) nil)
 	  (else
-	   (let* ((ksegment (spawn-npc (car args)
+	   (let* ((ksegment (spawn-npc (if (= n 1) (cadr args) (car args))
 				       (kern-char-get-level khead)))
 		  (loc (place-segment ksegment prevloc)))
 	     (cond ((null? loc) nil)
