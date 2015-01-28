@@ -730,3 +730,8 @@
 
 (kern-mk-sprite 's_quest_start ss_quests 1 0 #f 0 )
 (kern-mk-sprite 's_quest_wise ss_quests 1 1 #f 0 )
+
+;; Wyrm
+(kern-mk-sprite 's_wyrm_head ss_wyrm 1 0 #f 170)
+(kern-mk-sprite 's_wyrm_tail ss_wyrm 1 4 #f 170)
+(kern-mk-sprite 's_wyrm_segment ss_wyrm 1 8 #f 495)

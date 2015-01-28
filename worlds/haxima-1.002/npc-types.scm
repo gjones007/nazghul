@@ -1216,14 +1216,14 @@
 (define wyrm-segment
   '((name . "wyrm segment")
     (species . sp_wyrm_segment)
-    (sprite . s_tentacle)
+    (sprite . s_wyrm_segment)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 
 (define wyrm-tail
   '((name . "wyrm tail")
     (species . sp_wyrm_segment)
-    (sprite . s_tentacle)
+    (sprite . s_wyrm_tail)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 
@@ -1233,7 +1233,7 @@
 (define wyrm
   '((name . "wyrm")
     (species . sp_wyrm)
-    (sprite . s_great_kraken)
+    (sprite . s_wyrm_head)
     (effects . wyrm-effects)
     (ai . 'wyrm-ai)
     (faction . faction-monster)))
