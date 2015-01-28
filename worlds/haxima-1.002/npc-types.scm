@@ -1220,6 +1220,13 @@
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 
+(define wyrm-tail
+  '((name . "wyrm tail")
+    (species . sp_wyrm_segment)
+    (sprite . s_tentacle)
+    (effects . wyrm-segment-effects)
+    (faction . faction-monster)))
+
 (define wyrm-effects (list ef_damage_serpentine
 			   (list ef_move_serpentine list 'wyrm-segment)))
 
