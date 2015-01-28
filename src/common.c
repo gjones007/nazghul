@@ -78,14 +78,14 @@ static int directionToDxTable[] = {
 	-1, 0, +1,
 	-1, 0, +1,
 	-1, 0, +1,
-	0, 0,
+	 0, 0,
 };
 
 static int directionToDyTable[] = {
 	-1, -1, -1,
-	0, 0, 0,
+	 0,  0,  0,
 	+1, +1, +1,
-	0, 0,
+	 0,  0,
 };
 
 static int keyToDirectionTable[] = {
