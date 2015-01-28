@@ -3265,6 +3265,13 @@ void Character::save(struct save *save)
 		save->write(save, "(kern-char-set-description kchar \"%s\")\n",
 			    description);
 	}
+
+	// Set the facing
+	if (SPRITE_DEF_FACING != getFacing()) {
+		save->write(save, "(kern-obj-set-facing kchar %d)\n",
+			    getFacing());
+	}
+
 	// close the 'let' block
 	save->exit(save, "kchar)\n");
 }
