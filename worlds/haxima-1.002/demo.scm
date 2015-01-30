@@ -320,7 +320,7 @@
 (define s_overgrown_altar (mk-composite-sprite (list s_trees s_altar_obj)))
 
 (load "sounds.scm")
-(load "effects.scm")
+(load "effects/init.scm")
 (load "terrains.scm")
 (load "fields.scm")
 ;;(load "combat-maps.scm")

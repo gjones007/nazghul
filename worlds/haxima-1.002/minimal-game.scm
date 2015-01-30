@@ -530,8 +530,6 @@
 ;; sounds
 (load "sounds.scm")
 
-;(load "effects.scm")
-
 ;; terrain
 (define opq 12) ;; opaque
 (define hvy 5)  ;; heavy

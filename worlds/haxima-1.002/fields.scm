@@ -15,7 +15,7 @@
 ;; 'pmask' is the objective pmask (the passability it permits to cross it)
 ;;
 ;; 'effect' is an optional procedure to run on an object which steps on the
-;; field. See effects.scm.
+;; field. See effects.
 ;;----------------------------------------------------------------------------
 
 (kern-mk-field-type 'F_illum  "glowing mote" s_magic          1024 5  pclass-none  nil	mmode-field)
