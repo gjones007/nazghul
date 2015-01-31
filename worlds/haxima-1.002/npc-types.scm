@@ -1211,25 +1211,25 @@
     (ai . 'sludge-tentacle-ai)
     (faction . faction-monster)))
 
+;; Example of how to create a spawn point for a wyrm:
+;;
+;; (put (spawn-pt2 'wyrm 'serpentine-make-body 'wyrm-segment 'wyrm-tail) 22 53)
+;; 
 (define wyrm-segment-effects (list ef_damage_serpentine))
-
 (define wyrm-segment
   '((name . "wyrm segment")
     (species . sp_wyrm_segment)
     (sprite . s_wyrm_segment)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
-
 (define wyrm-tail
   '((name . "wyrm tail")
     (species . sp_wyrm_segment)
     (sprite . s_wyrm_tail)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
-
 (define wyrm-effects (list ef_damage_serpentine
 			   (list ef_move_serpentine list 'wyrm-segment)))
-
 (define wyrm
   '((name . "wyrm")
     (species . sp_wyrm)
