@@ -1,7 +1,7 @@
 ;;----------------------------------------------------------------------------
 ;; traps.scm -- Traps that can be placed on chests, doors, etc. Most of the
 ;; procedures which apply the effects of these trap can be found over in
-;; effects.scm, where they are shared in common.
+;; effects, where they are shared in common.
 ;;
 ;; Traps are not kernel objects and do not have kernel types; they are entirely
 ;; an invention of the script. In order for a trap to exist in the game world
