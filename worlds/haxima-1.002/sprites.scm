@@ -733,5 +733,5 @@
 
 ;; Wyrm
 (kern-mk-sprite 's_wyrm_head ss_wyrm 1 0 #f 170)
-(kern-mk-sprite 's_wyrm_tail ss_wyrm 1 4 #f 170)
-(kern-mk-sprite 's_wyrm_segment ss_wyrm 1 8 #f 495)
+(kern-mk-sprite 's_wyrm_tail ss_wyrm 2 8 #f 170)
+(kern-mk-sprite 's_wyrm_segment ss_wyrm 1 16 #f 495)
