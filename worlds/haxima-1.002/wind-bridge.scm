@@ -1,4 +1,4 @@
-;; A wind bridge appears to rotates in the wind. It blits a map to lay down the
+;; A wind bridge appears to rotate in the wind. It blits a map to lay down the
 ;; bridge terrain. Position the object in the upper left corner of where the
 ;; bridge map should be blitted. The bridge will delay a few turns before
 ;; turning, giving the player some time to get to safety.
@@ -95,7 +95,7 @@
        (method 'exec wind-bridge-exec)
        ))
        
-;; Make a kernel portcullis type
+;; Make a kernel type
 (mk-obj-type 't_wind_bridge nil nil layer-mechanism wind-bridge-ifc)
 
 ;; Define a constructor
