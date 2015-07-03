@@ -23,8 +23,8 @@
 #include "ztats_pane.h"
 
 void ztats_pane_enter(struct ztats_pane *pane, class Party * party,
-		      enum StatusScrollDir via, SDL_Rect * dims)
+                      enum StatusScrollDir via, SDL_Rect * dims)
 {
-	pane->party = party;
-	pane->dims = *dims;
+        pane->party = party;
+        pane->dims = *dims;
 }

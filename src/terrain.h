@@ -93,8 +93,26 @@ char *palette_glyph_for_terrain(struct terrain_palette *pp, struct terrain *tt);
 struct terrain_palette_entry *palette_entry(struct terrain_palette *palette,
 					    int n);
 struct terrain *palette_terrain(struct terrain_palette *pp, int n);
-struct terrain *palette_terrain_for_glyph(struct terrain_palette *pp,
-					  char *glyph);
+
+/**
+ * Return the terrain matching `glyph` in `pp`.
+ */
+struct terrain *palette_terrain_for_glyph(
+	struct terrain_palette *pp,
+	char *glyph);
+
+/**
+ * Return zero unless `glyph` matches a NULL terrain in `palette`.
+ *
+ * If `glyph` is not found, or matches a non-NULL terrain, return
+ * non-zero. This is to support blank sections of a terrain map. A special
+ * glyph can be assigned to be a null terrain, which leaves a blank spot
+ * wherever it appears.
+ */
+int palette_terrain_is_null_glyph(
+	struct terrain_palette *palette,
+	char *glyph);
+
 struct terrain *palette_current_terrain(struct terrain_palette *pp);
 void palette_print(FILE * fp, int indent, struct terrain_palette *pp);
 

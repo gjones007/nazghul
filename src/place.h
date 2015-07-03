@@ -173,8 +173,21 @@ extern int place_add_object(struct place *place, Object * object);
 
 extern void place_remove_object(struct place *place, Object * object);
 
-extern Object *place_get_object(struct place *place, int x, int y,
-				enum layer layer);
+Object *place_get_object(
+	struct place *place, int x, int y, enum layer layer);
+
+/**
+ * Get the topmost object at (`x`, `y`) from `place` or next lower.
+ *
+ * If `place` has no object and NULL terrain at (`x`, `y`), recur on the
+ * neighbor below, if any, until something is found or there is no lower
+ * neighbor. If `depth` is non-NULL, it will indicate how deep the search
+ * went. Each recursive call adds 1 to depth. So, if it is initialized to zero,
+ * and `place` has the terrain, `depth` will be 0. Else if the next neighbor
+ * down has terrain, it will be 1, etc.
+ */
+Object *place_get_lower_object(
+	struct place *place, int x, int y, enum layer layer, int *depth);
 
 extern void place_add_moongate(struct place *place, class Moongate * moongate);
 
@@ -249,6 +262,20 @@ extern int place_get_light(struct place *place, int x, int y);
 extern void place_set_terrain(struct place *place, int x, int y,
 			      struct terrain *terrain);
 extern struct terrain *place_get_terrain(struct place *place, int x, int y);
+
+/**
+ * Get the terrain at (`x`, `y`) from `place` or next lower.
+ *
+ * If `place` has NULL terrain at (`x`, `y`), recur on the neighbor below, if
+ * any, until terrain is found or there is no lower neighbor. If `depth` is
+ * non-NULL, it will indicate how deep the search went. Each recursive call
+ * adds 1 to depth. So, if it is initialized to zero, and `place` has the
+ * terrain, `depth` will be 0. Else if the next neighbor down has terrain, it
+ * will be 1, etc.
+ */
+struct terrain *place_get_lower_terrain(
+	struct place *place, int x, int y, int *depth);
+
 extern Uint32 place_get_color(struct place *place, int x, int y);
 extern int place_get_movement_cost(struct place *place,
 				   int to_x, int to_y,

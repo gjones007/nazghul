@@ -32,72 +32,72 @@
 
 static void occ_del(struct occ *occ)
 {
-	if (!occ)
-		return;
-	if (occ->tag)
-		free(occ->tag);
-	if (occ->name)
-		free(occ->name);
-	if (occ->gob)
-		gob_del(occ->gob);
-	if (occ->skills)
-		skill_set_unref(occ->skills);
-	free(occ);
+        if (!occ)
+                return;
+        if (occ->tag)
+                free(occ->tag);
+        if (occ->name)
+                free(occ->name);
+        if (occ->gob)
+                gob_del(occ->gob);
+        if (occ->skills)
+                skill_set_unref(occ->skills);
+        free(occ);
 }
 
 extern struct occ *occ_new(const char *tag,
-			   const char *name,
-			   float magic,
-			   int hp_mod,
-			   int hp_mult,
-			   int mp_mod,
-			   int mp_mult,
-			   int hit_mod, int def_mod, int dam_mod, int arm_mod)
+                           const char *name,
+                           float magic,
+                           int hp_mod,
+                           int hp_mult,
+                           int mp_mod,
+                           int mp_mult,
+                           int hit_mod, int def_mod, int dam_mod, int arm_mod)
 {
-	struct occ *occ = 0;
+        struct occ *occ = 0;
 
-	occ = (struct occ *)calloc(1, sizeof(*occ));;
-	assert(occ);
+        occ = (struct occ *) calloc(1, sizeof (*occ));;
+        assert(occ);
 
-	occ->tag = strdup(tag);
-	assert(occ->tag);
+        occ->tag = strdup(tag);
+        assert(occ->tag);
 
-	occ->name = strdup(name);
-	assert(occ->name);
+        occ->name = strdup(name);
+        assert(occ->name);
 
-	occ->magic = magic;
-	occ->hp_mod = hp_mod;
-	occ->hp_mult = hp_mult;
-	occ->mp_mod = mp_mod;
-	occ->mp_mult = mp_mult;
-	occ->hit_mod = hit_mod;
-	occ->def_mod = def_mod;
-	occ->dam_mod = dam_mod;
-	occ->arm_mod = arm_mod;
+        occ->magic = magic;
+        occ->hp_mod = hp_mod;
+        occ->hp_mult = hp_mult;
+        occ->mp_mod = mp_mod;
+        occ->mp_mult = mp_mult;
+        occ->hit_mod = hit_mod;
+        occ->def_mod = def_mod;
+        occ->dam_mod = dam_mod;
+        occ->arm_mod = arm_mod;
 
-	assert(occ->tag);
-	assert(occ->name);
+        assert(occ->tag);
+        assert(occ->name);
 
-	return occ;
+        return occ;
 }
 
 extern void occ_unref(struct occ *occ)
 {
-	assert(occ->refcount > 0);
-	occ->refcount--;
-	if (!occ->refcount)
-		occ_del(occ);
+        assert(occ->refcount > 0);
+        occ->refcount--;
+        if (!occ->refcount)
+                occ_del(occ);
 }
 
 void occ_set_skills(struct occ *occ, struct skill_set *skills)
 {
-	if (occ->skills) {
-		skill_set_unref(skills);
-		occ->skills = 0;
-	}
+        if (occ->skills) {
+                skill_set_unref(skills);
+                occ->skills = 0;
+        }
 
-	if (skills) {
-		skill_set_ref(skills);
-		occ->skills = skills;
-	}
+        if (skills) {
+                skill_set_ref(skills);
+                occ->skills = skills;
+        }
 }

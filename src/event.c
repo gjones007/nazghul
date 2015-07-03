@@ -43,8 +43,8 @@
 #define pushHandler(stack,handler) (list_add((stack), &(handler)->list))
 
 typedef struct {
-	struct list list;
-	SDL_Event event;
+        struct list list;
+        SDL_Event event;
 } sdl_event_list_t;
 
 static struct list KeyHandlers;
@@ -66,367 +66,367 @@ static int qcount = 0;
 
 static struct list *popHandler(struct list *stack)
 {
-	if (list_empty(stack)) {
-		return NULL;
-	}
+        if (list_empty(stack)) {
+                return NULL;
+        }
 
-	struct list *lptr = stack->next;
-	list_remove(lptr);
-	return lptr;
+        struct list *lptr = stack->next;
+        list_remove(lptr);
+        return lptr;
 }
 
 static void backlog_enqueue(SDL_Event * event)
 {
-	sdl_event_list_t *elem = (sdl_event_list_t *) malloc(sizeof(*elem));
-	elem->event = *event;
-	list_add(&backlog, &elem->list);
-	qcount++;
+        sdl_event_list_t *elem = (sdl_event_list_t *) malloc(sizeof (*elem));
+        elem->event = *event;
+        list_add(&backlog, &elem->list);
+        qcount++;
 }
 
 static int backlog_dequeue(SDL_Event * event)
 {
-	sdl_event_list_t *elem;
-	struct list *ptr;
-	if (list_empty(&backlog))
-		return -1;
-	ptr = backlog.next;
-	elem = outcast(ptr, sdl_event_list_t, list);
-	list_remove(&elem->list);
-	*event = elem->event;
-	free(elem);
-	qcount--;
-	return 0;
+        sdl_event_list_t *elem;
+        struct list *ptr;
+        if (list_empty(&backlog))
+                return -1;
+        ptr = backlog.next;
+        elem = outcast(ptr, sdl_event_list_t, list);
+        list_remove(&elem->list);
+        *event = elem->event;
+        free(elem);
+        qcount--;
+        return 0;
 }
 
 static int mapKey(SDL_keysym * keysym)
 {
-	int key = keysym->sym;
+        int key = keysym->sym;
 
-	if (DEBUG_KEYS) {
-		printf("sym='%c'[%d] mod=%02x unicode=%04x\n",
-		       keysym->sym, keysym->sym, keysym->mod, keysym->unicode);
-	}
+        if (DEBUG_KEYS) {
+                printf("sym='%c'[%d] mod=%02x unicode=%04x\n",
+                       keysym->sym, keysym->sym, keysym->mod, keysym->unicode);
+        }
 
-	/* If the key has a UNICODE representation and its from the default
-	 * Basic Latin code page then return it as an ASCII character. */
-	/* fixme: unicode is messing up ctrl+key sequences */
-	if (keysym->unicode) {
+        /* If the key has a UNICODE representation and its from the default
+         * Basic Latin code page then return it as an ASCII character. */
+        /* fixme: unicode is messing up ctrl+key sequences */
+        if (keysym->unicode) {
 
-		/* Map CR to LF (legacy code expects this) */
-		if (keysym->unicode == 0x000d)
-			return '\n';
+                /* Map CR to LF (legacy code expects this) */
+                if (keysym->unicode == 0x000d)
+                        return '\n';
 
-		/* Map all other Basic Latin codes to ASCII */
-		if (keysym->unicode < 0x7f)
-			return keysym->unicode & 0x7f;
+                /* Map all other Basic Latin codes to ASCII */
+                if (keysym->unicode < 0x7f)
+                        return keysym->unicode & 0x7f;
 
-		/* Code page not supported... fall through */
-	}
+                /* Code page not supported... fall through */
+        }
 
-	/* Map arrow keys to equivalent numberpad entries */
-	if (key >= SDLK_UP && key <= SDLK_LEFT) {
-		static int map[] = { KEY_NORTH, KEY_SOUTH, KEY_EAST,
-			KEY_WEST
-		};
-		key = map[key - SDLK_UP];
-	}
+        /* Map arrow keys to equivalent numberpad entries */
+        if (key >= SDLK_UP && key <= SDLK_LEFT) {
+                static int map[] = { KEY_NORTH, KEY_SOUTH, KEY_EAST,
+                        KEY_WEST
+                };
+                key = map[key - SDLK_UP];
+        }
 
-	/* Set the "shift" bit */
-	if (keysym->mod & KMOD_SHIFT) {
-		key |= KEY_SHIFT;
-	}
+        /* Set the "shift" bit */
+        if (keysym->mod & KMOD_SHIFT) {
+                key |= KEY_SHIFT;
+        }
 
-	/* Unsupported? fallback to the SDL sym */
-	return key;
+        /* Unsupported? fallback to the SDL sym */
+        return key;
 }
 
 static int event_get_next_event(SDL_Event * event, int flags)
 {
-	/* if a key handler exists */
-	if (getHandler(&KeyHandlers, struct KeyHandler)) {
+        /* if a key handler exists */
+        if (getHandler(&KeyHandlers, struct KeyHandler)) {
 
-		/* if the backlog queue is not empty */
-		if (!backlog_dequeue(event)) {
+                /* if the backlog queue is not empty */
+                if (!backlog_dequeue(event)) {
 
-			/* get the event from the backlog queue */
-			return 1;
-		}
-	}
+                        /* get the event from the backlog queue */
+                        return 1;
+                }
+        }
 
-	if (flags & EVENT_NONBLOCK)
-		return SDL_PollEvent(event);
-	else
-		return SDL_WaitEvent(event);
+        if (flags & EVENT_NONBLOCK)
+                return SDL_PollEvent(event);
+        else
+                return SDL_WaitEvent(event);
 }
 
 static int playback_event(SDL_Event * event, int flags)
 {
-	// For now use the expedient but non-portable technique of reading the
-	// binary data straight to the file.
-	int n;
-	int len = sizeof(SDL_Event);
-	char *ptr = (char *)event;
+        // For now use the expedient but non-portable technique of reading the
+        // binary data straight to the file.
+        int n;
+        int len = sizeof (SDL_Event);
+        char *ptr = (char *) event;
 
-	if (flags & EVENT_NOPLAYBACK)
-		return 0;
+        if (flags & EVENT_NOPLAYBACK)
+                return 0;
 
-	while (len) {
-		n = read(playback_fd, ptr, len);
-		if (n == -1) {
-			perror("read");
-			return -1;
-		}
-		ptr += n;
-		len -= n;
-	}
+        while (len) {
+                n = read(playback_fd, ptr, len);
+                if (n == -1) {
+                        perror("read");
+                        return -1;
+                }
+                ptr += n;
+                len -= n;
+        }
 
-	SDL_Delay(event_playback_speed);
+        SDL_Delay(event_playback_speed);
 
-	return 1;
+        return 1;
 }
 
 static void record_event(SDL_Event * event)
 {
-	// For now use the expedient but non-portable technique of writing the
-	// binary data straight to the file.
-	int n;
-	int len = sizeof(SDL_Event);
-	char *ptr = (char *)event;
-	while (len) {
-		n = write(record_fd, ptr, len);
-		if (n == -1) {
-			perror("write");
-			return;
-		}
-		ptr += n;
-		len -= n;
-	}
+        // For now use the expedient but non-portable technique of writing the
+        // binary data straight to the file.
+        int n;
+        int len = sizeof (SDL_Event);
+        char *ptr = (char *) event;
+        while (len) {
+                n = write(record_fd, ptr, len);
+                if (n == -1) {
+                        perror("write");
+                        return;
+                }
+                ptr += n;
+                len -= n;
+        }
 }
 
 static void event_handle_aux(int flags)
 {
-	bool done = false;
-	bool use_hook = false;
+        bool done = false;
+        bool use_hook = false;
 
-	while (!done) {
+        while (!done) {
 
-		SDL_Event event;
-		if (!wait_event(&event, flags)) {
-			return;
-		}
-		if (record_events)
-			record_event(&event);
+                SDL_Event event;
+                if (!wait_event(&event, flags)) {
+                        return;
+                }
+                if (record_events)
+                        record_event(&event);
 
-		switch (event.type) {
+                switch (event.type) {
 
-		case SDL_USEREVENT:
-			{
-				struct TickHandler *tickh;
-				tickh = getHandler(&TickHandlers,
-						   struct TickHandler);
-				if (tickh) {
-					use_hook = true;
-					if (tickh->fx(tickh)) {
-						done = true;
-					}
-				}
+                case SDL_USEREVENT:
+                        {
+                                struct TickHandler *tickh;
+                                tickh = getHandler(&TickHandlers,
+                                                   struct TickHandler);
+                                if (tickh) {
+                                        use_hook = true;
+                                        if (tickh->fx(tickh)) {
+                                                done = true;
+                                        }
+                                }
 
-			}
-			break;
+                        }
+                        break;
 
-		case SDL_KEYDOWN:
-			{
-				struct KeyHandler *keyh;
-				keyh = getHandler(&KeyHandlers,
-						  struct KeyHandler);
-				if (keyh) {
-					int mapped_key =
-					    mapKey(&event.key.keysym);
-					use_hook = true;
-					if (keyh->fx(keyh, mapped_key,
-						     event.key.keysym.mod)) {
-						done = true;
-					}
-				} else {
-					/* enqueue this event */
-					backlog_enqueue(&event);
-				}
-			}
-			break;
+                case SDL_KEYDOWN:
+                        {
+                                struct KeyHandler *keyh;
+                                keyh = getHandler(&KeyHandlers,
+                                                  struct KeyHandler);
+                                if (keyh) {
+                                        int mapped_key =
+                                            mapKey(&event.key.keysym);
+                                        use_hook = true;
+                                        if (keyh->fx(keyh, mapped_key,
+                                                     event.key.keysym.mod)) {
+                                                done = true;
+                                        }
+                                } else {
+                                        /* enqueue this event */
+                                        backlog_enqueue(&event);
+                                }
+                        }
+                        break;
 
-		case SDL_QUIT:
-			{
-				struct QuitHandler *quith;
-				quith =
-				    getHandler(&QuitHandlers,
-					       struct QuitHandler);
-				if (quith && quith->fx(quith))
-					done = true;
-			}
-			break;
+                case SDL_QUIT:
+                        {
+                                struct QuitHandler *quith;
+                                quith =
+                                    getHandler(&QuitHandlers,
+                                               struct QuitHandler);
+                                if (quith && quith->fx(quith))
+                                        done = true;
+                        }
+                        break;
 
-		case SDL_MOUSEBUTTONDOWN:
-			{
-				struct MouseButtonHandler *mouseh;
-				mouseh = getHandler(&MouseButtonHandlers,
-						    struct MouseButtonHandler);
-				if (mouseh && mouseh->fx(mouseh, &event.button)) {
-					done = true;
-				}
-			}
-			break;
+                case SDL_MOUSEBUTTONDOWN:
+                        {
+                                struct MouseButtonHandler *mouseh;
+                                mouseh = getHandler(&MouseButtonHandlers,
+                                                    struct MouseButtonHandler);
+                                if (mouseh && mouseh->fx(mouseh, &event.button)) {
+                                        done = true;
+                                }
+                        }
+                        break;
 
-		case SDL_MOUSEMOTION:
-			{
-				struct MouseMotionHandler *mouseh;
-				mouseh = getHandler(&MouseMotionHandlers,
-						    struct MouseMotionHandler);
-				if (mouseh && mouseh->fx(mouseh, &event.motion)) {
-					done = true;
-				}
-			}
-			break;
+                case SDL_MOUSEMOTION:
+                        {
+                                struct MouseMotionHandler *mouseh;
+                                mouseh = getHandler(&MouseMotionHandlers,
+                                                    struct MouseMotionHandler);
+                                if (mouseh && mouseh->fx(mouseh, &event.motion)) {
+                                        done = true;
+                                }
+                        }
+                        break;
 
-		default:
-			break;
-		}
+                default:
+                        break;
+                }
 
-		if (use_hook && eventHook)
-			eventHook();
+                if (use_hook && eventHook)
+                        eventHook();
 
-	}
+        }
 
 }
 
 int eventInit(void)
 {
-	char *record_fname = cfg_get("record-filename");
-	char *playback_fname = cfg_get("playback-filename");
+        char *record_fname = cfg_get("record-filename");
+        char *playback_fname = cfg_get("playback-filename");
 
-	list_init(&KeyHandlers);
-	list_init(&TickHandlers);
-	list_init(&QuitHandlers);
-	list_init(&MouseButtonHandlers);
-	list_init(&MouseMotionHandlers);
-	list_init(&backlog);
-	eventHook = NULL;
-	wait_event = event_get_next_event;
-	qcount = 0;
+        list_init(&KeyHandlers);
+        list_init(&TickHandlers);
+        list_init(&QuitHandlers);
+        list_init(&MouseButtonHandlers);
+        list_init(&MouseMotionHandlers);
+        list_init(&backlog);
+        eventHook = NULL;
+        wait_event = event_get_next_event;
+        qcount = 0;
 
-	if (record_fname != NULL) {
-		record_events = true;
-		record_fd = open(record_fname, O_WRONLY | O_CREAT, 00666);
-		if (record_fd == -1) {
-			perror(record_fname);
-			return -1;
-		}
-	}
+        if (record_fname != NULL) {
+                record_events = true;
+                record_fd = open(record_fname, O_WRONLY | O_CREAT, 00666);
+                if (record_fd == -1) {
+                        perror(record_fname);
+                        return -1;
+                }
+        }
 
-	if (playback_fname != NULL) {
-		char *playback_spd_str = cfg_get("playback-speed");
-		playback_events = true;
-		playback_fd = open(playback_fname, O_RDONLY, 00666);
-		if (playback_fd == -1) {
-			perror(playback_fname);
-			return -1;
-		}
-		// Override the normal wait_event routine
-		wait_event = playback_event;
+        if (playback_fname != NULL) {
+                char *playback_spd_str = cfg_get("playback-speed");
+                playback_events = true;
+                playback_fd = open(playback_fname, O_RDONLY, 00666);
+                if (playback_fd == -1) {
+                        perror(playback_fname);
+                        return -1;
+                }
+                // Override the normal wait_event routine
+                wait_event = playback_event;
 
-		/* Set the play back speed. */
-		if (playback_spd_str) {
-			event_playback_speed = atoi(playback_spd_str);
-		}
-	}
+                /* Set the play back speed. */
+                if (playback_spd_str) {
+                        event_playback_speed = atoi(playback_spd_str);
+                }
+        }
 
-	SDL_EnableUNICODE(1);
+        SDL_EnableUNICODE(1);
 
-	return 0;
+        return 0;
 }
 
 void eventExit(void)
 {
-	/* cleanup the backlog queue */
-	SDL_Event event;
-	while (!backlog_dequeue(&event)) ;
+        /* cleanup the backlog queue */
+        SDL_Event event;
+        while (!backlog_dequeue(&event)) ;
 }
 
 void eventHandle(void)
 {
-	event_handle_aux(0);
+        event_handle_aux(0);
 }
 
 void eventHandlePending(void)
 {
-	event_handle_aux(EVENT_NONBLOCK | EVENT_NOPLAYBACK);
+        event_handle_aux(EVENT_NONBLOCK | EVENT_NOPLAYBACK);
 }
 
 void eventPushKeyHandler(struct KeyHandler *keyh)
 {
-	pushHandler(&KeyHandlers, keyh);
+        pushHandler(&KeyHandlers, keyh);
 }
 
 struct KeyHandler *eventPopKeyHandler(void)
 {
-	return (struct KeyHandler *)popHandler(&KeyHandlers);
+        return (struct KeyHandler *) popHandler(&KeyHandlers);
 }
 
 void eventPushTickHandler(struct TickHandler *keyh)
 {
-	pushHandler(&TickHandlers, keyh);
+        pushHandler(&TickHandlers, keyh);
 }
 
 void eventPopTickHandler(void)
 {
-	popHandler(&TickHandlers);
+        popHandler(&TickHandlers);
 }
 
 void eventPushQuitHandler(struct QuitHandler *keyh)
 {
-	pushHandler(&QuitHandlers, keyh);
+        pushHandler(&QuitHandlers, keyh);
 }
 
 void eventPopQuitHandler(void)
 {
-	popHandler(&QuitHandlers);
+        popHandler(&QuitHandlers);
 }
 
 void eventPushMouseButtonHandler(struct MouseButtonHandler *keyh)
 {
-	pushHandler(&MouseButtonHandlers, keyh);
+        pushHandler(&MouseButtonHandlers, keyh);
 }
 
 void eventPopMouseButtonHandler(void)
 {
-	popHandler(&MouseButtonHandlers);
+        popHandler(&MouseButtonHandlers);
 }
 
 void eventPushMouseMotionHandler(struct MouseMotionHandler *keyh)
 {
-	pushHandler(&MouseMotionHandlers, keyh);
+        pushHandler(&MouseMotionHandlers, keyh);
 }
 
 void eventPopMouseMotionHandler(void)
 {
-	popHandler(&MouseMotionHandlers);
+        popHandler(&MouseMotionHandlers);
 }
 
 void eventSetHook(void (*fx) (void))
 {
-	eventHook = fx;
+        eventHook = fx;
 }
 
 void eventClearHook(void)
 {
-	eventHook = NULL;
+        eventHook = NULL;
 }
 
 void eventRunKeyHandler(key_handler_fx_t fx, void *data)
 {
-	struct KeyHandler kh;
-	kh.fx = fx;
-	kh.data = data;
-	eventPushKeyHandler(&kh);
-	eventHandle();
-	eventPopKeyHandler();
+        struct KeyHandler kh;
+        kh.fx = fx;
+        kh.data = data;
+        eventPushKeyHandler(&kh);
+        eventHandle();
+        eventPopKeyHandler();
 }

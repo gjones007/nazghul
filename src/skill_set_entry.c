@@ -32,36 +32,36 @@
 
 static void skill_set_entry_del(struct skill_set_entry *ssent)
 {
-	assert(!ssent->refcount);
-	if (ssent->skill) {
-		skill_unref(ssent->skill);
-	}
-	free(ssent);
+        assert(!ssent->refcount);
+        if (ssent->skill) {
+                skill_unref(ssent->skill);
+        }
+        free(ssent);
 }
 
 struct skill_set_entry *skill_set_entry_new(struct skill *skill, int lvl)
 {
-	struct skill_set_entry *ssent;
-	ssent = (struct skill_set_entry *)calloc(1, sizeof(*ssent));
-	assert(ssent);
-	list_init(&ssent->list);
-	ssent->refcount = 1;
-	ssent->skill = skill;
-	skill_ref(skill);
-	ssent->level = lvl;
-	return ssent;
+        struct skill_set_entry *ssent;
+        ssent = (struct skill_set_entry *) calloc(1, sizeof (*ssent));
+        assert(ssent);
+        list_init(&ssent->list);
+        ssent->refcount = 1;
+        ssent->skill = skill;
+        skill_ref(skill);
+        ssent->level = lvl;
+        return ssent;
 }
 
 void skill_set_entry_ref(struct skill_set_entry *ssent)
 {
-	ssent->refcount++;
+        ssent->refcount++;
 }
 
 void skill_set_entry_unref(struct skill_set_entry *ssent)
 {
-	assert(ssent->refcount > 0);
-	ssent->refcount--;
-	if (!ssent->refcount) {
-		skill_set_entry_del(ssent);
-	}
+        assert(ssent->refcount > 0);
+        ssent->refcount--;
+        if (!ssent->refcount) {
+                skill_set_entry_del(ssent);
+        }
 }

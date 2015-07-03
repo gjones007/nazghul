@@ -28,21 +28,21 @@
 
 struct mmode *mmode_new(char *tag, char *name, int index)
 {
-	struct mmode *mmode = (struct mmode *)calloc(1, sizeof(*mmode));
-	assert(mmode);
-	mmode->tag = strdup(tag);
-	assert(mmode->tag);
-	mmode->name = strdup(name);
-	assert(mmode->name);
-	mmode->index = index;
-	return mmode;
+        struct mmode *mmode = (struct mmode *) calloc(1, sizeof (*mmode));
+        assert(mmode);
+        mmode->tag = strdup(tag);
+        assert(mmode->tag);
+        mmode->name = strdup(name);
+        assert(mmode->name);
+        mmode->index = index;
+        return mmode;
 }
 
 void mmode_del(struct mmode *mmode)
 {
-	if (mmode->tag)
-		free(mmode->tag);
-	if (mmode->name)
-		free(mmode->name);
-	free(mmode);
+        if (mmode->tag)
+                free(mmode->tag);
+        if (mmode->name)
+                free(mmode->name);
+        free(mmode);
 }

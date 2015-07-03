@@ -29,23 +29,23 @@
 
 static bool ztats_misc_filter_cb(struct inv_entry *ie, void *fdata)
 {
-	return (!ie->type->isReadyable()
-		&& !ie->type->isMixable()
-		&& !ie->type->isCastable()
-		&& !ie->type->isUsable());
+        return (!ie->type->isReadyable()
+                && !ie->type->isMixable()
+                && !ie->type->isCastable()
+                && !ie->type->isUsable());
 }
 
 void ztats_misc_init(void)
 {
-	static struct ztats_container_pane pane;
-	static struct ztats_container_pane_ops ops = {
-		ztats_container_paint_item_generic,
-	};
-	static struct filter filter = {
-		ztats_misc_filter_cb,
-		NULL
-	};
+        static struct ztats_container_pane pane;
+        static struct ztats_container_pane_ops ops = {
+                ztats_container_paint_item_generic,
+        };
+        static struct filter filter = {
+                ztats_misc_filter_cb,
+                NULL
+        };
 
-	ztats_container_pane_init(&pane, "Miscellaneous", &filter, &ops);
-	ztats_add_pane(&pane.base);
+        ztats_container_pane_init(&pane, "Miscellaneous", &filter, &ops);
+        ztats_add_pane(&pane.base);
 }

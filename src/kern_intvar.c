@@ -29,86 +29,86 @@
 #define KERN_INTVAR_HASH_SIZE 31
 
 struct kern_intvar_entry {
-	struct kern_intvar_entry *next;
-	char *key;
-	int value;
+        struct kern_intvar_entry *next;
+        char *key;
+        int value;
 } *kern_intvar_hash[KERN_INTVAR_HASH_SIZE];
 
 static struct kern_intvar_entry *kern_intvar_entry_new(const char *key,
-						       const int value)
+                                                       const int value)
 {
-	struct kern_intvar_entry *entry =
-	    (struct kern_intvar_entry *)malloc(sizeof(*entry));
-	assert(entry);
+        struct kern_intvar_entry *entry =
+            (struct kern_intvar_entry *) malloc(sizeof (*entry));
+        assert(entry);
 
-	entry->next = 0;
+        entry->next = 0;
 
-	entry->key = strdup(key);
-	assert(entry->key);
+        entry->key = strdup(key);
+        assert(entry->key);
 
-	entry->value = value;
+        entry->value = value;
 
-	return entry;
+        return entry;
 }
 
 static int hashfn(const char *key)
 {
-	unsigned int hashed = 0;
-	const char *c;
-	static const int bits_per_int = sizeof(unsigned int) * 8;
+        unsigned int hashed = 0;
+        const char *c;
+        static const int bits_per_int = sizeof (unsigned int) * 8;
 
-	for (c = key; *c; c++) {
-		/* letters have about 5 bits in them */
-		hashed = (hashed << 5) | (hashed >> (bits_per_int - 5));
-		hashed ^= *c;
-	}
-	return hashed % KERN_INTVAR_HASH_SIZE;
+        for (c = key; *c; c++) {
+                /* letters have about 5 bits in them */
+                hashed = (hashed << 5) | (hashed >> (bits_per_int - 5));
+                hashed ^= *c;
+        }
+        return hashed % KERN_INTVAR_HASH_SIZE;
 }
 
 int kern_intvar_init()
 {
-	memset(kern_intvar_hash, 0, sizeof(kern_intvar_hash));
-	return 0;
+        memset(kern_intvar_hash, 0, sizeof (kern_intvar_hash));
+        return 0;
 }
 
 void kern_intvar_set(const char *key, int value)
 {
-	int hashkey = hashfn(key);
-	struct kern_intvar_entry *entry = kern_intvar_hash[hashkey];
-	if (!entry) {
-		kern_intvar_hash[hashkey] = kern_intvar_entry_new(key, value);
-	} else {
-		int match = !strcmp(entry->key, key);
-		while (!match && entry->next) {
-			entry = entry->next;
-			match = !strcmp(entry->key, key);
-		}
-		if (match) {
-			entry->value = value;
-		} else {
-			entry->next = kern_intvar_entry_new(key, value);
-		}
-	}
+        int hashkey = hashfn(key);
+        struct kern_intvar_entry *entry = kern_intvar_hash[hashkey];
+        if (!entry) {
+                kern_intvar_hash[hashkey] = kern_intvar_entry_new(key, value);
+        } else {
+                int match = !strcmp(entry->key, key);
+                while (!match && entry->next) {
+                        entry = entry->next;
+                        match = !strcmp(entry->key, key);
+                }
+                if (match) {
+                        entry->value = value;
+                } else {
+                        entry->next = kern_intvar_entry_new(key, value);
+                }
+        }
 }
 
 int kern_intvar_get(const char *key)
 {
-	int hashkey = hashfn(key);
-	struct kern_intvar_entry *entry = kern_intvar_hash[hashkey];
-	if (!entry) {
-		return 0;
-	} else {
-		int match = !strcmp(entry->key, key);
-		while (!match && entry->next) {
-			entry = entry->next;
-			match = !strcmp(entry->key, key);
-		}
-		if (match) {
-			return entry->value;
-		} else {
-			return 0;	// SAM: Perhaps -1 or MAXINT would be a useful return for this case?
-		}
-	}
+        int hashkey = hashfn(key);
+        struct kern_intvar_entry *entry = kern_intvar_hash[hashkey];
+        if (!entry) {
+                return 0;
+        } else {
+                int match = !strcmp(entry->key, key);
+                while (!match && entry->next) {
+                        entry = entry->next;
+                        match = !strcmp(entry->key, key);
+                }
+                if (match) {
+                        return entry->value;
+                } else {
+                        return 0;       // SAM: Perhaps -1 or MAXINT would be a useful return for this case?
+                }
+        }
 }
 
 // eof

@@ -21,7 +21,7 @@
  */
 
 #include "dimensions.h"
-#include "common.h"		/* for MOON_WINDOW_W */
+#include "common.h"             /* for MOON_WINDOW_W */
 #include "cfg.h"
 
 #include <string.h>
@@ -68,85 +68,85 @@ int SKY_SPRITE_W;
  * satisfy the screen dimensions.  */
 static int dimensions_get_map_size(char *dimstr)
 {
-	struct dimstr2mapsz {
-		const char *dimstr;
-		int map_sz;
-	};
+        struct dimstr2mapsz {
+                const char *dimstr;
+                int map_sz;
+        };
 #define ADD_SCREEN_DIM(dim,mapw) { (dim), (mapw) },
-	struct dimstr2mapsz tbl[] = {
+        struct dimstr2mapsz tbl[] = {
 #include "screen_dims.h"
-	};
+        };
 
-	int i;
+        int i;
 
-	if (!dimstr) {
-		warn("warn: NULL dimensions");
-		return -1;
-	}
+        if (!dimstr) {
+                warn("warn: NULL dimensions");
+                return -1;
+        }
 
-	for (i = 0; i < array_sz(tbl); i++) {
-		if (!strcmp(tbl[i].dimstr, dimstr)) {
-			return tbl[i].map_sz;
-		}
-	}
+        for (i = 0; i < array_sz(tbl); i++) {
+                if (!strcmp(tbl[i].dimstr, dimstr)) {
+                        return tbl[i].map_sz;
+                }
+        }
 
-	warn("warn: screen res %s not found in table\n", dimstr);
-	return -1;
+        warn("warn: screen res %s not found in table\n", dimstr);
+        return -1;
 }
 
 int dimensions_init()
 {
-	int map_size = dimensions_get_map_size(cfg_get("screen-dims"));
-	if (map_size < 0)
-		return -1;
+        int map_size = dimensions_get_map_size(cfg_get("screen-dims"));
+        if (map_size < 0)
+                return -1;
 
-	MAP_TILE_W = map_size;
-	MAP_TILE_H = map_size;
+        MAP_TILE_W = map_size;
+        MAP_TILE_H = map_size;
 
-	MAP_X = BORDER_W;
-	MAP_Y = BORDER_H;
-	MAP_W = (TILE_W * MAP_TILE_W);
-	MAP_H = (TILE_H * MAP_TILE_H);
+        MAP_X = BORDER_W;
+        MAP_Y = BORDER_H;
+        MAP_W = (TILE_W * MAP_TILE_W);
+        MAP_H = (TILE_H * MAP_TILE_H);
 
-	CMD_X = MAP_X;
-	CMD_Y = (MAP_Y + MAP_H + BORDER_H);
-	CMD_W = MAP_W;
-	CMD_H = ASCII_H;
+        CMD_X = MAP_X;
+        CMD_Y = (MAP_Y + MAP_H + BORDER_H);
+        CMD_W = MAP_W;
+        CMD_H = ASCII_H;
 
-	SCREEN_H = (BORDER_H * 3 + MAP_H + CMD_H);
+        SCREEN_H = (BORDER_H * 3 + MAP_H + CMD_H);
 
-	STATUS_MAX_MSG_SZ = 128;
-	STAT_X = (MAP_X + MAP_W + BORDER_W);
-	STAT_Y = BORDER_H;
-	STAT_W = ( /*BORDER_W * 2 */ +ASCII_W * STAT_CHARS_PER_LINE);
-	STAT_H = (3 * TILE_H);
-	STAT_H_MAX = (16 * TILE_H);
+        STATUS_MAX_MSG_SZ = 128;
+        STAT_X = (MAP_X + MAP_W + BORDER_W);
+        STAT_Y = BORDER_H;
+        STAT_W = ( /*BORDER_W * 2 */ +ASCII_W * STAT_CHARS_PER_LINE);
+        STAT_H = (3 * TILE_H);
+        STAT_H_MAX = (16 * TILE_H);
 
-	CONS_X = STAT_X;
-	CONS_Y = (FOOGOD_Y + FOOGOD_H + BORDER_H);
-	CONS_W = STAT_W;
-	CONS_H = (SCREEN_H - BORDER_H - CONS_Y);
-	CONS_LINES = (CONS_H / ASCII_H);
+        CONS_X = STAT_X;
+        CONS_Y = (FOOGOD_Y + FOOGOD_H + BORDER_H);
+        CONS_W = STAT_W;
+        CONS_H = (SCREEN_H - BORDER_H - CONS_Y);
+        CONS_LINES = (CONS_H / ASCII_H);
 
-	CONSOLE_MAX_MSG_SZ = (CONS_W / ASCII_W);
+        CONSOLE_MAX_MSG_SZ = (CONS_W / ASCII_W);
 
-	FOOGOD_X = STAT_X;
-	FOOGOD_Y = (STAT_Y + STAT_H + BORDER_H);
-	FOOGOD_W = STAT_W;
-	FOOGOD_H = (2 * ASCII_H);
+        FOOGOD_X = STAT_X;
+        FOOGOD_Y = (STAT_Y + STAT_H + BORDER_H);
+        FOOGOD_W = STAT_W;
+        FOOGOD_H = (2 * ASCII_H);
 
-	WIND_W = (strlen("wind:northeast") * ASCII_W);
-	WIND_H = BORDER_H;
-	WIND_X = (BORDER_W + (MAP_W - WIND_W) / 2);
-	WIND_Y = (MAP_Y + MAP_H);
+        WIND_W = (strlen("wind:northeast") * ASCII_W);
+        WIND_H = BORDER_H;
+        WIND_X = (BORDER_W + (MAP_W - WIND_W) / 2);
+        WIND_Y = (MAP_Y + MAP_H);
 
-	SKY_W = MOON_WINDOW_W;
-	SKY_H = BORDER_H;
-	SKY_X = (MAP_X + (MAP_W - SKY_W) / 2);
-	SKY_Y = 0;
-	SKY_SPRITE_W = (TILE_W / 2);
+        SKY_W = MOON_WINDOW_W;
+        SKY_H = BORDER_H;
+        SKY_X = (MAP_X + (MAP_W - SKY_W) / 2);
+        SKY_Y = 0;
+        SKY_SPRITE_W = (TILE_W / 2);
 
-	SCREEN_W = (BORDER_W * 3 + MAP_W + CONS_W);
+        SCREEN_W = (BORDER_W * 3 + MAP_W + CONS_W);
 
-	return 0;
+        return 0;
 }

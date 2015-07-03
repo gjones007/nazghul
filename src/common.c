@@ -43,193 +43,193 @@ struct los *LosEngine;
 
 int commonInit(void)
 {
-	Turn = 0;
-	srand(0);
-	return 0;
+        Turn = 0;
+        srand(0);
+        return 0;
 }
 
 // fixme -- obsolete, use the next one
 static const char *dir_str[] = {
-	"Northwest", "North", "Northeast",
-	"West", "Here", "East",
-	"Southwest", "South", "Southeast",
-	"Up", "Down"
+        "Northwest", "North", "Northeast",
+        "West", "Here", "East",
+        "Southwest", "South", "Southeast",
+        "Up", "Down"
 };
 
 static unsigned char dir_facing[] = {
-	WEST, NORTH, EAST,
-	WEST, NORTH, EAST,
-	WEST, SOUTH, EAST,
+        WEST, NORTH, EAST,
+        WEST, NORTH, EAST,
+        WEST, SOUTH, EAST,
 };
 
 static unsigned char dir_8facing[] = {
-	NORTHWEST, NORTH, NORTHEAST,
-	WEST, NORTH, EAST,
-	SOUTHWEST, SOUTH, SOUTHEAST,
+        NORTHWEST, NORTH, NORTHEAST,
+        WEST, NORTH, EAST,
+        SOUTHWEST, SOUTH, SOUTHEAST,
 };
 
 static int direction_to_rotation_tbl[] = {
-	315, 0, 45,
-	270, 0, 90,
-	225, 180, 135,
+        315, 0, 45,
+        270, 0, 90,
+        225, 180, 135,
 };
 
 static int directionToDxTable[] = {
-	-1, 0, +1,
-	-1, 0, +1,
-	-1, 0, +1,
-	 0, 0,
+        -1, 0, +1,
+        -1, 0, +1,
+        -1, 0, +1,
+        0, 0,
 };
 
 static int directionToDyTable[] = {
-	-1, -1, -1,
-	 0,  0,  0,
-	+1, +1, +1,
-	 0,  0,
+        -1, -1, -1,
+        0, 0, 0,
+        +1, +1, +1,
+        0, 0,
 };
 
 static int keyToDirectionTable[] = {
-	SOUTHWEST, SOUTH, SOUTHEAST,
-	WEST, HERE, EAST,
-	NORTHWEST, NORTH, NORTHEAST
+        SOUTHWEST, SOUTH, SOUTHEAST,
+        WEST, HERE, EAST,
+        NORTHWEST, NORTH, NORTHEAST
 };
 
 const char *directionToString(int dir)
 {
-	if (dir < 0 || dir >= array_sz(dir_str))
-		return "*** invalid direction ***";
-	return dir_str[dir];
+        if (dir < 0 || dir >= array_sz(dir_str))
+                return "*** invalid direction ***";
+        return dir_str[dir];
 }
 
 int stringToDirection(char *str)
 {
-	unsigned int i;
-	for (i = 0; i < array_sz(dir_str); i++) {
-		if (!strncasecmp(dir_str[i], str, strlen(dir_str[i])))
-			return i;
-	}
-	return -1;
+        unsigned int i;
+        for (i = 0; i < array_sz(dir_str); i++) {
+                if (!strncasecmp(dir_str[i], str, strlen(dir_str[i])))
+                        return i;
+        }
+        return -1;
 }
 
 int directionToOpposite(int dir)
 {
-	static int tbl[] = {
-		SOUTHEAST,
-		SOUTH,
-		SOUTHWEST,
-		EAST,
-		HERE,
-		WEST,
-		NORTHEAST,
-		NORTH,
-		NORTHWEST,
-		DOWN,
-		UP
-	};
+        static int tbl[] = {
+                SOUTHEAST,
+                SOUTH,
+                SOUTHWEST,
+                EAST,
+                HERE,
+                WEST,
+                NORTHEAST,
+                NORTH,
+                NORTHWEST,
+                DOWN,
+                UP
+        };
 
-	if (dir < 0 || dir >= array_sz(tbl))
-		return DIRECTION_NONE;
+        if (dir < 0 || dir >= array_sz(tbl))
+                return DIRECTION_NONE;
 
-	return tbl[dir];
+        return tbl[dir];
 }
 
 int keyToDirection(int key)
 {
-	return keyToDirectionTable[key - KEY_SOUTHWEST];
+        return keyToDirectionTable[key - KEY_SOUTHWEST];
 }
 
 int directionToDx(int dir)
 {
-	return directionToDxTable[dir];
+        return directionToDxTable[dir];
 }
 
 int directionToDy(int dir)
 {
-	return directionToDyTable[dir];
+        return directionToDyTable[dir];
 }
 
 const char *get_dir_str(int dx, int dy)
 {
-	clamp(dx, -1, 1);
-	clamp(dy, -1, 1);
-	return dir_str[(dy + 1) * 3 + dx + 1];
+        clamp(dx, -1, 1);
+        clamp(dy, -1, 1);
+        return dir_str[(dy + 1) * 3 + dx + 1];
 }
 
 int vector_to_facing(int dx, int dy)
 {
-	clamp(dx, -1, 1);
-	clamp(dy, -1, 1);
-	return dir_facing[(dy + 1) * 3 + dx + 1];
+        clamp(dx, -1, 1);
+        clamp(dy, -1, 1);
+        return dir_facing[(dy + 1) * 3 + dx + 1];
 }
 
 int vector_to_8facing(int dx, int dy)
 {
-	if (abs(dx) > 2 * (abs(dy))) {
-		dy = 0;
-	} else if (abs(dy) > 2 * (abs(dx))) {
-		dx = 0;
-	}
-	clamp(dx, -1, 1);
-	clamp(dy, -1, 1);
-	return dir_8facing[(dy + 1) * 3 + dx + 1];
+        if (abs(dx) > 2 * (abs(dy))) {
+                dy = 0;
+        } else if (abs(dy) > 2 * (abs(dx))) {
+                dx = 0;
+        }
+        clamp(dx, -1, 1);
+        clamp(dy, -1, 1);
+        return dir_8facing[(dy + 1) * 3 + dx + 1];
 }
 
 int vector_to_rotation(int dx, int dy)
 {
-	clamp(dx, -1, 1);
-	clamp(dy, -1, 1);
-	return direction_to_rotation_tbl[(dy + 1) * 3 + dx + 1];
+        clamp(dx, -1, 1);
+        clamp(dy, -1, 1);
+        return direction_to_rotation_tbl[(dy + 1) * 3 + dx + 1];
 }
 
 int vector_to_dir(int dx, int dy)
 {
-	int adx = abs(dx);
-	int ady = abs(dy);
+        int adx = abs(dx);
+        int ady = abs(dy);
 
-	// Note: north is in the negative x direction, south in the positive
+        // Note: north is in the negative x direction, south in the positive
 
-	if (ady > adx) {
-		if (dy > 0)
-			return SOUTH;
-		else
-			return NORTH;
-	} else {
-		if (dx > 0)
-			return EAST;
-		else
-			return WEST;
-	}
+        if (ady > adx) {
+                if (dy > 0)
+                        return SOUTH;
+                else
+                        return NORTH;
+        } else {
+                if (dx > 0)
+                        return EAST;
+                else
+                        return WEST;
+        }
 }
 
 int isvowel(char c)
 {
-	return (c == 'a' || c == 'A' ||
-		c == 'e' || c == 'E' ||
-		c == 'i' || c == 'I' ||
-		c == 'o' || c == 'O' ||
-		c == 'u' || c == 'U' || c == 'y' || c == 'Y');
+        return (c == 'a' || c == 'A' ||
+                c == 'e' || c == 'E' ||
+                c == 'i' || c == 'I' ||
+                c == 'o' || c == 'O' ||
+                c == 'u' || c == 'U' || c == 'y' || c == 'Y');
 }
 
 int point_in_rect(int x, int y, SDL_Rect * rect)
 {
-	return (x >= rect->x &&
-		y >= rect->y &&
-		x < (rect->x + rect->w) && y < (rect->y + rect->h));
+        return (x >= rect->x &&
+                y >= rect->y &&
+                x < (rect->x + rect->w) && y < (rect->y + rect->h));
 }
 
 int logBase2(int val)
 {
-	int ret = 0;
+        int ret = 0;
 
-	if (val <= 0)
-		return 0;	/* incorrect but safe */
+        if (val <= 0)
+                return 0;       /* incorrect but safe */
 
-	val -= 1;
+        val -= 1;
 
-	while (val) {
-		val >>= 1;
-		ret++;
-	}
+        while (val) {
+                val >>= 1;
+                ret++;
+        }
 
-	return ret;
+        return ret;
 }

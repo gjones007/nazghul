@@ -13,6 +13,7 @@
     ;; 
     ;; NOTE: "x#" is reserved for blocking mechanisms, see block-teleporting in
     ;; naz.scm
+   (list "()" nil) ;; no terrain
     (list  "xx"   t_wall)               ;; "wall"
     (list  "__"   t_deep)               ;; "deep water"
     (list  "_!"   t_sunlit_deep)               ;; "deep water"

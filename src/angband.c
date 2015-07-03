@@ -73,7 +73,7 @@ typedef unsigned int u32b;
 /*
  * Maximum possible sight radius minus one.
  */
-#define MAX_SIGHT 19		/* 19 */
+#define MAX_SIGHT 19            /* 19 */
 
 /* From xtra2.c **************************************************************/
 
@@ -97,45 +97,45 @@ void (*ang_sort_swap) (void *u, void *v, int a, int b);
  */
 void ang_sort_aux(void *u, void *v, int p, int q)
 {
-	int z, a, b;
+        int z, a, b;
 
-	/* Done sort */
-	if (p >= q)
-		return;
+        /* Done sort */
+        if (p >= q)
+                return;
 
-	/* Pivot */
-	z = p;
+        /* Pivot */
+        z = p;
 
-	/* Begin */
-	a = p;
-	b = q;
+        /* Begin */
+        a = p;
+        b = q;
 
-	/* Partition */
-	while (1) {
-		/* Slide i2 */
-		while (!(*ang_sort_comp) (u, v, b, z))
-			b--;
+        /* Partition */
+        while (1) {
+                /* Slide i2 */
+                while (!(*ang_sort_comp) (u, v, b, z))
+                        b--;
 
-		/* Slide i1 */
-		while (!(*ang_sort_comp) (u, v, z, a))
-			a++;
+                /* Slide i1 */
+                while (!(*ang_sort_comp) (u, v, z, a))
+                        a++;
 
-		/* Done partition */
-		if (a >= b)
-			break;
+                /* Done partition */
+                if (a >= b)
+                        break;
 
-		/* Swap */
-		(*ang_sort_swap) (u, v, a, b);
+                /* Swap */
+                (*ang_sort_swap) (u, v, a, b);
 
-		/* Advance */
-		a++, b--;
-	}
+                /* Advance */
+                a++, b--;
+        }
 
-	/* Recurse left side */
-	ang_sort_aux(u, v, p, b);
+        /* Recurse left side */
+        ang_sort_aux(u, v, p, b);
 
-	/* Recurse right side */
-	ang_sort_aux(u, v, b + 1, q);
+        /* Recurse right side */
+        ang_sort_aux(u, v, b + 1, q);
 }
 
 /*
@@ -148,8 +148,8 @@ void ang_sort_aux(void *u, void *v, int p, int q)
  */
 void ang_sort(void *u, void *v, int n)
 {
-	/* Sort the array */
-	ang_sort_aux(u, v, 0, n - 1);
+        /* Sort the array */
+        ang_sort_aux(u, v, 0, n - 1);
 }
 
 /* Modified from cave.c ******************************************************/
@@ -165,14 +165,14 @@ void ang_sort(void *u, void *v, int n)
  */
 int distance(int y1, int x1, int y2, int x2)
 {
-	int ay, ax;
+        int ay, ax;
 
-	/* Find the absolute y/x distance components */
-	ay = (y1 > y2) ? (y1 - y2) : (y2 - y1);
-	ax = (x1 > x2) ? (x1 - x2) : (x2 - x1);
+        /* Find the absolute y/x distance components */
+        ay = (y1 > y2) ? (y1 - y2) : (y2 - y1);
+        ax = (x1 > x2) ? (x1 - x2) : (x2 - x1);
 
-	/* Hack -- approximate the distance */
-	return ((ay > ax) ? (ay + (ax >> 1)) : (ax + (ay >> 1)));
+        /* Hack -- approximate the distance */
+        return ((ay > ax) ? (ay + (ax >> 1)) : (ax + (ay >> 1)));
 }
 
 /*
@@ -201,20 +201,20 @@ int distance(int y1, int x1, int y2, int x2)
  * location in an octant.
  */
 struct vinfo_type {
-	s16b grid[8];		/* the location of this grid cell in each of the 8
-				 * octants */
-	u32b bits_3;		/* the rays which strike this grid cell */
-	u32b bits_2;		/* the rays which strike this grid cell */
-	u32b bits_1;		/* the rays which strike this grid cell */
-	u32b bits_0;		/* the rays which strike this grid cell */
+        s16b grid[8];           /* the location of this grid cell in each of the 8
+                                 * octants */
+        u32b bits_3;            /* the rays which strike this grid cell */
+        u32b bits_2;            /* the rays which strike this grid cell */
+        u32b bits_1;            /* the rays which strike this grid cell */
+        u32b bits_0;            /* the rays which strike this grid cell */
 
-	struct vinfo_type *next_0;	/* grid to the right */
-	struct vinfo_type *next_1;	/* grid to the right and down (usually) */
+        struct vinfo_type *next_0;      /* grid to the right */
+        struct vinfo_type *next_1;      /* grid to the right and down (usually) */
 
-	byte y;
-	byte x;
-	byte d;
-	byte r;
+        byte y;
+        byte x;
+        byte d;
+        byte r;
 };
 
 /*
@@ -226,10 +226,10 @@ struct vinfo_type {
  * Temporary data used by "vinfo_init()"
  */
 struct vinfo_hack {
-	int num_slopes;
-	long slopes[VINFO_MAX_SLOPES];
-	long slopes_min[MAX_SIGHT + 1][MAX_SIGHT + 1];
-	long slopes_max[MAX_SIGHT + 1][MAX_SIGHT + 1];
+        int num_slopes;
+        long slopes[VINFO_MAX_SLOPES];
+        long slopes_min[MAX_SIGHT + 1][MAX_SIGHT + 1];
+        long slopes_max[MAX_SIGHT + 1][MAX_SIGHT + 1];
 };
 
 /*
@@ -239,12 +239,12 @@ struct vinfo_hack {
  */
 static int ang_sort_comp_hook_longs(const void *u, const void *v, int a, int b)
 {
-	long *x = (long *)(u);
+        long *x = (long *) (u);
 
-	/* Unused parameter */
-	(void)v;
+        /* Unused parameter */
+        (void) v;
 
-	return (x[a] <= x[b]);
+        return (x[a] <= x[b]);
 }
 
 /*
@@ -254,17 +254,17 @@ static int ang_sort_comp_hook_longs(const void *u, const void *v, int a, int b)
  */
 static void ang_sort_swap_hook_longs(void *u, void *v, int a, int b)
 {
-	long *x = (long *)(u);
+        long *x = (long *) (u);
 
-	long temp;
+        long temp;
 
-	/* Unused parameter */
-	(void)v;
+        /* Unused parameter */
+        (void) v;
 
-	/* Swap */
-	temp = x[a];
-	x[a] = x[b];
-	x[b] = temp;
+        /* Swap */
+        temp = x[a];
+        x[a] = x[b];
+        x[b] = temp;
 }
 
 /*
@@ -272,34 +272,34 @@ static void ang_sort_swap_hook_longs(void *u, void *v, int a, int b)
  */
 static void vinfo_init_aux(struct vinfo_hack *hack, int y, int x, long m)
 {
-	int i;
+        int i;
 
-	/* Handle "legal" slopes */
-	if ((m > 0) && (m <= SCALE)) {
-		/* Look for that slope */
-		for (i = 0; i < hack->num_slopes; i++) {
-			if (hack->slopes[i] == m)
-				break;
-		}
+        /* Handle "legal" slopes */
+        if ((m > 0) && (m <= SCALE)) {
+                /* Look for that slope */
+                for (i = 0; i < hack->num_slopes; i++) {
+                        if (hack->slopes[i] == m)
+                                break;
+                }
 
-		/* New slope */
-		if (i == hack->num_slopes) {
-			/* Paranoia */
-			if (hack->num_slopes >= VINFO_MAX_SLOPES) {
-				err("Too many slopes (%d)!", VINFO_MAX_SLOPES);
-				exit(-1);
-			}
+                /* New slope */
+                if (i == hack->num_slopes) {
+                        /* Paranoia */
+                        if (hack->num_slopes >= VINFO_MAX_SLOPES) {
+                                err("Too many slopes (%d)!", VINFO_MAX_SLOPES);
+                                exit(-1);
+                        }
 
-			/* Save the slope, and advance */
-			hack->slopes[hack->num_slopes++] = m;
-		}
-	}
+                        /* Save the slope, and advance */
+                        hack->slopes[hack->num_slopes++] = m;
+                }
+        }
 
-	/* Track slope range */
-	if (hack->slopes_min[y][x] > m)
-		hack->slopes_min[y][x] = m;
-	if (hack->slopes_max[y][x] < m)
-		hack->slopes_max[y][x] = m;
+        /* Track slope range */
+        if (hack->slopes_min[y][x] > m)
+                hack->slopes_min[y][x] = m;
+        if (hack->slopes_max[y][x] < m)
+                hack->slopes_max[y][x] = m;
 }
 
 /*
@@ -327,199 +327,199 @@ static void vinfo_init_aux(struct vinfo_hack *hack, int y, int x, long m)
  */
 int vinfo_init(struct vinfo_type *vinfo, int width)
 {
-	int i, g;
-	int y, x;
-	long m;
-	struct vinfo_hack *hack;
-	int num_grids = 0;
-	int queue_head = 0;
-	int queue_tail = 0;
-	struct vinfo_type *queue[VINFO_MAX_GRIDS * 2];
+        int i, g;
+        int y, x;
+        long m;
+        struct vinfo_hack *hack;
+        int num_grids = 0;
+        int queue_head = 0;
+        int queue_tail = 0;
+        struct vinfo_type *queue[VINFO_MAX_GRIDS * 2];
 
-	/* Max width of a single octant (center of grid to edge of LOS) */
-	const int max_sight = width / 2;
+        /* Max width of a single octant (center of grid to edge of LOS) */
+        const int max_sight = width / 2;
 
-	/* Make hack */
-	MAKE(hack, struct vinfo_hack);
+        /* Make hack */
+        MAKE(hack, struct vinfo_hack);
 
-	/* Analyze grids */
-	for (y = 0; y <= max_sight; ++y) {
-		for (x = y; x <= max_sight; ++x) {
-			/* Skip grids which are out of sight range */
-			if (distance(0, 0, y, x) > max_sight)
-				continue;
+        /* Analyze grids */
+        for (y = 0; y <= max_sight; ++y) {
+                for (x = y; x <= max_sight; ++x) {
+                        /* Skip grids which are out of sight range */
+                        if (distance(0, 0, y, x) > max_sight)
+                                continue;
 
-			/* Default slope range */
-			hack->slopes_min[y][x] = 999999999;
-			hack->slopes_max[y][x] = 0;
+                        /* Default slope range */
+                        hack->slopes_min[y][x] = 999999999;
+                        hack->slopes_max[y][x] = 0;
 
-			/* Paranoia */
-			if (num_grids >= VINFO_MAX_GRIDS) {
-				err("Too many grids (%d >= %d)!",
-				    num_grids, VINFO_MAX_GRIDS);
-				exit(-1);
-			}
+                        /* Paranoia */
+                        if (num_grids >= VINFO_MAX_GRIDS) {
+                                err("Too many grids (%d >= %d)!",
+                                    num_grids, VINFO_MAX_GRIDS);
+                                exit(-1);
+                        }
 
-			/* Count grids */
-			num_grids++;
+                        /* Count grids */
+                        num_grids++;
 
-			/* Slope to the top right corner */
-			m = SCALE * (1000L * y - 500) / (1000L * x + 500);
+                        /* Slope to the top right corner */
+                        m = SCALE * (1000L * y - 500) / (1000L * x + 500);
 
-			/* Handle "legal" slopes */
-			vinfo_init_aux(hack, y, x, m);
+                        /* Handle "legal" slopes */
+                        vinfo_init_aux(hack, y, x, m);
 
-			/* Slope to top left corner */
-			m = SCALE * (1000L * y - 500) / (1000L * x - 500);
+                        /* Slope to top left corner */
+                        m = SCALE * (1000L * y - 500) / (1000L * x - 500);
 
-			/* Handle "legal" slopes */
-			vinfo_init_aux(hack, y, x, m);
+                        /* Handle "legal" slopes */
+                        vinfo_init_aux(hack, y, x, m);
 
-			/* Slope to bottom right corner */
-			m = SCALE * (1000L * y + 500) / (1000L * x + 500);
+                        /* Slope to bottom right corner */
+                        m = SCALE * (1000L * y + 500) / (1000L * x + 500);
 
-			/* Handle "legal" slopes */
-			vinfo_init_aux(hack, y, x, m);
+                        /* Handle "legal" slopes */
+                        vinfo_init_aux(hack, y, x, m);
 
-			/* Slope to bottom left corner */
-			m = SCALE * (1000L * y + 500) / (1000L * x - 500);
+                        /* Slope to bottom left corner */
+                        m = SCALE * (1000L * y + 500) / (1000L * x - 500);
 
-			/* Handle "legal" slopes */
-			vinfo_init_aux(hack, y, x, m);
-		}
-	}
+                        /* Handle "legal" slopes */
+                        vinfo_init_aux(hack, y, x, m);
+                }
+        }
 
-	/* Enforce maximal efficiency */
-	if (num_grids < VINFO_MAX_GRIDS) {
-		warn("Too few grids (%d < %d)!\n", num_grids, VINFO_MAX_GRIDS);
-	}
+        /* Enforce maximal efficiency */
+        if (num_grids < VINFO_MAX_GRIDS) {
+                warn("Too few grids (%d < %d)!\n", num_grids, VINFO_MAX_GRIDS);
+        }
 
-	/* Enforce maximal efficiency */
-	if (hack->num_slopes < VINFO_MAX_SLOPES) {
-		warn("Too few slopes (%d < %d)!\n",
-		     hack->num_slopes, VINFO_MAX_SLOPES);
-	}
+        /* Enforce maximal efficiency */
+        if (hack->num_slopes < VINFO_MAX_SLOPES) {
+                warn("Too few slopes (%d < %d)!\n",
+                     hack->num_slopes, VINFO_MAX_SLOPES);
+        }
 
-	/* Sort slopes numerically */
-	ang_sort_comp = ang_sort_comp_hook_longs;
+        /* Sort slopes numerically */
+        ang_sort_comp = ang_sort_comp_hook_longs;
 
-	/* Sort slopes numerically */
-	ang_sort_swap = ang_sort_swap_hook_longs;
+        /* Sort slopes numerically */
+        ang_sort_swap = ang_sort_swap_hook_longs;
 
-	/* Sort the (unique) slopes */
-	ang_sort(hack->slopes, NULL, hack->num_slopes);
+        /* Sort the (unique) slopes */
+        ang_sort(hack->slopes, NULL, hack->num_slopes);
 
-	/* Enqueue player grid */
-	queue[queue_tail++] = &vinfo[0];
+        /* Enqueue player grid */
+        queue[queue_tail++] = &vinfo[0];
 
-	/* Process queue */
-	while (queue_head < queue_tail) {
-		int e;
+        /* Process queue */
+        while (queue_head < queue_tail) {
+                int e;
 
-		/* Index */
-		e = queue_head++;
+                /* Index */
+                e = queue_head++;
 
-		if (e == VINFO_MAX_GRIDS)
-			break;
+                if (e == VINFO_MAX_GRIDS)
+                        break;
 
-		/* Main Grid */
-		g = vinfo[e].grid[0];
+                /* Main Grid */
+                g = vinfo[e].grid[0];
 
-		/* Location */
-		y = GRID_Y(g, width);
-		x = GRID_X(g, width);
+                /* Location */
+                y = GRID_Y(g, width);
+                x = GRID_X(g, width);
 
-		/* compute grid offsets */
-		vinfo[e].grid[0] = GRID(+y, +x, width);
-		vinfo[e].grid[1] = GRID(+x, +y, width);
-		vinfo[e].grid[2] = GRID(+x, -y, width);
-		vinfo[e].grid[3] = GRID(+y, -x, width);
-		vinfo[e].grid[4] = GRID(-y, -x, width);
-		vinfo[e].grid[5] = GRID(-x, -y, width);
-		vinfo[e].grid[6] = GRID(-x, +y, width);
-		vinfo[e].grid[7] = GRID(-y, +x, width);
+                /* compute grid offsets */
+                vinfo[e].grid[0] = GRID(+y, +x, width);
+                vinfo[e].grid[1] = GRID(+x, +y, width);
+                vinfo[e].grid[2] = GRID(+x, -y, width);
+                vinfo[e].grid[3] = GRID(+y, -x, width);
+                vinfo[e].grid[4] = GRID(-y, -x, width);
+                vinfo[e].grid[5] = GRID(-x, -y, width);
+                vinfo[e].grid[6] = GRID(-x, +y, width);
+                vinfo[e].grid[7] = GRID(-y, +x, width);
 
-		/* Analyze slopes */
-		for (i = 0; i < hack->num_slopes; ++i) {
-			m = hack->slopes[i];
+                /* Analyze slopes */
+                for (i = 0; i < hack->num_slopes; ++i) {
+                        m = hack->slopes[i];
 
-			/* Memorize intersection slopes (for non-player-grids) */
-			if ((e > 0) &&
-			    (hack->slopes_min[y][x] < m) &&
-			    (m < hack->slopes_max[y][x])) {
-				switch (i / 32) {
-				case 3:
-					vinfo[e].bits_3 |= (1L << (i % 32));
-					break;
-				case 2:
-					vinfo[e].bits_2 |= (1L << (i % 32));
-					break;
-				case 1:
-					vinfo[e].bits_1 |= (1L << (i % 32));
-					break;
-				case 0:
-					vinfo[e].bits_0 |= (1L << (i % 32));
-					break;
-				}
-			}
-		}
+                        /* Memorize intersection slopes (for non-player-grids) */
+                        if ((e > 0) &&
+                            (hack->slopes_min[y][x] < m) &&
+                            (m < hack->slopes_max[y][x])) {
+                                switch (i / 32) {
+                                case 3:
+                                        vinfo[e].bits_3 |= (1L << (i % 32));
+                                        break;
+                                case 2:
+                                        vinfo[e].bits_2 |= (1L << (i % 32));
+                                        break;
+                                case 1:
+                                        vinfo[e].bits_1 |= (1L << (i % 32));
+                                        break;
+                                case 0:
+                                        vinfo[e].bits_0 |= (1L << (i % 32));
+                                        break;
+                                }
+                        }
+                }
 
-		/* Default */
-		vinfo[e].next_0 = &vinfo[0];
+                /* Default */
+                vinfo[e].next_0 = &vinfo[0];
 
-		/* Grid next child */
-		if (distance(0, 0, y, x + 1) <= max_sight) {
-			g = GRID(y, x + 1, width);
+                /* Grid next child */
+                if (distance(0, 0, y, x + 1) <= max_sight) {
+                        g = GRID(y, x + 1, width);
 
-			if (queue[queue_tail - 1]->grid[0] != g) {
-				vinfo[queue_tail].grid[0] = g;
-				queue[queue_tail] = &vinfo[queue_tail];
-				queue_tail++;
-			}
+                        if (queue[queue_tail - 1]->grid[0] != g) {
+                                vinfo[queue_tail].grid[0] = g;
+                                queue[queue_tail] = &vinfo[queue_tail];
+                                queue_tail++;
+                        }
 
-			vinfo[e].next_0 = &vinfo[queue_tail - 1];
-		}
+                        vinfo[e].next_0 = &vinfo[queue_tail - 1];
+                }
 
-		/* Default */
-		vinfo[e].next_1 = &vinfo[0];
+                /* Default */
+                vinfo[e].next_1 = &vinfo[0];
 
-		/* Grid diag child */
-		if (distance(0, 0, y + 1, x + 1) <= max_sight) {
-			g = GRID(y + 1, x + 1, width);
+                /* Grid diag child */
+                if (distance(0, 0, y + 1, x + 1) <= max_sight) {
+                        g = GRID(y + 1, x + 1, width);
 
-			if (queue[queue_tail - 1]->grid[0] != g) {
-				vinfo[queue_tail].grid[0] = g;
-				queue[queue_tail] = &vinfo[queue_tail];
-				queue_tail++;
-			}
+                        if (queue[queue_tail - 1]->grid[0] != g) {
+                                vinfo[queue_tail].grid[0] = g;
+                                queue[queue_tail] = &vinfo[queue_tail];
+                                queue_tail++;
+                        }
 
-			vinfo[e].next_1 = &vinfo[queue_tail - 1];
-		}
+                        vinfo[e].next_1 = &vinfo[queue_tail - 1];
+                }
 
-		/* Hack -- main diagonal has special children */
-		if (y == x)
-			vinfo[e].next_0 = vinfo[e].next_1;
+                /* Hack -- main diagonal has special children */
+                if (y == x)
+                        vinfo[e].next_0 = vinfo[e].next_1;
 
-		/* Extra values */
-		vinfo[e].y = y;
-		vinfo[e].x = x;
-		vinfo[e].d = ((y > x) ? (y + x / 2) : (x + y / 2));
-		vinfo[e].r = ((!y) ? x : (!x) ? y : (y == x) ? y : 0);
-	}
+                /* Extra values */
+                vinfo[e].y = y;
+                vinfo[e].x = x;
+                vinfo[e].d = ((y > x) ? (y + x / 2) : (x + y / 2));
+                vinfo[e].r = ((!y) ? x : (!x) ? y : (y == x) ? y : 0);
+        }
 
-	/* Verify maximal bits XXX XXX XXX */
-	if (((vinfo[1].bits_3 | vinfo[2].bits_3) != VINFO_BITS_3) ||
-	    ((vinfo[1].bits_2 | vinfo[2].bits_2) != VINFO_BITS_2) ||
-	    ((vinfo[1].bits_1 | vinfo[2].bits_1) != VINFO_BITS_1) ||
-	    ((vinfo[1].bits_0 | vinfo[2].bits_0) != VINFO_BITS_0)) {
-		warn("Incorrect bit masks!\n");
-	}
+        /* Verify maximal bits XXX XXX XXX */
+        if (((vinfo[1].bits_3 | vinfo[2].bits_3) != VINFO_BITS_3) ||
+            ((vinfo[1].bits_2 | vinfo[2].bits_2) != VINFO_BITS_2) ||
+            ((vinfo[1].bits_1 | vinfo[2].bits_1) != VINFO_BITS_1) ||
+            ((vinfo[1].bits_0 | vinfo[2].bits_0) != VINFO_BITS_0)) {
+                warn("Incorrect bit masks!\n");
+        }
 
-	/* Kill hack */
-	KILL(hack);
+        /* Kill hack */
+        KILL(hack);
 
-	/* Success */
-	return (0);
+        /* Success */
+        return (0);
 }
 
 /* gmcnutt: variable los */
@@ -537,57 +537,57 @@ static unsigned char ray_strength[VINFO_MAX_SLOPES];
 #define VISIBLE(val) ((val)  < (MAX_RAY_STRENGTH))
 
 static void check_ray_set(u32b * ray_set, u32b ray_mask, int ray_index,
-			  unsigned char tile_val, int diag)
+                          unsigned char tile_val, int diag)
 {
-	int ray_bit = 1;
-	unsigned int ray_num;
+        int ray_bit = 1;
+        unsigned int ray_num;
 
-	/* walk the rays */
-	for (ray_num = 0; ray_num < sizeof(*ray_set) * 8; ray_num++) {
+        /* walk the rays */
+        for (ray_num = 0; ray_num < sizeof (*ray_set) * 8; ray_num++) {
 
-		/* if this ray strikes this grid */
-		if (ray_bit & ray_mask) {
+                /* if this ray strikes this grid */
+                if (ray_bit & ray_mask) {
 
-			/* decrement ray
-			 * strength by grid
-			 * opacity */
-			int ray_val = ray_strength[ray_index];
-			ray_val -= tile_val;
+                        /* decrement ray
+                         * strength by grid
+                         * opacity */
+                        int ray_val = ray_strength[ray_index];
+                        ray_val -= tile_val;
 
-			// Due to the way the rays are cast
-			// (Bresenham algorithm), odd effects
-			// were seen on perfect diagonals.
-			// 
-			// A perfect diagonal (degrees 45, 135, 225, 315)
-			// gets treated as distance n, rather than n * sqrt(2)
-			// and as such, a "spike" of longer LOS on the diagonals
-			// was seen.
-			// 
-			// To avoid this artifact, we aproximate additional 
-			// ray strength reduction to correct this.
-			// Thus far we have reduced by (n * 1), 
-			// so we reduce by (n * 0.5) more, for a total of 1.5.
-			// This is a fair approximation of sqrt(2) ~ 1.41,
-			// and gets rid of the LOS "spikes"
-			// 
-			if (ray_index == (VINFO_MAX_SLOPES - 1)) {
-				ray_val -= (tile_val / 2);
-			}
+                        // Due to the way the rays are cast
+                        // (Bresenham algorithm), odd effects
+                        // were seen on perfect diagonals.
+                        // 
+                        // A perfect diagonal (degrees 45, 135, 225, 315)
+                        // gets treated as distance n, rather than n * sqrt(2)
+                        // and as such, a "spike" of longer LOS on the diagonals
+                        // was seen.
+                        // 
+                        // To avoid this artifact, we aproximate additional 
+                        // ray strength reduction to correct this.
+                        // Thus far we have reduced by (n * 1), 
+                        // so we reduce by (n * 0.5) more, for a total of 1.5.
+                        // This is a fair approximation of sqrt(2) ~ 1.41,
+                        // and gets rid of the LOS "spikes"
+                        // 
+                        if (ray_index == (VINFO_MAX_SLOPES - 1)) {
+                                ray_val -= (tile_val / 2);
+                        }
 
-			if (ray_val < 0) {
-				ray_val = 0;
-			}
+                        if (ray_val < 0) {
+                                ray_val = 0;
+                        }
 
-			if (!ray_val) {
-				*ray_set &= ~ray_bit;
-			}
+                        if (!ray_val) {
+                                *ray_set &= ~ray_bit;
+                        }
 
-			ray_strength[ray_index] = ray_val;
-		}
+                        ray_strength[ray_index] = ray_val;
+                }
 
-		ray_bit <<= 1;
-		ray_index++;
-	}
+                ray_bit <<= 1;
+                ray_index++;
+        }
 }
 
 /*
@@ -678,174 +678,174 @@ static void check_ray_set(u32b * ray_set, u32b ray_mask, int ray_index,
  */
 void update_view(struct los *los)
 {
-	int pg;
-	int g;
-	int o2;
-	struct vinfo_type *vinfo = (struct vinfo_type *)los->data;
+        int pg;
+        int g;
+        int o2;
+        struct vinfo_type *vinfo = (struct vinfo_type *) los->data;
 
-	/* Set pg to be the center */
-	pg = los->h / 2 * los->w + los->w / 2;
+        /* Set pg to be the center */
+        pg = los->h / 2 * los->w + los->w / 2;
 
-	/* Initialize the mask to make everything unseen */
-	memset(los->vmask, 0, los->w * los->h);
+        /* Initialize the mask to make everything unseen */
+        memset(los->vmask, 0, los->w * los->h);
 
-	/* Scan each octant */
-	for (o2 = 0; o2 < 8; o2++) {
-		struct vinfo_type *p;
+        /* Scan each octant */
+        for (o2 = 0; o2 < 8; o2++) {
+                struct vinfo_type *p;
 
-		if (USE_VLOS) {
-			/* Initially all rays at max strength */
-			memset(ray_strength, MAX_RAY_STRENGTH,
-			       sizeof(ray_strength));
-		}
+                if (USE_VLOS) {
+                        /* Initially all rays at max strength */
+                        memset(ray_strength, MAX_RAY_STRENGTH,
+                               sizeof (ray_strength));
+                }
 
-		/* Last added */
-		struct vinfo_type *last = &vinfo[0];
+                /* Last added */
+                struct vinfo_type *last = &vinfo[0];
 
-		/* Grid queue */
-		int queue_head = 0;
-		int queue_tail = 0;
-		struct vinfo_type *queue[VINFO_MAX_GRIDS * 2];
+                /* Grid queue */
+                int queue_head = 0;
+                int queue_tail = 0;
+                struct vinfo_type *queue[VINFO_MAX_GRIDS * 2];
 
-		/* Slope bit vector */
-		u32b bits0 = VINFO_BITS_0;
-		u32b bits1 = VINFO_BITS_1;
-		u32b bits2 = VINFO_BITS_2;
-		u32b bits3 = VINFO_BITS_3;
+                /* Slope bit vector */
+                u32b bits0 = VINFO_BITS_0;
+                u32b bits1 = VINFO_BITS_1;
+                u32b bits2 = VINFO_BITS_2;
+                u32b bits3 = VINFO_BITS_3;
 
-		/* Reset queue */
-		queue_head = queue_tail = 0;
+                /* Reset queue */
+                queue_head = queue_tail = 0;
 
-		/* Initial grids */
-		queue[queue_tail++] = &vinfo[1];
-		queue[queue_tail++] = &vinfo[2];
+                /* Initial grids */
+                queue[queue_tail++] = &vinfo[1];
+                queue[queue_tail++] = &vinfo[2];
 
-		/* Process queue */
-		while (queue_head < queue_tail) {
+                /* Process queue */
+                while (queue_head < queue_tail) {
 
-			/* Dequeue next grid */
-			p = queue[queue_head++];
+                        /* Dequeue next grid */
+                        p = queue[queue_head++];
 
-			/* Limit LOS to the radius if given (creating a circle
-			 * of visibility centered on the middle). Otherwise
-			 * limit it to the view dimensions (making the entire
-			 * square window potentially visible). */
-			if (los->r > 0) {
-				if (p->d > los->r)
-					continue;
-			} else {
-				if (p->x > los->w / 2 || p->y > los->h / 2)
-					continue;
-			}
+                        /* Limit LOS to the radius if given (creating a circle
+                         * of visibility centered on the middle). Otherwise
+                         * limit it to the view dimensions (making the entire
+                         * square window potentially visible). */
+                        if (los->r > 0) {
+                                if (p->d > los->r)
+                                        continue;
+                        } else {
+                                if (p->x > los->w / 2 || p->y > los->h / 2)
+                                        continue;
+                        }
 
-			/* If none of the unblocked rays strike this grid then
-			 * skip it. */
-			if (!((bits0 & (p->bits_0)) ||
-			      (bits1 & (p->bits_1)) ||
-			      (bits2 & (p->bits_2)) || (bits3 & (p->bits_3))))
-				continue;
+                        /* If none of the unblocked rays strike this grid then
+                         * skip it. */
+                        if (!((bits0 & (p->bits_0)) ||
+                              (bits1 & (p->bits_1)) ||
+                              (bits2 & (p->bits_2)) || (bits3 & (p->bits_3))))
+                                continue;
 
-			/* Extract grid value XXX XXX XXX */
-			g = pg + p->grid[o2];
+                        /* Extract grid value XXX XXX XXX */
+                        g = pg + p->grid[o2];
 
-			/* If this grid is out-of-bounds then skip it (this
-			 * happens on children of edge grids */
-			if (g < 0 || g >= (los->w * los->h))
-				continue;
+                        /* If this grid is out-of-bounds then skip it (this
+                         * happens on children of edge grids */
+                        if (g < 0 || g >= (los->w * los->h))
+                                continue;
 
-			/* This grid is visible so unmask it. */
-			los->vmask[g] = 1;
+                        /* This grid is visible so unmask it. */
+                        los->vmask[g] = 1;
 
-			/* If this grid is opaque then mask out the rays which
-			 * strike it and do NOT queue it's children. */
-			{
+                        /* If this grid is opaque then mask out the rays which
+                         * strike it and do NOT queue it's children. */
+                        {
 
-				int ray_index = 0;
-				unsigned char tile_val = los->alpha[g];
-				int diag =
-				    abs(GRID_Y(g, los->w)) ==
-				    abs(GRID_X(g, los->w));
+                                int ray_index = 0;
+                                unsigned char tile_val = los->alpha[g];
+                                int diag =
+                                    abs(GRID_Y(g, los->w)) ==
+                                    abs(GRID_X(g, los->w));
 
-				/* check rays in first set */
-				if (bits0 & (p->bits_0)) {
-					check_ray_set(&bits0, p->bits_0,
-						      ray_index, tile_val,
-						      diag);
-				}
-				ray_index += (sizeof(bits0) * 8);
+                                /* check rays in first set */
+                                if (bits0 & (p->bits_0)) {
+                                        check_ray_set(&bits0, p->bits_0,
+                                                      ray_index, tile_val,
+                                                      diag);
+                                }
+                                ray_index += (sizeof (bits0) * 8);
 
-				/* check rays in next set */
-				if (bits1 & (p->bits_1)) {
-					check_ray_set(&bits1, p->bits_1,
-						      ray_index, tile_val,
-						      diag);
-				}
-				ray_index += (sizeof(bits1) * 8);
+                                /* check rays in next set */
+                                if (bits1 & (p->bits_1)) {
+                                        check_ray_set(&bits1, p->bits_1,
+                                                      ray_index, tile_val,
+                                                      diag);
+                                }
+                                ray_index += (sizeof (bits1) * 8);
 
-				/* check rays in next set */
-				if (bits2 & (p->bits_2)) {
-					check_ray_set(&bits2, p->bits_2,
-						      ray_index, tile_val,
-						      diag);
-				}
-				ray_index += (sizeof(bits2) * 8);
+                                /* check rays in next set */
+                                if (bits2 & (p->bits_2)) {
+                                        check_ray_set(&bits2, p->bits_2,
+                                                      ray_index, tile_val,
+                                                      diag);
+                                }
+                                ray_index += (sizeof (bits2) * 8);
 
-				/* check rays in next set */
-				if (bits3 & (p->bits_3)) {
-					check_ray_set(&bits3, p->bits_3,
-						      ray_index, tile_val,
-						      diag);
-				}
-				ray_index += (sizeof(bits3) * 8);
-			}
+                                /* check rays in next set */
+                                if (bits3 & (p->bits_3)) {
+                                        check_ray_set(&bits3, p->bits_3,
+                                                      ray_index, tile_val,
+                                                      diag);
+                                }
+                                ray_index += (sizeof (bits3) * 8);
+                        }
 
-			/* This grid is transparent so queue it's children */
-			if (last != p->next_0)
-				queue[queue_tail++] = last = p->next_0;
-			if (last != p->next_1)
-				queue[queue_tail++] = last = p->next_1;
+                        /* This grid is transparent so queue it's children */
+                        if (last != p->next_0)
+                                queue[queue_tail++] = last = p->next_0;
+                        if (last != p->next_1)
+                                queue[queue_tail++] = last = p->next_1;
 
-		}		// while (queue_head < queue_tail)
+                }               // while (queue_head < queue_tail)
 
-	}			// for (octant o2)
+        }                       // for (octant o2)
 
-}				// update_view()
+}                               // update_view()
 
 /* los lib stuff *************************************************************/
 
 static void ANGBAND_destroy(struct los *los)
 {
-	free(los->data);
+        free(los->data);
 }
 
 static void ANGBAND_compute(struct los *los)
 {
-	update_view(los);
-	los->vmask[(los->w * los->h) / 2] = 1;	/* make center always
-						 * visible */
+        update_view(los);
+        los->vmask[(los->w * los->h) / 2] = 1;  /* make center always
+                                                 * visible */
 }
 
 int ANGBAND_Init(struct los *los)
 {
-	struct vinfo_type *vinfo;
+        struct vinfo_type *vinfo;
 
-	if (los->data) {
-		free(los->data);
-	}
+        if (los->data) {
+                free(los->data);
+        }
 
-	vinfo = (struct vinfo_type *)malloc((VINFO_MAX_GRIDS + 1) *
-					    sizeof(struct vinfo_type));
-	if (!vinfo)
-		return -1;
-	memset(vinfo, 0, (VINFO_MAX_GRIDS + 1) * sizeof(struct vinfo_type));
+        vinfo = (struct vinfo_type *) malloc((VINFO_MAX_GRIDS + 1) *
+                                             sizeof (struct vinfo_type));
+        if (!vinfo)
+                return -1;
+        memset(vinfo, 0, (VINFO_MAX_GRIDS + 1) * sizeof (struct vinfo_type));
 
-	if (vinfo_init(vinfo, los->w) < 0)
-		return -1;
+        if (vinfo_init(vinfo, los->w) < 0)
+                return -1;
 
-	los->data = vinfo;
-	los->destroy = ANGBAND_destroy;
-	los->compute = ANGBAND_compute;
+        los->data = vinfo;
+        los->destroy = ANGBAND_destroy;
+        los->compute = ANGBAND_compute;
 
-	return 0;
+        return 0;
 
 }

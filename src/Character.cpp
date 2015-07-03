@@ -57,6 +57,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+
+#define MAX_DESCRIPTION 64
+
+
 /**
  * Used when calculating an evasion vector away from hostiles.
  */
@@ -1687,28 +1691,29 @@ bool Character::isShaded()
 
 void Character::describe(bool capitalize)
 {
-	if (Session->subject) {
-		const char *diplstr = diplomacy_string(this, Session->subject);
-		if (isvowel(diplstr[0])) {
-			log_continue(capitalize ? "An" : "an");
-		} else {
-			log_continue(capitalize ? "A": "a");
-		}
-		log_continue(" %s", diplstr);
-	} else {
-		log_continue(capitalize ? "An" : "an");
-	}
-	log_continue(" L%d", getLevel());
 	if (isKnown()) {
-		log_continue(" %s", getName());
-	} else if (description) {
-		log_continue(" %s", description);
+		log_continue("%s", getName());
 	} else {
-		if (species && species->name) {
-			log_continue(" %s", species->name);
+		char s[MAX_DESCRIPTION] = {0};
+		if (description) {
+			strncat(s, description, MAX_DESCRIPTION);
+		} else {
+			if (species && species->name) {
+				strncat(s, " ", MAX_DESCRIPTION);
+				strncat(s, species->name, MAX_DESCRIPTION);
+			}
+			if (occ && occ->name) {
+				strncat(s, " ", MAX_DESCRIPTION);
+				strncat(s, occ->name, MAX_DESCRIPTION);
+			}
 		}
-		if (occ && occ->name) {
-			log_continue(" %s", occ->name);
+		if (s[0]) {
+			if (isvowel(s[0])) {
+				log_continue(capitalize ? "An " : "an ");
+			} else {
+				log_continue(capitalize ? "A ": "a ");
+			}
+			log_continue(s);
 		}
 	}
 	if (!isVisible())
@@ -1722,9 +1727,6 @@ void Character::examine()
 {
 	int i;
 	int n = 0;
-	const char *diplstr = diplomacy_string(this, Session->subject);
-
-	log_continue("%s level %d", diplstr, getLevel());
 
 	if (isKnown()) {
 		log_continue(" %s,", getName());
@@ -1736,6 +1738,9 @@ void Character::examine()
 			log_continue(" %s", occ->name);
 		}
 	}
+
+	const char *diplstr = diplomacy_string(this, Session->subject);
+	log_continue(" %s L%d", diplstr, getLevel());
 
 	log_continue(" hp:%d/%d", getHp(), getMaxHp());
 	log_continue(" mp:%d/%d", getMana(), getMaxMana());

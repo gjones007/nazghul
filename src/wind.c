@@ -31,60 +31,60 @@ static int windDuration;
 
 void windAdvanceTurns(void)
 {
-	if (windDuration > 0) {
-		windDuration--;
-		return;
-	}
+        if (windDuration > 0) {
+                windDuration--;
+                return;
+        }
 
-	if (rand() % 100 < WIND_CHANGE_PROBABILITY) {
-		int dir = rand() % NUM_WIND_DIRECTIONS;
-		windSetDirection(dir, 10);
-	}
+        if (rand() % 100 < WIND_CHANGE_PROBABILITY) {
+                int dir = rand() % NUM_WIND_DIRECTIONS;
+                windSetDirection(dir, 10);
+        }
 }
 
 int windInit(void)
 {
-	windRect.w = WIND_W;
-	windRect.x = WIND_X;
-	windRect.y = WIND_Y;
-	windRect.h = WIND_H;
+        windRect.w = WIND_W;
+        windRect.x = WIND_X;
+        windRect.y = WIND_Y;
+        windRect.h = WIND_H;
 
-	windDirection = NORTH;
-	windDuration = 0;
+        windDirection = NORTH;
+        windDuration = 0;
 
-	return 0;
+        return 0;
 }
 
 void windSetDirection(int dir, int dur)
 {
-	if (HERE == dir || dir >= NUM_WIND_DIRECTIONS) {
-		return;
-	}
+        if (HERE == dir || dir >= NUM_WIND_DIRECTIONS) {
+                return;
+        }
 
-	if (dir != windDirection) {
-		log_msg("The wind shifts to the %s", directionToString(dir));
-	}
+        if (dir != windDirection) {
+                log_msg("The wind shifts to the %s", directionToString(dir));
+        }
 
-	windDirection = dir;
-	windDuration = dur;
-	windRepaint();
+        windDirection = dir;
+        windDuration = dur;
+        windRepaint();
 }
 
 int windGetDirection(void)
 {
-	return windDirection;
+        return windDirection;
 }
 
 void windRepaint(void)
 {
-	screen_erase(&windRect);
-	screen_print(&windRect, SP_CENTERED, "Wind:%s",
-		     directionToString(windDirection));
-	screen_update(&windRect);
+        screen_erase(&windRect);
+        screen_print(&windRect, SP_CENTERED, "Wind:%s",
+                     directionToString(windDirection));
+        screen_update(&windRect);
 }
 
 void windSave(struct save *save)
 {
-	save->write(save, "(kern-set-wind %d %d)\n", windDirection,
-		    windDuration);
+        save->write(save, "(kern-set-wind %d %d)\n", windDirection,
+                    windDuration);
 }

@@ -32,7 +32,7 @@
 #include <string.h>
 #include "closure.h"
 #include "log.h"
-#include "scheme-private.h"	/* for keyword processing */
+#include "scheme-private.h"     /* for keyword processing */
 #include "session.h"
 
 #include <ctype.h>
@@ -46,11 +46,11 @@
  * Conversation structure.
  */
 struct conv {
-	struct closure *proc;	/* Closure which responds to keywords. */
-	int ref;		/* Reference count. */
-	int n_keywords;		/* Size of the keywords array. */
-	char **keywords;	/* Keyword array. */
-	bitset_t *marked;	/* Used keywords */
+        struct closure *proc;   /* Closure which responds to keywords. */
+        int ref;                /* Reference count. */
+        int n_keywords;         /* Size of the keywords array. */
+        char **keywords;        /* Keyword array. */
+        bitset_t *marked;       /* Used keywords */
 };
 
 static int conv_room, conv_len;
@@ -68,48 +68,48 @@ static int conv_keyword_highlighting = 1;
  */
 static int conv_get_player_query(struct KeyHandler *kh, int key, int keymod)
 {
-	int done = 0;
+        int done = 0;
 
-	if (console_handle_key(key, keymod)) {
-		return 0;
-	}
+        if (console_handle_key(key, keymod)) {
+                return 0;
+        }
 
-	switch (key) {
-	case CANCEL:
-		console_end();
-		while (conv_ptr > conv_query) {
-			conv_ptr--;
-			*conv_ptr = 0;
-			cmdwin_pop();
-			conv_room++;
-		}
-		done = 1;
-		break;
-	case '\n':
-		console_end();
-		done = 1;
-		break;
-	case '\b':
-		console_end();
-		if (conv_ptr != conv_query) {
-			conv_ptr--;
-			*conv_ptr = 0;
-			conv_room++;
-			cmdwin_pop();
-		}
-		break;
-	default:
-		if (isprintable(key)
-		    && conv_room) {
-			console_end();
-			cmdwin_push("%c", key);
-			*conv_ptr++ = key;
-			conv_room--;
-		}
-		break;
-	}
+        switch (key) {
+        case CANCEL:
+                console_end();
+                while (conv_ptr > conv_query) {
+                        conv_ptr--;
+                        *conv_ptr = 0;
+                        cmdwin_pop();
+                        conv_room++;
+                }
+                done = 1;
+                break;
+        case '\n':
+                console_end();
+                done = 1;
+                break;
+        case '\b':
+                console_end();
+                if (conv_ptr != conv_query) {
+                        conv_ptr--;
+                        *conv_ptr = 0;
+                        conv_room++;
+                        cmdwin_pop();
+                }
+                break;
+        default:
+                if (isprintable(key)
+                    && conv_room) {
+                        console_end();
+                        cmdwin_push("%c", key);
+                        *conv_ptr++ = key;
+                        conv_room--;
+                }
+                break;
+        }
 
-	return done;
+        return done;
 }
 
 /**
@@ -121,9 +121,9 @@ static int conv_get_player_query(struct KeyHandler *kh, int key, int keymod)
  */
 static void conv_set_query(const char *str)
 {
-	snprintf(conv_query, sizeof(conv_query) - 1, "%s", str);
-	conv_query[MAX_KEYWORD_SZ] = 0;
-	conv_len = strlen(conv_query);
+        snprintf(conv_query, sizeof (conv_query) - 1, "%s", str);
+        conv_query[MAX_KEYWORD_SZ] = 0;
+        conv_len = strlen(conv_query);
 }
 
 /**
@@ -133,28 +133,28 @@ static void conv_set_query(const char *str)
  */
 static void conv_del(struct conv *conv)
 {
-	if (conv->proc) {
-		closure_unref(conv->proc);
-	}
+        if (conv->proc) {
+                closure_unref(conv->proc);
+        }
 
-	if (conv->keywords) {
+        if (conv->keywords) {
 
-		int i;
+                int i;
 
-		for (i = 0; i < conv->n_keywords; i++) {
-			if (conv->keywords[i]) {
-				free(conv->keywords[i]);
-			}
-		}
+                for (i = 0; i < conv->n_keywords; i++) {
+                        if (conv->keywords[i]) {
+                                free(conv->keywords[i]);
+                        }
+                }
 
-		free(conv->keywords);
-	}
+                free(conv->keywords);
+        }
 
-	if (conv->marked) {
-		bitset_free(conv->marked);
-	}
+        if (conv->marked) {
+                bitset_free(conv->marked);
+        }
 
-	free(conv);
+        free(conv);
 }
 
 /**
@@ -166,7 +166,7 @@ static void conv_del(struct conv *conv)
  */
 static int conv_sort_cmp(const void *p1, const void *p2)
 {
-	return strcmp(*(char *const *)p1, *(char *const *)p2);
+        return strcmp(*(char *const *) p1, *(char *const *) p2);
 }
 
 /**
@@ -178,29 +178,29 @@ static int conv_sort_cmp(const void *p1, const void *p2)
  */
 static int conv_prefix_cmp(char *wptr, char *cptr)
 {
-	int len = 0;
+        int len = 0;
 
-	while (*wptr && *cptr) {
-		char wc = tolower(*wptr++);
-		char cc = tolower(*cptr++);
-		len++;
-		int d = wc - cc;
-		if (d != 0) {
-			return d;
-		}
-	}
+        while (*wptr && *cptr) {
+                char wc = tolower(*wptr++);
+                char cc = tolower(*cptr++);
+                len++;
+                int d = wc - cc;
+                if (d != 0) {
+                        return d;
+                }
+        }
 
-	if (*cptr && !*wptr) {
-		/* candidate is longer than word */
-		return -1;
-	}
+        if (*cptr && !*wptr) {
+                /* candidate is longer than word */
+                return -1;
+        }
 
-	if (*wptr && !isspace(*wptr) && !ispunct(*wptr) && len < 4) {
-		/* candidate is short but word is not */
-		return 1;
-	}
+        if (*wptr && !isspace(*wptr) && !ispunct(*wptr) && len < 4) {
+                /* candidate is short but word is not */
+                return 1;
+        }
 
-	return 0;
+        return 0;
 }
 
 /**
@@ -212,11 +212,11 @@ static int conv_prefix_cmp(char *wptr, char *cptr)
  */
 static int conv_lookup_keyword(struct conv *conv, char *word)
 {
-	int min = 0, max = conv->n_keywords, pivot;
+        int min = 0, max = conv->n_keywords, pivot;
 
-	while (max > min) {
+        while (max > min) {
 
-		/**
+                /**
                  * apricot
                  *
                  * aardvark
@@ -226,22 +226,22 @@ static int conv_lookup_keyword(struct conv *conv, char *word)
                  * zebra
                  */
 
-		pivot = ((max - min) / 2) + min;
+                pivot = ((max - min) / 2) + min;
 
-		int d = conv_prefix_cmp(word, conv->keywords[pivot]);
+                int d = conv_prefix_cmp(word, conv->keywords[pivot]);
 
-		if (d > 0) {
-			/* word > pivot => search higher */
-			min = pivot + 1;
-		} else if (d < 0) {
-			/* word < pivot => search lower */
-			max = pivot;
-		} else {
-			return pivot;
-		}
-	}
+                if (d > 0) {
+                        /* word > pivot => search higher */
+                        min = pivot + 1;
+                } else if (d < 0) {
+                        /* word < pivot => search lower */
+                        max = pivot;
+                } else {
+                        return pivot;
+                }
+        }
 
-	return -1;
+        return -1;
 }
 
 /**
@@ -249,8 +249,8 @@ static int conv_lookup_keyword(struct conv *conv, char *word)
  */
 static const char *conv_get_matching_keyword(struct conv *conv, char *word)
 {
-	int i = conv_lookup_keyword(conv, word);
-	return (i == -1) ? NULL : conv->keywords[i];
+        int i = conv_lookup_keyword(conv, word);
+        return (i == -1) ? NULL : conv->keywords[i];
 }
 
 /**
@@ -262,284 +262,284 @@ static const char *conv_get_matching_keyword(struct conv *conv, char *word)
  */
 static void conv_mark_if_keyword(struct conv *conv, char *word)
 {
-	int index = conv_lookup_keyword(conv, word);
-	if (index != -1) {
-		bitset_set(conv->marked, index);
-	}
+        int index = conv_lookup_keyword(conv, word);
+        if (index != -1) {
+                bitset_set(conv->marked, index);
+        }
 }
 
 static int conv_add_keyword(struct conv *conv, char *keyword, int key_index)
 {
-	assert(key_index < conv->n_keywords);
-	if (!(conv->keywords[key_index] = strdup(keyword))) {
-		warn("%s: strdup failed on %s", __FUNCTION__, keyword);
-		return -1;
-	}
-	return 0;
+        assert(key_index < conv->n_keywords);
+        if (!(conv->keywords[key_index] = strdup(keyword))) {
+                warn("%s: strdup failed on %s", __FUNCTION__, keyword);
+                return -1;
+        }
+        return 0;
 }
 
 static void conv_sort_keywords(struct conv *conv)
 {
-	qsort(conv->keywords, conv->n_keywords, sizeof(char *), conv_sort_cmp);
+        qsort(conv->keywords, conv->n_keywords, sizeof (char *), conv_sort_cmp);
 }
 
 static void conv_highlight_keywords(struct conv *conv)
 {
-	int key_index = 0;
-	scheme *sc = conv->proc->sc;
-	pointer sym = conv->proc->code;
+        int key_index = 0;
+        scheme *sc = conv->proc->sc;
+        pointer sym = conv->proc->code;
 
-	assert(sc);
-	assert(sym);
+        assert(sc);
+        assert(sym);
 
-	if (sym == sc->NIL) {
-		warn("%s: conv proc not a symbol", __FUNCTION__);
-		return;
-	}
+        if (sym == sc->NIL) {
+                warn("%s: conv proc not a symbol", __FUNCTION__);
+                return;
+        }
 
-	pointer ifc = sc->vptr->find_slot_in_env(sc, sc->envir, sym, 1);
-	if (!scm_is_pair(sc, ifc)) {
-		warn("%s: conv '%s' has no value", __FUNCTION__,
-		     scm_sym_val(sc, sym));
-		return;
-	}
+        pointer ifc = sc->vptr->find_slot_in_env(sc, sc->envir, sym, 1);
+        if (!scm_is_pair(sc, ifc)) {
+                warn("%s: conv '%s' has no value", __FUNCTION__,
+                     scm_sym_val(sc, sym));
+                return;
+        }
 
-	pointer clos = scm_cdr(sc, ifc);
-	if (!scm_is_closure(sc, clos)) {
-		warn("%s: conv '%s' not a closure", __FUNCTION__,
-		     scm_sym_val(sc, sym));
-		return;
-	}
+        pointer clos = scm_cdr(sc, ifc);
+        if (!scm_is_closure(sc, clos)) {
+                warn("%s: conv '%s' not a closure", __FUNCTION__,
+                     scm_sym_val(sc, sym));
+                return;
+        }
 
-	pointer env = scm_cdr(sc, clos);
-	pointer vtable = scm_cdr(sc, scm_car(sc, scm_car(sc, env)));
+        pointer env = scm_cdr(sc, clos);
+        pointer vtable = scm_cdr(sc, scm_car(sc, scm_car(sc, env)));
 
-	conv->n_keywords = scm_len(sc, vtable);
+        conv->n_keywords = scm_len(sc, vtable);
 
-	if (!
-	    (conv->keywords =
-	     (char **)calloc(conv->n_keywords, sizeof(char *)))) {
-		warn("%s: failed to allocate keyword array size %d",
-		     __FUNCTION__, conv->n_keywords);
-		return;
-	}
+        if (!
+            (conv->keywords =
+             (char **) calloc(conv->n_keywords, sizeof (char *)))) {
+                warn("%s: failed to allocate keyword array size %d",
+                     __FUNCTION__, conv->n_keywords);
+                return;
+        }
 
-	if (!(conv->marked = bitset_alloc(conv->n_keywords))) {
-		warn("%s: failed to allocate bitset array size %d",
-		     __FUNCTION__, conv->n_keywords);
-		return;
-	}
+        if (!(conv->marked = bitset_alloc(conv->n_keywords))) {
+                warn("%s: failed to allocate bitset array size %d",
+                     __FUNCTION__, conv->n_keywords);
+                return;
+        }
 
-	while (scm_is_pair(sc, vtable)) {
-		pointer binding = scm_car(sc, vtable);
-		vtable = scm_cdr(sc, vtable);
-		pointer var = scm_car(sc, binding);
-		if (conv_add_keyword(conv, scm_sym_val(sc, var), key_index)) {
-			return;
-		}
-		key_index++;
-	}
+        while (scm_is_pair(sc, vtable)) {
+                pointer binding = scm_car(sc, vtable);
+                vtable = scm_cdr(sc, vtable);
+                pointer var = scm_car(sc, binding);
+                if (conv_add_keyword(conv, scm_sym_val(sc, var), key_index)) {
+                        return;
+                }
+                key_index++;
+        }
 
-	conv_sort_keywords(conv);
+        conv_sort_keywords(conv);
 }
 
 struct conv *conv_new(struct closure *proc)
 {
-	struct conv *conv;
+        struct conv *conv;
 
-	if (!(conv = (struct conv *)calloc(1, sizeof(*conv)))) {
-		return NULL;
-	}
+        if (!(conv = (struct conv *) calloc(1, sizeof (*conv)))) {
+                return NULL;
+        }
 
-	conv->ref = 1;
-	conv->proc = proc;
-	closure_ref(proc);
+        conv->ref = 1;
+        conv->proc = proc;
+        closure_ref(proc);
 
-	return conv;
+        return conv;
 }
 
 void conv_save(struct conv *conv, struct save *save)
 {
-	closure_save(conv->proc, save);
+        closure_save(conv->proc, save);
 }
 
 void conv_unref(struct conv *conv)
 {
-	assert(conv->ref > 0);
-	conv->ref--;
-	if (!conv->ref) {
-		conv_del(conv);
-	}
+        assert(conv->ref > 0);
+        conv->ref--;
+        if (!conv->ref) {
+                conv_del(conv);
+        }
 }
 
 void conv_ref(struct conv *conv)
 {
-	conv->ref++;
+        conv->ref++;
 }
 
 void conv_end()
 {
-	conv_done = 1;
+        conv_done = 1;
 }
 
 void conv_enter(Object * npc, Object * pc, struct conv *conv)
 {
-	struct KeyHandler kh;
+        struct KeyHandler kh;
 
-	assert(conv);
+        assert(conv);
 
-	npc->setSpeaking(true);
+        npc->setSpeaking(true);
 
-	if (!conv->keywords && conv_keyword_highlighting) {
-		conv_highlight_keywords(conv);
-	}
+        if (!conv->keywords && conv_keyword_highlighting) {
+                conv_highlight_keywords(conv);
+        }
 
-	/* If NPC initiates conversation, make sure we have a valid session
-	 * subject, else describe() will crash when determining if unknown NPC
-	 * is hostile or not. */
-	if (!Session->subject) {
-		Session->subject = (class Being *) pc;
-	}
+        /* If NPC initiates conversation, make sure we have a valid session
+         * subject, else describe() will crash when determining if unknown NPC
+         * is hostile or not. */
+        if (!Session->subject) {
+                Session->subject = (class Being *) pc;
+        }
 
-	log_banner("^c+yCONVERSATION^c-");
+        log_banner("^c+yCONVERSATION^c-");
 
-	session_run_hook(Session, conv_start_hook, "pp", pc, npc);
+        session_run_hook(Session, conv_start_hook, "pp", pc, npc);
 
-	conv_done = 0;
-	kh.fx = conv_get_player_query;
-	conv_set_query("hail");
+        conv_done = 0;
+        kh.fx = conv_get_player_query;
+        conv_set_query("hail");
 
-	for (;;) {
+        for (;;) {
 
-		/* Truncate the query to 4 characters */
-		//conv_query[4] = 0;
+                /* Truncate the query to 4 characters */
+                //conv_query[4] = 0;
 
-		conv_mark_if_keyword(conv, conv_query);
+                conv_mark_if_keyword(conv, conv_query);
 
-		/* If query was NAME, assume the NPC is now known */
-		if (!strcasecmp(conv_query, "NAME")) {
-			((class Character *) npc)->setKnown(true);
-		}
+                /* If query was NAME, assume the NPC is now known */
+                if (!strcasecmp(conv_query, "NAME")) {
+                        ((class Character *) npc)->setKnown(true);
+                }
 
-		/* If the query matches a keyword prefix, expand/contract it to
-		 * use the exact keyword, else just let if through as-is. */
-		const char *keyword =
-		    conv_get_matching_keyword(conv, conv_query);
-		if (!keyword) {
-			keyword = conv_query;
-		}
+                /* If the query matches a keyword prefix, expand/contract it to
+                 * use the exact keyword, else just let if through as-is. */
+                const char *keyword =
+                    conv_get_matching_keyword(conv, conv_query);
+                if (!keyword) {
+                        keyword = conv_query;
+                }
 
-		/* Query the NPC */
-		closure_exec(conv->proc, "ypp", keyword, npc, pc);
+                /* Query the NPC */
+                closure_exec(conv->proc, "ypp", keyword, npc, pc);
 
-		if (conv_done)
-			break;
+                if (conv_done)
+                        break;
 
-		/*** Setup for next query ***/
+                /*** Setup for next query ***/
 
-		memset(conv_query, 0, sizeof(conv_query));
-		conv_room = sizeof(conv_query) - 1;
-		conv_ptr = conv_query;
+                memset(conv_query, 0, sizeof (conv_query));
+                conv_room = sizeof (conv_query) - 1;
+                conv_ptr = conv_query;
 
-		cmdwin_clear();
-		cmdwin_push("Say: ");
+                cmdwin_clear();
+                cmdwin_push("Say: ");
 
-		/*** Get next query ***/
+                /*** Get next query ***/
 
-		eventPushKeyHandler(&kh);
-		eventHandle();
-		eventPopKeyHandler();
+                eventPushKeyHandler(&kh);
+                eventHandle();
+                eventPopKeyHandler();
 
-		conv_query[MAX_KEYWORD_SZ] = 0;
-		conv_len = strlen(conv_query);
-		if (!conv_len)
-			sprintf(conv_query, "bye");
-		log_msg("^c+%c%s:^c- %s", CONV_PC_COLOR,
-			pc->getName(), conv_query);
+                conv_query[MAX_KEYWORD_SZ] = 0;
+                conv_len = strlen(conv_query);
+                if (!conv_len)
+                        sprintf(conv_query, "bye");
+                log_msg("^c+%c%s:^c- %s", CONV_PC_COLOR,
+                        pc->getName(), conv_query);
 
-		/*** Check if player ended conversation ***/
+                /*** Check if player ended conversation ***/
 
-		if (Quit)
-			break;
+                if (Quit)
+                        break;
 
-		if (strlen(conv_query) == 0)
-			conv_set_query("BYE");
+                if (strlen(conv_query) == 0)
+                        conv_set_query("BYE");
 
-		if (!strcasecmp(conv_query, "BYE")) {
-			conv_end();
-		}
+                if (!strcasecmp(conv_query, "BYE")) {
+                        conv_end();
+                }
 
-	}
+        }
 
-	cmdwin_clear();
-	cmdwin_repaint();
+        cmdwin_clear();
+        cmdwin_repaint();
 
-	npc->setSpeaking(false);
-	session_run_hook(Session, conv_end_hook, "pp", pc, npc);
+        npc->setSpeaking(false);
+        session_run_hook(Session, conv_end_hook, "pp", pc, npc);
 
 }
 
 int isprintable(int c)
 {
-	/* Looks like ctype's isprint() doesn't always behave the same way. On
-	 * some systems it was letting c<32 go through, causing an assert in
-	 * ascii.c. */
-	return ((c >= 32)
-		&& (c < 127)
-		&& (c != '%')	/* printf special char */
-		&&(c != '^')	/* ascii.c special char */
-	    );
+        /* Looks like ctype's isprint() doesn't always behave the same way. On
+         * some systems it was letting c<32 go through, causing an assert in
+         * ascii.c. */
+        return ((c >= 32)
+                && (c < 127)
+                && (c != '%')   /* printf special char */
+                &&(c != '^')    /* ascii.c special char */
+            );
 }
 
 int conv_get_word(char *instr, char **beg, char **end)
 {
-	char *inp = instr;
+        char *inp = instr;
 
-	while (*inp && !isalpha(*inp)) {
-		inp++;
-	}
+        while (*inp && !isalpha(*inp)) {
+                inp++;
+        }
 
-	if (!*inp) {
-		return 0;
-	}
+        if (!*inp) {
+                return 0;
+        }
 
-	*beg = inp;
+        *beg = inp;
 
-	while (*inp && isalpha(*inp)) {
-		inp++;
-	}
+        while (*inp && isalpha(*inp)) {
+                inp++;
+        }
 
-	*end = inp;
+        *end = inp;
 
-	return 1;
+        return 1;
 }
 
 int conv_is_keyword(struct conv *conv, char *word)
 {
-	int index;
+        int index;
 
-	if (!conv_keyword_highlighting) {
-		return 0;
-	}
+        if (!conv_keyword_highlighting) {
+                return 0;
+        }
 
-	index = conv_lookup_keyword(conv, word);
-	if (index == -1) {
-		return 0;
-	}
-	return CONV_IS_KEYWORD | (bitset_tst(conv->marked, index) ?
-				  CONV_IS_MARKED : 0);
+        index = conv_lookup_keyword(conv, word);
+        if (index == -1) {
+                return 0;
+        }
+        return CONV_IS_KEYWORD | (bitset_tst(conv->marked, index) ?
+                                  CONV_IS_MARKED : 0);
 }
 
 int conv_init(void)
 {
-	char *val = cfg_get("keyword-highlighting");
-	if (!val || strcasecmp(val, "yes")) {
-		conv_keyword_highlighting = 0;
-	}
-	return 0;
+        char *val = cfg_get("keyword-highlighting");
+        if (!val || strcasecmp(val, "yes")) {
+                conv_keyword_highlighting = 0;
+        }
+        return 0;
 }
 
 void conv_enable_keyword_highlighting(int enable)
 {
-	conv_keyword_highlighting = ! !enable;
+        conv_keyword_highlighting = ! !enable;
 }

@@ -31,56 +31,56 @@
 
 static void ztats_spells_paint_item(struct inv_entry *ie, SDL_Rect * rect)
 {
-	char code[MAX_SYLLABLES_PER_SPELL + 1] = { 0 };
-	struct spell *spell = 0;
+        char code[MAX_SYLLABLES_PER_SPELL + 1] = { 0 };
+        struct spell *spell = 0;
 
-	/* This assumes the type name matches the spelled-out code name, and
-	 * doesn't include extra stuff like " spell" at the end. Eg, "Vas Flam"
-	 * is great but "Vas Flam spell" will come back as "Vas Flam Sanct" or
-	 * possibly an error. */
-	if (!magic_spell_name_to_code
-	    (&Session->magic, code, sizeof(code), ie->type->getName())) {
-		spell = magic_lookup_spell(&Session->magic, code);
-	}
+        /* This assumes the type name matches the spelled-out code name, and
+         * doesn't include extra stuff like " spell" at the end. Eg, "Vas Flam"
+         * is great but "Vas Flam spell" will come back as "Vas Flam Sanct" or
+         * possibly an error. */
+        if (!magic_spell_name_to_code
+            (&Session->magic, code, sizeof (code), ie->type->getName())) {
+                spell = magic_lookup_spell(&Session->magic, code);
+        }
 
-	/* Blit the sprite on the left */
-	if (spell && spell->sprite) {
-		sprite_paint(spell->sprite, 0, rect->x, rect->y);
-	}
-	rect->x += TILE_W;
+        /* Blit the sprite on the left */
+        if (spell && spell->sprite) {
+                sprite_paint(spell->sprite, 0, rect->x, rect->y);
+        }
+        rect->x += TILE_W;
 
-	/* Print basic info available in the type. */
-	screen_print(rect, 0, "%2d %s", ie->count, ie->type->getName());
-	rect->y += ASCII_H;
+        /* Print basic info available in the type. */
+        screen_print(rect, 0, "%2d %s", ie->count, ie->type->getName());
+        rect->y += ASCII_H;
 
-	/* Print info only available in the spell struct. */
-	if (spell) {
-		screen_print(rect, 0,
-			     "^c+GLvl:^c+y%d^c- MP:^c+b%d^c- AP:^c+r%d^c-^c-",
-			     spell->level, spell->cost, spell->action_points);
-	}
+        /* Print info only available in the spell struct. */
+        if (spell) {
+                screen_print(rect, 0,
+                             "^c+GLvl:^c+y%d^c- MP:^c+b%d^c- AP:^c+r%d^c-^c-",
+                             spell->level, spell->cost, spell->action_points);
+        }
 
-	/* Carriage-return line-feed */
-	rect->y += ASCII_H;
-	rect->x -= TILE_W;
+        /* Carriage-return line-feed */
+        rect->y += ASCII_H;
+        rect->x -= TILE_W;
 }
 
 static bool ztats_spells_filter_cb(struct inv_entry *ie, void *fdata)
 {
-	return (ie->type->isCastable());
+        return (ie->type->isCastable());
 }
 
 void ztats_spells_init(void)
 {
-	static struct ztats_container_pane pane;
-	static struct ztats_container_pane_ops ops = {
-		ztats_spells_paint_item
-	};
-	static struct filter filter = {
-		ztats_spells_filter_cb,
-		NULL
-	};
+        static struct ztats_container_pane pane;
+        static struct ztats_container_pane_ops ops = {
+                ztats_spells_paint_item
+        };
+        static struct filter filter = {
+                ztats_spells_filter_cb,
+                NULL
+        };
 
-	ztats_container_pane_init(&pane, "Spells", &filter, &ops);
-	ztats_add_pane(&pane.base);
+        ztats_container_pane_init(&pane, "Spells", &filter, &ops);
+        ztats_add_pane(&pane.base);
 }

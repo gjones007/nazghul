@@ -29,13 +29,13 @@
 #include <SDL_thread.h>
 
 
-#define TICK_EVENT  1  /* The most wonderful thing about being a Tigger is I'm
-                        * the only one. */
+#define TICK_EVENT  1           /* The most wonderful thing about being a Tigger is I'm
+                                 * the only one. */
 
 
 typedef struct {
         struct list list;
-        void (*callback)(void *arg);
+        void (*callback) (void *arg);
         void *arg;
         long period;
 } tick_watcher_t;
@@ -53,59 +53,59 @@ static struct list tick_watchers = {
 
 static int tick_main(void *data)
 {
-	long msecs;
-	SDL_Event tick_event;
+        long msecs;
+        SDL_Event tick_event;
 
-	msecs = (long)data;
-	tick_event.type = SDL_USEREVENT;
-	tick_event.user.code = TICK_EVENT;
+        msecs = (long) data;
+        tick_event.type = SDL_USEREVENT;
+        tick_event.user.code = TICK_EVENT;
 
-	while (!tick_killed) {
-		SDL_Delay(msecs);
-		if (!tick_paused)
-			SDL_PushEvent(&tick_event);
-	}
+        while (!tick_killed) {
+                SDL_Delay(msecs);
+                if (!tick_paused)
+                        SDL_PushEvent(&tick_event);
+        }
 
-	return 0;
+        return 0;
 }
 
 
 void tick_start(long msecs)
 {
-	assert(!tick_thread);
-	tick_paused = 0;
-	tick_killed = 0;
-	if (msecs > 0) {
-		tick_thread = SDL_CreateThread(tick_main, (void *)msecs);
+        assert(!tick_thread);
+        tick_paused = 0;
+        tick_killed = 0;
+        if (msecs > 0) {
+                tick_thread = SDL_CreateThread(tick_main, (void *) msecs);
         }
 }
 
 
 void tick_kill(void)
 {
-	tick_killed = 1;
-	if (tick_thread) {
-		SDL_WaitThread(tick_thread, NULL);
+        tick_killed = 1;
+        if (tick_thread) {
+                SDL_WaitThread(tick_thread, NULL);
         }
 }
 
 
 void tick_pause(void)
 {
-	tick_paused = 1;
+        tick_paused = 1;
 }
 
 
 void tick_run(void)
 {
-	tick_paused = 0;
+        tick_paused = 0;
 }
 
 
 void tick_increment(void)
 {
         ticks += 1;
-        
+
         /* Call the watchers that fall on this period. */
         struct list *elem = tick_watchers.next;
         while (elem != &tick_watchers) {
@@ -118,7 +118,7 @@ void tick_increment(void)
 }
 
 
-void *tick_watch(long period_msecs, void (*callback)(void *arg), void *arg)
+void *tick_watch(long period_msecs, void (*callback) (void *arg), void *arg)
 {
         tick_watcher_t *h = MEM_ALLOC_TYPE(tick_watcher_t, NULL);
         h->period = period_msecs;
@@ -131,7 +131,7 @@ void *tick_watch(long period_msecs, void (*callback)(void *arg), void *arg)
 
 void tick_unwatch(void *handle)
 {
-        tick_watcher_t *h = (tick_watcher_t*)handle;
+        tick_watcher_t *h = (tick_watcher_t *) handle;
         list_remove(&h->list);
         mem_deref(h);
 }

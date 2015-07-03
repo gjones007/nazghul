@@ -32,93 +32,93 @@
 
 static void skill_del(struct skill *skill)
 {
-	struct list *elem;
+        struct list *elem;
 
-	assert(!skill->refcount);
-	if (skill->name) {
-		free(skill->name);
-	}
-	if (skill->desc) {
-		free(skill->desc);
-	}
-	if (skill->yuse) {
-		closure_unref(skill->yuse);
-	}
-	if (skill->can_yuse) {
-		closure_unref(skill->can_yuse);
-	}
+        assert(!skill->refcount);
+        if (skill->name) {
+                free(skill->name);
+        }
+        if (skill->desc) {
+                free(skill->desc);
+        }
+        if (skill->yuse) {
+                closure_unref(skill->yuse);
+        }
+        if (skill->can_yuse) {
+                closure_unref(skill->can_yuse);
+        }
 
-	/* delete the list of tools */
-	node_list_unlink_and_unref(&skill->tools);
+        /* delete the list of tools */
+        node_list_unlink_and_unref(&skill->tools);
 
-	/* delete the list of materials */
-	elem = skill->materials.next;
-	while (elem != &skill->materials) {
-		struct list *tmp = elem->next;
-		free(elem);
-		elem = tmp;
-	}
+        /* delete the list of materials */
+        elem = skill->materials.next;
+        while (elem != &skill->materials) {
+                struct list *tmp = elem->next;
+                free(elem);
+                elem = tmp;
+        }
 
-	free(skill);
+        free(skill);
 }
 
 struct skill *skill_new(void)
 {
-	struct skill *skill = (struct skill *)calloc(1, sizeof(*skill));
-	assert(skill);
-	list_init(&skill->list);
-	node_init(&skill->tools);
-	list_init(&skill->materials);
-	skill->refcount = 1;
-	return skill;
+        struct skill *skill = (struct skill *) calloc(1, sizeof (*skill));
+        assert(skill);
+        list_init(&skill->list);
+        node_init(&skill->tools);
+        list_init(&skill->materials);
+        skill->refcount = 1;
+        return skill;
 }
 
 void skill_set_name(struct skill *skill, char *val)
 {
-	assert(val);
-	if (skill->name) {
-		free(skill->name);
-	}
-	skill->name = strdup(val);
-	assert(skill->name);
+        assert(val);
+        if (skill->name) {
+                free(skill->name);
+        }
+        skill->name = strdup(val);
+        assert(skill->name);
 }
 
 void skill_set_desc(struct skill *skill, char *val)
 {
-	assert(val);
-	if (skill->desc) {
-		free(skill->desc);
-	}
-	skill->desc = strdup(val);
-	assert(skill->name);
+        assert(val);
+        if (skill->desc) {
+                free(skill->desc);
+        }
+        skill->desc = strdup(val);
+        assert(skill->name);
 }
 
 void skill_ref(struct skill *skill)
 {
-	skill->refcount++;
+        skill->refcount++;
 }
 
 void skill_unref(struct skill *skill)
 {
-	assert(skill->refcount > 0);
-	skill->refcount--;
-	if (!skill->refcount) {
-		skill_del(skill);
-	}
+        assert(skill->refcount > 0);
+        skill->refcount--;
+        if (!skill->refcount) {
+                skill_del(skill);
+        }
 }
 
 void skill_add_tool(struct skill *skill, void *objtype)
 {
-	struct node *node = node_new(objtype);
-	node_add(&skill->tools, node);
+        struct node *node = node_new(objtype);
+        node_add(&skill->tools, node);
 }
 
 void skill_add_material(struct skill *skill, void *objtype, int quan)
 {
-	struct skill_material *mat;
-	mat = (struct skill_material *)calloc(1, sizeof(*mat));
-	assert(mat);
-	mat->objtype = objtype;
-	mat->quantity = quan;
-	list_add(&skill->materials, &mat->list);
+        struct skill_material *mat;
+        mat = (struct skill_material *) calloc(1, sizeof (*mat));
+        assert(mat);
+        mat->objtype = objtype;
+        mat->quantity = quan;
+        list_add(&skill->materials, &mat->list);
 }

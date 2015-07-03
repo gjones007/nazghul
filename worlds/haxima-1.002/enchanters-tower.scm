@@ -45,74 +45,74 @@
 (kern-mk-map 
  'm_enchanters_tower_l2 31 31 pal_expanded
 	(list
-	  "tt tt bb te bb |. |. tt %a %% %% %% %% %c .. .. .. %a %% %% %% %% %% %% %% %% %% %% %% %% %% "
-	  "bb te .. t% tb tt |. |. tt t5 %% %% %% bb .. .. .. bb .. bb .. bb .. bb .. bb .. bb .. %a %% "
-	  "td t# .. .. .. .. bb |. |. tt %% %% %% .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. %% "
-	  "bb .. .. .. .. .. .. ta |. |. %a %% %% bb .. .. .. bb .. bb .. bb .. bb .. bb .. .. .. bb %% "
-	  "|. .. .. .. .. .. .. .. bb |. t5 %% %% %d .. .. .. %b %% %% %% %% %% %% %% %% %5 .. .. .. %% "
-	  "|. bb .. .. .. .. .. .. .. |. |. %a %c ee ee ee ee ee %e tb tt tt tt tt t5 %a %% bb .. bb %% "
-	  "|. |. .. .. .. .. && .. .. ta |. ee ee ee ee ee ee ee ee ee |. |. |. tt tt t5 %% .. .. .. %% "
-	  "tc bb .. .. bb .. .. .. .. ee ee ee ee ee ee ee ee ee ee ee ee ee |. |. |. tt %% bb .. bb %% "
-	  "%5 .. .. |. |. tA .. .. ee ee ee ee xx w+ xx xx xx w+ xx ee ee ee ee ee |. tt %% .. .. .. %% "
-	  "%% bb .. bb |. t5 tA ee ee ee xx xx xx ,, ,, xx ,, ,, xx xx xx ee ee ee |. tt %% bb .. bb %% "
-	  "%% .. .. |. |. tt td ee ee xx xx ,, ,, ,, ,, xx ,, ,, ,, 00 xx xx ee ee |. tc %% .. .. .. %% "
-	  "%% bb .. bb |. |. ee ee ee w+ ,, ,, ,, ,, ,, x! ,, ,, ,, ,, ,, w+ ee ee ee %3 %% bb .. bb %% "
-	  "%% .. .. %f ta |. ee ee xx xx ,, 00 ,, ,, ,, xx ,, ,, ,, xx xx xx xx ee ee %a %% .. .. .. %% "
-	  "%c bb .. bb %f ee ee ee xx ,, ,, ,, xx xx ,, xx ,, xx xx xx [[ ]] xx ee ee ee %e bb .. bb %a "
-	  ".. .. .. .. .. ee ee ee w+ ,, ,, ,, xx ,, ,, ,, ,, ,, xx 00 ,, 00 xx ee ee ee .. .. .. .. .. "
-	  ".. .. .. .. .. ee ee ee xx ,, ,, ,, x! ,, cc cc cc ,, x! ,, ,, 00 xx ee ee ee .. .. .. .. .. "
-	  ".. .. .. .. .. ee ee ee xx xx xx xx xx ,, ,, ,, ,, ,, xx 00 ,, 00 xx ee ee ee .. .. .. .. .. "
-	  "%5 bb .. bb %7 ee ee ee xx ,, ,, xx xx xx x! ,, x! xx xx xx [[ ]] xx ee ee ee %7 bb .. bb %3 "
-	  "%% %% %% %% %% %5 ee ee xx xx xx x! ,, ,, ,, ,, ,, ,, ,, x! xx xx xx ee ee t7 %a %% %% %% %% "
-	  "%% %c .. %a %% %% ee ee ee w+ ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ ee ee ee tt tt tt tt tt tt "
-	  "%% .. .. .. %% %% %5 ee ee xx xx [[ ]] ,, ,, ,, ,, ,, [[ ]] xx xx ee ee t3 |. |. |. |. |. tt "
-	  "%% %5 .. %3 %% %% %% ee ee ee xx w+ xx [[ @@ @@ @@ ]] xx w+ xx ee ee ee |. |. bb te bb |. |. "
-	  "%% %% %% %% %% %% %% %5 ee ee ee ee xx w+ xx xx xx w+ xx ee ee ee ee |. |. tt td t& tb tt |. "
-	  "%% %c t3 tt tt t5 tA %a %5 ee ee ee ee ee ee ee ee ee ee ee ee ee tb |. |. bb .. .. .. bb |. "
-	  "%c t3 tL ~3 ~5 tJ t5 tA %a %% %5 ee ee ee ee ee ee ee ee ee %3 %% ~5 ta |. td .. ++ .. tb |. "
-	  "tt tL ~3 -- -- ~5 tJ t5 .. %% %% %% %5 ee ee ee ee ee %3 %% %% ~b ~~ -d |. bb .. .. .. bb |. "
-	  "tt ~3 -- __ __ -- ~5 tt .. %% %% %% %% ee ee ee ee ee %a %% %% %% ~c %% |. |. td .. tb |. |. "
-	  "tt ~a -- __ __ -- ~c tt .. %% %% %% %% ee ee ee ee ee .. bb .. bb %% %c |. |. bb .. bb |. |. "
-	  "tt tH ~a -- -- ~c tG tc .. %e .. %a %% .. .. .. .. .. .. .. .. .. == .. tt tc tA .. t3 |. |. "
-	  "%5 ta tH ~a ~c tG tc t# %7 .. .. .. %% bb .. .. .. bb .. bb .. bb %% %5 |. bb t7 bb |. |. |. "
-	  "%% %5 tt tt tt tt t# %3 %% %5 .. %3 %% %5 .. .. .. %3 %% %% %% %% %% %% |. |. |. |. |. |. |. "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () ee ee ee ee ee ee ee ee ee () () () () () () () () () () () "
+	  "() () () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () () () "
+	  "() () () () () () () () ee ee ee ee xx w+ xx xx xx w+ xx ee ee ee ee ee () () () () () () () "
+	  "() () () () () () () ee ee ee xx xx xx ,, ,, xx ,, ,, xx xx xx ee ee ee () () () () () () () "
+	  "() () () () () () () ee ee xx xx ,, ,, ,, ,, xx ,, ,, ,, 00 xx xx ee ee () () () () () () () "
+	  "() () () () () () ee ee ee w+ ,, ,, ,, ,, ,, x! ,, ,, ,, ,, ,, w+ ee ee ee () () () () () () "
+	  "() () () () () () ee ee xx xx ,, 00 ,, ,, ,, xx ,, ,, ,, xx xx xx xx ee ee () () () () () () "
+	  "() () () () () ee ee ee xx ,, ,, ,, xx xx ,, xx ,, xx xx xx [[ ]] xx ee ee ee () () () () () "
+	  "() () () () () ee ee ee w+ ,, ,, ,, xx ,, ,, ,, ,, ,, xx 00 ,, 00 xx ee ee ee () () () () () "
+	  "() () () () () ee ee ee xx ,, ,, ,, x! ,, cc cc cc ,, x! ,, ,, 00 xx ee ee ee () () () () () "
+	  "() () () () () ee ee ee xx xx xx xx xx ,, ,, ,, ,, ,, xx 00 ,, 00 xx ee ee ee () () () () () "
+	  "() () () () () ee ee ee xx ,, ,, xx xx xx x! ,, x! xx xx xx [[ ]] xx ee ee ee () () () () () "
+	  "() () () () () () ee ee xx xx xx x! ,, ,, ,, ,, ,, ,, ,, x! xx xx xx ee ee () () () () () () "
+	  "() () () () () () ee ee ee w+ ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, ,, w+ ee ee ee () () () () () () "
+	  "() () () () () () () ee ee xx xx [[ ]] ,, ,, ,, ,, ,, [[ ]] xx xx ee ee () () () () () () () "
+	  "() () () () () () () ee ee ee xx w+ xx [[ @@ @@ @@ ]] xx w+ xx ee ee ee () () () () () () () "
+	  "() () () () () () () () ee ee ee ee xx w+ xx xx xx w+ xx ee ee ee ee () () () () () () () () "
+	  "() () () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () () () "
+	  "() () () () () () () () () () () ee ee ee ee ee ee ee ee ee () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
 	)
 )
 
 (kern-mk-map 
  'm_enchanters_tower_l3 31 31 pal_expanded
 	(list
-	  "tt tt bb te bb |. |. tt %a %% %% %% %% %c .. .. .. %a %% %% %% %% %% %% %% %% %% %% %% %% %% "
-	  "bb te .. t% tb tt |. |. tt t5 %% %% %% bb .. .. .. bb .. bb .. bb .. bb .. bb .. bb .. %a %% "
-	  "td t# .. .. .. .. bb |. |. tt %% %% %% .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. .. %% "
-	  "bb .. .. .. .. .. .. ta |. |. %a %% %% bb .. .. .. bb .. bb .. bb .. bb .. bb .. .. .. bb %% "
-	  "|. .. .. .. .. .. .. .. bb |. t5 %% %% %d .. .. .. %b %% %% %% %% %% %% %% %% %5 .. .. .. %% "
-	  "|. bb .. .. .. .. .. .. .. |. |. %a %c ee ee ee ee ee %e tb tt tt tt tt t5 %a %% bb .. bb %% "
-	  "|. |. .. .. .. .. && .. .. ta |. ee ee ee ee ee ee ee ee ee |. |. |. tt tt t5 %% .. .. .. %% "
-	  "tc bb .. .. bb .. .. .. .. ee ee ee ee ee ee ee ee ee ee ee ee ee |. |. |. tt %% bb .. bb %% "
-	  "%5 .. .. |. |. tA .. .. ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee |. tt %% .. .. .. %% "
-	  "%% bb .. bb |. t5 tA ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee |. tt %% bb .. bb %% "
-	  "%% .. .. |. |. tt td ee ee ee ee ee ee 00 00 00 00 00 ee ee ee ee ee ee |. tc %% .. .. .. %% "
-	  "%% bb .. bb |. |. ee ee ee ee ee 00 00 00 ,, ,, ,, 00 00 00 ee ee ee ee ee %3 %% bb .. bb %% "
-	  "%% .. .. %f ta |. ee ee ee ee ee 00 ,, ,, ,, xx ,, ,, ,, 00 ee ee ee ee ee %a %% .. .. .. %% "
-	  "%c bb .. bb %f ee ee ee ee ee 00 00 ,, x! ,, ,, ,, x! ,, 00 00 ee ee ee ee ee %e bb .. bb %a "
-	  ".. .. .. .. .. ee ee ee ee ee 00 ,, ,, ,, ,, cc ,, ,, ,, ,, 00 ee ee ee ee ee .. .. .. .. .. "
-	  ".. .. .. .. .. ee ee ee ee ee 00 ,, xx ,, cc cc cc ,, xx ,, 00 ee ee ee ee ee .. .. .. .. .. "
-	  ".. .. .. .. .. ee ee ee ee ee 00 ,, ,, ,, ,, cc ,, ,, ,, ,, 00 ee ee ee ee ee .. .. .. .. .. "
-	  "%5 bb .. bb %7 ee ee ee ee ee 00 00 ,, x! ,, ,, ,, x! ,, 00 00 ee ee ee ee ee %7 bb .. bb %3 "
-	  "%% %% %% %% %% %5 ee ee ee ee ee 00 ,, ,, ,, xx ,, ,, ,, 00 ee ee ee ee ee t7 %a %% %% %% %% "
-	  "%% %c .. %a %% %% ee ee ee ee ee 00 00 00 ,, ,, ,, 00 00 00 ee ee ee ee ee tt tt tt tt tt tt "
-	  "%% .. .. .. %% %% %5 ee ee ee ee ee ee 00 00 00 00 00 ee ee ee ee ee ee t3 |. |. |. |. |. tt "
-	  "%% %5 .. %3 %% %% %% ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee |. |. bb te bb |. |. "
-	  "%% %% %% %% %% %% %% %5 ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee |. |. tt td t& tb tt |. "
-	  "%% %c t3 tt tt t5 tA %a %5 ee ee ee ee ee ee ee ee ee ee ee ee ee tb |. |. bb .. .. .. bb |. "
-	  "%c t3 tL ~3 ~5 tJ t5 tA %a %% %5 ee ee ee ee ee ee ee ee ee %3 %% ~5 ta |. td .. ++ .. tb |. "
-	  "tt tL ~3 -- -- ~5 tJ t5 .. %% %% %% %5 ee ee ee ee ee %3 %% %% ~b ~~ -d |. bb .. .. .. bb |. "
-	  "tt ~3 -- __ __ -- ~5 tt .. %% %% %% %% ee ee ee ee ee %a %% %% %% ~c %% |. |. td .. tb |. |. "
-	  "tt ~a -- __ __ -- ~c tt .. %% %% %% %% ee ee ee ee ee .. bb .. bb %% %c |. |. bb .. bb |. |. "
-	  "tt tH ~a -- -- ~c tG tc .. %e .. %a %% .. .. .. .. .. .. .. .. .. == .. tt tc tA .. t3 |. |. "
-	  "%5 ta tH ~a ~c tG tc t# %7 .. .. .. %% bb .. .. .. bb .. bb .. bb %% %5 |. bb t7 bb |. |. |. "
-	  "%% %5 tt tt tt tt t# %3 %% %5 .. %3 %% %5 .. .. .. %3 %% %% %% %% %% %% |. |. |. |. |. |. |. "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () ee ee ee ee ee ee ee ee ee () () () () () () () () () () () "
+	  "() () () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () () () "
+	  "() () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () "
+	  "() () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () "
+	  "() () () () () () () ee ee ee ee ee ee 00 00 00 00 00 ee ee ee ee ee ee () () () () () () () "
+	  "() () () () () () ee ee ee ee ee 00 00 00 ,, ,, ,, 00 00 00 ee ee ee ee ee () () () () () () "
+	  "() () () () () () ee ee ee ee ee 00 ,, ,, ,, xx ,, ,, ,, 00 ee ee ee ee ee () () () () () () "
+	  "() () () () () ee ee ee ee ee 00 00 ,, x! ,, ,, ,, x! ,, 00 00 ee ee ee ee ee () () () () () "
+	  "() () () () () ee ee ee ee ee 00 ,, ,, ,, ,, cc ,, ,, ,, ,, 00 ee ee ee ee ee () () () () () "
+	  "() () () () () ee ee ee ee ee 00 ,, xx ,, cc cc cc ,, xx ,, 00 ee ee ee ee ee () () () () () "
+	  "() () () () () ee ee ee ee ee 00 ,, ,, ,, ,, cc ,, ,, ,, ,, 00 ee ee ee ee ee () () () () () "
+	  "() () () () () ee ee ee ee ee 00 00 ,, x! ,, ,, ,, x! ,, 00 00 ee ee ee ee ee () () () () () "
+	  "() () () () () () ee ee ee ee ee 00 ,, ,, ,, xx ,, ,, ,, 00 ee ee ee ee ee () () () () () () "
+	  "() () () () () () ee ee ee ee ee 00 00 00 ,, ,, ,, 00 00 00 ee ee ee ee ee () () () () () () "
+	  "() () () () () () () ee ee ee ee ee ee 00 00 00 00 00 ee ee ee ee ee ee () () () () () () () "
+	  "() () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () "
+	  "() () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () () "
+	  "() () () () () () () () () ee ee ee ee ee ee ee ee ee ee ee ee ee () () () () () () () () () "
+	  "() () () () () () () () () () () ee ee ee ee ee ee ee ee ee () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () ee ee ee ee ee () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
+	  "() () () () () () () () () () () () () () () () () () () () () () () () () () () () () () () "
 	)
 )
 
@@ -438,39 +438,8 @@
 	))
 
 (mk-place-music p_enchanters_tower_l3 'ml-castle)
-	
-;;no teleporting out of the tower!
-;; TODO use same mechanism as gryphon peak
 
-(let ((blockers
-		(lambda (xloc yloc) (mk-blocker))))
-	(obj-rect blockers p_enchanters_tower_l2 0 30 0 7)
-	(obj-rect blockers p_enchanters_tower_l2 0 7 8 22)
-	(obj-rect blockers p_enchanters_tower_l2 23 30 8 22)
-	(obj-rect blockers p_enchanters_tower_l2 0 30 23 30)
-	(obj-rect blockers p_enchanters_tower_l2 8 11 8 8)
-	(obj-rect blockers p_enchanters_tower_l2 19 22 8 8)
-	(obj-rect blockers p_enchanters_tower_l2 8 11 22 22)
-	(obj-rect blockers p_enchanters_tower_l2 19 22 22 22)
-	(obj-list blockers p_enchanters_tower_l2 (list 
-		(list 8 9) (list 8 10) (list 8 11) (list 9 9) 
-		(list 22 9) (list 22 10) (list 22 11) (list 21 9) 
-		(list 8 19) (list 8 20) (list 8 21) (list 9 21) 
-		(list 22 19) (list 22 20) (list 22 21) (list 21 21) 
-		nil))
-	(obj-rect blockers p_enchanters_tower_l3 0 30 0 9)
-	(obj-rect blockers p_enchanters_tower_l3 0 9 10 20)
-	(obj-rect blockers p_enchanters_tower_l3 21 30 10 20)
-	(obj-rect blockers p_enchanters_tower_l3 0 30 21 30)
-	(obj-rect blockers p_enchanters_tower_l3 10 12 10 10)
-	(obj-rect blockers p_enchanters_tower_l3 18 20 10 10)
-	(obj-rect blockers p_enchanters_tower_l3 10 12 20 20)
-	(obj-rect blockers p_enchanters_tower_l3 18 20 20 20)
-	(obj-list blockers p_enchanters_tower_l3 (list 
-		(list 10 11) (list 10 12) (list 20 11) (list 20 12) 
-		(list 10 18) (list 10 19) (list 20 18) (list 20 29) 
-		nil))
-	)
-	
-	
-	
+;; Link the places vertically
+(kern-place-set-neighbor up p_enchanters_tower p_enchanters_tower_l2)
+(kern-place-set-neighbor up p_enchanters_tower_l2 p_enchanters_tower_l3)
+
