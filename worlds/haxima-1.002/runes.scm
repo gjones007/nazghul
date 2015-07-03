@@ -61,6 +61,7 @@
        (method 'get rune-l-get)))
 
 ;; trigger quest update
+;; XXX: is this ever used? what sends the 'receive signal?
 (define (rune-k-receive ktype kchar)
 	(quest-data-update-with 'questentry-thiefrune 'recovered 1
 				(quest-notify (grant-party-xp-fn 50)))

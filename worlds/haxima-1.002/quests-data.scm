@@ -369,7 +369,7 @@
   (questadd (qst-mk "The Engineer"
 		    'questentry-engineer
 		    (kern-ui-paginate-text
-		     "The Alchemist is one of the wise."
+		     "The Engineer is one of the wise."
 		     )
 		    'quest-assign-subquest
 		    'quest-status-inprogress

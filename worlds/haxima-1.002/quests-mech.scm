@@ -111,6 +111,9 @@
 
 ;; assuming quest in the QDT uses a tbl for payload, updates a key/value pair
 (define (quest-data-update tag key value)
+  (println "quest-data-update:" tag "," key "," value)
+  (println "  quest-data:" (quest-data-get tag))
+  (println "  payload:" (qst-payload (quest-data-get tag)))
   (let* ((qpayload (car (qst-payload (quest-data-get tag))))
 	 (updatehook (tbl-get qpayload 'on-update)))
     (if (not (equal? (tbl-get qpayload key) value))

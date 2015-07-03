@@ -158,14 +158,6 @@
 	     (quest-data-assign-once 'questentry-dragon)))
       (say knpc "Well, if you are, I happen to know where one is hidden.")))
 
-(define (alch-drag knpc kpc)
-  (say knpc "I've never done it personally, but if one wants to obtain some"
-      " dragon's blood my understanding is that one must kill a dragon!"
-      " I hear they're common as cows in the regions of the Fire Sea."
-       )
-  (quest-data-update-with 'questentry-dragon 'sea 1 (quest-notify nil)))
-
-
 ;; The Wise...
 (define (alch-necr knpc kpc)
   (say knpc "The Necromancer is an old acquaintance of mine."
@@ -353,9 +345,9 @@
 
        (react 'drag
 	      (say knpc "I've never done it personally,"
-		  " but if one wants dragon's blood my understanding is that"
-		  " one must kill a dragon!"
-		  " I hear they're common as cows around the Fire Sea.")
+		   " but if one wants to obtain some dragon's blood,"
+		   " my understanding is that one must kill a dragon!"
+		   " I hear they're common as cows around the Fire Sea.")
 	      (quest-data-update-with 'questentry-dragon 'sea 1
 				      (quest-notify nil))
 	      )

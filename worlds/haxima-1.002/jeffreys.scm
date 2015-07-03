@@ -124,20 +124,20 @@
         ))
 
 (define (jeff-warr-ready subfn)
-	(if (quest-data-assigned? 'questentry-wise)
-		(subfn)
-		(jeff-default knpc kpc)
-		))
+  (if (quest-data-assigned? 'questentry-wise)
+      (subfn)
+      (jeff-default knpc kpc)
+      ))
 
 (define (jeff-erra knpc kpc)
-	(jeff-warr-ready (lambda ()
-                           (say knpc "[He looks a bit uneasy] Yes, she took a squad to the Lost Halls. "
-                                "It's odd that she hasn't reported back yet... "
-                                "Normally I would send a search party, "
-                                "but at the moment I haven't the troops to spare.")
-                           (quest-data-update-with 'questentry-rune-l 'located 1 (quest-notify nil)) 
-                           (quest-data-update 'questentry-warritrix 'lost-hall 1)
-                           )))
+  (jeff-warr-ready (lambda ()
+		     (say knpc "[He looks a bit uneasy] Yes, she took a squad to the Lost Halls. "
+			  "It's odd that she hasn't reported back yet... "
+			  "Normally I would send a search party, "
+			  "but at the moment I haven't the troops to spare.")
+		     (quest-data-update-with 'questentry-rune-l 'located 1 (quest-notify nil)) 
+		     (quest-data-update 'questentry-warritrix 'lost-hall 1)
+		     )))
 
 (define (jeff-sear knpc kpc)
   (jeff-warr-ready (lambda ()

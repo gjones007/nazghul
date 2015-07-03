@@ -296,8 +296,12 @@
 		    (say knpc "Good! Rangers have tracked the thief to "
 			 "Trigrave. Go there and inquire about a ^c+mthief^c-.")
 		    (quest-data-assign-once 'questentry-thiefrune)
+		    ;; XXX: This should be completed on greet, not here
 		    (quest-data-complete 'questentry-calltoarms)
-		    ;; if you dont read the letter, you might not get the quest till now!
+		    ;; if you dont read the letter, you might not get the quest
+		    ;; till now!
+		    ;; XXX: But this should be assigned on entry or on greet,
+		    ;; not here
 		    (quest-data-assign-once 'questentry-calltoarms)
 		    (quest-data-update-with 'questentry-calltoarms 'done 1 (grant-xp-fn 10))
 		    (quest-accepted! (ench-first-quest (gob knpc)) #t)
@@ -386,9 +390,8 @@
   (say knpc "The most depraved and wicked of all the Wise, "
        "my nemesis the Necromancer abides somewhere in the underworld. "
        "He is powerful, deceitful and corrupt beyond redemption.")
-       (quest-wise-subinit 'questentry-necromancer)
-       (quest-data-update 'questentry-necromancer 'general-loc 1)
-      )
+  (quest-wise-subinit 'questentry-necromancer)
+  (quest-data-update 'questentry-necromancer 'general-loc 1))
 
 (define (ench-alch knpc kpc)
   (say knpc "The Alchemist keeps a lab near Oparine. "
@@ -398,8 +401,10 @@
        )
 
 (define (ench-thie knpc kpc)
-	;;in case quest generated once in progress
-	(quest-data-assign-once 'questentry-thiefrune)
+  ;; in case quest generated once in progress
+  ;; XXX: these answers assume the quest was assigned. It might not have been
+  ;; if the player did not accept it.
+  (quest-data-assign-once 'questentry-thiefrune)
   (if (quest-done? (ench-first-quest (gob knpc)))
       (say knpc "Although a nuisance, he was only a middleman. "
            "I hope you did not treat him too harshly.")

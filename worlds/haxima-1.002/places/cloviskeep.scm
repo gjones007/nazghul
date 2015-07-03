@@ -10,6 +10,9 @@
  ;; *** contents ***
  (list
   (put (mk-monman) 0 0)
+  (put (spawn-pt2 'wyrm 'serpentine-make-body 'wyrm-segment 'wyrm-tail) 22 53)
+  (put (kern-tag 'clovis-drawbridge (mk-drawbridge north)) 32 32)
+  (put (mk-lever 'clovis-drawbridge) 33 30)
   )
 
  ;; *** on-entry hooks ***

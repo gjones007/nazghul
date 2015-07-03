@@ -709,21 +709,19 @@
 ;; Search for the Wise quest group
 
 (define (quest-wise-init)
-	(quest-data-assign-once 'questentry-wise)
-	(map (lambda (tag)
-		 (if (not (null? (quest-data-getvalue tag 'name)))
-			(quest-data-assign-once tag)
-		))
-		(list 'questentry-enchanter 'questentry-warritrix  'questentry-alchemist
-						'questentry-the-man 'questentry-engineer  'questentry-necromancer)
-	))
+  (quest-data-assign-once 'questentry-wise)
+  (map (lambda (tag)
+	 (if (not (null? (quest-data-getvalue tag 'name)))
+	     (quest-data-assign-once tag)
+	     ))
+       (list 'questentry-enchanter 'questentry-warritrix  'questentry-alchemist
+	     'questentry-the-man 'questentry-engineer  'questentry-necromancer)
+       ))
 
 (define (quest-wise-subinit tag)
-	(quest-data-update tag 'name 1)
-	(if (quest-data-assigned? 'questentry-wise)
-		(quest-data-assign-once tag)
-	)
-	)
+  (quest-data-update tag 'name 1)
+  (if (quest-data-assigned? 'questentry-wise)
+      (quest-data-assign-once tag)))
 
 ;; TODO- merge lost hall location info with rune quest	
 (define (quest-warritrix-update)

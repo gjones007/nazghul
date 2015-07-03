@@ -313,11 +313,10 @@
     ;; Quick-and-dirty start
     (begin
       (define (simple-start kplayer)
-	(kern-obj-put-at (kern-mk-obj t_rune_k 1) (list p_oparine 4 28))
-	(kern-obj-put-at (kern-mk-obj t_hydras_blood 1) (list p_oparine 5 28))
-	(kern-obj-put-at (kern-mk-obj t_dragons_blood 1) (list p_oparine 6 28))
+	(kern-obj-put-at (kern-mk-obj t_rune_k 1)
+			 (list p_enchanters_tower 15 15))
 	(kern-obj-put-at kplayer
-			 (list p_cloviskeep 31 63)))
+			 (list p_enchanters_tower 16 16)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

@@ -205,6 +205,7 @@
        "he's been in our prison for some time. Now, our rangers did report "
        "a lone man traveling north through the forest, but we know not "
        "whence. The only thing to the north is Bole.")
+  ;; XXX: updating 'tower does not seem necessary at this point
        (quest-data-update 'questentry-thiefrune 'tower 1)
        (quest-data-update-with 'questentry-thiefrune 'bole 1 (quest-notify (grant-party-xp-fn 10)))
        )
