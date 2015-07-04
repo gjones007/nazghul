@@ -38,6 +38,7 @@ struct terrain {
 	unsigned char alpha;
 	int pclass;
 	int light;
+	int permeable;
 	closure_t *effect;	/* when stood on */
 	closure_t *renderCombat;	/* closure to set up combat map */
 };

@@ -617,11 +617,13 @@ struct connection {
 
 /**
  * New-style terrain ctor. Takes alpha, light and step proc as optional keyword
- * args.
+ * args. Example:
+ *
+ * (kern-terrain <tag> <name> <pclass> <sprite> <alpha>)
  */
 static pointer kern_terrain(scheme * sc, pointer args)
 {
-        int alpha, light;
+        int alpha=0, light=0, permeable=0;
         void *sprite;
         struct terrain *terrain;
         const char *tag = TAG_UNK, *name;
@@ -644,6 +646,7 @@ static pointer kern_terrain(scheme * sc, pointer args)
                         if (!scm_is_pair(sc, kwarg)) {
                                 load_err("%s: option is not a key, value pair",
                                          __func__);
+				kwargs = scm_cdr(sc, kwargs);
                                 continue;
                         }
                         kwargs = scm_cdr(sc, kwargs);
@@ -665,6 +668,12 @@ static pointer kern_terrain(scheme * sc, pointer args)
                                                  __func__, key);
                                         continue;
                                 }
+			} else if (!strcmp(key, "permeable")) {
+                                if (unpack(sc, &kwarg, "d", &permeable)) {
+                                        load_err("%s: %s must be a number",
+                                                 __func__, key);
+                                        continue;
+                                }
                         } else {
                                 load_err("%s: don't recognize keyword %s",
                                          __func__, key);
@@ -676,6 +685,7 @@ static pointer kern_terrain(scheme * sc, pointer args)
         terrain = terrain_new(tag, name, (struct sprite *) sprite, pclass);
         terrain->alpha = alpha;
         terrain->light = light;
+	terrain->permeable = permeable;
 
         if (proc != sc->NIL) {
                 terrain->effect = closure_new_ref(sc, proc);

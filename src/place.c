@@ -977,6 +977,12 @@ Object *place_get_lower_object(struct place * place, int x, int y,
                 return tile_get_top_object_at_layer(tile, layer);
         }
 
+	/* Check if terrain permits access to lower level. */
+	struct terrain *tt = place_get_terrain(place, x, y);
+	if (! tt->permeable) {
+		return NULL;
+	}
+
         /* Try the next level down. */
         struct place *lower;
         lower = place_get_neighbor(place, DOWN);
@@ -1057,7 +1063,7 @@ static int place_pathfind_is_valid_location(struct place_pathfind_context
         /* I used to check this after passability, but it really belongs first.
          * In several cases the target location may not be passable but if the
          * seeker can get adjacent to it that will be good enough. If this is
-         * not what the caller wants, they need to se the PFLAG_ADJACENTNOTOK
+         * not what the caller wants, they need to set the PFLAG_ADJACENTNOTOK
          * flag. */
         if ((!(context->pflags & PFLAG_ADJACENTNOTOK))
             && x == context->target_x && y == context->target_y) {
@@ -1417,10 +1423,12 @@ int place_is_hazardous(struct place *place, int x, int y)
 {
         WRAP_COORDS(place, x, y);
         struct terrain *t = TERRAIN(place, x, y);
-        if (t->effect)
+        if (t && t->effect) {
                 return 1;
-        if (place_get_object(place, x, y, field_layer) != NULL)
+	}
+        if (place_get_object(place, x, y, field_layer) != NULL) {
                 return 1;
+	}
         return 0;
 }
 
@@ -1444,19 +1452,15 @@ struct terrain *place_get_terrain(struct place *place, int x, int y)
 struct terrain *place_get_lower_terrain(struct place *place, int x, int y,
                                         int *depth)
 {
-        /* Try here first. */
         struct terrain *terrain;
         terrain = place_get_terrain(place, x, y);
-        if (terrain) {
+
+	/* Return impermeable terrain. */
+	if (!terrain->permeable) {
                 return terrain;
         }
 
-        /* Only if NULL terrain then try the next level down. */
-        if (place_get_terrain(place, x, y)) {
-                return NULL;
-        }
-
-        /* Try the next level down. */
+        /* For permeable terrain, try the next level down. */
         struct place *lower;
         lower = place_get_neighbor(place, DOWN);
         if (!lower) {
@@ -1491,12 +1495,14 @@ static int place_describe_objects(struct place *place, int x, int y,
                                   int is_first);
 
 /**
- * If terrain is NULL here, try the next lower place.
+ * If terrain is permeable return objects from the next level down,
+ * recursively.
  */
 static int place_describe_lower_objects(struct place *place, int x, int y,
                                         int is_first)
 {
-        if (!place_get_terrain(place, x, y)) {
+	struct terrain *tt = place_get_terrain(place, x, y);
+	if (tt->permeable) {
                 struct place *lower;
                 lower = place_get_neighbor(place, DOWN);
                 if (lower) {
