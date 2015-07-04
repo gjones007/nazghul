@@ -1337,6 +1337,23 @@ void place_enter(struct place *place)
 {
         place_run_on_entry_hook(place);
         place_synchronize(place);
+
+	/* Initialize the lower neighbors. */
+	struct place *neighbor;
+	neighbor = place_get_neighbor(place, DOWN);
+	while (neighbor) {
+		place_run_on_entry_hook(neighbor);
+		place_synchronize(neighbor);
+		neighbor = place_get_neighbor(neighbor, DOWN);
+	}
+
+	/* Initialize the upper neighbors. */
+	neighbor = place_get_neighbor(place, UP);
+	while (neighbor) {
+		place_run_on_entry_hook(neighbor);
+		place_synchronize(neighbor);
+		neighbor = place_get_neighbor(neighbor, UP);
+	}
 }
 
 int place_get_movement_cost(struct place *place, int x, int y,
