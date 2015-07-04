@@ -3597,7 +3597,7 @@ void cmdDrop(class Character * actor)
                     0) < PTABLE_IMPASSABLE) {
                 cmd_char_drop_item_at(actor, obj, quantity, actor->getX(),
                                       actor->getY());
-                log_msg("%s wouldn't fit!", ie->type->getName());
+                log_msg("%s dropped here!", ie->type->getName());
         } else {
                 log_msg("Couldnt drop %s!", ie->type->getName());
         }
