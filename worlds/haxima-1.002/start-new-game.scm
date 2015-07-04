@@ -313,10 +313,8 @@
     ;; Quick-and-dirty start
     (begin
       (define (simple-start kplayer)
-	(kern-obj-put-at (kern-mk-obj t_rune_k 1)
-			 (list p_enchanters_tower 15 15))
 	(kern-obj-put-at kplayer
-			 (list p_enchanters_tower 16 16)))
+			 (list p_griffin_peak_s 0 9)))
       (kern-add-hook 'new_game_start_hook 'simple-start)))
 
 (kern-progress-bar-finish)

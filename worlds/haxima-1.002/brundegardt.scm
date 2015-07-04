@@ -778,25 +778,27 @@
 (mk-19x19-town
  'p_brundegardt_tower_5 "BrundeGardt Tower L5" nil
  (list
-  		"^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. "
-		"^. ^. ^. ^. ^. bb {1 {5 {{ {{ {3 {1 {1 bb ^. ^. ^. ^. ^. "
-		"^. ^. ^. bb {1 .. .. .. {1 {1 .. {8 {4 {{ {3 bb ^. ^. ^. "
-		"^. ^. {3 .. {8 {8 .. .. .. .. {4 {{ {2 {1 .. .. bb ^. ^. "
-		"^. ^. {2 {c {{ {{ ee ee ee x. ee ee ee .. .. {c {{ ^. ^. "
-		"^. bb {4 {{ {{ ee ee x. x. x. x. x. ee ee {4 {{ {{ bb ^. "
-		"^. {a .. {1 ee ee x. x. cc cc cc x. x. ee ee {5 {{ {6 ^. "
-		"^. {{ {2 .. ee x. x. cc cc cc cc cc x. x. ee .. {1 .. bb "
-		"^. {3 .. .. ee x. cc cc cc cc cc cc cc x. ee .. .. .. .. "
-		"^. {a {8 .. x. x. cc cc cc cc cc cc cc x. x. .. .. .. .. "
-		"^. {{ {{ {2 ee x. cc cc cc cc cc cc cc x. ee .. .. .. .. "
-		"^. {3 {1 .. ee x. x. cc cc cc cc cc x. x. ee .. {8 {8 bb "
-		"^. {2 .. .. ee ee x. x. cc cc cc x. x. ee ee {4 {{ {{ ^. "
-		"^. bb .. .. .. ee ee x. x. x. x. x. ee ee .. .. {1 bb ^. "
-		"^. ^. {2 .. .. .. ee ee ee x. ee ee ee .. .. {8 {4 ^. ^. "
-		"^. ^. bb .. {8 .. .. .. .. {4 {{ {{ {2 .. {4 {{ bb ^. ^. "
-		"^. ^. ^. bb {{ {2 .. {8 .. .. {1 {1 .. .. {8 bb ^. ^. ^. "
-		"^. ^. ^. ^. bb bb {c {{ {a {8 {8 {8 {8 bb ^. ^. ^. ^. ^. "
-		"^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. ^. "
+
+  		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () ee ee ee x. ee ee ee () () () () () () "
+		"() () () () () ee ee x. x. x. x. x. ee ee () () () () () "
+		"() () () () ee ee x. x. cc cc cc x. x. ee ee () () () () "
+		"() () () () ee x. x. cc cc cc cc cc x. x. ee () () () () "
+		"() () () () ee x. cc cc cc cc cc cc cc x. ee () () () () "
+		"() () () () x. x. cc cc cc cc cc cc cc x. x. () () () () "
+		"() () () () ee x. cc cc cc cc cc cc cc x. ee () () () () "
+		"() () () () ee x. x. cc cc cc cc cc x. x. ee () () () () "
+		"() () () () ee ee x. x. cc cc cc x. x. ee ee () () () () "
+		"() () () () () ee ee x. x. x. x. x. ee ee () () () () () "
+		"() () () () () () ee ee ee x. ee ee ee () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+
   )
     nil ;;entrances
  (put (mk-ladder-down 'p_brundegardt_tower_4 6 9) 6 9)
@@ -809,49 +811,25 @@
  )
 
 (mk-place-music p_brundegardt_tower_5 'ml-outdoor-adventure)
-
-(block-teleporting 
- p_brundegardt_tower_5
- (list
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# ee ee ee x. ee ee ee x# x# x# x# x# x# "
-  "x# x# x# x# x# ee ee x. x. x. x. x. ee ee x# x# x# x# x# "
-  "x# x# x# x# ee ee x. x. cc cc cc x. x. ee ee x# x# x# x# "
-  "x# x# x# x# ee x. x. cc cc cc cc cc x. x. ee x# x# x# x# "
-  "x# x# x# x# ee x. cc cc cc cc cc cc cc x. ee x# x# x# x# "
-  "x# x# x# x# x. x. cc cc cc cc cc cc cc x. x. x# x# x# x# "
-  "x# x# x# x# ee x. cc cc cc cc cc cc cc x. ee x# x# x# x# "
-  "x# x# x# x# ee x. x. cc cc cc cc cc x. x. ee x# x# x# x# "
-  "x# x# x# x# ee ee x. x. cc cc cc x. x. ee ee x# x# x# x# "
-  "x# x# x# x# x# ee ee x. x. x. x. x. ee ee x# x# x# x# x# "
-  "x# x# x# x# x# x# ee ee ee x. ee ee ee x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  )
-)                  
+(kern-place-set-neighbor up p_brundegardt_tower_4 p_brundegardt_tower_5)
 
 ;;----------------------------------------------------------------------------
 ;; Griffin Peak
 (mk-19x19-town
  'p_griffin_peak_s "South Face of Griffin Peak" nil
  (list
-		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ {2 .. {4 ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ {2 .. {4 ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ ^^ ^c bb .. .. .. bb ^a ^^ ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ ^c bb .. dd .. dd .. bb ^a ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ bb .. dd dd dd .. dd .. bb ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ .. dd dd dd dd dd dd dd .. ^^ ^^ ^^ ^^ ^^ "
-		"^^ ^^ ^^ ^^ ^^ bb dd dd dd dd dd dd dd bb ^^ ^^ ^^ ^^ ^^ "
-		"^. ^. ^^ ^^ ^^ .. dd .. dd dd dd dd dd .. ^^ ^^ ^^ ^. ^. "
-		"{5 ^. ^. ^^ ^^ bb .. dd dd dd dd dd .. bb ^^ ^^ ^. ^. {3 "
-		"{4 {{ ^. ^. ^^ ^5 bb .. dd .. dd .. bb ^3 ^^ ^. ^. {{ {2 "
-		".. {1 {5 ^. ^. ^^ ^5 bb .. dd .. bb ^3 ^^ ^^ ^. {{ {3 .. "
-		"^v .. .. {5 ^. ^. ^^ ^^ ^^ bb ^^ ^^ ^^ ^^ ^. ^. {3 .. ^v "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ "
+		"^. ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. ^. "
+		"{5 ^. ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. ^. {3 "
+		"{4 {{ ^. ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. ^. {{ {2 "
+		".. {1 {5 ^. ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. {{ {3 .. "
+		"^v .. .. {5 ^. ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. ^. {3 .. ^v "
 		"^v ^v .. {4 {{ ^. ^^ ^^ ^^ ^^ ^^ ^^ ^^ ^. ^. {{ {2 .. ^v "
 		"^v ^v ^v .. {5 ^. ^. ^. ^^ ^^ ^^ ^^ ^. ^. {3 {9 .. .. ^v "
 		"^v ^v ^v .. .. {1 {5 ^. ^. ^^ ^. ^. ^. {3 {c {C bb .. ^v "
@@ -861,9 +839,11 @@
 		"^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v "
   )
     nil ;;entrances
- (put (spawn-pt 'griffin) 9 13)
- (put (spawn-pt 'griffin) 3 3)
- (put (spawn-pt 'griffin) 9 17)
+;; (put (spawn-pt 'griffin) 9 13)
+;; (put (spawn-pt 'griffin) 3 3)
+;; (put (spawn-pt 'griffin) 9 17)
+ (put (spawn-pt 'trog) 9 16)
+
  (put (mk-ambient-sound 'sound-wind) 10 10)
  )
 
@@ -879,31 +859,6 @@
                     (kern-obj-put-at (mk-corpse-with-loot)
                                      loc))
                   20)
-
-(block-teleporting 
- p_griffin_peak_s
- (list
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ x# x# x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ x# x# x# x# x# ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ x# ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  "~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ ~~ "
-  ))
-                   
 
 (mk-19x19-town
  'p_griffin_peak_se "Southeast Face of Griffin Peak" nil
@@ -1025,25 +980,27 @@
 (mk-19x19-town
  'p_griffin_peak "Griffin Peak" nil
  (list
-  		"^. ^. ^. ^. ^v ^v ^v ^v {2 .. {4 ^v ^v ^v ^v ^. ^. ^. ^. "
-		"^. ^. ^. ^v ^v ^v ^v ^v {2 .. {4 ^v ^v ^v ^v ^. ^. ^. ^. "
-		"^. ^. ^. ^v ^v ^v ^v bb .. .. .. bb ^v ^v ^v ^v ^. ^. ^. "
-		"^. ^. ^v ^v ^v ^v bb .. dd .. dd .. bb ^v ^v ^v ^v ^. ^. "
-		"^. ^v ^v ^v ^v bb .. dd dd dd .. dd .. bb ^v ^v ^v ^. ^. "
-		"^v ^v ^v ^v ^v .. dd dd dd dd dd dd dd .. ^v ^v ^v ^v ^. "
-		"^v ^v ^v ^v ^v bb dd dd dd dd dd dd dd bb ^v ^v ^v ^v ^v "
-		"^v ^v ^v ^v ^v .. dd .. dd dd dd dd dd .. ^v ^v ^v ^v ^v "
-		"{5 ^v ^v ^v ^v bb .. dd dd dd dd dd .. bb ^v ^v ^v ^v {3 "
-		"{4 {{ ^v ^v ^v ^v bb .. dd .. dd .. bb ^v ^v ^v ^v {{ {2 "
-		".. {1 {5 ^v ^v ^v ^v bb .. dd .. bb ^v ^v ^v ^v {{ {3 .. "
-		"^v .. .. {5 ^v ^v ^v ^v ^v bb ^v ^v ^v ^v ^v ^v {3 .. ^v "
-		"^v ^v .. {4 {{ ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v {{ {2 .. ^v "
-		"^v ^v ^v .. {5 ^v ^v ^v ^v ^v ^v ^v ^v ^v {3 {9 .. .. ^v "
-		"^v ^v ^v .. .. {1 {5 ^v ^v ^v ^v ^v ^v {3 {c {C bb .. ^v "
-		"^v ^v ^v {8 bb .. {4 {{ ^v ^v ^v {{ {3 {4 {{ bb .. .. ^v "
-		"^v ^v {4 {{ {2 .. .. {1 {1 {1 {1 {1 .. .. {1 .. .. bb ^v "
-		"^v ^v ^v {1 ^v ^v ^v .. .. .. .. .. ^v ^v ^v ^v ^v ^v ^v "
-		"^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v ^v "
+
+  		"() () () () () () () () {2 .. {4 () () () () () () () () "
+		"() () () () () () () () {2 .. {4 () () () () () () () () "
+		"() () () () () () () bb .. .. .. bb () () () () () () () "
+		"() () () () () () bb .. dd .. dd .. bb () () () () () () "
+		"() () () () () bb .. dd dd dd .. dd .. bb () () () () () "
+		"() () () () () .. dd dd dd dd dd dd dd .. () () () () () "
+		"() () () () () bb dd dd dd dd dd dd dd bb () () () () () "
+		"() () () () () .. dd .. dd dd dd dd dd .. () () () () () "
+		"() () () () () bb .. dd dd dd dd dd .. bb () () () () () "
+		"() () () () () () bb .. dd .. dd .. bb () () () () () () "
+		"() () () () () () () bb .. dd .. bb () () () () () () () "
+		"() () () () () () () () () bb () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+		"() () () () () () () () () () () () () () () () () () () "
+
   )
     nil ;;entrances
  (put (mk-key t_brundegardt_tower_4_key) 9 9)
@@ -1071,36 +1028,13 @@
                                      loc))
                   20)
 
-(block-teleporting 
- p_griffin_peak
- (list
-  "x# x# x# x# x# x# x# x# .. .. .. x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# .. .. .. x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# bb .. .. .. bb x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# bb .. dd .. dd .. bb x# x# x# x# x# x# "
-  "x# x# x# x# x# bb .. dd dd dd .. dd .. bb x# x# x# x# x# "
-  "x# x# x# x# x# .. dd dd dd dd dd dd dd .. x# x# x# x# x# "
-  "x# x# x# x# x# bb dd dd dd dd dd dd dd bb x# x# x# x# x# "
-  "x# x# x# x# x# .. dd .. dd dd dd dd dd .. x# x# x# x# x# "
-  "x# x# x# x# x# bb .. dd dd dd dd dd .. bb x# x# x# x# x# "
-  "x# x# x# x# x# x# bb .. dd .. dd .. bb x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# bb .. dd .. bb x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# bb x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  "x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# x# "
-  ))
-                   
 
 ;;----------------------------------------------------------------------------
 ;; Assemble the lower levels into a dungeon complex
 (mk-dungeon-level 
  (list nil           p_cave_shrine     )
- (list p_brundegardt p_brundegardt_keep p_tunnel_turn p_black_canal p_tunnels p_wide_chasm p_brundegardt_tower_1)
+ (list p_brundegardt p_brundegardt_keep p_tunnel_turn p_black_canal
+       p_tunnels p_wide_chasm p_brundegardt_tower_1)
  )
 
 ;;----------------------------------------------------------------------------
@@ -1113,3 +1047,6 @@
 ;; Manually paste together the final spiral of griffin peak
 (kern-place-set-neighbor west p_griffin_peak_ne p_griffin_peak_n)
 (kern-place-set-neighbor south p_griffin_peak_n p_griffin_peak)
+
+;; Layer Griffin Peak over South Face
+(kern-place-set-neighbor up p_griffin_peak_s p_griffin_peak)
