@@ -1038,17 +1038,22 @@ static void mapRepaintView(struct mview *view, int flags)
                 sprite_zoom_out(Map.aview->zoom);
                 screen_zoom_out(Map.aview->zoom);
                 t5 = SDL_GetTicks();
-                mapPaintPlace(Map.place, &view->vrect, &Map.srect,
-                              0 /* vmask */ , &view->subrect,
-                              TILE_W / Map.aview->zoom,
-                              TILE_H / Map.aview->zoom);
+
+                map_paint_levels(Map.place, &view->vrect, &Map.srect,
+                                 NULL, &view->subrect,
+				 TILE_W / Map.aview->zoom,
+				 TILE_H / Map.aview->zoom);
+
                 t6 = SDL_GetTicks();
                 screen_zoom_in(Map.aview->zoom);
                 sprite_zoom_in(Map.aview->zoom);
         } else if (flags & REPAINT_NO_LOS) {
                 t5 = SDL_GetTicks();
-                mapPaintPlace(Map.place, &view->vrect, &Map.srect, 0,
-                              &view->subrect, TILE_W, TILE_H);
+
+                map_paint_levels(Map.place, &view->vrect, &Map.srect,
+                                 NULL, &view->subrect,
+                                 TILE_W, TILE_H);
+
                 t6 = SDL_GetTicks();
         } else {
 
