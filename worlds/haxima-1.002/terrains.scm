@@ -475,3 +475,6 @@
 			t_bulwark_v_e
 			t_bulwark_v_s
 	)))
+
+
+(kern-terrain 't_air "air" pclass-canfly s_air trn '((permeable 1)))

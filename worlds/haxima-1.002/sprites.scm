@@ -544,6 +544,7 @@
 (kern-mk-sprite 's_tombstone          ss_overlays 1 114 #f 0)
 (kern-mk-sprite 's_tombstone2         ss_overlays 1 115 #f 0)
 (kern-mk-sprite 's_fence              ss_overlays 1 116 #f 0)
+(kern-mk-sprite 's_air                ss_overlays 1 117 #f 0)
 
 (kern-mk-sprite 's_bulwark_ew     ss_ship 1  0 #f 0 )
 (kern-mk-sprite 's_bulwark_ns     ss_ship 1  1 #f 0 )
