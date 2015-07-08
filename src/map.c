@@ -940,19 +940,59 @@ static void mapPaintPlace(struct place *place, SDL_Rect * region,       /* porti
         place->dirty = 0;
 }
 
+static void map_paint_lower_levels(struct place *place, SDL_Rect * region,
+				   SDL_Rect * dest,
+				   unsigned char *mask,
+				   SDL_Rect * subrect, int tile_h, int tile_w)
+{
+        struct place *lower;
+        lower = place_get_neighbor(place, DOWN);
+        if (lower) {
+                map_paint_lower_levels(lower, region, dest, mask, subrect,
+				       tile_h, tile_w);
+        }
+        mapPaintPlace(place, region, dest, mask, subrect, tile_h, tile_w);
+}
+
+/**
+ * Paint flying objects visible in upper levels.
+ *
+ * `place` is the first upper level.
+ */
+static void map_paint_upper_level_objects(
+	struct place *place, int map_x, int map_y,
+	int scr_x, int scr_y, int in_los)
+{
+        if (! in_los) {
+		return;
+	}
+
+	while (place) {
+		struct terrain *terrain;
+		terrain = place_get_terrain(place, map_x, map_y);
+		if (! terrain->permeable) {
+			return;
+		}
+
+		place_paint_objects(place, map_x, map_y, scr_x, scr_y);
+		place = place_get_neighbor(place, UP);
+	}
+}
+
 static void map_paint_levels(struct place *place, SDL_Rect * region,
                              SDL_Rect * dest,
                              unsigned char *mask,
                              SDL_Rect * subrect, int tile_h, int tile_w)
 {
-        struct place *lower;
-        lower = place_get_neighbor(place, DOWN);
-        if (lower) {
-                map_paint_levels(lower, region, dest, mask, subrect, tile_h,
-                                 tile_w);
-                screen_shade(dest, 128);
-        }
-        mapPaintPlace(place, region, dest, mask, subrect, tile_h, tile_w);
+	map_paint_lower_levels(place, region, dest, mask, subrect, tile_h,
+			       tile_w);
+	struct place *upper;
+	upper = place_get_neighbor(place, UP);
+	if (upper) {
+		map_render_loop(upper, region, dest, mask, subrect,
+				tile_h, tile_w,
+				map_paint_upper_level_objects);
+	}
 }
 
 
