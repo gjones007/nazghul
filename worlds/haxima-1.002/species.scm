@@ -133,7 +133,7 @@
 (mk-species 'sp_carabid         "carabid"        30  1 10   100   8   0   3 mmode-walk      t_pincers    nil       8 s_carabid_asleep   "4d4+4" sound-walking   )
 (mk-species 'sp_ratling         "ratling"         6  8 14   110   4   2  12 mmode-fastrun   t_F_fangs    humanoid  2 s_asleep           nil     sound-walking   )
 (mk-species 'sp_griffin         "griffin"        20  8 12   120  25   0  19 mmode-fly       t_beak       nil       3 s_griffin_asleep   nil     nil             )
-(mk-species 'sp_griffin_chick   "griffin chick"   5  8 10   100   8   0  19 mmode-fastfly   t_beak       nil       2 s_griffin_chick_asleep nil nil             )
+(mk-species 'sp_griffin_chick   "griffin chick"   5  8 10   100   8   0  19 mmode-walk   t_beak       nil       2 s_griffin_chick_asleep nil nil             )
 (mk-species 'sp_deer            "deer"            7  1 14   120   8   0  13 mmode-fastrun   t_horns      nil       1 s_asleep           nil     sound-walking   ) 
 (mk-species 'sp_chicken         "chicken"         1  1  3   100   1   0  13 mmode-walk      t_beak       nil       1 s_asleep           nil     sound-walking   ) 
 ;;          tag                 name             st in dx   spd bHP bMP  vr mmode           weap         morph    xp sspr               armrdc  mvsnd
