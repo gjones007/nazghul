@@ -1,6 +1,6 @@
 /*
  * nazghul - an old-school RPG engine
- * Copyright (C) 2002, 2003, 2011 Gordon McNutt
+ * Copyright (C) 2015 Gordon McNutt
  *
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
