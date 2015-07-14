@@ -2144,8 +2144,7 @@ void Character::sleep()
 
 bool Character::canSee(class Object * obj)
 {
-	return (obj->getPlace() == getPlace() &&
-		place_flying_distance(getPlace(), getX(), getY(),
+	return (place_flying_distance(getPlace(), getX(), getY(),
 				      obj->getX(), obj->getY()) <=
 		getVisionRadius() &&
 		obj->isVisible() &&

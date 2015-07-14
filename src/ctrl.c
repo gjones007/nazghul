@@ -1542,16 +1542,27 @@ static bool ctrl_attack_target(class Character * character,
         return attacked;
 }
 
-/* Data structure used by the ctrl_is_valid_target visitor function below */
+/**
+ * Data structure used by the ctrl_select_target functions.
+ *
+ * `target` is the best target found so far.
+ * `attacker` is the attacker.
+ * `place` is the place being checked.
+ * `distance` is the distance to `target`, accounting for depth.
+ * `depth` is the vertical distance to `target`.
+ */
 struct ctrl_select_target_data {
-        class Character *target;        /* best target found so far */
-        class Character *attacker;      /* attacking character */
-        int distance;           /* distance to 'target' */
+        class Character *target;
+        class Character *attacker;
+	struct place *attacker_place;
+	struct place *target_place;
+        int distance;
+	int depth;
 };
 
-/*****************************************************************************
- * ctrl_is_valid_target - check if 'obj' is a valid target for 'attacker'
- *****************************************************************************/
+/**
+ * Check if `obj` is a valid target for `attacker`.
+ */
 static int ctrl_is_valid_target(class Character * attacker, class Object * obj)
 {
         /* Skip NULL */
@@ -1585,29 +1596,50 @@ static int ctrl_is_valid_target(class Character * attacker, class Object * obj)
         return 1;
 }
 
-/*****************************************************************************
- * ctrl_select_target_visitor - find and remember the closest valid target for
- * an attacker
- *****************************************************************************/
+/**
+ * Find and remember the closest valid target.
+ *
+ * `node` is an element in a list of Objects
+ * `parm` points to a ctrl_select_target_data struct
+ */
 static void ctrl_select_target_visitor(struct node *node, void *parm)
 {
-        class Object *obj;
-        struct ctrl_select_target_data *data;
-        int distance;
-
         /* Extract the typed variables from the generic parms */
+        class Object *obj;
         obj = (class Object *) node->ptr;
+
+        struct ctrl_select_target_data *data;
         data = (struct ctrl_select_target_data *) parm;
 
         /* Check if this object makes a valid target */
         if (!ctrl_is_valid_target(data->attacker, obj))
                 return;
 
+	/* If this is an object on a lower level check if it is visible from
+	 * above. */
+	int x = obj->getX();
+	int y = obj->getY();
+	if (data->depth) {
+		struct place *upper;
+		upper = place_get_neighbor(data->target_place, UP);
+		while (upper != data->attacker_place) {
+			struct terrain *terrain;
+			terrain = place_get_terrain(upper, x, y);
+			if (! terrain->permeable) {
+				return;
+			}
+			upper = place_get_neighbor(upper, UP);
+		}
+	}
+
         /* Compute the distance from attacker to obj */
-        distance = place_flying_distance(data->attacker->getPlace(),
-                                         data->attacker->getX(),
-                                         data->attacker->getY(),
-                                         obj->getX(), obj->getY());
+	int distance = place_flying_distance(data->attacker_place,
+					     data->attacker->getX(),
+					     data->attacker->getY(),
+					     x, y);
+
+	/* Compensate for depth */
+	distance -= data->depth;
 
         /* Memoize the closest target and its distance */
         if (distance < data->distance) {
@@ -1616,34 +1648,69 @@ static void ctrl_select_target_visitor(struct node *node, void *parm)
         }
 }
 
-/*****************************************************************************
- * ctrl_select_target - use a heuristic to pick a target for an attacker
- *****************************************************************************/
-static class Character *ctrl_select_target(class Character * character)
+/**
+ * Select a target for an AI attacker.
+ *
+ * `character` is the attacker.
+ */
+static class Character *ctrl_select_target(class Character * attacker)
 {
         struct ctrl_select_target_data data;
 
         /* Initialize the search data. */
-        data.attacker = character;
+        data.attacker = attacker;
         data.target = NULL;
-        data.distance = place_max_distance(character->getPlace()) + 1;
+	data.attacker_place = attacker->getPlace();
+	data.target_place = data.attacker_place;
+        data.distance = place_max_distance(data.attacker_place) + 1;
+	data.depth = 0;
+
+	dbg("%s searching for target from %s...\n", attacker->getName(),
+	    data.attacker_place->name);
 
         /* Search all objects in the current place for targets. */
-        node_foldr(place_get_all_objects(character->getPlace()),
+        node_foldr(place_get_all_objects(attacker->getPlace()),
                    ctrl_select_target_visitor, &data);
 
         /* Check if one was found */
         if (data.target) {
-                character->setAttackTarget((class Character *) data.target);
+                attacker->setAttackTarget(data.target);
+		dbg("...found %s at (%s, %d, %d)\n",
+		    data.target->getName(), data.target_place->name,
+		    data.target->getX(), data.target->getY());
+                return data.target;
+        }
+
+	/* If not, try lower down. */
+	struct place *lower;
+	lower = place_get_neighbor(data.attacker_place, DOWN);
+	while (lower) {
+		data.depth += 1;
+		data.target_place = lower;
+		dbg("...searching lower at %s\n", data.target_place->name);
+		node_foldr(place_get_all_objects(lower),
+			   ctrl_select_target_visitor, &data);
+		lower = place_get_neighbor(lower, DOWN);
+	}
+
+        if (data.target) {
+                attacker->setAttackTarget(data.target);
+		dbg("...found %s at (%s, %d, %d)\n",
+		    data.target->getName(), data.target_place->name,
+		    data.target->getX(), data.target->getY());
                 return data.target;
         }
 
         /* Try the old one */
-        if (ctrl_is_valid_target(character, character->getAttackTarget(NULL)))
-                return character->getAttackTarget(NULL);
+        if (ctrl_is_valid_target(attacker, attacker->getAttackTarget(NULL))) {
+		dbg("%s keeping %s\n", attacker->getName(),
+		    attacker->getAttackTarget(NULL)->getName());
+                return attacker->getAttackTarget(NULL);
+	}
 
         /* No valid targets */
-        character->setAttackTarget(NULL);
+	dbg("%s found no target\n", attacker->getName());
+        attacker->setAttackTarget(NULL);
         return NULL;
 }
 

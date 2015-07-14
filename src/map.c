@@ -940,6 +940,10 @@ static void mapPaintPlace(struct place *place, SDL_Rect * region,       /* porti
         place->dirty = 0;
 }
 
+
+/**
+ * Paint this level and lower, where the floor reveals.
+ */
 static void map_paint_lower_levels(struct place *place, SDL_Rect * region,
 				   SDL_Rect * dest,
 				   unsigned char *mask,
@@ -954,10 +958,15 @@ static void map_paint_lower_levels(struct place *place, SDL_Rect * region,
         mapPaintPlace(place, region, dest, mask, subrect, tile_h, tile_w);
 }
 
+
 /**
- * Paint flying objects visible in upper levels.
+ * Paint flying objects in upper levels if they are visible.
  *
- * `place` is the first upper level.
+ * Note that this is for a single tile. It traverses the upward neighbors as
+ * long as their floor tile is visible here.
+ *
+ * `place` is the current level.
+ * `map_x, map_y` is the coordinate to paint.
  */
 static void map_paint_upper_level_objects(
 	struct place *place, int map_x, int map_y,

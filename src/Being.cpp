@@ -106,12 +106,6 @@ bool Being::pathfindTo(struct place *destplace, int destx, int desty, int flags)
 	if (isStationary()) {
 		return false;
 	}
-	// For now, don't try to pathfind between places.
-	if (destplace != getPlace()) {
-		warn("%s in %s, can't pathfind to %s", getName(),
-		     getPlace()->name, destplace->name);
-		return false;
-	}
 
 	dbg("%s pathfind from (%d %d) to (%d %d)\n", getName(), getX(), getY(),
 	    destx, desty);
