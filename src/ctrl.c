@@ -669,6 +669,50 @@ static void ctrl_del_suggest_list(struct list *head)
         }
 }
 
+
+/**
+ * Check upper levels for a flying creature.
+ *
+ * `max_height` is a limit on how many levels to check.
+ * The search will start on the level above `place`.
+ * `target_x`, `target_y` are the coordinates to check.
+ *
+ * Returns the lowest being found or NULL if none.
+ */
+static class Character *ctrl_get_flyer(int max_height,
+				       struct place *place,
+				       int target_x, int target_y)
+{
+	/* Starting from the next level up... */
+	int height = 1;
+	struct place *upper = place_get_neighbor(place, UP);
+	while (upper && (max_height >= height)) {
+
+		/* If the ceiling (which is the upper level's floor) is not
+		 * permeable then quit. */
+		struct terrain *ceiling;
+		ceiling = place_get_terrain(upper, target_x, target_y);
+		if (! ceiling->permeable) {
+			return NULL;
+		}
+
+		/* If a being is there then return it. */
+		class Object *flyer;
+		flyer = place_get_object(upper, target_x, target_y,
+					 being_layer);
+		if (flyer) {
+			return (class Character*)flyer;
+		}
+
+		/* Look higher. */
+		upper = place_get_neighbor(upper, UP);
+		height += 1;
+	}
+
+	/* Nothing found. */
+	return NULL;
+}
+
 /**
  * Called for player attack.
  */
@@ -813,7 +857,16 @@ static void ctrl_attack_ui(class Character * character)
                 // Find the new target under the cursor
                 target = (class Character *)
                     place_get_object(character->getPlace(), x, y, being_layer);
+
+		/* If no being was selected check if the player targeted a
+		 * flying being on an upper level. */
+		if (target == NULL) {
+			target = ctrl_get_flyer(weapon->getRange(),
+						character->getPlace(), x, y);
+		}
+
                 character->setAttackTarget(target);
+
                 if (target == NULL) {
 
                         /* Attack the terrain */
@@ -897,6 +950,7 @@ static void ctrl_attack_ui(class Character * character)
                         }
                         // Strike the target
                         this_is_nth_attack++;
+			obj_inc_ref(target);
                         ctrl_do_attack(character, weapon, target,
                                        character->getToHitPenalty());
 
@@ -909,6 +963,7 @@ static void ctrl_attack_ui(class Character * character)
                         /* Let the script know about the attack. */
                         session_run_hook(Session, post_attack_hook, "pp",
                                          character, target);
+			obj_dec_ref(target);
                 }
 
                 /* Warn the user if out of ammo. Originally this code used
