@@ -735,6 +735,7 @@
 ;;----------------------------------------------------------------------------
 ;; Tower L4
 (kern-load "tim.scm")
+(kern-load "eye-of-brune.scm")
 (mk-19x19-town
  'p_brundegardt_tower_4 "BrundeGardt Tower L4" nil
  (list
@@ -774,7 +775,6 @@
 
 ;;----------------------------------------------------------------------------
 ;; Tower L5
-(kern-load "eye-of-brune.scm")
 (mk-19x19-town
  'p_brundegardt_tower_5 "BrundeGardt Tower L5" nil
  (list
