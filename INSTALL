@@ -1,12 +1,12 @@
 BUILDING AND INSTALLING
-
+-----------------------
 Nazghul requires the following libraries:
 
-        SDL-1.2............http://www.libsdl.org
-        libSDL_image-1.2...http://www.libsdl.org/projects/SDL_image/
-        libSDL_image-1.2...http://www.libsdl.org/projects/SDL_mixer/
-        libpng.............http://www.libpng.org/pub/png/libpng.html
-        zlib
+    SDL-1.2............http://www.libsdl.org
+    libSDL_image-1.2...http://www.libsdl.org/projects/SDL_image/
+    libSDL_image-1.2...http://www.libsdl.org/projects/SDL_mixer/
+    libpng.............http://www.libpng.org/pub/png/libpng.html
+    zlib
 
 UNIXy systems
 
@@ -15,13 +15,13 @@ need dev versions of the packages.
 
 For Ubuntu 13.10:
 
-        sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev
+    sudo apt-get install libsdl1.2-dev libsdl-image1.2-dev libsdl-mixer1.2-dev
 
 To compile and install nazghul from a tarball:
 
-        $ ./configure
-        $ make
-        $ make install
+    $ ./configure
+    $ make
+    $ make install
     
 (If you don't want to install as root then use the --prefix option with
 configure. E.g., ./configure --prefix=$HOME)
@@ -29,30 +29,30 @@ configure. E.g., ./configure --prefix=$HOME)
 To compile and install from a CVS checkout rather than a milestone
 tarball:
 
-        $ ./autogen.sh
-        $ make
-        $ make install
+     $ ./autogen.sh
+     $ make
+     $ make install
         
 The --prefix option may be applied to autogen in the same manner as
 configure.
 
 STARTING THE GAME
-
+-----------------
 To run haxima, the game that comes packaged with the engine:
 
-        $ haxima.sh
+    $ haxima.sh
 
 WIN32
-
+-----
 The prebuilt installers should simply be a case of download and click.
 
 Setting up a compilation environment and libraries for a cvs build can
 be more tricky: Detailed instuctions are available in win32/readme.txt
 
 
-TROUBLESHOOTING
+GIT
+---
+To get the bleeding edge source:
 
-Try one of the following resources:
+    git clone git://git.code.sf.net/p/nazghul/git nazghul-git
 
-        http://myweb.cableone.net/gmcnutt/faq.html
-        nazghul-users@lists.sourceforge.net
