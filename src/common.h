@@ -301,7 +301,6 @@ extern int TURNS_PER_MINUTE;
 
 	char *version_as_string(void);	// From nazghul.c
 
-	extern int commonInit(void);
 	extern const char *get_dir_str(int dx, int dy);
 	extern void turnAdvance(int turns);
 	extern int vector_to_dir(int dx, int dy);

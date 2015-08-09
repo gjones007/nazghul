@@ -57,6 +57,7 @@
 #include <SDL_thread.h>
 #include <unistd.h>
 #include <getopt.h>
+#include <time.h>
 
 /* Name of the file to load the game from. */
 static char *nazghul_load_fname = 0;
@@ -199,7 +200,6 @@ static void nazghul_init_internal_libs(void)
         };
 
         struct lib_entry libs[] = {
-                {"commonInit", commonInit},
                 {"screen_init", screen_init},
                 {"ascii_init", ascii_init},
                 {"sprite_init", sprite_init},
@@ -312,9 +312,27 @@ static void init_default_cfg()
         cfg_set("keyword-highlighting", "yes");
 }
 
+/**
+ * Randomly choose a user hint and print it to the console.
+ */
+static void show_hint(void)
+{
+	static const char *hints[] = {
+		"Use ^c+yCTRL-<arrow>^c-, ^c+yCTRL+Page Up/Down^c- or ^c+yCTRL+Home/End^c- keys to scroll the log.",
+		"Use ^c+ySHIFT-<arrow>^c- to pan the map.",
+		"In conversations, colored ^c+mwords^c- suggest things to ask about.",
+		"Most people respond to ^c+mname^c-, ^c+mjob^c- and sometimes ^c+mhealth^c-."
+	};
+	log_begin("^c+cHint:^c- ");
+	int i = rand() % sizeof(hints)/sizeof(hints[0]);
+	log_msg(hints[i]);
+	log_end("");
+}
+
+
 int main(int argc, char **argv)
 {
-        int print_version = 1;
+        int first_time = 1;
 
         /* Initialize the cfg environment before parsing args. */
         init_default_cfg();
@@ -344,6 +362,8 @@ int main(int argc, char **argv)
                 exit(-1);
         }
 
+        Turn = 0;
+        srand(clock());
         nazghul_init_internal_libs();
 
         tick_start(TickMilliseconds);
@@ -360,9 +380,10 @@ int main(int argc, char **argv)
         nazghul_splash();
 
         /* The first time we start print the vesrsion info. */
-        if (print_version) {
-                print_version = 0;
+        if (first_time) {
+                first_time = 0;
                 log_banner("^c+bNazghul version^c- ^c+G%s^c-", PACKAGE_VERSION);
+		show_hint();
         }
 
         /* paint the border for the first time */

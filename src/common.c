@@ -41,13 +41,6 @@ int TURNS_PER_MINUTE = 20;
 
 struct los *LosEngine;
 
-int commonInit(void)
-{
-        Turn = 0;
-        srand(0);
-        return 0;
-}
-
 // fixme -- obsolete, use the next one
 static const char *dir_str[] = {
         "Northwest", "North", "Northeast",
