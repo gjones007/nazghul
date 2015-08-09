@@ -271,7 +271,6 @@
 (define (loc-to-dir-string loc)
   (let ((x (loc-x loc))
         (y (loc-y loc)))
-    (println x "," y)
     (cond ((> x 0)
 	   (cond ((> y 0)
 		  (cond ((> x (* 1.25 y)) "east")
@@ -307,7 +306,6 @@
 ;; Return #t if loc is in rect, where rect is (ulcx, ulcy, width,
 ;; height). Assumes non-wrapping.
 (define (loc-in-rect? loc rect)
-  (println "loc-in-rect?:" loc "," rect)
   (let* ((x (loc-x loc))
 	 (y (loc-y loc))
 	 (ulcx (car rect))
