@@ -344,7 +344,7 @@
 (load "money.scm")
 (load "skills.scm")
 (load "occs.scm")
-(load "ai.scm")
+(load "ai/init.scm")
 (load "species.scm")
 (load "conv.scm") ;; basic conversation
 (load "npc-types.scm")
