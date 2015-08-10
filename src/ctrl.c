@@ -1527,8 +1527,6 @@ static bool ctrl_attack_target(class Character * character,
         for (class ArmsType * weapon = character->enumerateWeapons(&armsIndex);
              weapon != NULL; weapon = character->getNextWeapon(&armsIndex)) {
 
-                // log_msg("DEBUG: wpn = %s (AP=%d), remaining AP=%d\n",
-                //         weapon->getName(), weapon->getRequiredActionPoints(), character->getActionPoints() );
                 if (distance > weapon->getRange()) {
                         continue;
                 }
@@ -1568,25 +1566,23 @@ static bool ctrl_attack_target(class Character * character,
                             kern_intvar_get("AP_MULT12:second_wpn_attack");
                         this_wpn_AP = (int) (this_wpn_AP * mult) / 12;
                 } else if (this_is_nth_attack >= 3) {
-                        // 3rd+ weapon attack (unusual case for multi-limbed beings...)
+                        /* 3rd+ weapon attack (unusual case for multi-limbed
+			 * beings...) */
                         int mult =
                             kern_intvar_get("AP_MULT12:third_plus_wpn_attack");
                         this_wpn_AP = (int) (this_wpn_AP * mult) / 12;
                 }
                 character->decrementActionPoints(this_wpn_AP);
-                //log_msg("DEBUG: after attack, used %d, remaining AP=%d\n",
-                //        this_wpn_AP, character->getActionPoints() );
                 statusRepaint();
 
                 if (target->isDead())
                         break;
 
-                // If the AP use is not over the multi-weapon extra allowance, continue:
+                /* If the AP use is not over the multi-weapon extra allowance,
+		 * continue: */
                 int threshold =
                     kern_intvar_get("AP_THRESHOLD:multi_attack_overage");
                 if (character->getActionPoints() + threshold < 0) {
-                        //log_msg("DEBUG: AP = %d, threshold = %d -- breaking multi-attack\n",
-                        //    character->getActionPoints(), threshold );
                         break;
                 }
         }
@@ -1677,14 +1673,14 @@ static void ctrl_select_target_visitor(struct node *node, void *parm)
 	if (data->depth) {
 		struct place *upper;
 		upper = place_get_neighbor(data->target_place, UP);
-		while (upper != data->attacker_place) {
+		do {
 			struct terrain *terrain;
 			terrain = place_get_terrain(upper, x, y);
 			if (! terrain->permeable) {
 				return;
 			}
 			upper = place_get_neighbor(upper, UP);
-		}
+		} while (upper != data->attacker_place);
 	}
 
         /* Compute the distance from attacker to obj */
