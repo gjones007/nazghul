@@ -229,7 +229,7 @@
            )
           (else
            (say knpc "So you've heard of our bandit problem. "
-                "Yes, they have a secret hideout somewhere in these woods. "
+                "Yes, they have a hideout somewhere in these woods. "
                 "I would have flushed them out long ago, "
                 "but I haven't the men to spare. You understand. ")
            (prompt-for-key)

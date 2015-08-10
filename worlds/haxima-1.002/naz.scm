@@ -1857,3 +1857,8 @@
   (cond ((null? ll) nil)
 	(else
 	 (cons (car ll) (copy (cdr ll))))))
+
+;; Check if kobj is in kplace
+(define (in-place? kobj kplace)
+  (eqv? kplace
+	(loc-place (kern-obj-get-location kobj))))

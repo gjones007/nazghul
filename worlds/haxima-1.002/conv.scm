@@ -370,8 +370,11 @@
          (say knpc "Sorry, I've got to get back to my patrol."))))
 
 (define (ranger-band knpc kpc)
-  (say knpc "When men get in trouble with the law, they flee to the woods. "
-       "There are always bandits in the forest."))
+  (if (and (quest-data-assigned? 'questentry-bandits)
+	   (eqv? p_green_tower (loc-place (kern-obj-get-location kpc))))
+      (say knpc "Talk to Deric.")
+      (say knpc "When men get in trouble with the law, they flee to the woods. "
+	   "There are always bandits in the forest.")))
 
 (define ranger-conv
   (ifc basic-conv
@@ -379,7 +382,16 @@
        (method 'join ranger-join)
        (method 'rang ranger-ranger)
        (method 'wise ranger-wise)
-       (method 'band ranger-band)
+       (react 'band 
+	      (if (and (quest-data-assigned? 'questentry-bandits)
+		       (in-place? knpc p_green_tower))
+		  (say knpc "Talk to Deric.")
+		  (say knpc "When men get in trouble with the law, they flee to the woods. "
+		       "There are always bandits in the forest.")))
+       (react 'deri
+	      (if (in-place? knpc p_green_tower)
+		  (say knpc "Try the big building in the center of town.")
+		  (say knpc "He's at headquarters in Green Tower.")))
        ))
 
 
