@@ -1862,3 +1862,16 @@
 (define (in-place? kobj kplace)
   (eqv? kplace
 	(loc-place (kern-obj-get-location kobj))))
+
+;; Lookup the value of symbol 'key' in associated list 'alist'. If not found,
+;; return 'default' if specified else throw an error. Evaluate symbol values,
+;; just return atoms.
+(define (get alist key . default)
+  (let ((entry (assoc key alist)))
+    (if entry 
+        (if (symbol? (cdr entry))
+            (eval (cdr entry))
+            (cdr entry))
+        (if (pair? default)
+            (car default)
+            (error "Missing key:" key)))))

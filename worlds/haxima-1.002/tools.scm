@@ -2,11 +2,6 @@
 ;; tools.scm -- "usable" stuff that isn't a book, scroll or potion
 ;; ----------------------------------------------------------------------------
 
-(mk-usable-item 't_torch "torch" s_torch norm
-                (lambda (kobj kuser) 
-                  (kern-obj-add-effect kuser ef_torchlight nil)
-                  result-ok))
-
 ;; picklock
 (define (picklock-proc kchar ktarg)
   (let ((dc ((kobj-ifc ktarg) 'get-unlock-dc ktarg kchar)))

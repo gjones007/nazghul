@@ -369,13 +369,18 @@
 ;; torchlight
 ;;
 ;; This is just like light but it's called out especially because it's
-;; vulnerable to the douse effect, where as normal light is not.
+;; vulnerable to the douse effect, where as normal light is not. Also, when it
+;; expires, it removes the torch.
 ;; ----------------------------------------------------------------------------
 (define torchlight-amount 1024)
 
 (define (torchlight-rm fgob kobj)
   (kern-log-msg "A torch flickers out!")
-  (kern-obj-dec-light kobj torchlight-amount))
+  (kern-obj-dec-light kobj torchlight-amount)
+  ;; When it burns out it's gone.
+  (kern-char-unready kobj t_torch)
+  (take kobj t_torch 1)
+  )
 
 (define (torchlight-apply fgob kobj)
   (kern-obj-inc-light kobj torchlight-amount)

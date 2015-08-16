@@ -23,24 +23,106 @@
 ;;         ubiq : true if it needs ammo in inventory, false otherwise
 ;;       weight : weight of arms
 ;;   fire-sound : string name of sound file to play when it's fired
-;;     gifc-cap :
-;;         gifc :
+;;     gifc-cap : interface capabilities mask
+;;         gifc : interface
 ;;   stratt_mod : percentage of str based attack bonus used
 ;;   dexatt_mod : percentage of dex based attack bonus used
 ;;   damage_mod : percentage of damage bonus used
 ;;    avoid_mod : multiplier for avoidance bonus (1.0 = no effect)
-;;
+;;        mmode : movement mode of projectile
 ;;
 ;;----------------------------------------------------------------------------
 
-;; This keeps weapons proportional to the default cost, for a one line change between turn systems
+;; This keeps weapons proportional to the default cost, for a one line change
+;; between turn systems
 (define (weap-ap mult)
-	(floor (* mult default-weapon-rap)))
-	
+        (floor (* mult default-weapon-rap)))
+
 (define (armour-ap mult)
-	(floor (* mult default-armour-apmod)))
+        (floor (* mult default-armour-apmod)))
+
+
+;; Wrapper for kern-mk-arms that supports variable args and provides defaults,
+;; when possible, where nothing is specified. 'kwargs' should be an associated
+;; list of keyword-argument pairs.
+;;
+;; This is the currently preferred way of defining new arms-types, and should
+;; replace the curried constructors and naked calls seen below.
+;;
+(define (mk-arms-type tag kwargs)
+  (define (optarg key default)
+    (println "optarg:" key default)
+    (get kwargs key default))
+  (define (arg key)
+    (println "arg:" key)
+    (get kwargs key))
+  (println "mk-arms-type:kwargs:" kwargs)
+  (kern-mk-arms-type tag ;; 1
+                     (arg 'name)
+                     (optarg 'sprite nil)
+                     (arg 'to-hit)
+                     (arg 'damage) ;; 5
+                     (optarg 'armor "0")
+                     (optarg 'deflect "0")
+                     (optarg 'slot slot-weapon)
+                     (optarg 'num-hands 1)
+                     (optarg 'range 1) ;; 10
+                     (eval (arg 'ap))
+                     (optarg 'ap-mod' 0)
+                     (optarg 'missile nil)
+                     (optarg 'ammo nil)
+                     (optarg 'thrown #f);; 15
+                     (optarg 'ubiq #f)
+                     (optarg 'weight 0)
+                     (optarg 'fire-sound nil)
+                     (ifc-cap (eval (optarg 'ifc nil)))
+                     (eval (optarg 'ifc nil)) ;; 20
+                     (optarg 'str-attack-mod 0)
+                     (optarg 'dex-attack-mod 0)
+                     (optarg 'char-damage-mod 0)
+                     (optarg 'char-avoid-mod 0.0)
+                     (optarg 'mmode nil))) ;; 25
+
+
+;; A torch. When readied, it ignites. When it burns out, it is unreadied. When
+;; unreadied, it burns out and is lost.
+(define torch-ifc
+  (ifc obj-ifc
+       (method 'on-ready
+               (lambda (ktype kactor)
+                 (kern-sound-play sound-ready)
+                 (kern-obj-add-effect kactor ef_torchlight nil)
+                 ))
+       (method 'on-unready
+               (lambda (ktype kactor)
+                 (kern-sound-play sound-unready)
+                 (kern-obj-remove-effect kactor ef_torchlight nil)
+                 ))))
+
+(mk-arms-type 't_torch
+ '((name    . "torch")
+   (sprite  . s_torch)
+   (to-hit  . "1d4")
+   (damage  . "1d4")
+   (deflect . "1d4")
+   (ap      . (weap-ap 1))
+;;   (ifc     . torch-ifc)
+   (ifc . (ifc obj-ifc
+               (method 'on-ready
+                       (lambda (ktype kactor)
+                         (kern-sound-play sound-ready)
+                         (kern-obj-add-effect kactor ef_torchlight nil)
+                         ))
+               (method 'on-unready
+                       (lambda (ktype kactor)
+                         (kern-sound-play sound-unready)
+                         (kern-obj-remove-effect kactor ef_torchlight nil)
+                         )))
+        )))
+
 
 (kern-mk-sprite-set 'ss_arms 32 32 9 8 0 0 "arms.png")
+
 
 ;;-------------------------------------------------------------------------
 ;; Temp ifc for mutable attack types
@@ -49,22 +131,22 @@
 (define temp-ifc-state (list 0))
 
 (define (temp-ifc-set tempifc)
-	(set-car! temp-ifc-state tempifc))
-	
+        (set-car! temp-ifc-state tempifc))
+
 (define temp-ifc
   (ifc '()
        (method 'hit-loc
                (lambda (kmissile kuser ktarget kplace x y dam)
-				 ((car temp-ifc-state) kmissile kuser ktarget kplace x y dam)
+                                 ((car temp-ifc-state) kmissile kuser ktarget kplace x y dam)
                  ))))
 
 (define temp-cannonball-state (list -1 -1))
 
 (define (temp-cannonball-init x y)
-	(set-car! temp-cannonball-state x)
-	(set-car! (cdr temp-cannonball-state) y)
-		)
-                 
+        (set-car! temp-cannonball-state x)
+        (set-car! (cdr temp-cannonball-state) y)
+                )
+
 ;;--------------------------------------------------------------------------
 ;; Curried constructors
 ;;
@@ -77,23 +159,23 @@
 
 (define (mk-melee-arms-type tag name sprite to-hit-bonus damage deflect AP_cost AP_mod slots 
                             num-hands range weight
-							stratt_mod dexatt_mod
-							damage_mod avoid_mod)
+                            stratt_mod dexatt_mod
+                            damage_mod avoid_mod)
   (kern-mk-arms-type tag name sprite to-hit-bonus damage "0" deflect slots 
                      num-hands range AP_cost AP_mod nil nil #f #f weight nil
-					 obj-ifc-cap obj-ifc stratt_mod dexatt_mod damage_mod avoid_mod mmode-smallobj))
+                     obj-ifc-cap obj-ifc stratt_mod dexatt_mod damage_mod avoid_mod mmode-smallobj))
 
 ;; Curried constructor: missile weapon (add missile, ubiq flag to melee)
 (define (mk-projectile-arms-type tag name sprite to-hit-bonus damage deflect AP_cost AP_mod
                                  slots num-hands range projectile ammo ubiq weight
-								 stratt_mod dexatt_mod damage_mod avoid_mod ifc)
+                                                                 stratt_mod dexatt_mod damage_mod avoid_mod ifc)
   (kern-mk-arms-type tag name sprite to-hit-bonus damage "0" deflect slots 
                      num-hands range AP_cost AP_mod projectile ammo #f ubiq weight nil (ifc-cap ifc) ifc stratt_mod dexatt_mod damage_mod avoid_mod mmode-smallobj))
 
 ;; Curried constructor: thrown weapon (add field to melee)
 (define (mk-thrown-arms-type tag name sprite to-hit-bonus damage deflect AP_cost AP_mod slots 
                              num-hands range missile ubiq ifc weight
-							 stratt_mod dexatt_mod damage_mod avoid_mod)
+                                                         stratt_mod dexatt_mod damage_mod avoid_mod)
   (kern-mk-arms-type tag name sprite to-hit-bonus damage "0" deflect slots 
                      num-hands range AP_cost AP_mod missile nil #t ubiq weight nil (ifc-cap ifc) ifc stratt_mod dexatt_mod damage_mod avoid_mod mmode-smallobj))
 
@@ -155,26 +237,26 @@
 (define acid-bolt-ifc (mk-missile-ifc apply-acid))
 
 (define lightningbolt-ifc 
-	(ifc '()
-		(method 'enter
-			(lambda (kmissile kplace x y)
-				((car temp-ifc-state) kmissile nil nil kplace x y 0)
-				))
-		))
+        (ifc '()
+                (method 'enter
+                        (lambda (kmissile kplace x y)
+                                ((car temp-ifc-state) kmissile nil nil kplace x y 0)
+                                ))
+                ))
 
 (define (on-hit-nontarget ktarget loc dam proc)
-	(for-each proc
-		(if (> dam -1)
-   		(filter (lambda (obj) (not (equal? obj ktarget)))
-           	(kern-get-objects-at loc))
-      	(kern-get-objects-at loc)
-           	))
+        (for-each proc
+                (if (> dam -1)
+                (filter (lambda (obj) (not (equal? obj ktarget)))
+                (kern-get-objects-at loc))
+        (kern-get-objects-at loc)
+                ))
 )
 
 (define (on-hit-target ktarget dam proc)
-	(if (> dam -1)
-		(proc ktarget)
-	))
+        (if (> dam -1)
+                (proc ktarget)
+        ))
 
 ;; fireball-hit -- when a fireball hits it burns all characters and leaves a
 ;; fire 
@@ -182,142 +264,142 @@
   (ifc '()
        (method 'hit-loc
                (lambda (kmissile kuser ktarget kplace x y dam)
-               	(let* (
-               			(havemana (> (kern-char-get-mana kuser) 0))
-               			(usedmana (if (and havemana (equal? (kern-dice-roll "1d15") 1))
-               						(
-               							begin
-               							(kern-char-set-mana kuser (- (kern-char-get-mana kuser) 1))
-               							#t
-               						)
-               						#f))
-               			(setfire (and usedmana (equal? (kern-dice-roll "1d3") 1)))
-               			(loc (mk-loc kplace x y))
-               			(hurt (> dam 0))
-               			(targdamage (cond
-               								(usedmana (if hurt "2d5+3" "2d4+2"))
-               								(havemana (if hurt "2d4+2" "2d3+2"))
-               								(else (if hurt "1d4-1" "1d2-1"))
-               								))
-               			(othdamage (cond
-               								(usedmana "2d3+2")
-               								(havemana "1d4")
-               								(else "0")
-               								))
-               			)
-               		(if (and setfire (terrain-ok-for-field? loc))
-              				(kern-obj-put-at (kern-mk-field F_fire (kern-dice-roll "1d5")) loc))
-              			(if (not havemana)
-              					(kern-log-msg "Attack fizzles!"))
-              			(on-hit-target ktarget dam 
-              				(lambda (obj) (generic-burn obj targdamage))
-              			)
-               		(if havemana
-               			(on-hit-nontarget ktarget loc dam 
-               				(lambda (obj) (generic-burn obj othdamage)))
-               			)                         
+                        (let* (
+                                        (havemana (> (kern-char-get-mana kuser) 0))
+                                        (usedmana (if (and havemana (equal? (kern-dice-roll "1d15") 1))
+                                                                (
+                                                                        begin
+                                                                        (kern-char-set-mana kuser (- (kern-char-get-mana kuser) 1))
+                                                                        #t
+                                                                )
+                                                                #f))
+                                        (setfire (and usedmana (equal? (kern-dice-roll "1d3") 1)))
+                                        (loc (mk-loc kplace x y))
+                                        (hurt (> dam 0))
+                                        (targdamage (cond
+                                                                                (usedmana (if hurt "2d5+3" "2d4+2"))
+                                                                                (havemana (if hurt "2d4+2" "2d3+2"))
+                                                                                (else (if hurt "1d4-1" "1d2-1"))
+                                                                                ))
+                                        (othdamage (cond
+                                                                                (usedmana "2d3+2")
+                                                                                (havemana "1d4")
+                                                                                (else "0")
+                                                                                ))
+                                        )
+                                (if (and setfire (terrain-ok-for-field? loc))
+                                        (kern-obj-put-at (kern-mk-field F_fire (kern-dice-roll "1d5")) loc))
+                                (if (not havemana)
+                                                (kern-log-msg "Attack fizzles!"))
+                                (on-hit-target ktarget dam 
+                                        (lambda (obj) (generic-burn obj targdamage))
+                                )
+                                (if havemana
+                                        (on-hit-nontarget ktarget loc dam 
+                                                (lambda (obj) (generic-burn obj othdamage)))
+                                        )                         
                ))
-			)))
-			
+                        )))
+                        
 (define (prismatic-acid ktarget power)
-	(if (and (kern-obj-is-char? ktarget)
-			(contest-of-skill power
-				(occ-ability-dexdefend ktarget)))
-		(apply-acid ktarget)))
-		
+        (if (and (kern-obj-is-char? ktarget)
+                        (contest-of-skill power
+                                (occ-ability-dexdefend ktarget)))
+                (apply-acid ktarget)))
+                
 (define (prismatic-slip ktarget power)
-	(if (and (kern-obj-is-char? ktarget)
-			(contest-of-skill power
-			(occ-ability-dexdefend ktarget)))
-		(slip ktarget)))
-		
+        (if (and (kern-obj-is-char? ktarget)
+                        (contest-of-skill power
+                        (occ-ability-dexdefend ktarget)))
+                (slip ktarget)))
+                
 (define prismatic-bolt-ifc
-	(ifc '()
+        (ifc '()
        (method 'hit-loc
                (lambda (kmissile kuser ktarget kplace x y dam)
-               	(let* (
-               			(havemana (> (kern-char-get-mana kuser) 0))
-               			(usedmana (if (and havemana (equal? (kern-dice-roll "1d15") 1))
-               						(
-               							begin
-               							(kern-char-set-mana kuser (- (kern-char-get-mana kuser) 1))
-               							#t
-               						)
-               						#f))
-               			(magpower (if havemana
-               					(if usedmana (max 7 (occ-ability-blackmagic kuser)) 5)
-               					0))
-               			(loc (mk-loc kplace x y))
-               			(hit (> dam -1))
-               			(hurt (> dam 0))
-               			(havetarget (not (eqv? ktarget '())))
-               			(pristype (kern-dice-roll "1d100"))
-               			(proclist
-               			
-              					(cond ((< pristype 10)
-              							(list nil
-              						(lambda (obj) (powers-paralyse kuser obj magpower))
-              						(lambda (obj) (powers-paralyse kuser obj (- magpower 3)))))
-              										
-              						((< pristype 20)
-              							(list nil
-              						(lambda (obj) (prismatic-acid obj magpower))
-              						(lambda (obj) (prismatic-acid obj (- magpower 3)))))
-              						          						
-           							((< pristype 30)
-           								(list nil
-            						(lambda (obj) (powers-poison-effect kuser obj (+ magpower 3)))
-              						(lambda (obj) (powers-poison-effect kuser obj (- magpower 2)))))
-              						
-              						((< pristype 40)
-           								(list nil
-            						(lambda (obj) (generic-burn obj "2d3+2"))
-            						(lambda (obj) (generic-burn obj "1d5"))))
-              							
-              						((< pristype 50)
-           								(list nil
-            						(lambda (obj) (apply-lightning obj))
-            						(lambda (obj) (apply-lightning obj))))
-            					
-										((< pristype 60)
-           								(list nil
-            						(lambda (obj) (prismatic-slip obj (+ magpower 5)))
-              						(lambda (obj) (prismatic-slip obj (+ magpower 2)))))
-              							
-    									((< pristype 70)
-           								(list
-           							(lambda (loc) (powers-field-energy-weak kuser loc magpower))
-           							nil nil))
+                        (let* (
+                                        (havemana (> (kern-char-get-mana kuser) 0))
+                                        (usedmana (if (and havemana (equal? (kern-dice-roll "1d15") 1))
+                                                                (
+                                                                        begin
+                                                                        (kern-char-set-mana kuser (- (kern-char-get-mana kuser) 1))
+                                                                        #t
+                                                                )
+                                                                #f))
+                                        (magpower (if havemana
+                                                        (if usedmana (max 7 (occ-ability-blackmagic kuser)) 5)
+                                                        0))
+                                        (loc (mk-loc kplace x y))
+                                        (hit (> dam -1))
+                                        (hurt (> dam 0))
+                                        (havetarget (not (eqv? ktarget '())))
+                                        (pristype (kern-dice-roll "1d100"))
+                                        (proclist
+                                        
+                                                (cond ((< pristype 10)
+                                                                (list nil
+                                                        (lambda (obj) (powers-paralyse kuser obj magpower))
+                                                        (lambda (obj) (powers-paralyse kuser obj (- magpower 3)))))
+                                                                                        
+                                                        ((< pristype 20)
+                                                                (list nil
+                                                        (lambda (obj) (prismatic-acid obj magpower))
+                                                        (lambda (obj) (prismatic-acid obj (- magpower 3)))))
+                                                                                                                
+                                                                ((< pristype 30)
+                                                                        (list nil
+                                                        (lambda (obj) (powers-poison-effect kuser obj (+ magpower 3)))
+                                                        (lambda (obj) (powers-poison-effect kuser obj (- magpower 2)))))
+                                                        
+                                                        ((< pristype 40)
+                                                                        (list nil
+                                                        (lambda (obj) (generic-burn obj "2d3+2"))
+                                                        (lambda (obj) (generic-burn obj "1d5"))))
+                                                                
+                                                        ((< pristype 50)
+                                                                        (list nil
+                                                        (lambda (obj) (apply-lightning obj))
+                                                        (lambda (obj) (apply-lightning obj))))
+                                                
+                                                                                ((< pristype 60)
+                                                                        (list nil
+                                                        (lambda (obj) (prismatic-slip obj (+ magpower 5)))
+                                                        (lambda (obj) (prismatic-slip obj (+ magpower 2)))))
+                                                                
+                                                                        ((< pristype 70)
+                                                                        (list
+                                                                (lambda (loc) (powers-field-energy-weak kuser loc magpower))
+                                                                nil nil))
 
-    									((< pristype 80)
-           								(list
-           							(lambda (loc) (powers-field-fire-weak kuser loc magpower))
-           							nil nil))
-           							
-    									((< pristype 90)
-           								(list
-           							(lambda (loc) (powers-field-poison-weak kuser loc magpower))
-           							nil nil))
-           							
-    									((< pristype 101) 
-           								(list
-           							(lambda (loc) (powers-field-sleep-weak kuser loc magpower))
-           							nil nil))
-               			)))
-              			(if (not havemana)
-              					(kern-log-msg "Attack fizzles!")
-              					(begin
-              						(if (not (null? (car proclist)))
-              							((car proclist) loc))
-              						(if (not (null? (cadr proclist)))
-              							(on-hit-target ktarget dam (cadr proclist)))
-              						(if (not (null? (caddr proclist)))
-              							(on-hit-nontarget ktarget loc dam (caddr proclist)))
-              					)
-              				)
-              		))
-			)))
-			
+                                                                        ((< pristype 80)
+                                                                        (list
+                                                                (lambda (loc) (powers-field-fire-weak kuser loc magpower))
+                                                                nil nil))
+                                                                
+                                                                        ((< pristype 90)
+                                                                        (list
+                                                                (lambda (loc) (powers-field-poison-weak kuser loc magpower))
+                                                                nil nil))
+                                                                
+                                                                        ((< pristype 101) 
+                                                                        (list
+                                                                (lambda (loc) (powers-field-sleep-weak kuser loc magpower))
+                                                                nil nil))
+                                        )))
+                                (if (not havemana)
+                                                (kern-log-msg "Attack fizzles!")
+                                                (begin
+                                                        (if (not (null? (car proclist)))
+                                                                ((car proclist) loc))
+                                                        (if (not (null? (cadr proclist)))
+                                                                (on-hit-target ktarget dam (cadr proclist)))
+                                                        (if (not (null? (caddr proclist)))
+                                                                (on-hit-nontarget ktarget loc dam (caddr proclist)))
+                                                )
+                                        )
+                        ))
+                        )))
+                        
 (define warhead-ifc
   (ifc nil
        (method 'hit-loc 
@@ -358,33 +440,33 @@
                           (kern-obj-put-at knpc loc))))))))
 
 (define smoke-bomb-ifc
-	(ifc obj-ifc
-		(method 'hit-loc
-			(lambda (kmissile kuser ktarget kplace x y dam)
-				(fields-smoke-apply kplace x y 10)
-		))))
+        (ifc obj-ifc
+                (method 'hit-loc
+                        (lambda (kmissile kuser ktarget kplace x y dam)
+                                (fields-smoke-apply kplace x y 10)
+                ))))
                           
 (define (mk-drop-proj-ifc type-tag prob)
-	(ifc obj-ifc
+        (ifc obj-ifc
        (method 'hit-loc 
                (lambda (kmissile kuser ktarget kplace x y dam)
-               	(if (< (kern-dice-roll "1d100") prob)
-               		(let ((dropobj (kern-mk-obj (eval type-tag) 1))
-               				(loc (mk-loc kplace x y)))
-               			(if (can-be-dropped? dropobj loc cant)
-               				(kern-obj-put-at dropobj loc)
-               	))))
+                        (if (< (kern-dice-roll "1d100") prob)
+                                (let ((dropobj (kern-mk-obj (eval type-tag) 1))
+                                                (loc (mk-loc kplace x y)))
+                                        (if (can-be-dropped? dropobj loc cant)
+                                                (kern-obj-put-at dropobj loc)
+                        ))))
       )))
             
 ;; todo: handle possibility that magicaxe doesnt have a wielder?
 (define magicaxe-ifc
-	(ifc obj-ifc
-		(method 'hit-loc 
-			(lambda (kmissile kuser ktarget kplace x y dam)
-				(kern-fire-missile (eval 't_returning_axe_p) (mk-loc kplace x y) (kern-obj-get-location kuser))
-				(kern-log-msg "Magic axe returns!")
-			)
- 	))
+        (ifc obj-ifc
+                (method 'hit-loc 
+                        (lambda (kmissile kuser ktarget kplace x y dam)
+                                (kern-fire-missile (eval 't_returning_axe_p) (mk-loc kplace x y) (kern-obj-get-location kuser))
+                                (kern-log-msg "Magic axe returns!")
+                        )
+        ))
 )
                    
                           
@@ -393,42 +475,42 @@
    ;;    ==================================================================================================
    ;;    tag                 | name          | sprite          | gifc              | movement_mode | beam
    ;;    ====================================================================================================
-   (list 't_slingstone        "sling stone"    s_sling_stone     obj-ifc             mmode-missile  	#f)
+   (list 't_slingstone        "sling stone"    s_sling_stone     obj-ifc             mmode-missile      #f)
    (list 't_arrow_p           "arrow"          s_arrow           (mk-drop-proj-ifc 't_arrow 5)
-                                                                                     mmode-missile  	#f  )
+                                                                                     mmode-missile      #f  )
    (list 't_bolt_p            "bolt"           s_bolt            (mk-drop-proj-ifc 't_bolt 5)             
-                                                                                     mmode-missile  	#f  )
-   (list 't_warhead_p         "warhead"        s_warhead         warhead-ifc         mmode-missile  	#f  )
-   (list 't_cannonball_p      "cannonball"     s_cannonball      obj-ifc             mmode-missile  	#f  )
+                                                                                     mmode-missile      #f  )
+   (list 't_warhead_p         "warhead"        s_warhead         warhead-ifc         mmode-missile      #f  )
+   (list 't_cannonball_p      "cannonball"     s_cannonball      obj-ifc             mmode-missile      #f  )
 
    
-   (list 't_poison_bolt       "poison bolt"    s_poison_bolt     poison-bolt-ifc     mmode-missile  	#f  )
-   (list 't_acid_bolt         "acid bolt"      s_acid_bolt       acid-bolt-ifc       mmode-missile  	#f  )
-   (list 't_fireball          "fireball"       s_fireball        fireball-ifc        mmode-missile  	#f  )
-   (list 't_deathball         "deathball"      s_deathball       deathball-ifc       mmode-missile  	#f  )
-   (list 't_slimeglob         "slime glob"     s_acid_bolt       obj-ifc             mmode-missile  	#f  )
-   (list 't_mfireball         "fireball"       s_fireball        temp-ifc            mmode-missile  	#f  )
-   (list 't_mpoison_bolt      "poison bolt"    s_poison_bolt     temp-ifc            mmode-missile  	#f  )
-   (list 't_prismatic_bolt    "prismatic bolt" s_prismatic_bolt  prismatic-bolt-ifc  mmode-missile  	#f  )
-   (list 't_stunball   			"stun ball" 	  s_lightning    stunball-ifc		 mmode-missile  	#f  )
-   (list 't_lightning_bolt  	"lightning bolt"	s_lightning      lightningbolt-ifc   mmode-missile  	#t  )  
-   (list 't_magicarrow_p      "arrow"          s_arrow           obj-ifc             mmode-missile  	#f  )
+   (list 't_poison_bolt       "poison bolt"    s_poison_bolt     poison-bolt-ifc     mmode-missile      #f  )
+   (list 't_acid_bolt         "acid bolt"      s_acid_bolt       acid-bolt-ifc       mmode-missile      #f  )
+   (list 't_fireball          "fireball"       s_fireball        fireball-ifc        mmode-missile      #f  )
+   (list 't_deathball         "deathball"      s_deathball       deathball-ifc       mmode-missile      #f  )
+   (list 't_slimeglob         "slime glob"     s_acid_bolt       obj-ifc             mmode-missile      #f  )
+   (list 't_mfireball         "fireball"       s_fireball        temp-ifc            mmode-missile      #f  )
+   (list 't_mpoison_bolt      "poison bolt"    s_poison_bolt     temp-ifc            mmode-missile      #f  )
+   (list 't_prismatic_bolt    "prismatic bolt" s_prismatic_bolt  prismatic-bolt-ifc  mmode-missile      #f  )
+   (list 't_stunball                            "stun ball"       s_lightning    stunball-ifc            mmode-missile          #f  )
+   (list 't_lightning_bolt      "lightning bolt"        s_lightning      lightningbolt-ifc   mmode-missile      #t  )  
+   (list 't_magicarrow_p      "arrow"          s_arrow           obj-ifc             mmode-missile      #f  )
  
    
    
-   (list 't_mweb              "web"            s_thrownweb       temp-ifc            mmode-missile  	#f  )
-   (list 't_oil_p             "flaming oil"    s_flaming_oil     flaming-oil-ifc     mmode-missile  	#f  )
-   (list 't_smoke_bomb_p      "smoke bomb"     s_smoke_bomb      smoke-bomb-ifc      mmode-missile  	#f  )
+   (list 't_mweb              "web"            s_thrownweb       temp-ifc            mmode-missile      #f  )
+   (list 't_oil_p             "flaming oil"    s_flaming_oil     flaming-oil-ifc     mmode-missile      #f  )
+   (list 't_smoke_bomb_p      "smoke bomb"     s_smoke_bomb      smoke-bomb-ifc      mmode-missile      #f  )
    (list 't_spear_p           "spear"          s_spear           (mk-drop-proj-ifc 't_spear 25)             
-                                                                                     mmode-missile  	#f  )
-   (list 't_thrown_axe_p      "thrown axe"     s_thrown_axe      magicaxe-ifc        mmode-missile  	#f  )
-   (list 't_returning_axe_p   "thrown axe"     s_thrown_axe      obj-ifc              mmode-return  	#f  )
+                                                                                     mmode-missile      #f  )
+   (list 't_thrown_axe_p      "thrown axe"     s_thrown_axe      magicaxe-ifc        mmode-missile      #f  )
+   (list 't_returning_axe_p   "thrown axe"     s_thrown_axe      obj-ifc              mmode-return      #f  )
    (list 't_thrown_rock_p     "thrown rock"    s_cannonball      (mk-drop-proj-ifc 't_thrown_rock 80)             
-                                                                                     mmode-missile  	#f  )
+                                                                                     mmode-missile      #f  )
    (list 't_thrown_boulder_p  "hurled boulder" s_thrown_boulder  (mk-drop-proj-ifc 't_thrown_boulder 80)             
-                                                                                     mmode-missile  	#f  )
+                                                                                     mmode-missile      #f  )
 
-   (list 't_slime_vial_p      "vial of slime"  s_thrown_green_potion vial-of-slime-ifc  mmode-missile  	#f  )
+   (list 't_slime_vial_p      "vial of slime"  s_thrown_green_potion vial-of-slime-ifc  mmode-missile           #f  )
 
    ))
 
@@ -465,12 +547,12 @@
 (kern-mk-sprite 's_stun_wand  ss_arms 1 28 #f 0)
 
 (define proj-ifc
-	(ifc obj-ifc
-		(method 'on-attack
-			(lambda (kuser)
-				(kern-sound-play-at sound-missile (kern-obj-get-location kuser))
-			)
- 	))
+        (ifc obj-ifc
+                (method 'on-attack
+                        (lambda (kuser)
+                                (kern-sound-play-at sound-missile (kern-obj-get-location kuser))
+                        )
+        ))
 )
 
 (define projectile-arms-types
@@ -478,8 +560,8 @@
    ;;     =========================================================================================================================================================================================
    ;;     tag            | name           |  sprite     | to-hit | damage | to-def | AP_cost | AP_mod       | slots       | hnds | rng | missile        | ammo  | ubiq | weight | stratt | dexatt | dammod | avoid | ifc
    ;;     =========================================================================================================================================================================================
-   (list 't_sling          "sling"           s_sling      "1d2-2"  "1d4"    "-1"      (weap-ap 1) 0   slot-weapon   1      4     t_slingstone     nil     #t     0        10       60       30       0.9	proj-ifc)
-   (list 't_sling_4        "+4 sling"        s_sling      "+3"     "1d4+4"  "+0"      (weap-ap 1) 0   slot-weapon   1      6     t_slingstone     nil     #t     0        10       60       30       0.9	proj-ifc)
+   (list 't_sling          "sling"           s_sling      "1d2-2"  "1d4"    "-1"      (weap-ap 1) 0   slot-weapon   1      4     t_slingstone     nil     #t     0        10       60       30       0.9        proj-ifc)
+   (list 't_sling_4        "+4 sling"        s_sling      "+3"     "1d4+4"  "+0"      (weap-ap 1) 0   slot-weapon   1      6     t_slingstone     nil     #t     0        10       60       30       0.9        proj-ifc)
 
    (list 't_self_bow       "self bow"        s_bow        "+1"     "1d6"    "-2"      (weap-ap 0.8) 0   slot-weapon   2      4     t_arrow_p        t_arrow #f     2        10       70       20       0.9  proj-ifc)
    (list 't_bow            "bow"             s_bow        "1d3-2"  "2d4"    "-2"     (weap-ap 1) 0   slot-weapon   2      5     t_arrow_p        t_arrow #f     2        10       70       20       0.9  proj-ifc)
@@ -599,7 +681,7 @@
 
    (list   't_armor_plate     "plate armor"      s_plate_armor    "-4"     "4d4"    slot-armor   (weap-ap 5) (armour-ap -10) 8  0.6  )
    (list   't_armor_plate_4   "+4 plate armor"   s_plate_armor    "+0"     "4d4+4"  slot-armor   (weap-ap 5) (armour-ap -10) 8  0.7  )
-   ))	
+   ))   
 
 (kern-mk-sprite 's_shield            ss_arms 1 54 #f 0)
 (kern-mk-sprite 's_scratched_shield  ss_arms 1 55 #f 0)
@@ -632,7 +714,7 @@
                    nil nil #f #f
                    2 ;; weight
                    nil obj-ifc-cap obj-ifc
-				   30 10 20 0.9 mmode-smallobj)
+                                   30 10 20 0.9 mmode-smallobj)
 
 (kern-mk-arms-type 't_spiked_shield "spiked shield" s_spiked_shield
                    "0" "1d5" "0" "5"
@@ -640,7 +722,7 @@
                    nil nil #f #f
                    3 ;; weight
                    nil obj-ifc-cap obj-ifc
-				   40 20 20 0.8 mmode-largeobj)
+                                   40 20 20 0.8 mmode-largeobj)
 
 ;;--------------------------------------------------------------------------
 ;; Special arms types
@@ -652,16 +734,13 @@
   (ifc obj-ifc
        (method 'hit-loc 
                (lambda (kmissile kuser ktarget kplace x y dam)
-               	(cond ((equal? dam 0)
-               				(generic-burn ktarget "1d5-2"))
-               			((> dam 0)
-               				(generic-burn ktarget "2d4"))
-               	))
-         )))          
-							
+                 (cond ((equal? dam 0)
+                        (generic-burn ktarget "1d5-2"))
+                       ((> dam 0)
+                        (generic-burn ktarget "2d4")))))))
+                                                        
 (kern-mk-arms-type 't_flaming_sword "flaming sword" s_flaming_sword "1d2" "1d8+2" "0" "1d2" slot-weapon 1 1 (weap-ap 1) 0 nil nil #f #f 2 nil
-					 (ifc-cap flaming-sword-ifc) flaming-sword-ifc 50 20 70 1.0 mmode-smallobj)
-
+                                         (ifc-cap flaming-sword-ifc) flaming-sword-ifc 50 20 70 1.0 mmode-smallobj)
 
 (kern-mk-arms-type 't_cannon         ; tag
                    "cannon"          ; name
@@ -676,15 +755,15 @@
                    (weap-ap 2.0)     ;;          rap : required action points to attack with it
                    0                 ;;       AP_mod : modifier to max AP per round for the wielder
                    t_cannonball_p    ;;
-                   nil		     ;;      missile : nil or the armament type it fires
+                   nil               ;;      missile : nil or the armament type it fires
                    #f                ;;       thrown : true or false
                    #t                ;;         ubiq : true if it needs ammo in inventory, false otherwise
                    0                 ;;       weight : unused
                    sound-cannon-fire ;;   fire-sound : string name of sound file to play when it's fired
                    0                 ;;      ifc-cap : integer bitmap describing interface slots
                    nil               ;;  get-handler : script ifc
-				   0 0 0 1.0
-				   mmode-largeobj
+                                   0 0 0 1.0
+                                   mmode-largeobj
                    )
 
 ;;----------------------------------------------------------------------------
@@ -716,97 +795,97 @@
 
 ;; uglyhack find target location or set up 'safe' location to simulate cannonball leaving play area
 (define (arms-searchline place x y dx dy)
-	(let* ((wid (kern-place-get-width place))
-		(hgt (kern-place-get-height place)))
-		(define (arms-searchline-iter ix iy)
-			(cond ((< ix 0) (list 0 iy #f))
-				((< iy 0) (list ix 0 #f))
-				((>= ix wid) (list (- wid 1) iy #f))
-				((>= iy hgt) (list ix (- wid 1) #f))
-				((not (null? (get-being-at (mk-loc place ix iy))))
-					(list ix iy #t))
-				(else (arms-searchline-iter (+ ix dx) (+ iy dy)))
-			))
-		(let* ((target (arms-searchline-iter (+ x dx) (+ y dy)))
-				(tx (car target))
-				(ty (cadr target))
-				(havet (caddr target))
-				)
-			(if havet
-				(temp-cannonball-init -1 -1)
-				(temp-cannonball-init tx ty)
-			)
-			(list tx ty)
-			)))
-			
+        (let* ((wid (kern-place-get-width place))
+                (hgt (kern-place-get-height place)))
+                (define (arms-searchline-iter ix iy)
+                        (cond ((< ix 0) (list 0 iy #f))
+                                ((< iy 0) (list ix 0 #f))
+                                ((>= ix wid) (list (- wid 1) iy #f))
+                                ((>= iy hgt) (list ix (- wid 1) #f))
+                                ((not (null? (get-being-at (mk-loc place ix iy))))
+                                        (list ix iy #t))
+                                (else (arms-searchline-iter (+ ix dx) (+ iy dy)))
+                        ))
+                (let* ((target (arms-searchline-iter (+ x dx) (+ y dy)))
+                                (tx (car target))
+                                (ty (cadr target))
+                                (havet (caddr target))
+                                )
+                        (if havet
+                                (temp-cannonball-init -1 -1)
+                                (temp-cannonball-init tx ty)
+                        )
+                        (list tx ty)
+                        )))
+                        
 (define localcannonball-ifc
-	(ifc '()
-		(method 'hit-loc 
-			(lambda (kmissile kuser ktarget kplace x y dam)
-				(let ((ktarget (get-being-at (mk-loc kplace x y))))
-					(if (not (null? ktarget))
-						(
-							begin
-							(kern-log-msg (kern-obj-get-name ktarget) " hit by cannonball!")
-							(kern-obj-apply-damage ktarget "cannon" (kern-dice-roll "1d10+4"))
-						)
-					)
-				))
-		)))
-				
+        (ifc '()
+                (method 'hit-loc 
+                        (lambda (kmissile kuser ktarget kplace x y dam)
+                                (let ((ktarget (get-being-at (mk-loc kplace x y))))
+                                        (if (not (null? ktarget))
+                                                (
+                                                        begin
+                                                        (kern-log-msg (kern-obj-get-name ktarget) " hit by cannonball!")
+                                                        (kern-obj-apply-damage ktarget "cannon" (kern-dice-roll "1d10+4"))
+                                                )
+                                        )
+                                ))
+                )))
+                                
 (mk-missile-arms-type 't_localcannonball "cannonball" s_cannonball localcannonball-ifc mmode-cannon #f)
-		
+                
 (define cannon-ifc
-	(ifc '()
-		(method 'xamine 
-			(lambda (kcannon kuser)
-				(let ((ready (cadr (gob kcannon))))
-					(kern-log-msg "The cannon is "
-						(cond ((equal? ready 2) 
-							 "ready to fire")
-							 ((equal? ready 1) 
-							 "loaded but unready")
-							 (else "unloaded")))
-					result-ok
-			))
-		)
-		(method 'handle
-			(lambda (kcannon kuser)
-				(let ((ready (cadr (gob kcannon)))
-						(facing (car (gob kcannon))))
-					(kern-obj-dec-ap kuser speed-human)
-					(cond
-						((equal? ready 2)
-							(let* ((loc (kern-obj-get-location kcannon))
-								(aimdir (direction-to-lvect facing))
-								(targetloc (arms-searchline (car loc)
-									(cadr loc) (caddr loc)
-									(car aimdir) (cadr aimdir))))
-								(kern-sound-play sound-cannon-fire)
-								(kern-log-msg "BOOOM")
-								(kern-fire-missile t_localcannonball loc (mk-loc (car loc) (car targetloc) (cadr targetloc)))
-								)
-							(bind kcannon (list facing 0)))
-						((equal? ready 1)
-							(kern-log-msg "Cannon ready to fire")
-							(bind kcannon (list facing 2)))
-						(else
-							(kern-log-msg "Cannon loaded")
-							(bind kcannon (list facing 1)))
-					)
-			))
-		)
-		(method 'init
-			(lambda (kcannon)
-				(kern-obj-set-facing kcannon (car (gob kcannon)))
-				(kern-obj-set-pclass kcannon pclass-boulder)
-		))	
-	))
+        (ifc '()
+                (method 'xamine 
+                        (lambda (kcannon kuser)
+                                (let ((ready (cadr (gob kcannon))))
+                                        (kern-log-msg "The cannon is "
+                                                (cond ((equal? ready 2) 
+                                                         "ready to fire")
+                                                         ((equal? ready 1) 
+                                                         "loaded but unready")
+                                                         (else "unloaded")))
+                                        result-ok
+                        ))
+                )
+                (method 'handle
+                        (lambda (kcannon kuser)
+                                (let ((ready (cadr (gob kcannon)))
+                                                (facing (car (gob kcannon))))
+                                        (kern-obj-dec-ap kuser speed-human)
+                                        (cond
+                                                ((equal? ready 2)
+                                                        (let* ((loc (kern-obj-get-location kcannon))
+                                                                (aimdir (direction-to-lvect facing))
+                                                                (targetloc (arms-searchline (car loc)
+                                                                        (cadr loc) (caddr loc)
+                                                                        (car aimdir) (cadr aimdir))))
+                                                                (kern-sound-play sound-cannon-fire)
+                                                                (kern-log-msg "BOOOM")
+                                                                (kern-fire-missile t_localcannonball loc (mk-loc (car loc) (car targetloc) (cadr targetloc)))
+                                                                )
+                                                        (bind kcannon (list facing 0)))
+                                                ((equal? ready 1)
+                                                        (kern-log-msg "Cannon ready to fire")
+                                                        (bind kcannon (list facing 2)))
+                                                (else
+                                                        (kern-log-msg "Cannon loaded")
+                                                        (bind kcannon (list facing 1)))
+                                        )
+                        ))
+                )
+                (method 'init
+                        (lambda (kcannon)
+                                (kern-obj-set-facing kcannon (car (gob kcannon)))
+                                (kern-obj-set-pclass kcannon pclass-boulder)
+                ))      
+        ))
 
 (mk-obj-type 't_cannonobj "cannon" s_cannon layer-mechanism cannon-ifc)     
          
 (define  (arms-mk-cannon facing)
-	(let ((kcannon (kern-mk-obj t_cannonobj 1)))
+        (let ((kcannon (kern-mk-obj t_cannonobj 1)))
           (kern-obj-set-facing kcannon facing) 
           (bind kcannon (list facing 0))
           kcannon))
