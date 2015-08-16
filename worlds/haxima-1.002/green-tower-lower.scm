@@ -111,6 +111,12 @@
   (put (mk-edward) 5 10)
   (put (mk-bed) 1 14)
 
+  ;; Put a skeleton of a likely thief near the spider spawn points. Include the
+  ;; book of spells for disarming traps. The player can use it in the bandit's
+  ;; quest, and if he explores around a bit first he'll find it.
+  (put (mk-corpse-with-loot) 13 29)
+  (put (kern-mk-obj t_spell_book_force_magick_mechanismus 1) 13 29)
+
   )
 
 
