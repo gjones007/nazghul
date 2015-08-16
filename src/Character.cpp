@@ -399,6 +399,9 @@ void Character::damage(int amount)
 {
 	dbg("%s:%s:amount=%d\n", __FUNCTION__, getName(), amount);
 
+	// This will run the "on-damage-hook":
+	Object::damage(amount);
+
 	if (hp <= 0) {
 		return;
 	}
@@ -407,9 +410,6 @@ void Character::damage(int amount)
 	// most objects
 	obj_inc_ref(this);
 	setHp(hp - amount);
-
-	// This will run the "on-damage-hook":
-	Object::damage(amount);
 
 	if (isPlayerControlled()) {
 		statusFlash(getOrder(), Red);
