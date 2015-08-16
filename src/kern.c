@@ -337,7 +337,7 @@ static int unpack(scheme * sc, pointer * cell, const char *fmt, ...)
                                 load_err("arg %d not a number", count);
                         } else if (!scm_is_real(sc, car)) {
                                 errs++;
-                                load_err("arg %d not an int", count);
+                                load_err("arg %d not a real", count);
                         } else {
                                 *rval = scm_real_val(sc, car);
                         }
