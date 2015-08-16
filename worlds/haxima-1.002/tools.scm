@@ -2,7 +2,6 @@
 ;; tools.scm -- "usable" stuff that isn't a book, scroll or potion
 ;; ----------------------------------------------------------------------------
 
-;; torch -- use two in-lor spells
 (mk-usable-item 't_torch "torch" s_torch norm
                 (lambda (kobj kuser) 
                   (kern-obj-add-effect kuser ef_torchlight nil)

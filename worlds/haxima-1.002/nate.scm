@@ -130,6 +130,7 @@
     (cond ((nate-met? nate) (std-ai knpc))
           ((any-player-party-member-visible? knpc)
            (taunt knpc nil nate-greetings)
+	   (kern-conv-begin knpc)
            #t)
           (else
            (std-ai knpc)

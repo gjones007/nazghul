@@ -64,8 +64,8 @@
 
 (define jess-catalog
   (list
-   (list t_food 7  "The paladins love my roast beef.")
-   (list t_beer 12 "Have a grail-ful!")
+   (list t_food 3  "The paladins love my roast beef.")
+   (list t_beer 4 "Have a grail-ful!")
    ))
 
 (define jess-merch-msgs

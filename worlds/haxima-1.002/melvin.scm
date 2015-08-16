@@ -38,8 +38,8 @@
 
 (define melv-catalog
   (list
-   (list t_beer  4 "Beer; it's what's for breakfast!")
-   (list t_food  3 "Folks say I make the best jalapeno quiche in the Shard!")
+   (list t_beer  3 "Beer; it's what's for breakfast!")
+   (list t_food  2 "Folks say I make the best jalapeno quiche in the Shard!")
    ))
 
 (define (melvin-buy knpc kpc) (conv-trade knpc kpc "buy" melv-merch-msgs melv-catalog))

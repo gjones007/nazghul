@@ -51,11 +51,11 @@
 (define zane-catalog
   (list
    ;; reagents
-   (list ginseng        (* 5 reagent-price-mult) "This stuffs good for healing.")
-   (list garlic         (* 4 reagent-price-mult) "You gotta have garlic for warding.")
-   (list blood_moss     (* 6 reagent-price-mult) "Hard to find this stuff.")
-   (list nightshade     (* 8 reagent-price-mult) "This only grows in really damp places.")
-   (list mandrake       (* 10 reagent-price-mult) "All the powerful spells require these guys.")
+   (list ginseng        (* 1 reagent-price-mult) "This stuffs good for healing.")
+   (list garlic         (* 1 reagent-price-mult) "You gotta have garlic for warding.")
+   (list blood_moss     (* 3 reagent-price-mult) "Hard to find this stuff.")
+   (list nightshade     (* 3 reagent-price-mult) "This only grows in really damp places.")
+   (list mandrake       (* 5 reagent-price-mult) "All the powerful spells require these guys.")
    
    ;; potions
    (list t_heal_potion            21 "This stuff really helps in emergencies.")

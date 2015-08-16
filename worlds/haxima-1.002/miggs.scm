@@ -32,7 +32,7 @@
 
 (define miggs-catalog
   (list
-   (list t_food 5 "[She ladles some delicious-smelling stew]")
+   (list t_food 2 "[She ladles some delicious-smelling stew]")
    (list t_beer 3 "[She points to a cask labeled Fenmire's Finest]")
   ))
 

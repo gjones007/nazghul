@@ -65,7 +65,7 @@
    (list t_torch        6 "You don't want to run out of torches down here!")
    (list t_heal_potion 23 "Yes, they are spendy, but healing potions are hard to get and critical to have.")
    (list t_mana_potion 23 "You better buy extra mana potions. Your mages will be working overtime.")
-   (list t_food        10 "There's nothing worse than runnning out of food when you're lost in the lower levels.")
+   (list t_food         4 "There's nothing worse than runnning out of food when you're lost in the lower levels.")
    ))
 
 (define (jones-trade knpc kpc) (conv-trade knpc kpc "buy" jones-merch-msgs jones-catalog))

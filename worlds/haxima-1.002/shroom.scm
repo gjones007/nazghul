@@ -55,13 +55,13 @@
 
 (define shroom-catalog
   (list
-   (list sulphorous_ash (*  2 reagent-price-mult) "I have to travel far into the hills to find these foul-smelling clods.")
-   (list garlic         (*  3 reagent-price-mult) "This comes from my own garden. The cook in Bole loves my garlic.")
-   (list ginseng        (*  3 reagent-price-mult) "The forest folk have shown me where to gather wild ginseng.")
-   (list blood_moss     (*  4 reagent-price-mult) "The rare blood moss grows on dead wood in the deep forest.")
-   (list spider_silk    (*  5 reagent-price-mult) "Spider silk is common enough, but dangerous to gather.")
-   (list nightshade     (* 10 reagent-price-mult) "I must search near the rivers of the south to find the deadly nightshade.")
-   (list mandrake       (*  8 reagent-price-mult) "The mandrake root grows wild in these woods, but few know where to find it!")
+   (list sulphorous_ash (*  1 reagent-price-mult) "I have to travel far into the hills to find these foul-smelling clods.")
+   (list garlic         (*  1 reagent-price-mult) "This comes from my own garden. The cook in Bole loves my garlic.")
+   (list ginseng        (*  1 reagent-price-mult) "The forest folk have shown me where to gather wild ginseng.")
+   (list blood_moss     (*  2 reagent-price-mult) "The rare blood moss grows on dead wood in the deep forest.")
+   (list spider_silk    (*  2 reagent-price-mult) "Spider silk is common enough, but dangerous to gather.")
+   (list nightshade     (*  3 reagent-price-mult) "I must search near the rivers of the south to find the deadly nightshade.")
+   (list mandrake       (*  4 reagent-price-mult) "The mandrake root grows wild in these woods, but few know where to find it!")
    
    (list t_heal_potion  20 "Most dangerous, the woods are. Take some of these in case you have an accident.")
    (list t_mana_potion  20 "One of these will refresh me enough to cast a light spell on the way home from a long day of picking.")
@@ -111,7 +111,7 @@
                     (say knpc "Naught for naught, youngling!")))
               (say knpc "Of course, a skillful warrior such as you has "
                    "nothing to learn from an old witch like me."))))))
-                               
+
 (define (shroom-hail knpc kpc)
   (let ((shroom (kobj-gob-data knpc)))
     (display "shroom: ")

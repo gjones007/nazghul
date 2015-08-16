@@ -48,9 +48,9 @@
 
 (define henry-catalog
   (list
-   (list t_food 5 "My famous clam chowder will warm you to your toes.")
-   (list t_beer 5 "Aye, drink and be merry, fer tomorro' mornin' you'll be wishin' you were dead!")
-   (list t_wine 7 "I keep some o' the fancy-shmancy stuff fer the occasional gen'leman.")
+   (list t_food 2 "My famous clam chowder will warm you to your toes.")
+   (list t_beer 3 "Aye, drink and be merry, fer tomorro' mornin' you'll be wishin' you were dead!")
+   (list t_wine 3 "I keep some o' the fancy-shmancy stuff fer the occasional gen'leman.")
    ))
 
 (define henry-merch-msgs
