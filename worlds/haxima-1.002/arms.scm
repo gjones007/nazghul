@@ -51,12 +51,9 @@
 ;;
 (define (mk-arms-type tag kwargs)
   (define (optarg key default)
-    (println "optarg:" key default)
     (get kwargs key default))
   (define (arg key)
-    (println "arg:" key)
     (get kwargs key))
-  (println "mk-arms-type:kwargs:" kwargs)
   (kern-mk-arms-type tag ;; 1
                      (arg 'name)
                      (optarg 'sprite nil)
@@ -77,15 +74,16 @@
                      (optarg 'fire-sound nil)
                      (ifc-cap (eval (optarg 'ifc nil)))
                      (eval (optarg 'ifc nil)) ;; 20
-                     (optarg 'str-attack-mod 0)
-                     (optarg 'dex-attack-mod 0)
-                     (optarg 'char-damage-mod 0)
-                     (optarg 'char-avoid-mod 0.0)
+                     (optarg 'str 50)
+                     (optarg 'dex 50)
+                     (optarg 'dmg 50)
+                     (optarg 'avoid 1.0)
                      (optarg 'mmode nil))) ;; 25
 
 
 ;; A torch. When readied, it ignites. When it burns out, it is unreadied. When
-;; unreadied, it burns out and is lost.
+;; unreadied, it burns out and is lost. Like the flaming sword, it can do
+;; additional fire damage to targets.
 (define torch-ifc
   (ifc obj-ifc
        (method 'on-ready
@@ -97,16 +95,17 @@
                (lambda (ktype kactor)
                  (kern-sound-play sound-unready)
                  (kern-obj-remove-effect kactor ef_torchlight nil)
-                 ))))
+                 ))
+       ))
 
 (mk-arms-type 't_torch
  '((name    . "torch")
    (sprite  . s_torch)
    (to-hit  . "1d4")
    (damage  . "1d4")
-   (deflect . "1d4")
+   (deflect . "1d2")
    (ap      . (weap-ap 1))
-;;   (ifc     . torch-ifc)
+   (avoid   . 1.1)
    (ifc . (ifc obj-ifc
                (method 'on-ready
                        (lambda (ktype kactor)
@@ -117,8 +116,15 @@
                        (lambda (ktype kactor)
                          (kern-sound-play sound-unready)
                          (kern-obj-remove-effect kactor ef_torchlight nil)
-                         )))
-        )))
+                         ))
+               (method 'hit-loc
+                       (lambda (kmissile kuser ktarget kplace x y dam)
+                         (cond ((equal? dam 0)
+                                (generic-burn ktarget "1d3-1"))
+                               ((> dam 0)
+                                (generic-burn ktarget "2d2")
+                                ))
+                         ))))))
 
 
 (kern-mk-sprite-set 'ss_arms 32 32 9 8 0 0 "arms.png")
@@ -621,7 +627,7 @@
 (define melee-arms-types
   (list
    ;;     ===================================================================================================================================================
-   ;;     tag          |    name           | sprite         | to-hit | damage | to-def | AP_cost | AP_mod | slots | hnds | rng | weight | dxmod | stmod | dammod | avoid
+   ;;     tag          |    name           | sprite         | to-hit | damage | to-def | AP_cost | AP_mod | slots | hnds | rng | weight | stmod | dxmod | dammod | avoid
    ;;     ===================================================================================================================================================
    (list  't_hands          "bare hands"     nil              "1d2"    "1d2"    "1d2"    (weap-ap 0.67) 0 slot-nil      1      1     0        50      20       10      1.0  )
    (list  't_F_fangs        "fangs"          nil              "1d2"    "1d4"    "+0"     (weap-ap 0.67) 0 slot-nil      1      1     0        50      20       30      1.0  )
