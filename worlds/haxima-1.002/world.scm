@@ -53,6 +53,9 @@
   (list (kern-tag 'mg-6 (mk-moongate 'ord)) 46 524) ;; circe's lagoon
   (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
 
+  ;; road signs
+  (list (mk-road-sign "Green Tower - East" "Pass - West") 336 395)
+
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)
 

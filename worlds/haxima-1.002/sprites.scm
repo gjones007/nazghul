@@ -279,6 +279,7 @@
 (kern-mk-sprite 's_door_wood                                    ss_addon 1 51 #f 0 )
 (kern-mk-sprite 's_door_lock                                    ss_addon 1 52 #f 0 )
 (kern-mk-sprite 's_door_windowed                                ss_addon 1 53 #f 0 )
+(kern-mk-sprite 's_road_sign                                    ss_addon 1 57 #f 0 )
 (kern-mk-sprite 's_door_magiclock                               ss_addon 3 59 #f 0 )
 ;;(kern-mk-sprite 's_closed_solid_wood_door_in_rock             ss_addon 1 56 #f 0 )
 ;;(kern-mk-sprite 's_open_door_in_rock                          ss_addon 1 57 #f 0 )

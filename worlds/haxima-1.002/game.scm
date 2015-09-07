@@ -363,6 +363,7 @@
 (load "stone-lantern.scm")
 (load "hidden.scm")
 (load "lever.scm")
+(load "sign.scm")
 (load "timer.scm")
 (load "tblit.scm")
 (load "portals.scm")
