@@ -54,8 +54,60 @@
   (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
 
   ;; road signs
-  (list (mk-road-sign "Green Tower - East" "Barrier Mountain Pass - West") 336 395)
-  (list (mk-road-sign "Green Tower - East" "Bole - North") 354 388)
+  (list (mk-road-sign
+	 "Green Tower - East"
+	 "Barrier Pass - West"
+	 ) 336 395)
+  (list (mk-road-sign
+	 "Green Tower - East"
+	 "Bole - North"
+	 ) 354 388)
+  (list (mk-road-sign
+	 "Green Tower - South"
+	 "Bole - North"
+	 ) 387 386)
+  (list (mk-road-sign
+	 "Bole - East"
+	 "Brundegardt Pass - North"
+	 ) 346 343)
+  ;; below Broadbrim Lake
+  (list (mk-road-sign
+	 "Great Forest - South" 
+	 "Glasdrin - West"
+	 "Absalot - East"
+	 ) 338 264)
+  ;; below Isinford
+  (list (mk-road-sign
+	 "Glasdrin - North"
+	 "Absalot - East"
+	 "Midgate Passage - West"
+	 ) 304 247)
+  ;; north of Isinford
+  (list (mk-road-sign
+	 "Glasdrin - West"
+	 ) 305 228)
+  ;; Midgate Passage
+  (list (mk-road-sign
+	 "Glasdrin - East"
+	 "Northern Fens - West"
+	 "Long River Valley - South"
+	 ) 232 307)
+  ;; Clovismarch
+  (list (mk-road-sign
+	 "Cloviskeep - East"
+	 "Midgate Passage - North"
+	 "Trigrave - South"
+	 ) 257 354)
+  ;; west of Trigrave
+  (list (mk-road-sign
+	 "Cloviskeep - North"
+	 "Trigrave - East"
+	 "Oparine - South"
+	 ) 264 401)
+  (list (mk-road-sign
+	 "East - Trigrave"
+	 "South - Oparine"
+	 ) 240 446)
 
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)
