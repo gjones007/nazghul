@@ -5,11 +5,10 @@
        (method 'xamine 
 	       (lambda (ksign khandler)
 		 (let ((sign (kobj-gob-data ksign)))
-		   (println "sign:" sign)
-		   (kern-log-begin "+--------\n")
+		   (kern-log-begin "+--------------------------------------------\n")
 		   (for-each (lambda (msg) (kern-log-continue "|" msg "\n"))
 			     sign)
-		   (kern-log-end "+--------")
+		   (kern-log-end "+--------------------------------------------")
 		   )))
        ))
 
