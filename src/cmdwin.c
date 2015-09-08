@@ -228,7 +228,8 @@ void cmdwin_push(const char *fmt, ...)
 
 void cmdwin_push_mark()
 {
-        cmdwin_vpush(CMDWIN_FRAG_MARK, 0, 0);
+        va_list args;
+	cmdwin_vpush(CMDWIN_FRAG_MARK, 0, args);
 }
 
 void cmdwin_pop(void)
