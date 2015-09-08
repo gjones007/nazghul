@@ -54,7 +54,8 @@
   (list (kern-tag 'mg-7 (mk-moongate 'ord)) 380 219) ;; near absalot
 
   ;; road signs
-  (list (mk-road-sign "Green Tower - East" "Pass - West") 336 395)
+  (list (mk-road-sign "Green Tower - East" "Barrier Mountain Pass - West") 336 395)
+  (list (mk-road-sign "Green Tower - East" "Bole - North") 354 388)
 
   ;; npc party generator
   (put (mk-edge-spawn-generator) 0 0)
