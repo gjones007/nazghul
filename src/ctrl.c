@@ -63,6 +63,10 @@ static int ctrl_party_key_handler(struct KeyHandler *kh, int key, int keymod)
         if (DeveloperMode) {
                 switch (key) {
 
+                case KEY_CTRL_E:
+                        cmdDeveloperEval(Session);
+                        break;
+
                 case KEY_CTRL_I:
                         place_dump_stats();
                         break;
@@ -1416,37 +1420,6 @@ static int ctrl_too_close_to_target(class Character * character,
 
         return 1;
 }
-
-#if 0
-static void ctrl_unready_all_weapons(class Character * character)
-{
-        int armsIndex = 0;
-        for (class ArmsType * weapon = character->enumerateWeapons(&armsIndex);
-             weapon != NULL; weapon = character->getNextWeapon(&armsIndex)) {
-                character->unready(weapon);
-        }
-}
-
-static void ctrl_ready_melee_weapons(class Character * character)
-{
-        class Container *container = character->getContainer();
-        struct inv_entry *ie;
-}
-
-static int ctrl_switch_to_melee_weapon(class Character * character)
-{
-        /* unready all weapons */
-        ctrl_unready_all_weapons(character);
-
-        /* ready any melee weapons */
-        ctrl_ready_melee_weapons(character);
-
-        /* ready any shields if hands are left open */
-
-        /* ready any missile weapons if hands are left open */
-
-}
-#endif
 
 static int ctrl_try_move_toward(class Character * character, int dx, int dy)
 {
