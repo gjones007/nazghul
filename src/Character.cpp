@@ -1694,7 +1694,7 @@ void Character::describe(bool capitalize)
 	if (isKnown()) {
 		log_continue("%s", getName());
 	} else {
-		char s[MAX_DESCRIPTION] = {0};
+		char s[MAX_DESCRIPTION + 1] = {0};
 		if (description) {
 			strncat(s, description, MAX_DESCRIPTION);
 		} else {
