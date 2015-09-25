@@ -52,7 +52,6 @@
 #include "Field.h"
 #include "occ.h"
 #include "species.h"
-#include "Reagent.h"
 #include "screen.h"
 #include "vehicle.h"
 #include "formation.h"

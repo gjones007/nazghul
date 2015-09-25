@@ -69,8 +69,6 @@ nazghul_SOURCES =		\
         player.cpp \
         player.h \
         play.h \
-        Reagent.cpp \
-        Reagent.h \
         sched.c \
         sched.h \
         screen.c \
