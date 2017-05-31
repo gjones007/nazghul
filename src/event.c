@@ -328,7 +328,7 @@ int eventInit(void)
                 playback_fd = open(playback_fname, O_RDONLY, 00666);
                 if (playback_fd == -1) {
                         perror(playback_fname);
-                        return -1;
+                        exit(-1);  // so tests fail
                 }
                 // Override the normal wait_event routine
                 wait_event = playback_event;
