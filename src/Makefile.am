@@ -57,6 +57,7 @@ nazghul_SOURCES =		\
         nazghul.c \
         Party.cpp \
         Party.h \
+        ObjectType.cpp ObjectType.h \
         Object.cpp Object.h \
         occ.c \
         occ.h \
