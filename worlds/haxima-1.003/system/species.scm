@@ -24,13 +24,15 @@
 ;;          damage sound (dmgsnd): sym or nil, special sound to play when creature is damaged
 ;;         movement sound (mvsnd): sym or nil, sound to play when the creature moves
 ;;          experience value (xp): int, additional xp rewarded to opponent
+;;                     stationary: doesn't move
+;;      disable diagonal movement: doesn't move diagonally
 ;;     natural armor dice (armdc): string or nil, armor bonus
 ;;             morphology (morph): list of equipment and armor slots
 ;;                  spells (spls): list of natural spells (unused by engine)
 
 ;; Function to normalize all speeds relative to the standard human speed.
 (define (rel-spd speed)
-	(/ (* speed-human speed) 100))
+    (/ (* speed-human speed) 100))
 
 ;; Curried convenience proc to register a new species type with the kernel,
 ;; assuming certain fields are their normal values.
@@ -42,10 +44,11 @@
                    (max (round (/ mag 2)) 1)
                    sspr
                    weap #t 
-		   nil ;
+                   nil ;
                    mvsnd
                    xp
                    #f ;; stationary?
+                   #f
                    armordice
                    morph nil)) 
 

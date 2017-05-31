@@ -5,6 +5,7 @@
 ;; Every game startup script must begin by loading naz.scm. It will define some
 ;; common utilities and load the game system.
 (load "naz.scm")
+(kern-script-version "0.7.0")
 
 ;; Load the data specific to the start of a new session. This adds all the
 ;; starting maps, characters, objects, etc.
