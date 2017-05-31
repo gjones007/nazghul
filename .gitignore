@@ -18,3 +18,6 @@ worlds/haxima-1.002/options.scm
 worlds/haxima-1.002/saved-games.scm
 *.sav
 *.sav.png
+# coverage detritus
+*.gcda
+*.gcno
