@@ -222,8 +222,8 @@ static int location_is_safe(struct position_info *info, int current)
         if (place_is_occupied(info->place, info->px, info->py)) {
                 returntype = PFLAG_IGNOREBEINGS;
                 if (current &
-                    (PFLAG_IGNOREHAZARDS || PFLAG_IGNOREBEINGS
-                     || PFLAG_IGNOREFIELDS))
+                    (PFLAG_IGNOREHAZARDS | PFLAG_IGNOREBEINGS
+                     | PFLAG_IGNOREFIELDS))
                         return -1;
         }
         // I added the next two checks because a character was getting
@@ -235,7 +235,7 @@ static int location_is_safe(struct position_info *info, int current)
         // Is it dangerous? Hack: check for a field and dangerous terrain
         if (place_get_object(info->place, info->px, info->py, field_layer)) {
                 returntype = PFLAG_IGNOREFIELDS;
-                if (current & (PFLAG_IGNOREHAZARDS || PFLAG_IGNOREFIELDS))
+                if (current & (PFLAG_IGNOREHAZARDS | PFLAG_IGNOREFIELDS))
                         return -1;
         }
         terrain = place_get_terrain(info->place, info->px, info->py);
