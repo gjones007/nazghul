@@ -4,7 +4,7 @@ Nazghul requires the following libraries:
 
     SDL-1.2............http://www.libsdl.org
     libSDL_image-1.2...http://www.libsdl.org/projects/SDL_image/
-    libSDL_image-1.2...http://www.libsdl.org/projects/SDL_mixer/
+    libSDL_mixer-1.2...http://www.libsdl.org/projects/SDL_mixer/
     libpng.............http://www.libpng.org/pub/png/libpng.html
     zlib
 
