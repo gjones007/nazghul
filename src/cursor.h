@@ -32,8 +32,8 @@ class Cursor:public Object {
 	virtual void init(class ObjectType * type);
 	virtual enum MoveResult move(int dx, int dy);
 	virtual void relocate(struct place *newplace, int newx, int newy,
-			      bool noStep = true,
-			      struct closure *place_switch_hook = NULL);
+                          int flags=0,
+                          struct closure *place_switch_hook=NULL);
 	virtual void remove();
 
 	bool is_active(void);

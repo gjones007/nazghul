@@ -103,8 +103,8 @@ class PlayerParty:public Party {
 	void forceAbortLoitering();
 	bool isLoitering();
 	void startSession(void);
-	void distributeMembers(struct place *new_place, int new_x, int new_y,
-			       int new_dx, int new_dy);
+	virtual void distributeMembers(struct place *new_place, int new_x,
+                                   int new_y, int new_dx, int new_dy);
 	MoveResult move(int dx, int dy);
 	enum MoveResult try_to_enter_subplace_from_edge(struct place *town,
 							int dx, int dy);

@@ -129,7 +129,7 @@ void Cursor::setOrigin(int x, int y)
 	}
 }
 
-void Cursor::relocate(struct place *newplace, int newx, int newy, bool noStep,
+void Cursor::relocate(struct place *newplace, int newx, int newy, int flags,
 		      struct closure *place_switch_hook)
 {
 	Object::relocate(newplace, newx, newy, REL_NOTRIG, NULL);
