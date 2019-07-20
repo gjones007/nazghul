@@ -38,7 +38,7 @@
 (define (angriss-name knpc kpc)
   (say knpc "To Men, Angriss; to\n"
        "the Goblins, Ruka; to the\n"
-       "Trolls, Hibliminos."))
+       "Trogs, Hibliminos."))
 
 (define (angriss-join knpc kpc)
   (say knpc "Do lips join a cup\n"
@@ -74,7 +74,7 @@
        "terrible struggle, in the\n"
        "end the longest rest."))
 
-(define (angriss-trol knpc kpc)
+(define (angriss-trog knpc kpc)
   (say knpc "Stone-thrower and rock\n"
        "beater, your fearsome bellow\n"
        "will become a scream."))
@@ -191,7 +191,7 @@
        (method 'rune angriss-rune)
        (method 'men angriss-men)
        (method 'gobl angriss-gobl)
-       (method 'trol angriss-trol)
+       (method 'trog angriss-trog)
        (method 'sacr angriss-sacr)
        (method 'hono angriss-hono)
        ))

@@ -99,7 +99,7 @@
                     (say knpc "Do you remember where our farm was?")
                     (if (kern-conv-get-yes-no? kpc)
                         (say knpc "She must be there somewhere!")
-                        (say knpc "West through the pass, then north against the hills."))))))
+                        (say knpc "Follow the trail south across the bridge."))))))
 
         ;; no - didn't give quest yet
         (begin
@@ -107,8 +107,7 @@
                "If you find her will you tell me?")
           (if (kern-conv-get-yes-no? kpc)
               (begin
-                (say knpc "Our farm was west through the pass, then north against the hills. "
-                     "Watch out for the trogs!")
+                (say knpc "Our farm is south, across a bridge. Watch out for the trogs!")
 		(quest-data-assign-once 'questentry-puska)
                 (ilya-give-quest ilya))
               (begin
@@ -184,11 +183,11 @@
        (method 'chor (lambda (knpc kpc) (say knpc "I feed the animals, and keep the fire, and help cook.")))
        (method 'anim ilya-animals)
        (method 'gran (lambda (knpc kpc) (say knpc "I live with Grandpa now because Mommy and Daddy died.")))
-       (method 'died (lambda (knpc kpc) (say knpc "Trolls attacked our farm! "
+       (method 'died (lambda (knpc kpc) (say knpc "Trogs attacked our farm! "
                                                 "Mommy hid me in the cellar, "
                                                 "and I snuck out when the trogs were sleeping. "
                                                 "But I lost my Puska...")))
-       (method 'trol (lambda (knpc kpc) (say knpc "I hate them! When I grow up I want to kill them all.")))
+       (method 'trog (lambda (knpc kpc) (say knpc "I hate them! When I grow up I want to kill them all.")))
        (method 'hate (lambda (knpc kpc) (say knpc "I will be a sorceress some day and I will kill anyone I hate! "
                                               "I won't be afraid of anything ever again!")))
        (method 'afra (lambda (knpc kpc) (say knpc "I was afraid in the cellar. "

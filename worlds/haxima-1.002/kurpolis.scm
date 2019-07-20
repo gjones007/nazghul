@@ -165,7 +165,7 @@
 (mk-place-music p_cave_goblin_village 'ml-dungeon-adventure)
 
 (mk-dungeon-room
- 'p_trogs_den "Troll's Den"
+ 'p_trogs_den "Trog's Den"
 	(list
 		"rn r8 r8 r8 rn rn r4 {{ {2 ,, ,, {{ r2 rn rn rn rn rn rn "
 		"r4 {{ {{ {{ ra rn r4 {{ {2 ,, {B {{ r2 rn rn rn rn rn rn "

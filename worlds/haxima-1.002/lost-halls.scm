@@ -1,5 +1,5 @@
 ;;----------------------------------------------------------------------------
-;; Troll Cave
+;; Trog Cave
 ;;
 ;; Big underground complex; created by some civilized race, now a ruin
 ;; inhabited by trogs and other monsters.

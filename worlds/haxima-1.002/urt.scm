@@ -21,10 +21,10 @@
        (method 'name (lambda (knpc kpc) (say knpc "Urt")))
 
        (method 'eat (lambda (knpc kpc) (say knpc "Urt eat man")))
-       (method 'food (lambda (knpc kpc) (say knpc "All eater food for other")))
+       (method 'food (lambda (knpc kpc) (say knpc "All eater food for eater")))
        (method 'girl (lambda (knpc kpc) (say knpc "She HRENGI, UG THROGNI")))
        (method 'hills (lambda (knpc kpc) (say knpc "VLARDOGNI in hills, "
-                                              "kill trogs. Trolls leave.")))
+                                              "kill trogs. Trogs leave.")))
        (method 'hren (lambda (knpc kpc) (say knpc "Urt not know man-word")))
        (method 'man (lambda (knpc kpc) (say knpc "Urt look for man-child. " 
                                             "She yummy, tender. "
@@ -34,7 +34,7 @@
        (method 'spiders (lambda (knpc kpc) (say knpc "Urt hate spiders")))
        (method 'stuck (lamda (knpc kpc) (say knpc "Spiders eat Urt")))
        (method 'thro (lambda (knpc kpc) (say knpc "Urt not know man-word")))
-       (method 'trog (lambda (knpc kpc) (say knpc "Trolls hungry. "
+       (method 'trog (lambda (knpc kpc) (say knpc "Trogs hungry. "
                                               "Food in hills."
                                               "Home in hills.")))
        (method 'ug (lambda (knpc kpc) (say knpc "'will be' in trog-word")))
