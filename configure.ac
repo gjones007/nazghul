@@ -219,7 +219,14 @@ AC_CONFIG_FILES([Makefile \
 	src/Makefile      \
 	worlds/Makefile   \
 	worlds/haxima-1.002/Makefile \
-        worlds/haxima-1.002/music/Makefile])
+        worlds/haxima-1.002/music/Makefile \
+	worlds/haxima-1.002/music/audionetwork/Makefile \
+	worlds/haxima-1.002/sounds/Makefile \
+	worlds/haxima-1.002/ai/Makefile \
+	worlds/haxima-1.002/effects/Makefile \
+	worlds/haxima-1.002/maps/Makefile \
+	worlds/haxima-1.002/places/Makefile \
+	worlds/haxima-1.002/townsfolk/Makefile])
 
 AC_OUTPUT
 
