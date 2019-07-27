@@ -951,6 +951,7 @@
   '((name . "dragon")
     (species . sp_dragon)
     (sprite . s_dragon)
+    (stuff . dragon-loot)
     (ai . 'dragon-ai)
     (faction . faction-monster)))
 
