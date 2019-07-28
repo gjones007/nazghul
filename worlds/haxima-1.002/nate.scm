@@ -27,12 +27,14 @@
 (define (nate-hail knpc kpc)
   (let ((nate (kobj-gob-data knpc)))
     (define (join)
-      (say knpc "When it is convenient, ask me of the secret of Brundegardt, milord. "
+      (say knpc
+           "When it is convenient, ask me of the secret of Brundegardt, milord. "
            "Meanwhile, you can trust me not to escape.")
       (join-player knpc)
       (give kpc t_arrow 20)
       (nate-caught! nate)
-      (quest-data-update-with 'questentry-bandits 'captured-nate 1 (quest-notify nil))
+      (quest-data-update-with 'questentry-bandits 'captured-nate 1
+                              (quest-notify nil))
       (quest-data-assign-once 'questentry-nate)
       )
     (nate-met! nate)
@@ -60,10 +62,12 @@
 (define (nate-secr knpc kpc)
   (cond ((is-player-party-member? knpc)
          (cond ((equal? (get-place knpc) p_world)
-		(say knpc "Milord, we must look for the hidden entrance to Brundegardt where the forest road passes north through the mountains. "
-		     "I'll tell you the password when we are there.")
-		(quest-data-update-with 'questentry-nate 'road 1
-					(quest-notify nil)))
+                (say knpc "Milord, we must look for the hidden entrance to Brundegardt where the forest road passes north through the mountains. "
+                     "I'll tell you the password when we are there.")
+                (quest-data-update-with 'questentry-nate 'road 1
+                                        (quest-notify nil)))
+               ((equal? (get-place knpc) p_brundegardt)
+                (nate-pass knpc kpc))
                (else
                 (say knpc "Merciful sir! It is not safe here! Let us escape to the wilderness and I will tell "
                      "you there.")
