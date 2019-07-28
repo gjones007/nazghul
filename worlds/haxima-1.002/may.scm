@@ -73,8 +73,9 @@
       (say knpc "Perhaps you are just out admiring the countryside then.")))
 
 (define (may-woman knpc kpc)
-  (say knpc "Yes, we don't often get such beautiful people in these parts. "
-       "Poor Bill is quite smitten. And my fool of a husband ogles here "
+  (say knpc "You mean our guest? "
+       "Yes, we don't often get such beautiful people in these parts. "
+       "Poor Bill is quite smitten. And my fool of a husband ogles her "
        "whenever he gets a chance. [She leans in close and whispers] But "
        "if she isn't a sorceress, or one in training, then I'm a goose!"))
 
