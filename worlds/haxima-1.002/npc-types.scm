@@ -870,6 +870,7 @@
     (species . sp_bat)
     (sprite . s_bat)
     (ai . 'animal-ai)
+    (stuff . animal-loot)
     (faction . faction-monster)))
 
 (define rat 
@@ -877,6 +878,7 @@
     (species . sp_rat)
     (sprite . s_rat)
     (ai . 'rat-ai)
+    (stuff . animal-loot)
     (faction . faction-monster)))
 
 (define zorn 
@@ -892,6 +894,7 @@
     (species . sp_bull)
     (sprite . s_bull)
     (ai . 'animal-ai)
+    (stuff . bull-loot)
     (faction . faction-none)))
 
 (define lich 
@@ -938,6 +941,7 @@
     (species . sp_snake)
     (sprite . s_snake)
     (ai . 'snake-ai)
+    (stuff . animal-loot)
     (faction . faction-monster)))
 
 (define insect 
@@ -1041,6 +1045,7 @@
     (species . sp_yellow_slime)
     (sprite . s_yellow_slime)
     (ai . 'yellow-slime-ai)
+    (stuff . yellow-slime-loot)
     (faction . faction-monster)))
 
 (define trog-geomancer 
@@ -1075,6 +1080,7 @@
     (species . sp_spider)
     (sprite . s_spider)
     (ai . 'spider-ai)
+    (stuff . spider-loot)
     (faction . faction-monster)))
 
 (define queen-spider 
@@ -1082,6 +1088,7 @@
     (species . sp_queen_spider)
     (sprite . s_queen_spider)
     (ai . 'spider-ai)
+    (stuff . queen-spider-loot)
     (faction . faction-monster)))
 
 (define fire-slime 
@@ -1089,6 +1096,7 @@
     (species . sp_fire_slime)
     (sprite . s_red_slime)
     (ai . 'animal-ai)
+    (stuff . fire-slime-loot)
     (faction . faction-monster)))
 
 (define hydra 
@@ -1096,6 +1104,7 @@
     (species . sp_hydra)
     (sprite . s_hydra)
     (ai . 'hydra-ai)
+    (stuff . hydra-loot)
     (faction . faction-monster)))
 
 (define mimic 
@@ -1132,6 +1141,7 @@
   '((name . "deer")
     (species . sp_deer)
     (sprite . s_deer)
+    (stuff . deer-loot)
     (faction . faction-none)))
 
 (define chicken 
@@ -1139,6 +1149,7 @@
     (species . sp_chicken)
     (sprite . s_chicken)
     (ai . 'animal-ai)
+    (stuff . animal-loot)
     (faction . faction-none)))
 
 ;; NPC's with no drops
