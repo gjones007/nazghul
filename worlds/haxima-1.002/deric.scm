@@ -172,6 +172,8 @@
           (begin
             (prompt-for-key)
             (say knpc "I'll need to re-assign that ranger to a patrol.")
+            (if (is-dead? kmerc)
+                (say knpc "Alas! He's dead! I hope he died nobly."))
             (leave-player kmerc)
             ))))
 
