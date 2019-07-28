@@ -140,35 +140,62 @@
   (say knpc "Travelers have been complaining about them! "
        "I wish Deric would do something, they're bad for business!"))
 
+(define doris-catalog
+  (list
+   (list t_food 2 "A hunter brough in this venison just today.")
+   (list t_beer 3 "The rangers make this mead from wild honey.")
+   ))
+
+(define doris-merch-msgs
+  (list "I'm not open right now."
+        "I've fed a lot of hungry men in my day!"
+        "I have enough of everything right now, thanks."
+        "What would you like?"
+        "Enjoy!"
+        "If you change your mind we'll be here."
+        "This will come in handy."
+        "Don't get too greedy, now."
+        "There's more if you like."
+        "Fine, just sit by the fire and relax."
+        ))
+
+(define (doris-food knpc kpc)
+  (conv-trade knpc kpc "buy" doris-merch-msgs doris-catalog))
+
+(define (doris-job knpc kpc)
+  (say knpc "I'm the innkeeper here at the White Stag. If you need a room or want somethig to eat just say so."))
+
 (define doris-conv
   (ifc green-tower-conv
-       (method 'band      doris-band)
-       (method 'hail      doris-hail)
-       (method 'bye       doris-bye)
-       (method 'default   doris-default)
-       (method 'name      doris-name)
-       (method 'room      doris-trade)
-       (method 'defa      doris-default)
-       (method 'job       doris-trade)
-       (method 'join      doris-join)
-       (method 'dori      doris-doris)
-       (method 'buy       doris-trade)
-       (method 'innk      doris-trade)
-       (method 'whit      doris-lodge)
-       (method 'stag      doris-lodge)
-       (method 'lodg      doris-lodge)
-       (method 'dadd      doris-daddy)
-       (method 'loca      doris-local)
-       (method 'wood      doris-woodsman)
-       (method 'trav      doris-travelers)
-       (method 'gen       doris-gen)
-       (method 'deri      doris-deric)
-       (method 'shro      doris-shroom)
        (method 'abe       doris-abe)
        (method 'abig      doris-abigail)
-       (method 'orph      doris-orphaned)
+       (method 'band      doris-band)
+       (method 'buy       doris-job)
+       (method 'bye       doris-bye)
+       (method 'dadd      doris-daddy)
+       (method 'defa      doris-default)
+       (method 'default   doris-default)
+       (method 'deri      doris-deric)
+       (method 'dori      doris-doris)
+       (method 'eat       doris-food)
+       (method 'food      doris-food)
+       (method 'gen       doris-gen)
        (method 'gobl      doris-goblins)
+       (method 'hail      doris-hail)
+       (method 'innk      doris-trade)
+       (method 'job       doris-job)
+       (method 'join      doris-join)
+       (method 'loca      doris-local)
+       (method 'lodg      doris-lodge)
+       (method 'name      doris-name)
+       (method 'orph      doris-orphaned)
+       (method 'room      doris-trade)
+       (method 'shro      doris-shroom)
+       (method 'stag      doris-lodge)
        (method 'thie      doris-thie)
+       (method 'trav      doris-travelers)
+       (method 'whit      doris-lodge)
+       (method 'wood      doris-woodsman)
        ))
 
 ;;----------------------------------------------------------------------------
