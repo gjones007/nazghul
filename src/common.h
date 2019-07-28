@@ -166,8 +166,8 @@ extern int TURNS_PER_MINUTE;
 // to drop to zero by the time it passes out of sight of the sky window.
 #define DELTA_SUNLIGHT          (MAX_SUNLIGHT / \
                                  (SKY_SPRITE_W * MOON_WINDOW_PIXELS_PER_DEGREE))
-
-#define TURNS_PER_FOOD          (TURNS_PER_DAY/3)
+#define MEALS_PER_DAY           1 /* 3 is too many in a big wilderness */
+#define TURNS_PER_FOOD          (TURNS_PER_DAY/MEALS_PER_DAY)
 #define MAX_SPEED               100
 #define WILDERNESS_SCALE        32
 #define NON_WILDERNESS_SCALE     1
