@@ -1513,8 +1513,8 @@
 
 (define (calc-level)
   (max 1
-       (+ (mean-player-party-level)
-          (num-player-party-members)
+       (+ (median-player-party-level)
+          ;;(num-player-party-members)
           (kern-dice-roll "1d5-3"))))
 
 (define (get-mech-at loc)
