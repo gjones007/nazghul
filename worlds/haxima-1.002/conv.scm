@@ -69,25 +69,24 @@
   (if (place-location-is-unknown? kplace)
       nil
       (let* ((kfrom (get-place knpc))
-	     (from (kern-place-get-location kfrom))
-	     (to (kern-place-get-location kplace)))
-	(if (null? to)
-	    nil
-	    (let* ((diff (loc-diff from to))
-		   (dir-str (loc-to-dir-string diff))
-		   (distance (loc-grid-distance from to))
-		   (turns (* distance 32))  ;; 32 is wilderness scale
-		   (distance-str (cond ((> turns (* turns-per-hour 18)) "several days")
-				       ((> turns (* turns-per-hour 12)) "over a day")
-				       ((> turns (* turns-per-hour 8)) "a day")
-				       ((> turns (* turns-per-hour 4)) "a half day")
-				       ((> turns (* turns-per-hour 2)) "a couple of hours")
-				       ((> turns turns-per-hour) "an hour")
-				       ((> turns (* turns-per-minute 30)) "half an hour")
-				       ((> turns (* turns-per-minute 15)) "a few minutes")
-				       (else "nearby"))))
-	      (string-append distance-str " to the " dir-str)
-	      )))))
+             (from (kern-place-get-location kfrom))
+             (to (kern-place-get-location kplace)))
+        (if (or (null? to) (null? from))
+            nil
+            (let* ((diff (loc-diff from to))
+                   (dir-str (loc-to-dir-string diff))
+                   (distance (loc-grid-distance from to))
+                   (turns (* distance 32))  ;; 32 is wilderness scale
+                   (distance-str (cond ((> turns (* turns-per-hour 18)) "several days")
+                                       ((> turns (* turns-per-hour 12)) "over a day")
+                                       ((> turns (* turns-per-hour 8)) "a day")
+                                       ((> turns (* turns-per-hour 4)) "a half day")
+                                       ((> turns (* turns-per-hour 2)) "a couple of hours")
+                                       ((> turns turns-per-hour) "an hour")
+                                       ((> turns (* turns-per-minute 30)) "half an hour")
+                                       ((> turns (* turns-per-minute 15)) "a few minutes")
+                                       (else "nearby"))))
+              (string-append distance-str " to the " dir-str))))))
 
 ;; If kplace is in a region, return a string description.
 (define (conv-setting knpc kplace)
@@ -114,15 +113,14 @@
 	      kplace)
       "where you are now"
       (let ((directions (conv-directions knpc kplace))
-	    (setting (conv-setting knpc kplace)))
-	(if (null? directions)
-	    (if (null? setting)
-		nil
-		(string-append setting))
-	    (if (null? setting)
-		(string-append directions)
-		(string-append directions setting)
-		)))))
+            (setting (conv-setting knpc kplace)))
+        (if (null? directions)
+            (if (null? setting)
+                nil
+                (string-append setting))
+            (if (null? setting)
+                (string-append directions)
+                (string-append directions setting))))))
 	    
 
 ;; Describe common knowledge about a place and how to get there.
@@ -132,16 +130,16 @@
 	(dir-and-set (conv-directions-and-setting knpc kplace))
 	)
     (if (null? gob)
-	(if (null? dir-and-set)
-	    (say knpc "I only know rumours.")
-	    (say knpc name " is " dir-and-set ".")
-	    )
-	(let ((description (tbl-get gob 'description)))
-	  (if (null? dir-and-set)
-	      (say knpc name " is " description ".")
-	      (say knpc name " is " description "."
-		   " It's " dir-and-set "."
-		   ))))))
+        (if (null? dir-and-set)
+            (say knpc "I only know rumours.")
+            (say knpc name " is " dir-and-set ".")
+            )
+        (let ((description (tbl-get gob 'description)))
+          (if (null? dir-and-set)
+              (say knpc name " is " description ".")
+              (say knpc name " is " description "."
+                   " It's " dir-and-set "."
+                   ))))))
 
 (define (conv-describe-region knpc kpc name)
   (let* ((r (get-region-by-name name))
