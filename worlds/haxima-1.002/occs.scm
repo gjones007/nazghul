@@ -358,4 +358,4 @@
 ;; bars. Piggyback on some of the other abilities for now.
 
 (define (occ-ability-stracro kchar) (occ-ability-strattack kchar))
-(define (occ-ability-dexacro kchar) (occ-ability-dexdef kchar))
+(define (occ-ability-dexacro kchar) (occ-ability-dexdefend kchar))
