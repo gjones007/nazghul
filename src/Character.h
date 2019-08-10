@@ -84,7 +84,6 @@ class Character:public Being {
 	void setMana(int mana);
 	int getMaxMana();
 	class Container *getInventoryContainer();
-	class Container *getLootContainer();
 	virtual int getMaxHp();
 	virtual int getOrder();
 	int getXpForLevel(int lvl);
@@ -145,7 +144,6 @@ class Character:public Being {
 	virtual void setActivity(int val);
 	virtual void setControlMode(enum control_mode mode);
 	virtual void setInventoryContainer(class Container * container);
-	virtual void setLootContainer(class Container * loot);
 	virtual void setLeader(bool val);
 	virtual void setSchedule(struct sched *sched);
 	virtual void setSolo(bool val);
@@ -274,7 +272,6 @@ class Character:public Being {
 	sound_t *damage_sound;
 
 	class Container *container;
-	class Container *loot;
 	bool rearm;
 	bool charmed;
 
