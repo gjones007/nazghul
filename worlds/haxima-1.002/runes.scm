@@ -14,7 +14,7 @@
   (let ((sprite (kern-obj-get-sprite kobj)))
     (kobj-get kobj kchar)
     (rune-basic-quest questtag 
-                      (kern-sprite-get-tag sprite))))
+                      (string->symbol (kern-sprite-get-tag sprite)))))
 
 ;; rune interface: when a rune is used on a special altar, it transforms the
 ;; alter and signals the demon gate mechanism
