@@ -1644,15 +1644,14 @@ static void ctrl_select_target_visitor(struct node *node, void *parm)
 	int x = obj->getX();
 	int y = obj->getY();
 	if (data->depth) {
-		struct place *upper;
-		upper = place_get_neighbor(data->target_place, UP);
+		struct place *upper = data->target_place;
 		do {
 			struct terrain *terrain;
+			upper = place_get_neighbor(upper, UP);
 			terrain = place_get_terrain(upper, x, y);
 			if (! terrain->permeable) {
 				return;
 			}
-			upper = place_get_neighbor(upper, UP);
 		} while (upper != data->attacker_place);
 	}
 
