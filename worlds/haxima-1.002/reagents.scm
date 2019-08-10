@@ -25,7 +25,8 @@
 			  (begin
 			    (kobj-get kobj getter)
 			    (quest-data-update-with 'questentry-shroom 'found 1 
-						    (quest-notify (grant-party-xp-fn 10)))))))))
+						    (quest-notify (grant-party-xp-fn 10))))
+			  (kobj-get kobj getter))))))
 
 (define (mk-reagent-type tag name sprite)
   (mk-obj-type tag name sprite layer-item reagent-ifc))
