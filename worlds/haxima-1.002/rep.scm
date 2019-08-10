@@ -78,7 +78,7 @@
 ;;----------------------------------------------------------------------------
 ;; Rap Sheet
 ;;
-(define (crime-mk when what whom where)
+(define (crime-mk what when whom where)
   (list what when where whom))
 
 (define (crime-date-str crime)
