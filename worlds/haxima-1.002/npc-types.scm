@@ -11,6 +11,7 @@
 ;; Local Procedures
 ;;----------------------------------------------------------------------------
 
+
 ;; Lookup the value of symbol 'key' in associated list 'alist'. If not found,
 ;; return 'default' if specified else throw an error. Evaluate symbol values,
 ;; just return atoms.
@@ -25,6 +26,38 @@
             (error "Missing key:" key)))))
 
 
+;; Use the NPC's occupational ability (which is derived in part from their
+;; level) to select an appropriate trap for their loot chest (which drops when
+;; they die). The highest ability that exceeds a 1d20 roll will be used to
+;; select a list of traps, and from there we randomly select one from the
+;; list. If no ability exceeds the 1d20 roll then no trap.
+(define wright-traps  (list 'bomb-trap 'self-destruct-trap))
+(define wizard-traps (list 'poison-trap 'sleep-trap 'lightning-trap))
+(define wrogue-traps (list 'spike-trap 'burn-trap))
+(define (choose-trap kchar)
+  (let* (
+        (none (cons (kern-dice-roll "1d20") nil))
+        (wrogue (cons (occ-ability-thief kchar) wrogue-traps))
+        (wizard (cons (occ-ability-blackmagic kchar) wizard-traps))
+        (wright (cons (occ-ability-crafting kchar) wright-traps))
+        )
+    (random-select (cdr (foldr (lambda (a b) (if (> (car a) (car b)) a b))
+                               none
+                               (list wrogue wizard wright))))
+    ))
+
+
+;; The drop-loot method is called when a character dies. 'loot' is one of
+;; the loot lists defined below and assigned per NPC type.
+(define (drop-loot kchar loot)
+  (let (
+        (loc (kern-obj-get-location kchar))
+        (contents (filter notnull? (map (lambda (x) (apply roll-to-add x)) loot)))
+        (trap (choose-trap kchar))
+        )
+    (kern-obj-put-at (mk-chest trap contents) loc)))
+
+
 ;; Wrapper to kern-mk-char that supports variable args and provides defaults,
 ;; when possible, where nothing is specified. 'kwargs' should be an associated
 ;; list of keyword-argument pairs.
@@ -33,38 +66,43 @@
     (get kwargs key default))
   (define (arg key)
     (get kwargs key))
-  (kern-mk-char (eval (optarg 'tag nil))
-                (optarg 'name nil)
-                (arg 'species)
-                (optarg 'occ nil)
-                (arg 'sprite)
-                (arg 'faction)
-                (optarg 'str 0)
-                (optarg 'int 0)
-                (optarg 'dex 0)
-                (optarg 'hp_mod 0)
-                (optarg 'hp_mult 0)
-                (optarg 'mp_mod 0)
-                (optarg 'mp_mult 0)
-                (optarg 'hp 0)
-                (optarg 'xp -1)
-                (optarg 'mp 0)
-                (optarg 'ap 0)
-                (optarg 'lvl default-level)
-                (optarg 'dead #f)
-                (eval (optarg 'conv nil))
-                (optarg 'sched nil)
-                (eval (optarg 'ai ''std-ai))
-                (mk-inventory (filter notnull?
-                                      (map (lambda (x) 
-                                             (apply roll-to-add x))
-                                           (optarg 'stuff nil))))
-                (map eval (optarg 'arms nil))
-                (optarg 'hooks nil)
-                (mk-inventory (filter notnull?
-				      (map (lambda (x)
-					     (apply roll-to-add x))
-					   (optarg 'loot  nil))))))
+  (let (
+        (kchar (kern-mk-char (eval (optarg 'tag nil))
+                             (optarg 'name nil)
+                             (arg 'species)
+                             (optarg 'occ nil)
+                             (arg 'sprite)
+                             (arg 'faction)
+                             (optarg 'str 0)
+                             (optarg 'int 0)
+                             (optarg 'dex 0)
+                             (optarg 'hp_mod 0)
+                             (optarg 'hp_mult 0)
+                             (optarg 'mp_mod 0)
+                             (optarg 'mp_mult 0)
+                             (optarg 'hp 0)
+                             (optarg 'xp -1)
+                             (optarg 'mp 0)
+                             (optarg 'ap 0)
+                             (optarg 'lvl default-level)
+                             (optarg 'dead #f)
+                             (eval (optarg 'conv nil))
+                             (optarg 'sched nil)
+                             (eval (optarg 'ai ''std-ai))
+                             (mk-inventory (filter notnull?
+                                                   (map (lambda (x)
+                                                          (apply roll-to-add x))
+                                                        (optarg 'stuff nil))))
+                             (map eval (optarg 'arms nil))
+                             (optarg 'hooks nil)))
+        (loot (optarg 'loot nil))
+        )
+    ;; If a loot list was given, use the loot-drop effect to invoke a function
+    ;; that will generate a chest of loop and drop it where the NPC dies.
+    (if (notnull? loot)
+        (kern-obj-add-effect kchar ef_loot_drop (loot-drop-mk 'drop-loot loot)))
+    kchar))
+
 
 ;; mk-stock-char -- convenience wrapper for kern-mk-char. Handles the
 ;; boilerplate associated with first-time "stock" character creations. A stock
@@ -168,13 +206,6 @@
     kchar))
 
 ;;----------------------------------------------------------------------------
-;; trap packages
-(define no-traps (list nil))
-(define basic-traps  (list nil 'burn 'spike-trap))
-(define wizard-traps (list nil 'poison-trap 'sleep-trap 'lightning-trap))
-(define wrogue-traps (list nil 'self-destruct-trap 'bomb-trap 'sleep-trap 'poison-trap 'spike-trap 'sleep-trap 'burn))
-
-;;----------------------------------------------------------------------------
 ;; effect packages
 (define slime-effects  (list ef_poison_immunity 
                              (list ef_split split-gob-mk 'green-slime)))
@@ -218,7 +249,6 @@
         ))
 (define stalker-equip 
   (list (list 100 "2"     t_dagger)
-        (list 100 "2"     t_dagger)
         ))
 (define slinger-equip 
   (list (list 100 "1"     t_sling)
@@ -433,6 +463,11 @@
         (list 25  "1"     't_heal_potion)
         (list 10  "1"     't_torch)
         (list 1   "1"     't_gem)
+        ))
+
+(define griffin-loot
+  (list (list 50 "1d5"    't_food)
+        (list 50  "1d20"  't_gold_coins)
         ))
 
 (define archer-loot 
@@ -666,7 +701,7 @@
 ;; npc types
 ;;      scheme variable                 name                       species          occup.     sprite             chest traps  equipment              effects       ai               faction
 ;;      ======================          ========================== ================ ========== ================== ============ ====================== ============= ==============   ========
-;;(define forest-goblin-shaman  (mk-npct2 "forest goblin shaman"  sp_forest_goblin oc_wizard  s_fgob_shaman wizard-traps wizard-equip  nil 'shaman-ai  faction-forest-goblin nil 'drop-generic wizard-loot ))
+
 (define forest-goblin-shaman
   '((name    . "forest goblin shaman")
     (species . sp_forest_goblin)
@@ -1316,6 +1351,7 @@
     (species . sp_griffin)
     (sprite  . s_griffin)
     (ai      . 'griffin-ai)
+    (loot    . griffin-loot)
     (faction . faction-monster)))
 
 (define griffin-chick   
