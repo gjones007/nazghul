@@ -1513,7 +1513,7 @@
 
 (define (calc-level)
   (max 1
-       (+ (median-player-party-level)
+       (+ (mean-player-party-level)
           ;;(num-player-party-members)
           (kern-dice-roll "1d5-3"))))
 
