@@ -169,7 +169,7 @@ ac(0),
 str(str), intl(intl),
 dex(dex), mana(mp), lvl(lvl),
 solo(false), target(NULL),
-rdyArms(NULL), fleeing(false), burden(0), inCombat(false), container(NULL),
+rdyArms(NULL), fleeing(false), burden(0), inCombat(false), container(NULL), loot(NULL),
     //sprite(sprite),
     sched_chars_node(0),
 fleePathFound(false),
@@ -254,7 +254,7 @@ dex(0), mana(0),
 lvl(0),
 playerControlled(true), solo(false),
 target(NULL),
-rdyArms(NULL), fleeing(false), burden(0), inCombat(false), container(NULL),
+rdyArms(NULL), fleeing(false), burden(0), inCombat(false), container(NULL), loot(NULL),
     //sprite(0),
     sched_chars_node(0),
 fleePathFound(false),
@@ -315,6 +315,7 @@ currentMmode(0), known(false), taskname(NULL), taskproc(NULL), taskgob(NULL)
 Character::~Character()
 {
 	obj_dec_ref_safe(container);
+	obj_dec_ref_safe(loot);
 
 	if (rdyArms != NULL) {
 		free(rdyArms);
@@ -1351,6 +1352,11 @@ void Character::dropItems()
 		container->relocate(getPlace(), getX(), getY());
 		obj_dec_ref(container);
 		container = NULL;
+	}
+	if (loot) {
+		loot->relocate(getPlace(), getX(), getY());
+		obj_dec_ref(loot);
+		loot = NULL;
 	}
 }
 
@@ -3222,6 +3228,13 @@ void Character::save(struct save *save)
 	// Hooks
 	Object::saveHooks(save);
 
+	// Items in personal loot.
+	if (!loot) {
+		save->write(save, "nil  ; loot\n");
+	} else {
+		loot->save(save);
+	}
+
 	// Close the <var-list> part of the 'let' block
 	save->exit(save, "))) ;; end ((kchar ...)\n");
 
@@ -3447,6 +3460,25 @@ void Character::setInventoryContainer(class Container * val)
 	container = val;
 	if (container) {
 		obj_inc_ref(container);
+	}
+}
+
+class Container *Character::getLootContainer()
+{
+	return loot;
+}
+
+void Character::setLootContainer(class Container * val)
+{
+	// Blow away the old one
+	if (loot) {
+		assert(loot->isEmpty());
+		obj_dec_ref(loot);
+	}
+
+	loot = val;
+	if (loot) {
+		obj_inc_ref(loot);
 	}
 }
 

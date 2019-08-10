@@ -60,7 +60,11 @@
                                              (apply roll-to-add x))
                                            (optarg 'stuff nil))))
                 (map eval (optarg 'arms nil))
-                (optarg 'hooks nil)))
+                (optarg 'hooks nil)
+                (mk-inventory (filter notnull?
+				      (map (lambda (x)
+					     (apply roll-to-add x))
+					   (optarg 'loot  nil))))))
 
 ;; mk-stock-char -- convenience wrapper for kern-mk-char. Handles the
 ;; boilerplate associated with first-time "stock" character creations. A stock
@@ -281,8 +285,6 @@
         ))
 (define wrogue-1-equip
   (list (list 100 "1"     t_dagger)
-        (list 100 "2d6-2" t_gold_coins)
-        (list 50  "1d5"   t_food)
         (list 10  "1d3"   t_torch)
         (list 15  "1d3"   t_smoke_bomb)
         ))
@@ -315,9 +317,7 @@
         (list 100 "1"     t_armor_chain)
         ))
 (define trog-equip
-  (list (list 100 "1d3" t_thrown_boulder)
-        (list 25  "1d3"   t_food)
-        (list 100 "2d10"  t_gold_coins)
+  (list (list 100 "1d3"   t_thrown_boulder)
         ))
 (define geomancer-equip
   (list (list 100 "1d3-1" t_mana_potion)
@@ -342,65 +342,65 @@
         (list 100 "1d3-1" t_mana_potion)
         ))
 (define nixie-1-equip
-  (list (list 100 "1d20" t_spear)
+  (list (list 100 "1d20"  t_spear)
         ))
 (define nixie-2-equip
-  (list (list 100 "1d20" t_sword)
+  (list (list 100 "1d20"  t_sword)
         ))
 (define bomber-equip
-  (list (list 100 "1d5" t_oil)
-        (list 100 "1"   t_dagger)
-        (list 25  "1d3" t_smoke_bomb)
+  (list (list 100 "1d5"   t_oil)
+        (list 100 "1"     t_dagger)
+        (list 25  "1d3"   t_smoke_bomb)
         ))
 
 (define accursed-1-equip
-  (list (list 100 "1" t_dagger)
+  (list (list 100 "1"     t_dagger)
         ))
 (define accursed-2-equip
-  (list (list 100 "1" t_dagger)
-        (list 75  "1" t_sling)
+  (list (list 100 "1"     t_dagger)
+        (list 75  "1"     t_sling)
         ))
 (define accursed-3-equip
-  (list (list 100 "1" t_staff)
-        (list 75  "1" t_sling)
+  (list (list 100 "1"     t_staff)
+        (list 75  "1"     t_sling)
         ))
 (define accursed-4-equip
-  (list (list 100 "1" t_sword)
-        (list 100 "1" t_shield)
-        (list 100 "1" t_leather_helm)
-        (list 100 "1" t_armor_leather)
+  (list (list 100 "1"     t_sword)
+        (list 100 "1"     t_shield)
+        (list 100 "1"     t_leather_helm)
+        (list 100 "1"     t_armor_leather)
         ))
 (define accursed-5-equip
-  (list (list 100 "1" t_sword)
-        (list 100 "1" t_shield)
-        (list 100 "1" t_chain_coif)
-        (list 100 "1" t_armor_chain)
-        (list 100 "1" t_crossbow)
-        (list 100 "1d10" t_bolt)
+  (list (list 100 "1"     t_sword)
+        (list 100 "1"     t_shield)
+        (list 100 "1"     t_chain_coif)
+        (list 100 "1"     t_armor_chain)
+        (list 100 "1"     t_crossbow)
+        (list 100 "1d10"  t_bolt)
         ))
 (define accursed-6-equip
-  (list (list 100 "1" t_sword)
-        (list 100 "1" t_morning_star)
-        (list 100 "1" t_iron_helm)
-        (list 100 "1" t_armor_plate)
+  (list (list 100 "1"     t_sword)
+        (list 100 "1"     t_morning_star)
+        (list 100 "1"     t_iron_helm)
+        (list 100 "1"     t_armor_plate)
         ))
         
 (define demon-equip
-  (list (list 100 "1" t_flaming_sword)
+  (list (list 100 "1"     t_flaming_sword)
         ))
 
 ;;----------------------------------------------------------------------------
 ;; Loot drops
 (define animal-loot
-  (list (list 25 "1" 't_food)
+  (list (list 25  "1"     't_food)
         ))
 
 (define deer-loot
-  (list (list 100 "1" 't_animal_corpse)
+  (list (list 100 "1"     't_animal_corpse)
         ))
 
 (define bull-loot
-  (list (list 100 "5" 't_food)
+  (list (list 100 "5"     't_food)
         ))
 
 (define wizard-loot
@@ -428,18 +428,18 @@
         ))
 
 (define std-loot
-  (list (list 25 "1d2" 't_food)
-        (list 100 "1d10" 't_gold)
-        (list 25 "1" 't_heal_potion)
-        (list 10 "1" 't_torch)
-        (list 1 "1" 't_gem)
+  (list (list 25  "1d2"   't_food)
+        (list 100 "1d10"  't_gold_coins)
+        (list 25  "1"     't_heal_potion)
+        (list 10  "1"     't_torch)
+        (list 1   "1"     't_gem)
         ))
 
 (define archer-loot 
   (list
         (list 100 "1d10"  't_gold_coins)
         (list 20  "1d3"   't_food)
-        (list 10  "1"   't_bow)
+        (list 10  "1"     't_bow)
         ))
 (define stalker-loot 
   (list
@@ -456,23 +456,28 @@
         (list 30  "1d3"   't_food)
         ))
 (define ranger-loot
-  (list (list 100 "1d10" 't_gold_coins)
+  (list (list 100 "1d10"  't_gold_coins)
         (list 30  "1d3"   't_food)
         (list 100 "1d3-1" 't_heal_potion)
         ))
-(define skel-war-loot
+(define skeletal-warrior-loot
   (list (list 100 "1d20"  't_gold_coins)
         ))
 (define spear-thrower-loot
   (list (list 100 "1d20"  't_gold_coins)
         ))
-(define dea-kni-loot
-  (list
-        (list 100 "1d20"  't_gold_coins)
-        ))
-(define cra-arch-loot
+(define death-knight-loot
   (list (list 100 "1d20"  't_gold_coins)
         ))
+(define craven-archer-loot
+  (list (list 100 "1d20"  't_gold_coins)
+        ))
+
+(define geomancer-loot
+  (list (list 50  "1d3"   't_gem)
+        (list 50  "1d20"  't_gold_coins)
+        ))
+  
 (define knight-loot
   (list (list 100 "1d20"  't_gold_coins)
         ))
@@ -490,7 +495,7 @@
         (list 100 "1d3-1" 't_picklock)
         (list 50  "1d5"   't_food)
         (list 10  "1d3"   't_torch)
-        (list 10  "1d3"  't_smoke_bomb)
+        (list 10  "1d3"   't_smoke_bomb)
         ))
 (define wrogue-3-loot
   (list (list 100 "2d6-2" 't_gold_coins)
@@ -541,15 +546,24 @@
         ))
 (define dragon-loot
   (list (list 100 "1d100+19" 't_gold_coins)
-        (list 100 "1d20"     't_food)
-        (list 100 "1d5-1"    't_gem)
-        (list 100 "1"        't_dragons_blood)
+        (list 100 "1d20"  't_food)
+        (list 100 "1d5-1" 't_gem)
+        (list 100 "1"     't_dragons_blood)
         ;; none of this is logical, beyond 'dragons oughta have the good stuff'
-        (list 10  "1"     't_in_ex_por_scroll)
-        (list 10  "1"     't_wis_quas_scroll)
-        (list 5   "1"     't_sanct_lor_scroll)
-        (list 5   "1"     't_an_tym_scroll)
-        (list 5   "1"     't_vas_rel_por_scroll)
+        (list 10  "1"     't_wis_quas_scroll)        ;; 4 Reveal
+        (list 10  "1"     't_in_ex_por_scroll)       ;; 5 Magic Unlock
+        (list 10  "1"     't_vas_mani_scroll)        ;; 5 Great Heal              GR : dragons have all scrolls
+        (list 10  "1"     't_rel_xen_quas_scroll)    ;; 5 Illusion of Beastliness GR : dragons have all scrolls
+        (list 10  "1"     't_in_an_scroll)           ;; 6 Negate Magic            GR : dragons have all scrolls
+        (list 10  "1"     't_an_xen_ex_scroll)       ;; 6 Charm                   GR : dragons have all scrolls
+        (list 10  "1"     't_in_vas_por_ylem_scroll) ;; 6 Tremor                  GR : dragons have all scrolls
+        (list 10  "1"     't_wis_an_ylem_scroll)     ;; 6 X-Ray Vision            GR : dragons have all scrolls
+        (list 5   "1"     't_sanct_lor_scroll)       ;; 7 Invisibility
+        (list 5   "1"     't_in_quas_xen_scroll)     ;; 7 Clone                   GR : dragons have all scrolls
+        (list 5   "1"     't_xen_corp_scroll)        ;; 7 Death Bolt              GR : dragons have all scrolls
+        (list 5   "1"     't_an_tym_scroll)          ;; 8 Time Stop
+        (list 5   "1"     't_vas_rel_por_scroll)     ;; 8 Gate
+        (list 5   "1"     't_in_mani_corp_scroll)    ;; 8 Resurection             GR : dragons have all scrolls
         (list 20  "1"     't_mana_potion)
         (list 10  "1"     't_cure_potion)
         (list 20  "1d5"   'sulphorous_ash)
@@ -563,11 +577,11 @@
         ))
 
 (define hydra-loot
-  (list (list 100 "1" 't_hydras_blood)
+  (list (list 100 "1"     't_hydras_blood)
         ))
 
 (define lich-loot
-  (cons (list 100 "1" 't_lichs_blood)
+  (cons (list 100 "1"     't_lichs_blood)
         wizard-loot))
 
 (define zorn-loot
@@ -575,60 +589,60 @@
         ))
 
 (define bomber-loot
-  (list (list 50 "1d3" 't_oil)
+  (list (list 50  "1d3"   't_oil)
         ))
         
 (define dryad-loot
-  (list (list 100 "1d5" 't_torch)
+  (list (list 100 "1d5"   't_torch)
         ))
         
 (define demon-loot
-  (list (list 100 "2d20" 't_gold_coins)
+  (list (list 100 "2d20"  't_gold_coins)
         ))
         
 (define ghast-loot
-  (list (list 50 "1" 't_mana_potion)
+  (list (list 50  "1"     't_mana_potion)
         ))
         
 (define yellow-slime-loot
-  (list (list 50 "1" 't_royal_cape)
+  (list (list 50  "1"     't_royal_cape)
         ))
         
 (define fire-slime-loot
-  (list (list 100 "1" 't_oil)
+  (list (list 100 "1"     't_oil)
         ))
         
 (define spider-loot
-  (list (list 50 "1" 'spider_silk)
+  (list (list 50  "1"     'spider_silk)
         ))
         
 (define queen-spider-loot
-  (list (list 50 "1d3" 'spider_silk)
-        (list 25 "1" 't_poison_immunity_potion)
+  (list (list 50  "1d3"   'spider_silk)
+        (list 25  "1"     't_poison_immunity_potion)
         ))
 
 (define accursed-1-loot
-  (list (list 50 "1d2-1" 't_heal_potion)
-        (list 50 "1d2" 't_mana_potion)
+  (list (list 50  "1d2-1" 't_heal_potion)
+        (list 50  "1d2"   't_mana_potion)
         (list 100 "1d10"  't_gold_coins)
         (list 10  "1d2"   't_food)
-        (list 5  "1"     't_cure_potion)
-        (list 5  "1"     't_poison_immunity_potion)
+        (list 5   "1"     't_cure_potion)
+        (list 5   "1"     't_poison_immunity_potion)
         (list 10  "1d3"   'sulphorous_ash)
         (list 10  "1d3"   'ginseng)
         (list 10  "1d3"   'garlic)
-        (list 5  "1d2"   'spider_silk)
-        (list 5  "1d2"   'blood_moss)
-        (list 5  "1d2"   'black_pearl)
-        (list 5  "1"     't_in_quas_xen_scroll)
-        (list 5  "1"     't_an_xen_ex_scroll)
-        (list 5  "1"     't_in_an_scroll)
-        (list 5  "1"     't_vas_mani_scroll)
+        (list 5   "1d2"   'spider_silk)
+        (list 5   "1d2"   'blood_moss)
+        (list 5   "1d2"   'black_pearl)
+        (list 5   "1"     't_in_quas_xen_scroll)
+        (list 5   "1"     't_an_xen_ex_scroll)
+        (list 5   "1"     't_in_an_scroll)
+        (list 5   "1"     't_vas_mani_scroll)
         )) 
 
 (define accursed-5-loot
   (list (list 50  "1d5"   't_food)
-        (list 100 "2d10" 't_gold_coins)
+        (list 100 "2d10"  't_gold_coins)
         ))  
         
         
@@ -659,6 +673,7 @@
     (occ     . oc_wizard)
     (sprite  . s_fgob_shaman)
     (stuff   . wizard-equip)
+    (loot    . wizard-loot)
     (ai      . 'shaman-ai)
     (faction . faction-forest-goblin)))
 
@@ -668,6 +683,7 @@
     (occ     . oc_warrior)
     (sprite  . s_fgob_archer)
     (stuff   . archer-equip)
+    (loot    . archer-loot)
     (faction . faction-forest-goblin)))
 
 (define forest-goblin-stalker
@@ -676,6 +692,7 @@
     (occ     . oc_warrior)
     (sprite  . s_fgob_stalker)
     (stuff   . stalker-equip)
+    (loot    . stalker-loot)
     (faction . faction-forest-goblin)))
 
 (define cave-goblin-slinger
@@ -684,6 +701,7 @@
     (occ     . oc_warrior)
     (sprite  . s_cgob_slinger)
     (stuff   . slinger-equip)
+    (loot    . slinger-loot)
     (faction . faction-cave-goblin)))
 
 (define cave-goblin-berserker
@@ -692,6 +710,7 @@
     (occ     . oc_warrior)
     (sprite  . s_cgob_berserk)
     (stuff   . berserker-equip)
+    (loot    . berserker-loot)
     (faction . faction-cave-goblin)))
 
 (define cave-goblin-priest
@@ -700,6 +719,7 @@
     (occ     . oc_wizard)
     (sprite  . s_cgob_shaman)
     (stuff   . wizard-equip)
+    (loot    . wizard-loot)
     (ai      . 'priest-ai)
     (faction . faction-cave-goblin)))
 
@@ -709,6 +729,7 @@
     (occ     . oc_ranger)
     (sprite  . s_ranger)
     (stuff   . ranger-equip)
+    (loot    . ranger-loot)
     (ai      . 'ranger-ai)
     (conv    . 'ranger-conv)
     (faction . faction-men)))
@@ -719,6 +740,7 @@
     (occ     . oc_warrior)
     (sprite  . s_spearskeleton)
     (stuff   . spear-thrower-equip)
+    (loot    . spear-thrower-loot)
     (effects . undead-effects)
     (ai      . 'nolight-ai)
     (faction . faction-monster)))
@@ -729,6 +751,7 @@
     (occ     . oc_warrior)
     (sprite  . s_skeleton)
     (stuff   . skeletal-warrior-equip)
+    (loot    . skeletal-warrior-loot)
     (effects . undead-effects)
     (ai      . 'nolight-ai)
     (faction . faction-monster)))
@@ -739,6 +762,7 @@
     (occ     . oc_archer)
     (sprite  . s_skeletonarcher)
     (stuff   . archer-equip)
+    (loot    . archer-loot)
     (effects . undead-effects)
     (ai      . 'nolight-ai)
     (faction . faction-monster)))
@@ -749,6 +773,7 @@
     (occ     . oc_warrior)
     (sprite  . s_deathknight)
     (stuff   . death-knight-equip)
+    (loot    . death-knight-loot)
     (effects . undead-effects)
     (ai      . 'death-knight-ai)
     (faction . faction-monster)))
@@ -759,468 +784,504 @@
     (occ     . oc_warrior)
     (sprite  . s_deatharcher)
     (stuff   . craven-archer-equip)
+    (loot    . craven-archer-loot)
     (effects . undead-effects)
     (ai      . 'craven-archer-ai)
     (faction . faction-monster)))
 
 (define halberdier    
-  '((name . "halberdier")
+  '((name    . "halberdier")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_guard)
-    (stuff . halberdier-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_guard)
+    (stuff   . halberdier-equip)
+    (loot    . halberdier-loot)
+    (ai      . 'guard-ai)
     (faction . faction-men)))
 
 (define crossbowman   
-  '((name . "crossbowman")
+  '((name    . "crossbowman")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_xbowguard)
-    (stuff . crossbowman-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_xbowguard)
+    (stuff   . crossbowman-equip)
+    (loot    . crossbowman-loot)
+    (ai      . 'guard-ai)
     (faction . faction-men)))
 
 (define medik         
-  '((name . "medik")
+  '((name    . "medik")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_blue_wizard)
-    (stuff . medik-equip)
-    (ai . 'medik-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_blue_wizard)
+    (stuff   . medik-equip)
+    (loot    . medik-loot)
+    (ai      . 'medik-ai)
     (faction . faction-men)))
 
 (define trog         
-  '((name . "trog")
+  '((name    . "trog")
     (species . sp_trog)
-    (occ . oc_warrior)
-    (sprite . s_male_trog)
-    (stuff . trog-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_male_trog)
+    (stuff   . trog-equip)
+    (loot    . std-loot)
+    (ai      . 'std-ai)
     (faction . faction-trog)))
 
 (define glasdrin-halberdier    
-  '((name . "halberdier")
+  '((name    . "halberdier")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_guard)
-    (stuff . halberdier-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_guard)
+    (stuff   . halberdier-equip)
+    (loot    . halberdier-loot)
+    (ai      . 'guard-ai)
     (faction . faction-glasdrin)))
 
 (define glasdrin-crossbowman   
-  '((name . "crossbowman")
+  '((name    . "crossbowman")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_xbowguard)
-    (stuff . crossbowman-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_xbowguard)
+    (stuff   . crossbowman-equip)
+    (loot    . crossbowman-loot)
+    (ai      . 'guard-ai)
     (faction . faction-glasdrin)))
 
 ;; Bandit types
 
 (define footpad    
-  '((name . "footpad")
+  '((name    . "footpad")
     (species . sp_human)
-    (occ . oc_wrogue)
-    (sprite . s_brigand)
-    (stuff . wrogue-1-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_brigand)
+    (stuff   . wrogue-1-equip)
+    (loot    . std-loot)
+    (ai      . 'std-ai)
     (faction . faction-outlaw)))
 
 (define bandit     
-  '((name . "bandit")
+  '((name    . "bandit")
     (species . sp_human)
-    (occ . oc_wrogue)
-    (sprite . s_brigand)
-    (stuff . wrogue-2-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_brigand)
+    (stuff   . wrogue-2-equip)
+    (loot    . wrogue-2-loot)
+    (ai      . 'std-ai)
     (faction . faction-outlaw)))
 
 (define highwayman 
-  '((name . "highwayman")
+  '((name    . "highwayman")
     (species . sp_human)
-    (occ . oc_wrogue)
-    (sprite . s_brigand)
-    (stuff . wrogue-3-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_brigand)
+    (stuff   . wrogue-3-equip)
+    (loot    . wrogue-3-loot)
+    (ai      . 'std-ai)
     (faction . faction-outlaw)))
 
 (define blackguard 
-  '((name . "blackguard")
+  '((name    . "blackguard")
     (species . sp_human)
-    (occ . oc_wrogue)
-    (sprite . s_brigand)
-    (stuff . wrogue-4-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_brigand)
+    (stuff   . wrogue-4-equip)
+    (loot    . wrogue-4-loot)
+    (ai      . 'std-ai)
     (faction . faction-outlaw)))
 
 (define bomber     
-  '((name . "mad jester")
+  '((name    . "mad jester")
     (species . sp_human)
-    (occ . oc_wrogue)
-    (sprite . s_jester)
-    (stuff . bomber-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_jester)
+    (stuff   . bomber-equip)
+    (loot    . bomber-loot)
+    (ai      . 'std-ai)
     (faction . faction-outlaw)))
 
 
 (define bat 
-  '((name . "bat")
+  '((name    . "bat")
     (species . sp_bat)
-    (sprite . s_bat)
-    (ai . 'animal-ai)
-    (stuff . animal-loot)
+    (sprite  . s_bat)
+    (loot    . animal-loot)
+    (ai      . 'animal-ai)
     (faction . faction-monster)))
 
 (define rat 
-  '((name . "dire rat")
+  '((name    . "dire rat")
     (species . sp_rat)
-    (sprite . s_rat)
-    (ai . 'rat-ai)
-    (stuff . animal-loot)
+    (sprite  . s_rat)
+    (loot    . animal-loot)
+    (ai      . 'rat-ai)
     (faction . faction-monster)))
 
 (define zorn 
-  '((name . "zorn")
+  '((name    . "zorn")
     (species . sp_zorn)
-    (occ . oc_wrogue)
-    (sprite . s_zorn)
-    (ai . 'animal-ai)
+    (occ     . oc_wrogue)
+    (sprite  . s_zorn)
+    (loot    . zorn-loot)
+    (ai      . 'animal-ai)
     (faction . faction-monster)))
 
 (define bull 
-  '((name . "bull")
+  '((name    . "bull")
     (species . sp_bull)
-    (sprite . s_bull)
-    (ai . 'animal-ai)
-    (stuff . bull-loot)
+    (sprite  . s_bull)
+    (loot    . bull-loot)
+    (ai      . 'animal-ai)
     (faction . faction-none)))
 
 (define lich 
-  '((name . "lich")
+  '((name    . "lich")
     (species . sp_lich)
-    (occ . oc_wizard)
-    (sprite . s_lich)
-    (stuff . wizard-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_lich)
+    (stuff   . wizard-equip)
+    (loot    . lich-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-monster)))
 
 (define dryad 
-  '((name . "dryad")
+  '((name    . "dryad")
     (species . sp_dryad)
-    (sprite . s_reaper)
-    (ai . 'dryad-ai)
+    (sprite  . s_reaper)
+    (loot    . reaper-loot)
+    (ai      . 'dryad-ai)
     (faction . faction-monster)))
 
 (define gazer 
-  '((name . "gazer")
+  '((name    . "gazer")
     (species . sp_gazer)
-    (occ . oc_wizard)
-    (sprite . s_gazer)
-    (ai . 'gazer-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_gazer)
+    (loot    . animal-loot)
+    (ai      . 'gazer-ai)
     (faction . faction-monster)))
 
 (define demon 
-  '((name . "demon")
+  '((name    . "demon")
     (species . sp_demon)
-    (sprite . s_demon)
-    (stuff . demon-equip)
-    (ai . 'demon-ai)
+    (sprite  . s_demon)
+    (stuff   . demon-equip)
+    (loot    . demon-loot)
+    (ai      . 'demon-ai)
     (faction . faction-monster)))
 
 (define ghast 
-  '((name . "ghast")
+  '((name    . "ghast")
     (species . sp_ghast)
-    (sprite . s_ghost)
-    (ai . 'std-ai)
+    (sprite  . s_ghost)
+    (loot    . ghast-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 (define snake 
-  '((name . "snake")
+  '((name    . "snake")
     (species . sp_snake)
-    (sprite . s_snake)
-    (ai . 'snake-ai)
-    (stuff . animal-loot)
+    (sprite  . s_snake)
+    (loot    . animal-loot)
+    (ai      . 'snake-ai)
     (faction . faction-monster)))
 
 (define insect 
-  '((name . "insect swarm")
+  '((name    . "insect swarm")
     (species . sp_insect)
-    (sprite . s_insects)
-    (ai . 'animal-ai)
+    (sprite  . s_insects)
+    (loot    . animal-loot)
+    (ai      . 'animal-ai)
     (faction . faction-monster)))
 
 (define dragon 
-  '((name . "dragon")
+  '((name    . "dragon")
     (species . sp_dragon)
-    (sprite . s_dragon)
-    (stuff . dragon-loot)
-    (ai . 'dragon-ai)
+    (sprite  . s_dragon)
+    (loot    . dragon-loot)
+    (ai      . 'dragon-ai)
     (faction . faction-monster)))
 
 (define knight 
-  '((name . "knight")
+  '((name    . "knight")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_knight)
-    (stuff . knight-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_knight)
+    (stuff   . knight-equip)
+    (loot    . knight-loot)
+    (ai      . 'guard-ai)
     (faction . faction-trigrave)))
 
 (define paladin 
-  '((name . "paladin")
+  '((name    . "paladin")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_companion_paladin)
-    (stuff . knight-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_companion_paladin)
+    (stuff   . knight-equip)
+    (loot    . knight-loot)
+    (ai      . 'std-ai)
     (faction . faction-men)))
 
 (define tinker 
-  '((name . "tinker")
+  '((name    . "tinker")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_companion_tinker)
-    (stuff . wrogue-4-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_companion_tinker)
+    (stuff   . wrogue-4-equip)
+    (loot    . wrogue-4-loot)
+    (ai      . 'std-ai)
     (faction . faction-men)))
 
 (define squire 
-  '((name . "squire")
+  '((name    . "squire")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_xbowguard)
-    (stuff . squire-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_xbowguard)
+    (stuff   . squire-equip)
+    (loot    . squire-loot)
+    (ai      . 'guard-ai)
     (faction . faction-trigrave)))
 
 (define warlock 
-  '((name . "warlock")
+  '((name    . "warlock")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_wizard)
-    (stuff . wizard-equip)
-    (ai . 'warlock-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_wizard)
+    (stuff   . wizard-equip) 
+    (loot    . wizard-loot)
+    (ai      . 'warlock-ai)
     (faction . faction-monster)))
 
 (define wizard 
-  '((name . "wizard")
+  '((name    . "wizard")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_companion_wizard)
-    (stuff . wizard-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_companion_wizard)
+    (stuff   . wizard-equip)
+    (loot    . wizard-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-men)))
 
 (define headless 
-  '((name . "headless")
+  '((name    . "headless")
     (species . sp_headless)
-    (occ . oc_warrior)
-    (sprite . s_headless)
-    (stuff . headless-equip)
-    (ai . 'animal-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_headless)
+    (stuff   . headless-equip)
+    (loot    . headless-loot)
+    (ai      . 'animal-ai)
     (faction . faction-monster)))
 
 (define gint-mage 
-  '((name . "gint mage")
+  '((name    . "gint mage")
     (species . sp_gint)
-    (occ . oc_wizard)
-    (sprite . s_gint_mage)
-    (stuff . wizard-equip)
-    (ai . 'shaman-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_gint_mage)
+    (stuff   . wizard-equip)
+    (loot    . wizard-loot)
+    (ai      . 'shaman-ai)
     (faction . faction-gint)))
 
 (define gint-warrior 
-  '((name . "gint warrior")
+  '((name    . "gint warrior")
     (species . sp_gint)
-    (occ . oc_warrior)
-    (sprite . s_gint)
-    (stuff . gint-warrior-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_gint)
+    (stuff   . gint-warrior-equip)
+    (loot    . gint-loot)
+    (ai      . 'std-ai)
     (faction . faction-gint)))
 
 (define yellow-slime 
-  '((name . "yellow slime")
+  '((name    . "yellow slime")
     (species . sp_yellow_slime)
-    (sprite . s_yellow_slime)
-    (ai . 'yellow-slime-ai)
-    (stuff . yellow-slime-loot)
+    (sprite  . s_yellow_slime)
+    (ai      . 'yellow-slime-ai)
+    (loot    . yellow-slime-loot)
     (faction . faction-monster)))
 
 (define trog-geomancer 
-  '((name . "trog geomancer")
+  '((name    . "trog geomancer")
     (species . sp_trog)
-    (occ . oc_wizard)
-    (sprite . s_female_trog)
-    (stuff . geomancer-equip)
-    (ai . 'geomancer-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_female_trog)
+    (stuff   . geomancer-equip)
+    (loot    . geomancer-loot)
+    (ai      . 'geomancer-ai)
     (faction . faction-trog)))
 
 (define corrupt-halberdier 
-  '((name . "halberdier")
+  '((name    . "halberdier")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_guard)
-    (stuff . halberdier-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_guard)
+    (stuff   . halberdier-equip)
+    (loot    . halberdier-loot)
+    (ai      . 'guard-ai)
     (faction . faction-monster)))
 
 (define corrupt-crossbowman 
-  '((name . "crossbowman")
+  '((name    . "crossbowman")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_guard)
-    (stuff . crossbowman-equip)
-    (ai . 'guard-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_guard)
+    (stuff   . crossbowman-equip)
+    (loot    . crossbowman-loot)
+    (ai      . 'guard-ai)
     (faction . faction-monster)))
 
 (define giant-spider 
-  '((name . "giant spider")
+  '((name    . "giant spider")
     (species . sp_spider)
-    (sprite . s_spider)
-    (ai . 'spider-ai)
-    (stuff . spider-loot)
+    (sprite  . s_spider)
+    (ai      . 'spider-ai)
+    (loot    . spider-loot)
     (faction . faction-monster)))
 
 (define queen-spider 
-  '((name . "queen spider")
+  '((name    . "queen spider")
     (species . sp_queen_spider)
-    (sprite . s_queen_spider)
-    (ai . 'spider-ai)
-    (stuff . queen-spider-loot)
+    (sprite  . s_queen_spider)
+    (ai      . 'spider-ai)
+    (loot    . queen-spider-loot)
     (faction . faction-monster)))
 
 (define fire-slime 
-  '((name . "fire slime")
+  '((name    . "fire slime")
     (species . sp_fire_slime)
-    (sprite . s_red_slime)
-    (ai . 'animal-ai)
-    (stuff . fire-slime-loot)
+    (sprite  . s_red_slime)
+    (ai      . 'animal-ai)
+    (loot    . fire-slime-loot)
     (faction . faction-monster)))
 
 (define hydra 
-  '((name . "hydra")
+  '((name    . "hydra")
     (species . sp_hydra)
-    (sprite . s_hydra)
-    (ai . 'hydra-ai)
-    (stuff . hydra-loot)
+    (sprite  . s_hydra)
+    (ai      . 'hydra-ai)
+    (loot    . hydra-loot)
     (faction . faction-monster)))
 
 (define mimic 
-  '((name . "mimic")
+  '((name    . "mimic")
     (species . sp_mimic)
-    (sprite . s_mimic)
-    (ai . 'animal-ai)
+    (sprite  . s_mimic)
+    (ai      . 'animal-ai)
+    (loot    . animal-loot)
     (faction . faction-monster)))
 
 (define ratling-swarmer 
-  '((name . "ratling swarmer")
+  '((name    . "ratling swarmer")
     (species . sp_ratling)
-    (sprite . s_mouse)
-    (ai . 'ratling-ai)
+    (sprite  . s_mouse)
+    (ai      . 'ratling-ai)
+    (loot    . animal-loot)
     (faction . faction-monster)))
 
 (define ratling-sorcerer 
-  '((name . "ratling sorcerer")
+  '((name    . "ratling sorcerer")
     (species . sp_ratling)
-    (occ . oc_wizard)
-    (sprite . s_ratling_sorcerer)
-    (stuff . wizard-equip)
-    (ai . 'ratling-sorcerer-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_ratling_sorcerer)
+    (stuff   . wizard-equip)
+    (loot    . wizard-loot)
+    (ai      . 'ratling-sorcerer-ai)
     (faction . faction-monster)))
 
 (define carabid 
-  '((name . "carabid")
+  '((name    . "carabid")
     (species . sp_carabid)
-    (sprite . s_carabid)
-    (ai . 'carabid-ai)
+    (sprite  . s_carabid)
+    (loot    . animal-loot)
+    (ai      . 'carabid-ai)
     (faction . faction-monster)))
 
 (define deer 
-  '((name . "deer")
+  '((name    . "deer")
     (species . sp_deer)
-    (sprite . s_deer)
-    (stuff . deer-loot)
+    (loot    . deer-loot)
+    (sprite  . s_deer)
     (faction . faction-none)))
 
 (define chicken 
-  '((name . "chicken")
+  '((name    . "chicken")
     (species . sp_chicken)
-    (sprite . s_chicken)
-    (ai . 'animal-ai)
-    (stuff . animal-loot)
+    (sprite  . s_chicken)
+    (loot    . animal-loot)
+    (ai      . 'animal-ai)
     (faction . faction-none)))
 
 ;; NPC's with no drops
 
 (define green-slime
-  '((name . "green slime")
+  '((name    . "green slime")
     (species . sp_green_slime)
-    (sprite . s_slime)
+    (sprite  . s_slime)
     (effects . slime-effects)
-    (ai . 'animal-ai)
+    (ai      . 'animal-ai)
     (faction . faction-monster)))
 
 (define kraken          
-  '((name . "kraken")
+  '((name    . "kraken")
     (species . sp_kraken)
-    (sprite . s_kraken)
-    (ai . 'kraken-ai)
+    (sprite  . s_kraken)
+    (ai      . 'kraken-ai)
     (faction . faction-monster)))
 
 (define sea-serpent     
-  '((name . "sea serpent")
+  '((name    . "sea serpent")
     (species . sp_sea_serpent)
-    (sprite . s_sea_serpent)
-    (ai . 'sea-serpent-ai)
+    (sprite  . s_sea_serpent)
+    (ai      . 'sea-serpent-ai)
     (faction . faction-monster)))
 
 (define wolf            
-  '((name . "wolf")
+  '((name    . "wolf")
     (species . sp_wolf)
-    (sprite . s_wolf)
-    (ai . 'wolf-ai)
+    (sprite  . s_wolf)
+    (ai      . 'wolf-ai)
     (faction . faction-monster)))
 
 (define wisp            
-  '((name . "wisp")
+  '((name    . "wisp")
     (species . sp_wisp)
-    (sprite . s_wisp)
+    (sprite  . s_wisp)
     (effects . wisp-effects)
-    (ai . 'wisp-ai)
+    (ai      . 'wisp-ai)
     (faction . faction-monster)))
+
 (define nixie-spearman  
-  '((name . "nixie spearman")
+  '((name    . "nixie spearman")
     (species . sp_nixie)
-    (occ . oc_warrior)
-    (sprite . s_nixie_spear)
-    (equip . nixie-1-equip)
-    (ai . 'nixie-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_nixie_spear)
+    (stuff   . nixie-1-equip)
+    (ai      . 'nixie-ai)
     (faction . faction-monster)))
 
 (define nixie-swordsman 
-  '((name . "nixie swordsman")
+  '((name    . "nixie swordsman")
     (species . sp_nixie)
-    (occ . oc_warrior)
-    (sprite . s_nixie_sword)
-    (equip . nixie-2-equip)
-    (ai . 'nixie-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_nixie_sword)
+    (stuff   . nixie-2-equip)
+    (ai      . 'nixie-ai)
     (faction . faction-monster)))
 
 (define sludge-kraken   
-  '((name . "sludge kraken")
+  '((name    . "sludge kraken")
     (species . sp_great_kraken)
-    (sprite . s_great_kraken)
+    (sprite  . s_great_kraken)
     (effects . sludge-kraken-effects)
-    (ai . 'sludge-kraken-ai)
+    (ai      . 'sludge-kraken-ai)
     (faction . faction-monster)))
 
 (define sludge-tentacle 
-  '((name . "sludge kraken tentacle")
+  '((name    . "sludge kraken tentacle")
     (species . sp_kraken_tentacle)
-    (sprite . s_tentacle)
-    (ai . 'sludge-tentacle-ai)
+    (sprite  . s_tentacle)
+    (ai      . 'sludge-tentacle-ai)
     (faction . faction-monster)))
 
 ;; Example of how to create a spawn point for a wyrm:
@@ -1229,169 +1290,182 @@
 ;; 
 (define wyrm-segment-effects (list ef_damage_serpentine))
 (define wyrm-segment
-  '((name . "wyrm segment")
+  '((name    . "wyrm segment")
     (species . sp_wyrm_segment)
-    (sprite . s_wyrm_segment)
+    (sprite  . s_wyrm_segment)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 (define wyrm-tail
-  '((name . "wyrm tail")
+  '((name    . "wyrm tail")
     (species . sp_wyrm_segment)
-    (sprite . s_wyrm_tail)
+    (sprite  . s_wyrm_tail)
     (effects . wyrm-segment-effects)
     (faction . faction-monster)))
 (define wyrm-effects (list ef_damage_serpentine
 			   (list ef_move_serpentine list 'wyrm-segment)))
 (define wyrm
-  '((name . "wyrm")
+  '((name    . "wyrm")
     (species . sp_wyrm)
-    (sprite . s_wyrm_head)
+    (sprite  . s_wyrm_head)
     (effects . wyrm-effects)
-    (ai . 'wyrm-ai)
+    (ai      . 'wyrm-ai)
     (faction . faction-monster)))
 
 (define griffin         
-  '((name . "griffin")
+  '((name    . "griffin")
     (species . sp_griffin)
-    (sprite . s_griffin)
-    (ai . 'griffin-ai)
+    (sprite  . s_griffin)
+    (ai      . 'griffin-ai)
     (faction . faction-monster)))
 
 (define griffin-chick   
-  '((name . "griffin chick")
+  '((name    . "griffin chick")
     (species . sp_griffin_chick)
-    (sprite . s_griffin_chick)
-    (ai . 'griffin-ai)
+    (sprite  . s_griffin_chick)
+    (ai      . 'griffin-ai)
     (faction . faction-monster)))
 
 ;; accursed
 
 (define accursed-acolyte    
-  '((name . "an accursed acolyte")
+  '((name    . "an accursed acolyte")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_shepherd)
-    (stuff . accursed-1-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_shepherd)
+    (stuff   . accursed-1-equip)
+    (loot    . accursed-1-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-accursed)))
 
 (define accursed-apprentice 
-  '((name . "an accursed apprentice")
+  '((name    . "an accursed apprentice")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_shepherd)
-    (stuff . accursed-2-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_shepherd)
+    (stuff   . accursed-2-equip)
+    (loot    . accursed-1-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-accursed)))
 
 (define accursed-journeyman 
-  '((name . "an accursed journeyman")
+  '((name    . "an accursed journeyman")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_wizard)
-    (stuff . accursed-3-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_wizard)
+    (stuff   . accursed-3-equip)
+    (loot    . wizard-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-accursed)))
 
 (define accursed-master     
-  '((name . "an accursed master")
+  '((name    . "an accursed master")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_wizard)
-    (stuff . accursed-3-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_wizard)
+    (stuff   . accursed-3-equip)
+    (loot    . wizard-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-accursed)))
 
 (define accursed-adept      
-  '((name . "an accursed adept")
+  '((name    . "an accursed adept")
     (species . sp_human)
-    (occ . oc_wizard)
-    (sprite . s_wizard)
-    (stuff . accursed-3-equip)
-    (ai . 'spell-sword-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_wizard)
+    (stuff   . accursed-3-equip)
+    (loot    . wizard-loot)
+    (ai      . 'spell-sword-ai)
     (faction . faction-accursed)))
 
 (define accursed-guardian   
-  '((name . "an accursed guardian")
+  '((name    . "an accursed guardian")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_fighter)
-    (stuff . accursed-4-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_fighter)
+    (stuff   . accursed-4-equip)
+    (loot    . accursed-5-loot)
+    (ai      . 'std-ai)
     (faction . faction-accursed)))
 
 (define accursed-defender   
-  '((name . "an accursed defender")
+  '((name    . "an accursed defender")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_knight)
-    (stuff . accursed-5-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_knight)
+    (stuff   . accursed-5-equip)
+    (loot    . accursed-5-loot)
+    (ai      . 'std-ai)
     (faction . faction-accursed)))
 
 (define accursed-templar    
-  '((name . "an accursed templar")
+  '((name    . "an accursed templar")
     (species . sp_human)
-    (occ . oc_warrior)
-    (sprite . s_avatar)
-    (stuff . accursed-6-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_avatar)
+    (stuff   . accursed-6-equip)
+    (loot    . wrogue-4-loot)
+    (ai      . 'std-ai)
     (faction . faction-accursed)))
 
 ;; npcs with odd alignments
 
 (define gint-warrior-m 
-  '((name . "gint warrior")
+  '((name    . "gint warrior")
     (species . sp_gint)
-    (occ . oc_warrior)
-    (sprite . s_gint)
-    (stuff . gint-warrior-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_gint)
+    (stuff   . gint-warrior-equip)
+    (loot    . gint-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 (define trog-m         
-  '((name . "trog")
+  '((name    . "trog")
     (species . sp_trog)
-    (occ . oc_warrior)
-    (sprite . s_male_trog)
-    (stuff . trog-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_male_trog)
+    (stuff   . trog-equip)
+    (loot    . std-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 (define cave-goblin-slinger-m   
-  '((name . "cave goblin slinger")
+  '((name    . "cave goblin slinger")
     (species . sp_cave_goblin)
-    (occ . oc_warrior)
-    (sprite . s_cgob_slinger)
-    (stuff . slinger-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_cgob_slinger)
+    (stuff   . slinger-equip)
+    (loot    . slinger-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 (define cave-goblin-berserker-m 
-  '((name . "cave goblin berserker")
+  '((name    . "cave goblin berserker")
     (species . sp_cave_goblin)
-    (occ . oc_warrior)
-    (sprite . s_cgob_berserk)
-    (stuff . berserker-equip)
-    (ai . 'std-ai)
+    (occ     . oc_warrior)
+    (sprite  . s_cgob_berserk)
+    (stuff   . berserker-equip)
+    (loot    . berserker-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 (define gint-mage-m 
-  '((name . "gint mage")
+  '((name    . "gint mage")
     (species . sp_gint)
-    (occ . oc_wizard)
-    (sprite . s_gint_mage)
-    (stuff . wizard-equip)
-    (ai . 'shaman-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_gint_mage)
+    (stuff   . wizard-equip)
+    (ai      . 'shaman-ai)
     (faction . faction-monster)))
 
 (define trog-geomancer-m 
-  '((name . "trog geomancer")
+  '((name    . "trog geomancer")
     (species . sp_trog)
-    (occ . oc_wizard)
-    (sprite . s_female_trog)
-    (stuff . geomancer-equip)
-    (ai . 'std-ai)
+    (occ     . oc_wizard)
+    (sprite  . s_female_trog)
+    (stuff   . geomancer-equip)
+    (loot    . std-loot)
+    (ai      . 'std-ai)
     (faction . faction-monster)))
 
 ;;----------------------------------------------------------------------------

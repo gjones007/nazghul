@@ -1752,6 +1752,7 @@ static pointer kern_mk_char(scheme * sc, pointer args)
         int base_faction;
         struct sched *sched;
         class Container *inventory;
+        class Container *loot;
 
         if (unpack(sc, &args, "yspppdddddddddddddbcpcp",
                    &tag, &name, &species, &occ,
@@ -1804,6 +1805,15 @@ static pointer kern_mk_char(scheme * sc, pointer args)
                 load_err("kern-mk-char %s: bad hook entry", tag);
                 goto abort;
         }
+
+	/* Store the loot. */
+	if (scm_is_pair(sc, args)) {
+		if (unpack(sc, &args, "p", &loot)) {
+                        load_err("kern-mk-char %s: error in loot", tag);
+                        goto abort;
+		}
+		character->setLootContainer(loot);
+	}
 
         ret = scm_mk_ptr(sc, character);
 
@@ -7938,6 +7948,26 @@ KERN_API_CALL(kern_char_get_inventory)
         return kern_build_container_list(sc, container, container->first(NULL));
 }
 
+KERN_API_CALL(kern_char_get_loot)
+{
+        class Container *loot;
+        class Character *character;
+
+        /* unpack the character */
+        character = (class Character *) unpack_obj(sc, &args,
+                                                   "kern-char-get-loot");
+        if (!character)
+                return sc->NIL;
+
+        /* grab it's loot container */
+        loot = character->getLootContainer();
+        if (!loot)
+                return sc->NIL;
+
+        /* enumerate its contents into a scheme list */
+        return kern_build_container_list(sc, loot, loot->first(NULL));
+}
+
 KERN_API_CALL(kern_char_get_hp)
 {
         class Character *character;
@@ -9971,6 +10001,7 @@ scheme *kern_init(void)
         API_DECL(sc, "kern-char-get-hp", kern_char_get_hp);
         API_DECL(sc, "kern-char-get-intelligence", kern_char_get_intelligence);
         API_DECL(sc, "kern-char-get-inventory", kern_char_get_inventory);
+        API_DECL(sc, "kern-char-get-loot", kern_char_get_loot);
         API_DECL(sc, "kern-char-get-level", kern_char_get_level);
         API_DECL(sc, "kern-char-get-mana", kern_char_get_mana);
         API_DECL(sc, "kern-char-get-max-hp", kern_char_get_max_hp);
