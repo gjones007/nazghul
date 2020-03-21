@@ -327,7 +327,7 @@
 
 ;; Object types
 (load "objs.scm")
-;;(load "traps.scm")
+(load "traps.scm")
 ;;(load "pitfalls.scm")
 ;;(load "landslide.scm")
 (load "containers.scm")
@@ -515,7 +515,7 @@
 
 (define (seek-loot kchar)
   (let ((loot-list 
-         (filter (mk-ifc-query 'get)
+         (filter (lambda (kobj) (or (kobj-can? kobj 'get) (kobj-can? kobj 'open)))
                  (kern-place-get-objects (loc-place (kern-obj-get-location kchar))))
          ))
     (if (not (null? loot-list))
@@ -533,9 +533,16 @@
     ))
     
 (define (beggar-exit kchar)
+  (or (npcg-taunted? (gob kchar))
+      (begin
+        (say kchar (random-select (list "Yippee!" "I'm rich!" "All mine!")))
+        (npcg-set-taunted! (gob kchar) #t)
+        )
+      )
   (or (seek-loot kchar)
-      (traveler-exit kchar))
-    ) 
+      (traveler-exit kchar)
+      )
+    )
     
 (define (erratic-traveler-ai kchar)
   (or (std-ai kchar)
@@ -870,7 +877,8 @@
   ;; thus the whole scene within the vision radius) while allowing the beggar
   ;; to go pick up the loot and then exit. The party member beggar's sprite is
   ;; changed to nil, making him invisible, then a new npc beggar is cloned.
-  (let ((kcharn (mk-npc 'ranger 9)))
+  (let ((kcharn (mk-npc 'beggar 9)))
+    (kern-char-set-description kcharn "spritely beggar")
     (kern-obj-set-sprite kcharn s_beggar)
     (kern-char-set-ai kcharn 'beggar-exit)
     (kern-obj-put-at kcharn (kern-obj-get-location (kern-get-player)))
@@ -2004,6 +2012,8 @@
  (list 'on-entry-to-dungeon-room) ; hooks
  nil ;; edge entrances
 )
+
+(mk-place-music p_demo_scene 'ml-char-setup)
 
 ;;----------------------------------------------------------------------------
 ;; Characters

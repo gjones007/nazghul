@@ -769,6 +769,14 @@
     (conv    . 'ranger-conv)
     (faction . faction-men)))
 
+(define beggar
+  '((name    . "beggar")
+    (species . sp_human)
+    (sprite  . s_beggar)
+    (ai      . 'ranger-ai)
+    (conv    . 'ranger-conv)
+    (faction . faction-men)))
+
 (define skeletal-spear-thrower
   '((name    . "skeletal spear-thrower")
     (species . sp_skeleton)
