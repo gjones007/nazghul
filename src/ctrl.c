@@ -422,13 +422,6 @@ static int ctrl_calc_to_hit(class Character * character,
         int attackBonus = character->getAttackBonus(weapon);
         int val = base + weaponBonus + attackBonus + penalty;
 
-        log_continue("to-hit: %d=%d+%d+%d", val, base, weaponBonus,
-                     attackBonus);
-        if (penalty >= 0) {
-                log_continue("+");
-        }
-        log_continue("%d\n", penalty);
-
         return val;
 }
 
@@ -437,8 +430,6 @@ static int ctrl_calc_to_defend(class Character * target)
         int base = target->getDefend();
         int bonus = target->getAvoidBonus();
         int val = base + bonus;
-
-        log_continue("to-def: %d=%d+%d\n", val, base, bonus);
 
         return val;
 }
@@ -461,15 +452,6 @@ static int ctrl_calc_damage(class Character * character,
 
         int val = weaponDamage + characterBonus + criticalBonus + memberBonus;
 
-        log_continue("damage: %d=%d+%d", val, weaponDamage, characterBonus);
-        if (memberBonus) {
-                log_continue("+%d", memberBonus);
-        }
-        if (criticalBonus) {
-                log_continue("+%d", criticalBonus);
-        }
-        log_continue("\n");
-
         return val;
 }
 
@@ -480,8 +462,6 @@ static int ctrl_calc_armor(class Character * target, int critical)
         if (!critical) {
                 armor = target->getArmor();
         }
-
-        log_continue(" armor: %d\n", armor);
 
         return armor;
 }
@@ -508,7 +488,7 @@ void ctrl_do_attack(class Character * character, class ArmsType * weapon,
         int misy;
         bool miss;
 
-        log_begin("^c%c%s^cw attacks ^c%c%s^cw with %s: ",
+        log_begin("^c%c%s^cw attacks ^c%c%s^cw with %s:\n",
                   (are_hostile(character, player_party) ? 'r' : 'g')
                   , character->getName()
                   , (are_hostile(target, player_party) ? 'r' : 'g')
@@ -532,7 +512,6 @@ void ctrl_do_attack(class Character * character, class ArmsType * weapon,
         }
 
         /* Roll to hit. */
-        log_continue("\n");
         hit = ctrl_calc_to_hit(character, weapon, to_hit_penalty);
         def = ctrl_calc_to_defend(target);
         if (hit < def) {
