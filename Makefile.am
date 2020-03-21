@@ -1,4 +1,4 @@
-AUTOMAKE_OPTIONS = dist-shar dist-zip dist-tarZ
+AUTOMAKE_OPTIONS = dist-zip
 
 SUBDIRS = src worlds m4
 
@@ -10,13 +10,11 @@ ACLOCAL_AMFLAGS = -I m4
 
 @MAINT@alldist:
 @MAINT@	${MAKE} distcheck
-@MAINT@	${MAKE} dist-shar
 @MAINT@	${MAKE} dist-zip
-@MAINT@	${MAKE} dist-tarZ
 
 MAINTAINERCLEANFILES = configure Makefile.in aclocal.m4 config.h.in \
 		config.guess config.sub depcomp install-sh \
-		missing mkinstalldirs
+		missing mkinstalldirs compile
 
 @MAINT@cvsclean: maintainer-clean
 @MAINT@	@-rm -f `find . -name Makefile.in`

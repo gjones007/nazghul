@@ -410,7 +410,7 @@ static int terrain_editor_key_handler(struct KeyHandler *kh, int key,
                 // Number key 0..9 == get/set quick terrain
                 int qt = key - '0';
 
-                if ((keymod && KMOD_LCTRL) || (keymod && KMOD_RCTRL)) {
+                if ((keymod & KMOD_LCTRL) || (keymod & KMOD_RCTRL)) {
                         // Control-NUM == set quick terrain to current:
                         tea->quick[qt] = tea->terrain;
                         log_msg("[Set Quick %d]: %s '%s'", qt,

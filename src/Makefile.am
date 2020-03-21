@@ -170,7 +170,7 @@ nazghul_SOURCES =		\
 	escape.c escape.h \
 	terrain_editor.c terrain_editor.h
 
-INCLUDES = -I$(includedir)                                      \
+AM_CPPFLAGS = -I$(includedir)                                      \
         -I$(srcdir) -I$(top_srcdir)/include -I$(top_srcdir)     \
         -I$(top_builddir) -I$(top_builddir)/include -I.
 

@@ -350,7 +350,7 @@ bool Party::gotoSpot(int mx, int my)
 	dbg("gotoSpot:%s:x=%d y=%d\n", getName(), mx, my);
 
 	if (isStationary())
-		return StationaryObject;
+		return true;
 
 	/* Look for a path. */
 	memset(&as_info, 0, sizeof(as_info));

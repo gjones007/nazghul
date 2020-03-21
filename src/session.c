@@ -111,7 +111,7 @@ static const char *session_hook_str[] = {
 #include "session_hooks.h"
 };
 
-static char session_last_error[128] = { 0 };
+static char session_last_error[256] = { 0 };
 
 void load_err(const char *fmt, ...)
 {
