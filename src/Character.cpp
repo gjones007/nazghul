@@ -1709,9 +1709,9 @@ void Character::describe(bool capitalize)
 		}
 		if (s[0]) {
 			if (isvowel(s[0])) {
-				log_continue(capitalize ? "An " : "an ");
+				log_continue(capitalize ? "An" : "an");
 			} else {
-				log_continue(capitalize ? "A ": "a ");
+				log_continue(capitalize ? "A": "a");
 			}
 			log_continue(s);
 		}
