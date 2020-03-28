@@ -399,7 +399,6 @@
 
 (kern-load "runes.scm")
 
-(define logo-image (kern-image-load "haximatext.png"))
 (define yoff 7)
 (define xoff -3)
 

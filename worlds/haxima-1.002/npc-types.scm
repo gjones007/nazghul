@@ -55,7 +55,11 @@
         (contents (filter notnull? (map (lambda (x) (apply roll-to-add x)) loot)))
         (trap (choose-trap kchar))
         )
-    (kern-obj-put-at (mk-chest trap contents) loc)))
+    (if (notnull? contents)
+        (kern-obj-put-at (mk-chest trap contents) loc)
+        )
+    )
+  )
 
 
 ;; Wrapper to kern-mk-char that supports variable args and provides defaults,
@@ -98,7 +102,7 @@
         (loot (optarg 'loot nil))
         )
     ;; If a loot list was given, use the loot-drop effect to invoke a function
-    ;; that will generate a chest of loop and drop it where the NPC dies.
+    ;; that will generate a chest of loot and drop it where the NPC dies.
     (if (notnull? loot)
         (kern-obj-add-effect kchar ef_loot_drop (loot-drop-mk 'drop-loot loot)))
     kchar))
