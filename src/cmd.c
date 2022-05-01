@@ -2088,6 +2088,10 @@ int get_spell_name(struct KeyHandler *kh, int key, int keymod)
         struct get_spell_name_data *ctx;
         char *word, letter;
 
+        if (key > 0x7f) {
+                return 0;
+        }
+
         ctx = (struct get_spell_name_data *) kh->data;
 
         switch (ctx->state) {

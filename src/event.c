@@ -107,33 +107,31 @@ static int mapKey(SDL_Keysym * keysym)
                        keysym->sym, keysym->sym, keysym->mod);
         }
 
-        /* If the key has a UNICODE representation and its from the default
-         * Basic Latin code page then return it as an ASCII character. */
-        /* fixme: unicode is messing up ctrl+key sequences */
-        //if (keysym->unicode) {
-
-                /* Map CR to LF (legacy code expects this) */
-                if (keysym->sym == 0x000d)
-                        return '\n';
-
-                /* Map all other Basic Latin codes to ASCII */
-                if (keysym->sym < 0x7f)
-                        return keysym->sym & 0x7f;
-
-                /* Code page not supported... fall through */
-        //}
-
-        /* Map arrow keys to equivalent numberpad entries */
-        if (key >= SDLK_UP && key <= SDLK_LEFT) {
-                static int map[] = { KEY_NORTH, KEY_SOUTH, KEY_EAST,
-                        KEY_WEST
-                };
-                key = map[key - SDLK_UP];
+        if (keysym->mod & KMOD_SHIFT) {
+                if (key >= 0x61 && key < 0x7f) {
+                       key -= 0x20;
+                } else {
+                       key |= KEY_SHIFT;
+                }
         }
 
-        /* Set the "shift" bit */
-        if (keysym->mod & KMOD_SHIFT) {
-                key |= KEY_SHIFT;
+        /* Map CR to LF (legacy code expects this) */
+        if (key == 0x000d)
+                return '\n';
+
+        /* Map all other Basic Latin codes to ASCII */
+        if (key < 0x7f)
+                return key & 0x7f;
+
+        /* Map arrow keys to equivalent numberpad entries */
+        if (key == SDLK_UP) {
+                key = KEY_NORTH;
+        } else if (key == SDLK_DOWN) {
+                key = KEY_SOUTH;
+        } else if (key == SDLK_LEFT) {
+                key = KEY_WEST;
+        } else if (key == SDLK_RIGHT) {
+                key = KEY_EAST;
         }
 
         /* Unsupported? fallback to the SDL sym */
