@@ -98,30 +98,30 @@ static int backlog_dequeue(SDL_Event * event)
         return 0;
 }
 
-static int mapKey(SDL_keysym * keysym)
+static int mapKey(SDL_Keysym * keysym)
 {
         int key = keysym->sym;
 
         if (DEBUG_KEYS) {
-                printf("sym='%c'[%d] mod=%02x unicode=%04x\n",
-                       keysym->sym, keysym->sym, keysym->mod, keysym->unicode);
+                printf("sym='%c'[%d] mod=%02x \n",
+                       keysym->sym, keysym->sym, keysym->mod);
         }
 
         /* If the key has a UNICODE representation and its from the default
          * Basic Latin code page then return it as an ASCII character. */
         /* fixme: unicode is messing up ctrl+key sequences */
-        if (keysym->unicode) {
+        //if (keysym->unicode) {
 
                 /* Map CR to LF (legacy code expects this) */
-                if (keysym->unicode == 0x000d)
+                if (keysym->sym == 0x000d)
                         return '\n';
 
                 /* Map all other Basic Latin codes to ASCII */
-                if (keysym->unicode < 0x7f)
-                        return keysym->unicode & 0x7f;
+                if (keysym->sym < 0x7f)
+                        return keysym->sym & 0x7f;
 
                 /* Code page not supported... fall through */
-        }
+        //}
 
         /* Map arrow keys to equivalent numberpad entries */
         if (key >= SDLK_UP && key <= SDLK_LEFT) {
@@ -338,8 +338,6 @@ int eventInit(void)
                         event_playback_speed = atoi(playback_spd_str);
                 }
         }
-
-        SDL_EnableUNICODE(1);
 
         return 0;
 }

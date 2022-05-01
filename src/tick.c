@@ -76,7 +76,7 @@ void tick_start(long msecs)
         tick_paused = 0;
         tick_killed = 0;
         if (msecs > 0) {
-                tick_thread = SDL_CreateThread(tick_main, (void *) msecs);
+                tick_thread = SDL_CreateThread(tick_main, NULL, (void *) msecs);
         }
 }
 

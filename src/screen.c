@@ -64,10 +64,13 @@
 
 /* Enable this to dump surfaces and video info */
 #ifndef SCREEN_DEBUG
-#define SCREEN_DEBUG 0
+#define SCREEN_DEBUG 1
 #endif
 
 static SDL_Surface *Screen;
+static SDL_Texture *ScreenTexture;
+static SDL_Window *Window;
+static SDL_Renderer *Renderer;
 static SDL_Surface *Shaders[N_SHADERS];
 static SDL_Surface *Highlight;
 static struct sprite *FrameSprites[FRAME_NUM_SPRITES];
@@ -118,6 +121,28 @@ void screen_initColors(void)
         Gray = SDL_MapRGB(Screen->format, 0x80, 0x80, 0x80);
 }
 
+void dump_SDL_RenderInfo(SDL_RendererInfo * fmt) {
+	printf("Render Info:\n");
+        printf("               name: %s\n", fmt->name);
+        printf("              flags: \n");
+        if (fmt->flags & SDL_RENDERER_SOFTWARE)
+               printf("     SDL_RENDERER_SOFTWARE\n");
+        if (fmt->flags & SDL_RENDERER_ACCELERATED)
+               printf("     SDL_RENDERER_ACCELERATED\n");
+        if (fmt->flags & SDL_RENDERER_PRESENTVSYNC)
+               printf("     SDL_RENDERER_PRESENTVSYNC\n");
+        if (fmt->flags & SDL_RENDERER_TARGETTEXTURE)
+               printf("     SDL_RENDERER_TARGETTEXTURE\n");
+        printf("    texture_formats: %d\n", fmt->num_texture_formats);
+	for( Uint32 i = 0; i < fmt->num_texture_formats; i++ )
+        {
+               printf("     %s\n", SDL_GetPixelFormatName(fmt->texture_formats[i]));
+        }
+        printf("  max_texture_width: %d\n", fmt->max_texture_width);
+        printf(" max_texture_height: %d\n", fmt->max_texture_height);
+}
+
+
 void dump_SDL_PixelFormat(SDL_PixelFormat * fmt)
 {
         printf("Pixel Format:\n");
@@ -135,24 +160,6 @@ void dump_SDL_PixelFormat(SDL_PixelFormat * fmt)
         printf("       Gloss: %d\n", fmt->Gloss);
         printf("       Bloss: %d\n", fmt->Bloss);
         printf("       Aloss: %d\n", fmt->Aloss);
-        printf("    colorkey: 0x%x\n", fmt->colorkey);
-        printf("       alpha: 0x%x\n", fmt->alpha);
-}
-
-void dump_SDL_VideoInfo(const SDL_VideoInfo * fmt)
-{
-        printf("Video Info:\n");
-        printf(" hw_available: %c\n", fmt->hw_available ? 'y' : 'n');
-        printf(" wm_available: %c\n", fmt->wm_available ? 'y' : 'n');
-        printf("      blit_hw: %c\n", fmt->blit_hw ? 'y' : 'n');
-        printf("   blit_hw_CC: %c\n", fmt->blit_hw_CC ? 'y' : 'n');
-        printf("    blit_hw_A: %c\n", fmt->blit_hw_A ? 'y' : 'n');
-        printf("      blit_sw: %c\n", fmt->blit_sw ? 'y' : 'n');
-        printf("   blit_sw_CC: %c\n", fmt->blit_sw_CC ? 'y' : 'n');
-        printf("    blit_sw_A: %c\n", fmt->blit_sw_A ? 'y' : 'n');
-        printf("    blit_fill: %c\n", fmt->blit_fill ? 'y' : 'n');
-        printf("    video_mem: %d\n", fmt->video_mem);
-        dump_SDL_PixelFormat(fmt->vfmt);
 }
 
 void dump_SDL_Surface(SDL_Surface * surf)
@@ -161,34 +168,14 @@ void dump_SDL_Surface(SDL_Surface * surf)
         printf("     flags:\n");
         if (surf->flags & SDL_SWSURFACE)
                 printf("  SDL_SWSURFACE\n");
-        if (surf->flags & SDL_HWSURFACE)
-                printf("  SDL_HWSURFACE\n");
-        if (surf->flags & SDL_ASYNCBLIT)
-                printf("  SDL_ASYNCBLIT\n");
-        if (surf->flags & SDL_ANYFORMAT)
-                printf("  SDL_ANYFORMAT\n");
-        if (surf->flags & SDL_HWPALETTE)
-                printf("  SDL_HWPALETTE\n");
-        if (surf->flags & SDL_DOUBLEBUF)
-                printf("  SDL_DOUBLEBUF\n");
-        if (surf->flags & SDL_FULLSCREEN)
-                printf("  SDL_FULLSCREEN\n");
-        if (surf->flags & SDL_OPENGL)
-                printf("  SDL_OPENGL\n");
-        if (surf->flags & SDL_OPENGLBLIT)
-                printf("  SDL_OPENGLBLIT\n");
-        if (surf->flags & SDL_RESIZABLE)
-                printf("  SDL_RESIZABLE\n");
-        if (surf->flags & SDL_HWACCEL)
-                printf("  SDL_HWACCEL\n");
-        if (surf->flags & SDL_SRCCOLORKEY)
-                printf("  SDL_SRCCOLORKEY\n");
-        if (surf->flags & SDL_RLEACCEL)
-                printf("  SDL_RLEACCEL\n");
-        if (surf->flags & SDL_SRCALPHA)
-                printf("  SDL_SRCALPHA\n");
         if (surf->flags & SDL_PREALLOC)
                 printf("  SDL_PREALLOC\n");
+        if (surf->flags & SDL_RLEACCEL)
+                printf("  SDL_RLEACCEL\n");
+        if (surf->flags & SDL_DONTFREE)
+                printf("  SDL_DONTFREE\n");
+        if (surf->flags & SDL_SIMD_ALIGNED)
+                printf("  SDL_SIMD_ALIGNED\n");
         printf("         w: %d\n", surf->w);
         printf("         h: %d\n", surf->h);
         printf("     pitch: %d\n", surf->pitch);
@@ -203,10 +190,8 @@ void dump_SDL_Surface(SDL_Surface * surf)
 
 void screen_initScreen(void)
 {
-        Uint32 flags = SDL_ANYFORMAT;
-        const SDL_VideoInfo *fmt;
-
-        const int SCREEN_BPP = 0;       /* use display BPP */
+        Uint32 flags = SDL_WINDOW_SHOWN;
+        const int SCREEN_BPP = 32;
 
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
                 perror_sdl("SDL_Init");
@@ -214,43 +199,90 @@ void screen_initScreen(void)
         }
         atexit(SDL_Quit);
 
-        fmt = SDL_GetVideoInfo();
-        if (!fmt) {
-                perror_sdl("SDL_GetVideoInfo");
-                exit(-1);
-        }
-
-        if (SCREEN_DEBUG) {
-                dump_SDL_VideoInfo(fmt);
-        }
-
-        if (fmt->blit_hw_CC && fmt->blit_fill) {
-                flags |= SDL_HWSURFACE;
-                flags |= SDL_DOUBLEBUF;
-        }
         if (FullScreenMode) {
-                flags |= SDL_FULLSCREEN;
+                flags |= SDL_WINDOW_FULLSCREEN;
         }
 
-        Screen = SDL_SetVideoMode(SCREEN_W, SCREEN_H, SCREEN_BPP, flags);
+        Window = SDL_CreateWindow(APPLICATION_NAME,
+                          SDL_WINDOWPOS_UNDEFINED,
+                          SDL_WINDOWPOS_UNDEFINED,
+                          SCREEN_W, SCREEN_H,
+                          flags);
+
+        if (!Window) {
+               perror_sdl("SDL_CreateWindow");
+                exit(-1);
+        }
+
+        Renderer = SDL_CreateRenderer(Window, -1, 0 );
+
+        if (!Renderer) {
+               perror_sdl("SDL_CreateRenderer");
+                exit(-1);
+        }
+
+        ScreenTexture = SDL_CreateTexture(Renderer,
+                               SDL_PIXELFORMAT_RGB888,
+                               SDL_TEXTUREACCESS_STREAMING,
+                               SCREEN_W, SCREEN_H);
+
+        if (!ScreenTexture) {
+               perror_sdl("SDL_CreateTexture");
+                exit(-1);
+        }
+
+        Screen = SDL_CreateRGBSurface(0,
+                       SCREEN_W, SCREEN_H,
+                       SCREEN_BPP, 0, 0, 0, 0);
+
         if (!Screen) {
-                perror_sdl("SDL_SetVideoMode");
+                perror_sdl("SDL_CreateRGBSurface");
                 exit(-1);
         }
 
         if (SCREEN_DEBUG) {
-                printf("Video initialized to...\n");
-                dump_SDL_Surface(Screen);
-        }
+                SDL_RendererInfo info;
+                if (SDL_GetRendererInfo(Renderer, &info) != 0)
+                {
+                       perror_sdl("SDL_GetRendererInfo");
+                } else {
+                        dump_SDL_RenderInfo(&info);
+                }
 
-        SDL_WM_SetCaption(APPLICATION_NAME, APPLICATION_NAME);
+                static int display_in_use = 0;
+                int i, display_mode_count;
+                SDL_DisplayMode mode;
+                Uint32 f;
+
+                SDL_Log("SDL_GetNumVideoDisplays(): %i", SDL_GetNumVideoDisplays());
+
+                display_mode_count = SDL_GetNumDisplayModes(display_in_use);
+                if (display_mode_count < 1) {
+                        SDL_Log("SDL_GetNumDisplayModes failed: %s", SDL_GetError());
+                        exit(-1);
+                }
+                SDL_Log("SDL_GetNumDisplayModes: %i", display_mode_count);
+
+                for (i = 0; i < display_mode_count; ++i) {
+                        if (SDL_GetDisplayMode(display_in_use, i, &mode) != 0) {
+                                SDL_Log("SDL_GetDisplayMode failed: %s", SDL_GetError());
+                                exit(-1);
+                        }
+                        f = mode.format;
+
+                        SDL_Log("Mode %i\tbpp %i\t%s\t%i x %i",
+                                i, SDL_BITSPERPIXEL(f),
+                                SDL_GetPixelFormatName(f),
+                                mode.w, mode.h);
+                }
+        }
 }
 
 void screen_fade_surface(SDL_Surface * surf, int fade_level)
 {
         int x, y;
         Uint8 *pix;
-        Uint8 trans;
+        Uint32 trans;
         int base;
         int toggle;
 
@@ -260,7 +292,7 @@ void screen_fade_surface(SDL_Surface * surf, int fade_level)
                 return;
 
         pix = (Uint8 *) surf->pixels;
-        trans = (Uint8) surf->format->colorkey;
+        SDL_GetColorKey(surf, &trans);
 
         for (y = 0; y < surf->h; y++) {
                 base = y * surf->pitch;
@@ -268,9 +300,9 @@ void screen_fade_surface(SDL_Surface * surf, int fade_level)
                 for (x = 0; x < surf->w; x++) {
                         int i = base + x;
                         if (toggle) {
-                                if (pix[i] != trans) {
+                                if (pix[i] != (Uint8) trans) {
                                         toggle = 0;
-                                        pix[i] = trans;
+                                        pix[i] = (Uint8) trans;
                                 }
                         } else if (pix[i] != trans) {
                                 toggle = 1;
@@ -363,9 +395,6 @@ int screen_init(void)
         screen_initFrame();
         Zoom = 1;
 
-        SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-                            SDL_DEFAULT_REPEAT_INTERVAL);
-
         return 0;
 }
 
@@ -383,11 +412,10 @@ void screen_fill(SDL_Rect * rect, Uint32 color)
 
 void screen_update(SDL_Rect * rect)
 {
-        if (rect) {
-                SDL_UpdateRect(Screen, rect->x, rect->y, rect->w, rect->h);
-        } else {
-                SDL_Flip(Screen);
-        }
+        SDL_UpdateTexture(ScreenTexture, NULL, Screen->pixels, Screen->pitch);
+        SDL_RenderClear(Renderer);
+        SDL_RenderCopy(Renderer, ScreenTexture, NULL, NULL);
+        SDL_RenderPresent(Renderer);
 }
 
 /* bpp-independent macro to test if a pixel is magenta */
@@ -778,33 +806,22 @@ void screen_repaint_frame(void)
 
 SDL_Surface *screen_create_surface(int w, int h)
 {
-        SDL_Surface *surf = NULL, *tmp;
+        SDL_Surface *surf = NULL;
 
-        tmp = SDL_CreateRGBSurface(Screen->flags,
+        surf = SDL_CreateRGBSurfaceWithFormat(Screen->flags,
                                    w, h,
                                    Screen->format->BitsPerPixel,
-                                   Screen->format->Rmask,
-                                   Screen->format->Gmask,
-                                   Screen->format->Bmask,
-                                   Screen->format->Amask);
+                                   Screen->format->format);
 
         // surf->format->palette = Screen->format->palette;
 
-        if (tmp == NULL) {
-                perror_sdl("SDL_CreateRGBSurface");
-                return NULL;
-        }
-
-        surf = SDL_DisplayFormat(tmp);
-        SDL_FreeSurface(tmp);
-
         if (surf == NULL) {
-                perror_sdl("SDL_DisplayFormat");
+                perror_sdl("SDL_CreateRGBSurfaceWithFormat");
                 return NULL;
         }
 
         if (surf->format->palette) {
-                SDL_SetColorKey(surf, SDL_SRCCOLORKEY,
+                SDL_SetColorKey(surf, SDL_TRUE,
                                 SDL_MapRGB(surf->format, 0xFF, 0x00, 0xFF));
         }
 
@@ -855,7 +872,8 @@ void screen_shade(SDL_Rect * area, unsigned char amount)
                 shade = Shaders[MAX_SHADER - (amount * MAX_SHADER) / 255];
         } else {
                 shade = Shaders[0];
-                SDL_SetAlpha(shade, SDL_SRCALPHA, amount);
+                SDL_SetSurfaceAlphaMod(shade, amount);
+                SDL_SetSurfaceBlendMode(shade, SDL_BLENDMODE_BLEND);
         }
         screen_blit(shade, NULL, area);
 }

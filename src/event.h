@@ -28,15 +28,15 @@ BEGIN_DECL
 #include "list.h"
 #include <SDL.h>
 /* Map directions to the numeric keypad */
-#define KEY_NORTHWEST   SDLK_KP7
-#define KEY_NORTH       SDLK_KP8
-#define KEY_NORTHEAST   SDLK_KP9
-#define KEY_WEST        SDLK_KP4
-#define KEY_HERE        SDLK_KP5
-#define KEY_EAST        SDLK_KP6
-#define KEY_SOUTHWEST   SDLK_KP1
-#define KEY_SOUTH       SDLK_KP2
-#define KEY_SOUTHEAST   SDLK_KP3
+#define KEY_NORTHWEST   SDLK_KP_7
+#define KEY_NORTH       SDLK_KP_8
+#define KEY_NORTHEAST   SDLK_KP_9
+#define KEY_WEST        SDLK_KP_4
+#define KEY_HERE        SDLK_KP_5
+#define KEY_EAST        SDLK_KP_6
+#define KEY_SOUTHWEST   SDLK_KP_1
+#define KEY_SOUTH       SDLK_KP_2
+#define KEY_SOUTHEAST   SDLK_KP_3
 #define KEY_UP          KEY_NORTH
 #define KEY_DOWN        KEY_SOUTH
 #define KEY_RIGHT       KEY_EAST

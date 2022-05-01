@@ -53,40 +53,6 @@ void images_dump_surface(char *name, SDL_Surface * surf)
         printf("  R/G/B/Aloss: %d %d %d %d\n",
                surf->format->Rloss, surf->format->Gloss,
                surf->format->Bloss, surf->format->Aloss);
-        printf("     colorkey: 0x%x\n", surf->format->colorkey);
-        printf("        alpha: 0x%x\n", surf->format->alpha);
-        printf("    flags:\n");
-        if (surf->flags & SDL_SWSURFACE)
-                printf("  SDL_SWSURFACE\n");
-        if (surf->flags & SDL_HWSURFACE)
-                printf("  SDL_HWSURFACE\n");
-        if (surf->flags & SDL_ASYNCBLIT)
-                printf("  SDL_ASYNCBLIT\n");
-        if (surf->flags & SDL_ANYFORMAT)
-                printf("  SDL_ANYFORMAT\n");
-        if (surf->flags & SDL_HWPALETTE)
-                printf("  SDL_HWPALETTE\n");
-        if (surf->flags & SDL_DOUBLEBUF)
-                printf("  SDL_DOUBLEBUF\n");
-        if (surf->flags & SDL_FULLSCREEN)
-                printf("  SDL_FULLSCREEN\n");
-        if (surf->flags & SDL_OPENGL)
-                printf("  SDL_OPENGL\n");
-        if (surf->flags & SDL_OPENGLBLIT)
-                printf("  SDL_OPENGLBLIT\n");
-        if (surf->flags & SDL_RESIZABLE)
-                printf("  SDL_RESIZABLE\n");
-        if (surf->flags & SDL_HWACCEL)
-                printf("  SDL_HWACCEL\n");
-        if (surf->flags & SDL_SRCCOLORKEY)
-                printf("  SDL_SRCCOLORKEY\n");
-        if (surf->flags & SDL_RLEACCEL)
-                printf("  SDL_RLEACCEL\n");
-        if (surf->flags & SDL_SRCALPHA)
-                printf("  SDL_SRCALPHA\n");
-        if (surf->flags & SDL_PREALLOC)
-                printf("  SDL_PREALLOC\n");
-
 }
 
 void images_fin(void *mem)
@@ -133,8 +99,8 @@ int images_convert2display(struct images *images)
          */
         if (imagesbits != screenbits && imagesbits != 8) {
 
-                if ((tmp = SDL_DisplayFormat(images->images)) == NULL) {
-                        err("SDL_DisplayFormat: %s", SDL_GetError());
+                if ((tmp = SDL_ConvertSurface(images->images, screen_format(), 0)) == NULL) {
+                        err("SDL_ConvertSurface: %s", SDL_GetError());
                         return 0;
                 }
                 imagesbits = screenbits;
@@ -149,12 +115,12 @@ int images_convert2display(struct images *images)
          * transparency. To correctly support transparent blitting we have to
          * set their color key to magenta and we have to convert them to match
          * the display format. */
-        if (!(images->images->flags & SDL_SRCALPHA)) {
+	if (SDL_ISPIXELFORMAT_ALPHA(images->images->flags)) {
 
                 if (imagesbits != screenbits) {
                         /* Convert to video format for faster blitting */
-                        if ((tmp = SDL_DisplayFormat(images->images)) == NULL) {
-                                err("SDL_DisplayFormat: %s", SDL_GetError());
+                        if ((tmp = SDL_ConvertSurface(images->images, screen_format(), 0)) == NULL) {
+                                err("SDL_ConvertSurface: %s", SDL_GetError());
                                 return 0;
                         }
                         SDL_FreeSurface(images->images);
@@ -162,7 +128,7 @@ int images_convert2display(struct images *images)
                 }
 
                 /* Make magenta the transparent color */
-                if (SDL_SetColorKey(images->images, SDL_SRCCOLORKEY,
+                if (SDL_SetColorKey(images->images, SDL_TRUE,
                                     SDL_MapRGB(images->images->format,
                                                0xff, 0x00, 0xff)) < 0) {
                         err("SDL_SetColorKey: %s", SDL_GetError());

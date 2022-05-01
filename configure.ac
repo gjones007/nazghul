@@ -93,8 +93,8 @@ dnl      first you ensure that the resulting programs can be linked.
 dnl ---------------------------------------------------------------------------
 
 dnl Check for SDL and SDL features, i.e. -lSDL
-SDL_VERSION=1.2.3
-AM_PATH_SDL($SDL_VERSION,
+SDL_VERSION=2.0.20
+AM_PATH_SDL2($SDL_VERSION,
             :,
 	    AC_MSG_ERROR([*** SDL version $SDL_VERSION not found!])
 )
@@ -170,7 +170,7 @@ AC_CHECK_HEADER([png.h],
 You should install development package.])])
 
 dnl Check specifically for SDL_image library, i.e. -lSDL_image switch
-AC_CHECK_LIB(SDL_image, IMG_ReadXPMFromArray)
+AC_CHECK_LIB(SDL2_image, IMG_ReadXPMFromArray)
 
 AC_CHECK_HEADER([SDL_image.h],
                [],
@@ -178,7 +178,7 @@ AC_CHECK_HEADER([SDL_image.h],
 You should install development package.])])
 
 dnl Check specifically for SDL_mixer library, i.e. -lSDL_mixer switch
-AC_CHECK_LIB(SDL_mixer, Mix_OpenAudio)
+AC_CHECK_LIB(SDL2_mixer, Mix_OpenAudio)
 
 AC_CHECK_HEADER([SDL_mixer.h],
                [],
